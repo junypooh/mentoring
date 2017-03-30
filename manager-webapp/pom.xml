@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>kr.go.career.mentor</groupId>
+        <artifactId>mentor-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+<!--    <properties>
+        <buildVersion>${maven.build.timestamp}</buildVersion>
+    </properties>-->
+
+    <artifactId>manager-webapp</artifactId>
+    <packaging>war</packaging>
+    <name>Admin Service Web Application</name>
+<!--    <version>${buildVersion}</version>-->
+
+  <dependencies>
+    <!--<dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>mentor-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>-->
+    <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>mentor-service</artifactId>
+        <version>${project.version}</version>
+        <scope>${appserver.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>egovframework.rte</groupId>
+      <artifactId>egovframework.rte.ptl.mvc</artifactId>
+      <version>${egovframework.rte.version}</version>
+      <exclusions>
+          <exclusion>
+              <artifactId>commons-logging</artifactId>
+              <groupId>commons-logging</groupId>
+          </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>manager-webapp</finalName>
+      <resources>
+          <resource>
+              <directory>src/main/java</directory>
+              <includes>
+                  <include>**/*.xml</include>
+              </includes>
+          </resource>
+          <resource>
+              <directory>src/main/resources</directory>
+              <includes>
+                  <include>**/*.properties</include>
+                  <include>**/*.xml</include>
+                  <include>**/*.tld</include>
+              </includes>
+              <excludes>
+                  <exclude>**/local/*</exclude>
+                  <exclude>**/dev/*</exclude>
+                  <exclude>**/real/*</exclude>
+              </excludes>
+          </resource>
+      </resources>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.tomcat.maven</groupId>
+              <artifactId>tomcat7-maven-plugin</artifactId>
+              <version>2.2</version>
+              <configuration>
+                  <port>9090</port>
+                  <path>/manager</path>
+                  <charset>UTF-8</charset>
+                  <uriEncoding>UTF-8</uriEncoding>
+                  <!--<contextReloadable>true</contextReloadable>-->
+                  <!--<ajpPort>8009</ajpPort>-->
+                  <systemProperties>
+                      <JAVA_OPTS>-Xms256m -Xmx768m -XX:MaxPermSize=1024m</JAVA_OPTS>
+                  </systemProperties>
+                  <additionalClasspathDirs>
+                      <additionalClasspathDir>
+                          C:\workspace\mentoring_new\mentor-service\target\classes
+                      </additionalClasspathDir>
+                  </additionalClasspathDirs>
+              </configuration>
+          </plugin>
+          <plugin>
+              <artifactId>maven-antrun-plugin</artifactId>
+              <version>1.7</version>
+              <dependencies>
+                  <dependency>
+                      <groupId>com.sun</groupId>
+                      <artifactId>tools</artifactId>
+                      <version>1.7</version>
+                      <scope>system</scope>
+                      <systemPath>${java.home}/../lib/tools.jar</systemPath>
+                  </dependency>
+              </dependencies>
+              <executions>
+                  <execution>
+                      <phase>prepare-package</phase>
+                      <id>overwrite-env-resources</id>
+                      <configuration>
+                          <target>
+                              <echo message="SERVER_MODE:${appserver.env}" />
+                              <!-- globals.properties -->
+                              <echo message="todir[globals.properties]:${project.build.directory}/classes/properties" />
+
+                              <copy file="${project.basedir}/src/main/resources/properties/${appserver.env}/local.properties"
+                                    todir="${project.build.directory}/classes/properties" overwrite="true">
+                              </copy>
+
+                              <!--
+                              <war destfile="${project.build.directory}/${project.artifactId}.war" update="true">
+                                <zipfileset dir="${basedir}/src/main/resources/properties/${SERVER_MODE}" prefix="WEB-INF/classes/config" />
+                              </war>
+                               -->
+                          </target>
+                      </configuration>
+                      <goals>
+                          <goal>run</goal>
+                      </goals>
+                  </execution>
+              </executions>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.1</version>
+              <configuration>
+                  <source>1.7</source>
+                  <target>1.7</target>
+                  <encoding>UTF-8</encoding>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-war-plugin</artifactId>
+              <configuration>
+                <warSourceExcludes>html/**</warSourceExcludes>
+              </configuration>
+          </plugin>
+      </plugins>
+  </build>
+</project>

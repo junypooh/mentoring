@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>산들바람 관리자</title>
+	
+	<link rel="stylesheet" href="../css/basic.css" />
+	<link rel="stylesheet" href="../css/common.css" />
+	<!-- datapicker / jqgrid -->
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.theme.min.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/plugins/ui.multiselect.css" />
+	<script src="../resources/js/jquery-1.11.0.min.js" type="text/javascript"></script> 
+	<script src="../resources/js/jquery-ui.min.js" type="text/javascript"></script> 
+	<script src="../resources/js/i18n/grid.locale-en.js" type="text/javascript"></script>
+	<script src="../resources/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+</head>
+<body>
+	<div class="wrap">
+		<!-- Header -->
+			<div id="header">
+				<h1 class="h1-logo"><a href="#"><img src="../images/h1_logo.png" alt="산들바람" /></a></h1>
+				<div class="header-top">
+					<ul class="util">
+						<li class="total-manager"><a href="#">전체관리자</a></li>
+						<li><a href="#"><img src="../images/ico_setting.png" alt="설정" /></a></li>
+						<li ><a href="#"><img src="../images/ico_logout.png" alt="로그아웃" /></a></li>
+					</ul>
+				</div>
+				<div class="header-bot">
+					<ul class="gnb">
+						<li class="on"><a href="#">회원관리</a></li><!-- 활성화 될 땐 on 클래스 부여 -->
+						<li><a href="#">학교관리</a></li>
+						<li><a href="#">수업관리</a></li>
+						<li><a href="#">배정관리</a></li>
+						<li><a href="#">Web 관리</a></li>
+						<li><a href="#">운영관리</a></li>
+						<li><a href="#">알림관리</a></li>
+						<li><a href="#">통계</a></li>
+					</ul>
+				</div>
+			</div>	
+		<!-- Header[E] -->
+		<!-- Container -->
+			<div id="container">
+				<div class="lnb-area">
+					<ul class="lnb">
+						<li class="on"><!-- 활성화 될 땐 on 클래스 부여 -->
+							<p class="lead-menu"><a href="#">일반회원관리</a></p>
+							<ul class="lnb-sub">
+								<li class="on"><a href="#">일반회원</a></li><!-- 활성화 될 땐 on 클래스 부여 -->
+								<li><a href="#">교사회원</a></li>
+								<li><a href="#">학교회원</a></li>
+							</ul>
+						</li>
+						<li> 
+							<p class="lead-menu"><a href="#">멘토회원관리</a></p>
+							<ul class="lnb-sub">
+								<li><a href="#">멘토회원</a></li>
+								<li><a href="#">가입탈퇴승인</a></li>
+							</ul>
+						</li>
+						<li> 
+							<p class="lead-menu"><a href="#">2주년 재동의</a></p>
+						</li>
+					</ul>
+				</div>
+				<div class="cont">
+					<div class="title-bar">
+						<h2>일반회원</h2>
+						<ul class="location">
+							<li class="home">Home</li>
+							<li>회원관리</li>
+							<li>일반회원관리</li>
+							<li>일반회원</li>
+						</ul>
+					</div>
+					<div class="board-area" id="boardArea">
+						<table class="tbl-style tbl-none-search">
+							<colgroup>
+								<col style="width:147px;" />
+								<col />
+								<col style="width:147px;" />
+								<col />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="col" class="ta-l">회원유형</th>
+									<td colspan="3">초등</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">아이디</th>
+									<td>Test01</td>
+									<th scope="col" class="ta-l">비밀번호</th>
+									<td>
+										<button type="button" class="btn-style01"><span>초기화 메일 발송</span></button>
+										<button type="button" class="btn-style01"><span>초기화 SMS 발송</span></button>
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">이름</th>
+									<td>홍길동</td>
+									<th scope="col" class="ta-l">이메일</th>
+									<td>test@test.com</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">생년월일</th>
+									<td>2016.00.00 (양력)</td>
+									<th scope="col" class="ta-l">이메일 수신</th>
+									<td>동의</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">휴대전화</th>
+									<td>010-0000-0000</td>
+									<th scope="col" class="ta-l">보호자 동의</th>
+									<td>test@test.com / <span class="red-txt">동의안함</span></td><!-- "동의완료"일 땐 red-txt 클래스 삭제 -->
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">가입일</th>
+									<td>2016.00.00 00:00 /  최근 로그인 : 2016.00.00 00:00</td>
+									<th scope="col" class="ta-l">사용유무</th>
+									<td>사용중</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">재동의일자</th>
+									<td>2016.00.00 00:00 / 재동의 예정일 : 2016.00.00 00:00</td>
+									<th scope="col" class="ta-l">재동의여부</th>
+									<td>재동의완료</td>
+								</tr>
+							</tbody>
+						</table>
+						<p class="search-btnbox">
+							<button type="button" class="btn-orange"><span>수정</span></button>
+							<button type="button" class="btn-style02"><span>목록</span></button>
+						</p>
+						<div class="tab-bar">
+							<ul>
+								<li><a href="#">교실정보</a></li>
+								<li class="on"><a href="#">수업현황</a></li><!-- 활성화 시 on 클래스 추가 -->
+							</ul>
+						</div>
+						<div class="tab-cont"><!-- Tab 클릭 시 보이는 컨텐츠 -->
+							<table class="tbl-style">
+								<colgroup>
+									<col style="width:147px;" />
+									<col />
+									<col style="width:147px;" />
+									<col />
+								</colgroup>
+								<tbody>
+									<tr>
+										<th scope="col" class="ta-l">기간검색</th>
+										<td colspan="3">
+											<input type="text"id="startDate"  class="date-input text" />
+											<span> ~ </span>
+											<input type="text"id="endDate"  class="date-input text" />
+											<button type="button" class="btn-style01"><span>일간</span></button>
+											<button type="button" class="btn-style01"><span>주간</span></button>
+											<button type="button" class="btn-style01"><span>월간</span></button>
+											<!-- Datepicker 스크립트 -->
+											<script type="text/javascript">
+												$(function() {
+													$( "#startDate" ).datepicker({
+														showOn: "both",
+														buttonImage: "../images/ico_date.png",
+														buttonImagesOnly:true
+													});
+													$( "#endDate" ).datepicker({
+														showOn: "both",
+														buttonImage: "../images/ico_date.png",
+														buttonImagesOnly:true
+													});
+												 });
+											</script>
+											<!-- Datepicker 스크립트[E] -->
+										</td>
+										<tr>
+											<th scope="col" class="ta-l">수업</th>
+											<td><input type="text" class="text" /></td>
+											<th scope="col" class="ta-l">멘토</th>
+											<td><input type="text" class="text" /></td>
+										</tr>
+										<tr><!-- 2016-06-27 추가 -->
+											<th scope="col" class="ta-l">학교</th>
+											<td><input type="text" class="text" /></td>
+											<th scope="col" class="ta-l">교실명</th>
+											<td><input type="text" class="text" /></td>
+										</tr><!-- 2016-06-27 추가[E] -->
+									</tr>
+								</tbody>
+							</table>
+							<p class="search-btnbox">
+								<button type="button" class="btn-style02"><span class="search">조회</span></button>
+							</p>
+							<div class="board-top">
+								<p class="total-num">총 <strong>00</strong> 건</p>
+								<ul>
+								<li>
+									<select>
+										<option value="">전체</option>
+									</select>
+								</li>
+							</ul>
+							</div>
+							<table id="boardTable"></table>
+							<div class="tbl-pager">
+								<a href="#" class="btn-page-first">첫페이지</a><a href="#" class="btn-page-prev">이전페이지</a><ul class="page-list"><li class="on"><a href="#">1</a></li><li><a href="#">2</a></li><li><a href="#">3</a></li><li><a href="#">4</a></li><li><a href="#">5</a></li><li><a href="#">6</a></li><li><a href="#">7</a></li><li><a href="#">8</a></li><li><a href="#">9</a></li><li><a href="#">10</a></li></ul><a href="#" class="btn-page-next">다음페이지</a><a href="#" class="btn-page-last">마지막페이지</a>
+								<div class="view-list-num">
+									<select>
+										<option value="10">10</option>
+										<option value="20">20</option>
+										<option value="30">30</option>
+									</select>
+								</div>
+							</div>
+						<!-- jqgrid 스크립트 -->
+							<script type="text/javascript">
+								jQuery("#boardTable").jqGrid({
+									datatype: "local",
+									height: 'auto',
+									colNames:['no','수업명','멘토','직업','수업일시', '유형','수업상태','학교','교실명','신청/취소일'],	// th에 들어갈 항목
+									colModel:[	// th 갯수와 맞춰야 함
+										{name:'no',index:'no', width:20, align:'center'},
+										{name:'lessonName',index:'lessonName', width:70},
+										{name:'mentoName',index:'mentoName', width:30, align:'center'},
+										{name:'mentoJob',index:'mentoJob', width:30, align:'center'},
+										{name:'lessonTime',index:'lessonTime', width:30, align:'center'},
+										{name:'lessonType',index:'lessonType', width:15, align:'center'},
+										{name:'lessonStatus',index:'lessonStatus', width:35, align:'center'},
+										{name:'schoolName',index:'schoolName', width:40, align:'center'},
+										{name:'classRoomName',index:'classRoomName', width:40},
+										{name:'requestDate',index:'requestDate', width:25, align:'center'}
+									],
+									rowNum: 10,	// 초기 보여질 게시물 갯수
+									//rowList:[10,20,30],	// 셋팅 할 수 있는 게시물 갯수 옵션
+									multiselect: false,	// 게시물 앞에 체크박스
+									//pager: "#tblPager",
+									viewrecords: false, // 게시글 수
+									caption: false
+								});
+								var mydata = [
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"}, // key값에 태그 삽입 가능
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"},
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"},
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"},
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"},
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"},
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"},
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"},
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"},
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"},
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"},
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"},
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"},
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"},
+									{no:"121", lessonName:"[연강]배치테스트수업", mentoName:"안나현",mentoJob:"프로그래머", lessonTime:"2016-06-13 09:00",lessonType:"참관", lessonStatus:"수업예정", schoolName:"교대중학교", classRoomName:"2학년2반 > 외3", requestDate:"2016.00.00"}
+
+								];
+								for(var i=0;i<=mydata.length;i++)
+									jQuery("#boardTable").jqGrid('addRowData',i+1,mydata[i]);
+								
+			
+								// 테이블 resize 함수
+								/*
+								* @param string grid_id 사이즈를 변경할 그리드의 아이디
+								* @param string div_id 그리드의 사이즈의 기준을 제시할 div 의 아이디
+								* @param string width 그리드의 초기화 width 사이즈
+								*/
+								function resizeJqGridWidth(grid_id, div_id, width){
+									// window에 resize 이벤트를 바인딩 한다.
+									$(window).bind('resize', function() {
+										// 그리드의 width 초기화
+										$('#' + grid_id).setGridWidth(width, false);
+										// 그리드의 width를 div 에 맞춰서 적용
+										$('#' + grid_id).setGridWidth($('#' + div_id).width() , true); // Resized to new width as per window
+									}).trigger('resize');
+								}
+								resizeJqGridWidth("boardTable","boardArea",500);
+							</script>
+						<!-- jqgrid 스크립트[E] -->
+						</div>
+					</div> 
+				</div>
+			</div>
+		<!-- Container[E] -->
+		<!-- Footer-->
+			<div id="footer">
+				<div class="fl-r">
+					<a href="#">개인정보취급방침</a>
+					<p class="copy">Copyright © mentor.career.go.kr. All rights reserved.</p>
+				</div>
+			</div>
+		<!-- Footer[E] -->
+	</div>
+</body>
+</html>

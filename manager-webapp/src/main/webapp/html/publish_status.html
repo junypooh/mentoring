@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>진로멘토링고도화_관리자페이지 퍼블리싱 현황</title>
+<!--[if lt IE 9a]>
+<script src="../js/html5-support.js"></script>
+<![endif]-->
+<style>
+/* reset */
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,button,select{margin:0;padding:0}
+body,input,textarea,select,button,table{font-family:NanumGothic,'Nanum Gothic','Malgun Gothic','맑은고딕','돋움',Dotum,AppleGothic,sans- serif;font-size:14px}
+img,fieldset{border:0}
+ul,ol{list-style:none}
+em,address{font-style:normal}
+a{text-decoration:none}
+a:hover,a:active,a:focus{text-decoration:underline}
+header, footer, section, hgroup, artice, aside, nav {display:block}
+.mgT20 {margin-top:20px}
+/* header */
+body {background:#f4f4f4;}
+header.header {position:relative; width:1200px; margin:0 auto; padding:30px 0;}
+header.header h1 {font-size:40px;color:#072e67; }
+header.header h1 strong {color:#fd650f;}
+header.header img {position:absolute; right:10px; top:50px}
+/* sub page */
+.content-wrap {position:relative; width:1200px; margin:0 auto; background:white; border-radius:10px; min-height:200px; zoom:1}
+.content-wrap:after {display:block; clear:both; content:"";}
+.breadcrumbs a{font-size:14px; color:#000; line-height:1.6;}
+.content-wrap p {padding:20px 0}
+.mark {position:absolute; right:-8px; top:-8px;}
+/* schedule */
+.file-list {padding:20px;}
+.file-list h1 {padding:0 0 10px 0; font-size:20px;}
+.file-list h2 {padding:0 0 10px 0; font-size:14px;}
+.file-list h1 span, .file-list h2 span{padding-left:10px; font-size:14px; color:#fd650f;}
+.file-list h1 em {padding-left:20px; font-size:14px;}
+.file-list table {width:100%; border-collapse: collapse; font-size:12px}
+.file-list table tr:hover { background:#eee;}
+.file-list table tr.last { border-bottom:2px solid #999;}
+.file-list table th {border:1px solid #ccc; padding:5px; background:#eaeaea;}
+.file-list table td {border:1px solid #ccc; padding:5px; text-align:center; vertical-align:top;}
+.file-list table tr td:first-child {text-align:center;}
+.file-list table tr td:first-child.left{text-align:left;}
+.file-list table td.left {text-align:left;}
+.file-list table td.title {background:#eaeaea; font-weight:bold}
+.file-list table td img {vertical-align:middle}
+.file-list table a {color:green; text-decoration:underline;}
+/* footer */
+footer.footer {padding:15px; text-align:center; font-size:11px; color:#999; line-height:1.6; }
+footer.footer strong {color:#fd650f}
+</style>
+</head>
+<body>
+<header class="header">
+	<h1>진로멘토링고도화_관리자 <strong>HTML</strong> <span style="font-size:24px;"></span> <span style="font-size:20px;"></span></h1>
+</header>
+<div class="content-wrap">
+	<section class="file-list">
+		<table>
+		<thead>
+			<tr>
+				<th>NO.</th>
+				<th>1depth menu</th>
+				<th>2depth menu</th>
+				<th>3depth menu</th>
+				<th>파일명</th>
+				<th>완료여부</th>
+				<th>기획확인</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td class="left">메인</td>
+				<td class="left"></td>
+				<td class="left"></td>
+				<td class="left"><a href="#none" target="_blank"></a></td>
+				<td style="color:red;font-weight:bold;">N</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td class="left" rowspan="3">공통</td>
+				<td class="left">주소검색</td>
+				<td class="left"></td>
+				<td class="left"><a href="./school/school_info_write_popup.html" target="_blank">school_info_write_popup.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td class="left">윈도우팝업</td>
+				<td class="left"></td>
+				<td class="left"><a href="./window_popup/window_pop_import.html" target="_blank">window_pop_import.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td class="left">비밀번호변경 팝업</td>
+				<td class="left"></td>
+				<td class="left"><a href="./member/password_modify_popup.html" target="_blank">password_modify_popup.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+		</tbody>
+		</table>
+	</section>
+
+	<section class="file-list">
+		<table>
+		<thead>
+			<tr>
+				<th>NO.</th>
+				<th>1depth menu</th>
+				<th>2depth menu</th>
+				<th>3depth menu</th>
+				<th>파일명</th>
+				<th>완료여부</th>
+				<th>기획확인</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td class="left" rowspan="9">회원관리</td>
+				<td class="left" rowspan="5">일반회원관리</td>
+				<td class="left">일반회원 목록</td>
+				<td class="left"><a href="./member/general_memb.html" target="_blank">general_memb.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td class="left">일반회원 상세 - 교실정보</td>
+				<td class="left"><a href="./member/general_memb_view01.html" target="_blank">general_memb_view01.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td class="left">일반회원 상세 - 수업현황</td>
+				<td class="left"><a href="./member/general_memb_view02.html" target="_blank">general_memb_view02.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td class="left" >교사회원 목록</td>
+				<td class="left"><a href="./member/teacher_memb_view.html" target="_blank">teacher_memb_view.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td class="left">교사회원 목록 - 대표학교 추가 팝업</td>
+				<td class="left"><a href="./member/teacher_memb_view_popup.html" target="_blank">teacher_memb_view_popup.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td class="left" rowspan="4">멘토회원관리</td>
+				<td class="left">멘토회원 - 상세 ( default이미지/탭추가 )</td>
+				<td class="left"><a href="./member/mento_memb_view.html" target="_blank">mento_memb_view.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td class="left">멘토회원 - 수정</td>
+				<td class="left"><a href="./member/mento_memb_modify.html" target="_blank">mento_memb_modify.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td class="left">가입탈퇴승인 - 목록</td>
+				<td class="left"><a href="./member/approve.html" target="_blank">approve.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr class="last">
+				<td>7</td>
+				<td class="left">가입탈퇴승인 - 상세</td>
+				<td class="left"><a href="./member/approve_view.html" target="_blank">approve_view.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td class="left" rowspan="3">학교관리</td>
+				<td class="left" rowspan="3">학교정보관리</td>
+				<td class="left">학교정보 - 목록</td>
+				<td class="left"><a href="./school/school_info.html" target="_blank">school_info.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td class="left">학교정보 - 조회 - 교사현황</td>
+				<td class="left"><a href="./school/school_info_view_tab01.html" target="_blank">school_info_view_tab01.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr class="last">
+				<td>3</td>
+				<td class="left">학교정보 - 등록</td>
+				<td class="left"><a href="./school/school_info_write.html" target="_blank">school_info_write.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td class="left" rowspan="11">수업관리</td>
+				<td class="left" rowspan="5">멘토수업관리</td>
+				<td class="left">수업현황 - 목록</td>
+				<td class="left"><a href="./lesson/lesson_mento_status.html" target="_blank">lesson_mento_status.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td class="left">수업현황 - 조회</td>
+				<td class="left"><a href="./lesson/lesson_mento_status_view.html" target="_blank">lesson_mento_status_view.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td class="left">MC 및 스튜디오 팝업</td>
+				<td class="left"><a href="./lesson/lesson_mento_status_view_popup.html" target="_blank">lesson_mento_status_view_popup.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td class="left">수업 수동취소 팝업</td>
+				<td class="left"><a href="./lesson/lesson_mento_status_view_popup02.html" target="_blank">lesson_mento_status_view_popup02.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td class="left">수업 일시 추가 팝업</td>
+				<td class="left"><a href="./lesson/lesson_mento_regist_popup.html" target="_blank">lesson_mento_regist_popup.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td class="left" rowspan="3">수업현황관리</td>
+				<td class="left">평점조회 - 목록(수업별)</td>
+				<td class="left"><a href="./lesson/lesson_grade_list01.html" target="_blank">lesson_grade_list01.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td class="left">평점조회 - 목록(멘토별)</td>
+				<td class="left"><a href="./lesson/lesson_grade_list02.html" target="_blank">lesson_grade_list02.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>8</td>
+				<td class="left">스튜디오현황 - 소속기관 등록 팝업</td>
+				<td class="left"><a href="./lesson/lesson_studio_status_popup.html" target="_blank">lesson_studio_status_popup.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>9</td>
+				<td class="left" rowspan="3">다시보기관리</td>
+				<td class="left">다시보기관리 - 등록</td>
+				<td class="left"><a href="./lesson/lesson_studio_replay_regist.html" target="_blank">lesson_studio_replay_regist.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>10</td>
+				<td class="left">다시보기관리 - 수업선택 팝업</td>
+				<td class="left"><a href="./lesson/lesson_studio_replay_regist_popup.html" target="_blank">lesson_studio_replay_regist_popup.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr class="last">
+				<td>11</td>
+				<td class="left">다시보기관리 - 조회</td>
+				<td class="left"><a href="./lesson/lesson_studio_replay_view.html" target="_blank">lesson_studio_replay_view.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr class="last">
+				<td>1</td>
+				<td class="left">배정관리</td>
+				<td class="left">배정사업관리</td>
+				<td class="left">배정사업관리 - 수정</td>
+				<td class="left"><a href="./allocate/allocate_business_modify.html" target="_blank">allocate_business_modify.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td class="left" rowspan="8">WEB관리</td>
+				<td class="left" rowspan="3">프론트관리</td>
+				<td class="left">인기수업</td>
+				<td class="left"><a href="./web/web_front_popular_lesson.html" target="_blank">web_front_popular_lesson.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td class="left">추천직업목록</td>
+				<td class="left"><a href="./web/web_front_recommend_job.html" target="_blank">web_front_recommend_job.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td class="left">추천직업추가</td>
+				<td class="left"><a href="./web/web_front_recommend_job_regist.html" target="_blank">web_front_recommend_job_regist.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td class="left" rowspan="4">커뮤니티관리</td>
+				<td class="left">수업자료실 목록</td>
+				<td class="left"><a href="./web/web_community_lessonlibrary.html" target="_blank">web_community_lessonlibrary.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td class="left">수업자료실 등록</td>
+				<td class="left"><a href="./web/web_community_lessonlibrary_write.html" target="_blank">web_community_lessonlibrary_write.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td class="left">기타자료실 목록</td>
+				<td class="left"><a href="./web/web_etc_data_list.html" target="_blank">web_etc_data_list.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td class="left">기타자료실 등록</td>
+				<td class="left"><a href="./web/web_etc_data_write.html" target="_blank">web_etc_data_write.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr class="last">
+				<td>5</td>
+				<td class="left">이용안내관리</td>
+				<td class="left">공지사항 (주석 2016-06-30)</td>
+				<td class="left"><a href="./web/web_info_notice.html" target="_blank">web_info_notice.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td class="left" rowspan="9">운영관리</td>
+				<td class="left" rowspan="2">유지보수요청</td>
+				<td class="left">유지보수요청 목록</td>
+				<td class="left"><a href="./operation/op_maintenance.html" target="_blank">op_maintenance.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y </td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td class="left">유지보수요청 상세</td>
+				<td class="left"><a href="./operation/op_maintenance_view.html" target="_blank">op_maintenance_view.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y </td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td class="left">메뉴관리</td>
+				<td class="left"></td>
+				<td class="left"><a href="#none" target="_blank"></a></td>
+				<td style="color:red;font-weight:bold;">삭제처리</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td class="left">코드관리</td>
+				<td class="left"></td>
+				<td class="left"><a href="#none" target="_blank"></a></td>
+				<td style="color:red;font-weight:bold;">삭제처리</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td class="left">권한관리</td>
+				<td class="left">권한관리 등록/수정</td>
+				<td class="left"><a href="./operation/op_right_regist.html" target="_blank">op_right_regist.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td class="left" rowspan="2">직업관리</td>
+				<td class="left">직업관리 목록</td>
+				<td class="left"><a href="./operation/op_job.html" target="_blank">op_job.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td class="left">직업관리 등록/수정</td>
+				<td class="left"><a href="./operation/op_job_write.html" target="_blank">op_job_write.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>8</td>
+				<td class="left">기관관리</td>
+				<td class="left">기관관리 등록/수정</td>
+				<td class="left"><a href="./operation/op_institution_write.html" target="_blank">op_institution_write.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr class="last">
+				<td>8</td>
+				<td class="left">관리자관리</td>
+				<td class="left">관리자관리 등록 팝업</td>
+				<td class="left"><a href="./operation/op_manager_write_popup.html" target="_blank">op_manager_write_popup.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td class="left" rowspan="3">알림관리</td>
+				<td class="left" rowspan="2">문자전송</td>
+				<td class="left">문자전송 페이지</td>
+				<td class="left"><a href="./alerts/alert_message.html" target="_blank">alert_message.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td class="left">수신자 불러오기 팝업</td>
+				<td class="left"><a href="./alerts/alert_message_popup.html" target="_blank">alert_message_popup.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr class="last">
+				<td>3</td>
+				<td class="left">이메일발송</td>
+				<td class="left">메일 쓰기</td>
+				<td class="left"><a href="./alerts/alert_email_send.html" target="_blank">alert_email_send.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td class="left" rowspan="9">통계&리포트</td>
+				<td class="left" rowspan="2">회원통계</td>
+				<td class="left">접속현황</td>
+				<td class="left"><a href="./statistics/statistics_access.html" target="_blank">statistics_access.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td class="left">가입현황</td>
+				<td class="left"><a href="./statistics/statistics_join.html" target="_blank">statistics_join.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td class="left">수업통계</td>
+				<td class="left">수업현황</td>
+				<td class="left"><a href="./statistics/statistics_lesson.html" target="_blank">statistics_lesson.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td class="left" rowspan="3">멘토리포트</td>
+				<td class="left">직업별</td>
+				<td class="left"><a href="./statistics/statistics_report_jop.html" target="_blank">statistics_report_jop.html</a></td>
+				<td style="color:red;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td class="left">특징분류별</td>
+				<td class="left"><a href="./statistics/statistics_report_feature.html" target="_blank">statistics_report_feature.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td class="left">멘토목록</td>
+				<td class="left"><a href="./statistics/statistics_mento_list.html" target="_blank">statistics_mento_list.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>9</td>
+				<td class="left" rowspan="2">클래스리포트</td>
+				<td class="left">클래스별</td>
+				<td class="left"><a href="./statistics/statistics_report_class.html" target="_blank">statistics_report_class.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>10</td>
+				<td class="left">학교별</td>
+				<td class="left"><a href="./statistics/statistics_report_school.html" target="_blank">statistics_report_school.html</a></td>
+				<td style="color:blue;font-weight:bold;">Y</td>
+				<td class="left"><span></span></td>
+			</tr>
+			<tr>
+				<td>11</td>
+				<td class="left">종합리포트</td>
+				<td class="left"></td>
+				<td class="left"><a href="#" target="_blank"></a></td>
+				<td style="color:red;font-weight:bold;"></td>
+				<td class="left"><span></span></td>
+			</tr>
+		</tbody>
+		</table>
+	</section>
+</div>
+<footer class="footer">
+	Copyright©2014 <strong>CareerNet</strong> Co.Ltd. All Rights Reserved.<br/>
+	본 퍼블리싱 관리 페이지는 커리어넷 e진로채널 앱 개발 프로젝트의 퍼블리싱쪽 업무 관리를 위해 임의로 제작한 페이지입니다.
+</footer>
+</body>
+</app>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>산들바람 관리자</title>
+
+	<link rel="stylesheet" href="../css/basic.css" />
+	<link rel="stylesheet" href="../css/common.css" />
+	<!-- datapicker / jqgrid -->
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.theme.min.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/plugins/ui.multiselect.css" />
+	<script src="../resources/js/jquery-1.11.0.min.js" type="text/javascript"></script>
+	<script src="../resources/js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="../resources/js/i18n/grid.locale-en.js" type="text/javascript"></script>
+	<script src="../resources/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+</head>
+<body>
+	<div class="wrap">
+		<!-- Header -->
+			<div id="header">
+				<h1 class="h1-logo"><a href="#"><img src="../images/h1_logo.png" alt="산들바람" /></a></h1>
+				<div class="header-top">
+					<ul class="util">
+						<li class="total-manager"><a href="#">전체관리자</a></li>
+						<li><a href="#"><img src="../images/ico_setting.png" alt="설정" /></a></li>
+						<li ><a href="#"><img src="../images/ico_logout.png" alt="로그아웃" /></a></li>
+					</ul>
+				</div>
+				<div class="header-bot">
+					<ul class="gnb">
+						<li><a href="#">회원관리</a></li>
+						<li><a href="#">학교관리</a></li>
+						<li class="on"><a href="#">수업관리</a></li><!-- 활성화 될 땐 on 클래스 부여 -->
+						<li><a href="#">배정관리</a></li>
+						<li><a href="#">Web 관리</a></li>
+						<li><a href="#">운영관리</a></li>
+						<li><a href="#">알림관리</a></li>
+						<li><a href="#">통계</a></li>
+					</ul>
+				</div>
+			</div>
+		<!-- Header[E] -->
+		<!-- Container -->
+			<div id="container">
+				<div class="lnb-area">
+					<ul class="lnb">
+						<li>
+							<p class="lead-menu"><a href="#">수업개설관리</a></p>
+							<ul class="lnb-sub">
+								<li><a href="#">수업현황</a></li>
+								<li><a href="#">수업등록관리</a></li>
+								<li><a href="#">수업개설신청</a></li>
+								<li><a href="#">요청수업목록</a></li>
+							</ul>
+						</li>
+						<li>
+							<p class="lead-menu"><a href="#">수업정보관리</a></p>
+							<ul class="lnb-sub">
+								<li><a href="#">수업후기</a></li>
+								<li><a href="#">평점조회</a></li>
+								<li><a href="#">스튜디오현황</a></li>
+								<li><a href="#">MC현황</a></li>
+							</ul>
+						</li>
+						<li class="on"><p class="lead-menu"><a href="#">다시보기관리</a></p></li><!-- 활성화 될 땐 on 클래스 부여 -->
+						<li><p class="lead-menu"><a href="#">기기제한설정</a></p></li>
+					</ul>
+				</div>
+				<div class="cont">
+					<div class="title-bar">
+						<h2>다시보기관리</h2>
+						<ul class="location">
+							<li class="home">Home</li>
+							<li>수업관리</li>
+							<li>다시보기관리</li>
+						</ul>
+					</div>
+					<div class="board-area" id="boardArea">
+						<table class="tbl-style tbl-none-search">
+							<colgroup>
+								<col style="width:147px;" />
+								<col style="width:100px;" />
+								<col />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="col" class="ta-l">영상명 <span class="red-point">*</span></th>
+									<td colspan="2">
+										<input type="text" class="text" />
+									</td>
+								</tr>
+								<tr><!-- 수업선택 전 -->
+									<th scope="col" class="ta-l">수업 <span class="red-point">*</span></th>
+									<td colspan="2"><button type="button" class="btn-style01"><span>선택</span></button></td>
+								</tr>
+								<tr><!-- 수업선택 후 -->
+									<th scope="col" rowspan="3" class="ta-l">수업</th>
+									<td>멘토</td>
+									<td>홍길동</td>
+								</tr>
+								<tr>
+									<td>수업명</td>
+									<td>[연강] 수업명이 들어갑니다.</td>
+								</tr>
+								<tr>
+									<td>수업일시</td>
+									<td>2016-06-27 09:00 ~ 00:00 <button type="button" class="btn-style01 ml5"><span>변경</span></button></td>
+								</tr><!-- 수업선택 후[E] -->
+								<tr>
+									<th scope="col" class="ta-l">내용</th>
+									<td class="textarea-wrap" colspan="2">
+										<textarea cols="30" rows="10" class="textarea"></textarea>
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">동영상대본</th>
+									<td class="textarea-wrap" colspan="2">
+										<textarea cols="30" rows="10" class="textarea"></textarea>
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">동영상 업로드 <span class="red-point">*</span></th>
+									<td colspan="2">
+										<button type="button" class="btn-style01"><span>업로드</span></button>
+										<button type="button" class="btn-style01"><span>동영상보기</span></button>
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">오픈유무 <span class="red-point">*</span></th>
+									<td colspan="2">
+										<label>
+											<input type="radio" name="openCheck" /> 오픈중
+										</label>
+										<label>
+											<input type="radio" name="openCheck" /> 오픈안함
+										</label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="board-bot">
+							<ul>
+								<li><button type="button" class="btn-orange"><span>저장</span></button></li>
+								<li><button type="button" class="btn-gray"><span>취소</span></button></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		<!-- Container[E] -->
+		<!-- Footer-->
+			<div id="footer">
+				<div class="fl-r">
+					<a href="#">개인정보취급방침</a>
+					<p class="copy">Copyright © mentor.career.go.kr. All rights reserved.</p>
+				</div>
+			</div>
+		<!-- Footer[E] -->
+	</div>
+</body>
+</html>

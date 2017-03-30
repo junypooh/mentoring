@@ -1,0 +1,35 @@
+@charset "utf-8";
+
+@import url(login-common.css);
+@import url(https://fonts.googleapis.com/earlyaccess/nanumgothic.css); /* ExtraBold(800), Bold(700), normal(400) */
+
+a:hover{text-decoration:none;}
+
+#wrap {min-width:570px;margin:0 auto;padding:203px 0;}
+#wrap.login-wrap {width:570px;margin:0 auto;padding:203px 0;}
+#wrap.login-wrap .admin-title {margin-left:2px;font-size:20px;color:#999;}
+#wrap.login-wrap .admin-title img {margin-right:9px;vertical-align:-4px;}
+#wrap.login-wrap p {margin-top:3px; line-height:16px;color:#333;text-align:center;}
+
+/* 산들바람 관리자 페이지 */
+.login-box-admin {width:570px;background:#333;margin:21px auto 19px;padding:63px 100px 62px 111px;}
+.login-box-admin .id input, .login-box-admin .pw input{float:left;border:1px solid #4d4d4d;width:297px;height:45px;padding-left:10px;background:#4d4d4d;font-size:14px;color:#a6a6a6;}
+.login-box-admin .id.on, .login-box-admin .pw.on{border:2px solid #ee5c6f;}
+.login-box-admin .id.on input, .login-box-admin .pw.on input{width:351px;background:#4d4d4d;}
+.login-box-admin .id{background:#4d4d4d;height:45px;}
+.login-box-admin .pw{background:#4d4d4d;margin-top:18px;height:45px;}
+.login-box-admin .id > label, .login-box-admin .pw > label {float:left;width:61px;}
+.login-box-admin .pw:before{background:#4d4d4d url('../images/admin-login/bg_login_pw_admin.png') no-repeat center;}
+.login-box-admin .id-save{position:relative;display:block;padding:16px 5px 8px;color:#666;font-size:14px;text-align:right;}
+.login-box-admin .id-save .chk-skin{width:16px;height:16px;vertical-align:middle;}
+.login-box-admin .id-save a{float:left;}
+.login-box-admin .id-save a:after{content:'';display:inline-block;width:1px;height:13px;background:#fff;margin-left:47px;vertical-align:-3px;}
+.login-box-admin .btn-area {margin-top:23px;}
+.login-box-admin .btn-area button{padding:3px 0 0 0;border:0;}
+.login-box-admin .btn-area .btn-type1{display:block;width:360px;height:60px;padding-top:4px;background:#4764c0 url('../images/admin-login/bg_login_lock.png') no-repeat 135px center;font-size:18px;font-weight:400;line-height:16px;color:#fff;text-align:center;}
+/* 아이디/비밀번호찾기 */
+.login-box-admin .admin-info-find{width:100%;/* background:url('../images/admin-login/bg_search_half.png') no-repeat center;*/ margin-top:42px;color:#fff;}
+.login-box-admin .admin-info-find a{display:inline-block;margin-left:20px;font-size:14px;}
+.login-box-admin .admin-info-find a:hover:after{background:#fff;}
+.login-box-admin .admin-info-find a:after{content:'';display:block;width:100%;height:1px;}
+.login-box-admin .admin-info-find a.join{margin-left:61px;}

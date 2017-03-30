@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>산들바람 관리자</title>
+	
+	<link rel="stylesheet" href="../css/basic.css" />
+	<link rel="stylesheet" href="../css/common.css" />
+	<!-- datapicker / jqgrid -->
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.theme.min.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/plugins/ui.multiselect.css" />
+	<script src="../resources/js/jquery-1.11.0.min.js" type="text/javascript"></script> 
+	<script src="../resources/js/jquery-ui.min.js" type="text/javascript"></script> 
+	<script src="../resources/js/i18n/grid.locale-en.js" type="text/javascript"></script>
+	<script src="../resources/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+</head>
+<body>
+	<div class="wrap">
+		<!-- Header -->
+			<div id="header">
+				<h1 class="h1-logo"><a href="#"><img src="../images/h1_logo.png" alt="산들바람" /></a></h1>
+				<div class="header-top">
+					<ul class="util">
+						<li class="total-manager"><a href="#">전체관리자</a></li>
+						<li><a href="#"><img src="../images/ico_setting.png" alt="설정" /></a></li>
+						<li ><a href="#"><img src="../images/ico_logout.png" alt="로그아웃" /></a></li>
+					</ul>
+				</div>
+				<div class="header-bot">
+					<ul class="gnb">
+						<li><a href="#">회원관리</a></li>
+						<li><a href="#">학교관리</a></li>
+						<li><a href="#">수업관리</a></li>
+						<li class="on"><a href="#">배정관리</a></li><!-- 활성화 될 땐 on 클래스 부여 -->
+						<li><a href="#">Web 관리</a></li>
+						<li><a href="#">운영관리</a></li>
+						<li><a href="#">알림관리</a></li>
+						<li><a href="#">통계</a></li>
+					</ul>
+				</div>
+			</div>	
+		<!-- Header[E] -->
+		<!-- Container -->
+			<div id="container">
+				<div class="lnb-area">
+					<ul class="lnb">
+						<li class="on"><!-- 활성화 될 땐 on 클래스 부여 -->
+							<p class="lead-menu"><a href="#">배정사업관리</a></p>
+						</li>
+						<li> 
+							<p class="lead-menu"><a href="#">학교자체배정</a></p>
+						</li>
+						<li> 
+							<p class="lead-menu"><a href="#">2주년 재동의</a></p>
+						</li>
+					</ul>
+				</div>
+				<div class="cont">
+					<div class="title-bar">
+						<h2>배정사업관리</h2>
+						<ul class="location">
+							<li class="home">Home</li>
+							<li>배정관리</li>
+							<li>배정사업관리</li>
+						</ul>
+					</div>
+					<div class="board-area" id="boardArea">
+						<table class="tbl-style tbl-none-search">
+							<colgroup>
+								<col style="width:147px;" />
+								<col />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="col" class="ta-l">배정사업</th>
+									<td>2016년 산들바람</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">주관기관</th>
+									<td>Test01</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">배정기간</th>
+									<td>2016.00.00 ~ 2016.00.00</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">배정횟수</th>
+									<td>50</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="board-top">
+							<p class="total-num">학교 목록 : 총 <strong>00</strong> 건</p>
+							<ul>
+								<li>
+									 <button type="button" class="btn-orange"><span>추가</span></button>
+								</li>
+								<li>
+									 <button type="button" class="btn-gray"><span>삭제</span></button>
+								</li>
+							</ul>
+						</div>
+						<table id="grid"></table>
+					<!-- jqgrid 스크립트 -->
+						<script type="text/javascript">
+							//jqGrid
+							$("#grid").jqGrid({
+								sortable: true,
+								datatype: "local",
+								colNames:['종류','출고', '입고', '정산수량', '금액'],
+								colModel:[
+									{name:'crateName', index:'crateName', width:160, align:'center', sorttype:'text', sortable:true,},
+									{name:'outQuantity', index:'outQuantity',width:165, align:"right", sorttype:'int', sortable:true, formatter: 'integer', formatoptions:{thousandsSeparator:","}},
+									{name:'inQuantity', index:'inQuantity',width:165, align:"right", sorttype:'int', sortable:true, formatter: 'integer', formatoptions:{thousandsSeparator:","}},
+									{name:'calculationQuantity', index:'calculationQuantity',width:165, align:"right", sorttype:'int', sortable:true, formatter: 'integer', formatoptions:{thousandsSeparator:","}},
+									{name:'money', index:'money',width:165, align:"right", sorttype:'int', sortable:true, formatter: 'integer', formatoptions:{thousandsSeparator:","}, summaryType:'sum', summaryTpl: 'Totals :'}
+								],
+								sortname: 'crateName',
+								sortorder: "asc",
+								viewrecords: true,
+								caption: 'test',
+								height: 'auto',
+								loadonce : true,
+								loadui: false,
+								footerrow: true,
+								userDataOnFooter : true,
+								loadComplete : function(data){
+									var moneySum = $("#grid").jqGrid('getCol','money', false, 'sum'); 
+									$('#grid').jqGrid('footerData', 'set', { crateName:'합계', money:moneySum });	
+										
+									/* var widthSum = $('#grid tr:first td:eq(0)').width();
+										widthSum += $('#grid tr:first td:eq(1)').width();
+										widthSum += $('#grid tr:first td:eq(2)').width();
+										widthSum += $('#grid tr:first td:eq(3)').width(); */
+												
+									/* $('table.ui-jqgrid-ftable td:eq(1)').hide();
+									$('table.ui-jqgrid-ftable td:eq(2)').hide();
+									$('table.ui-jqgrid-ftable td:eq(3)').hide(); */
+									var footer = $("table.ui-jqgrid-ftable tr:first td:eq(0)");	
+										footer.css("color", "#2e6e9e");
+										//footer.css("text-align", "left");
+										//footer.css("width", widthSum);
+									$('table.ui-jqgrid-ftable tr:first').children("td").css("background-color", "#dfeffc");
+									$('table.ui-jqgrid-ftable tr:first td:eq(0), table.ui-jqgrid-ftable tr:first td:eq(4)').css("padding-top","8px");
+									$('table.ui-jqgrid-ftable tr:first td:eq(0), table.ui-jqgrid-ftable tr:first td:eq(4)').css("padding-bottom","8px");
+									$('table.ui-jqgrid-ftable tr:first td:eq(4)').append(" \u00A0");
+									
+								}
+							});
+
+
+						</script>
+					<!-- jqgrid 스크립트[E] -->
+					</div> 
+				</div>
+			</div>
+		<!-- Container[E] -->
+		<!-- Footer-->
+			<div id="footer">
+				<div class="fl-r">
+					<a href="#">개인정보취급방침</a>
+					<p class="copy">Copyright © mentor.career.go.kr. All rights reserved.</p>
+				</div>
+			</div>
+		<!-- Footer[E] -->
+	</div>
+</body>
+</html>

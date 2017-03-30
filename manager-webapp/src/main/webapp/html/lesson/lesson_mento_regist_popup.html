@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>산들바람 관리자</title>
+
+	<link rel="stylesheet" href="../css/basic.css" />
+	<link rel="stylesheet" href="../css/common.css" />
+	<!-- datapicker / jqgrid / bxslider -->
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.theme.min.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/plugins/ui.multiselect.css" />
+	<link href="../resources/css/jquery.bxslider.css" rel="stylesheet" /><!-- 2016-06-28 추가 -->
+	<script src="../resources/js/jquery-1.11.0.min.js" type="text/javascript"></script>
+	<script src="../resources/js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="../resources/js/i18n/grid.locale-en.js" type="text/javascript"></script>
+	<script src="../resources/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+	<script src="../resources/js/jquery.bxslider.min.js"></script><!-- 2016-06-28 추가 -->
+</head>
+<body>
+	<div class="wrap">
+		<!-- Header -->
+			<div id="header">
+				<h1 class="h1-logo"><a href="#"><img src="../images/h1_logo.png" alt="산들바람" /></a></h1>
+				<div class="header-top">
+					<ul class="util">
+						<li class="total-manager"><a href="#">전체관리자</a></li>
+						<li><a href="#"><img src="../images/ico_setting.png" alt="설정" /></a></li>
+						<li ><a href="#"><img src="../images/ico_logout.png" alt="로그아웃" /></a></li>
+					</ul>
+				</div>
+				<div class="header-bot">
+					<ul class="gnb">
+						<li><a href="#">회원관리</a></li>
+						<li><a href="#">학교관리</a></li>
+						<li class="on"><a href="#">수업관리</a></li><!-- 활성화 될 땐 on 클래스 부여 -->
+						<li><a href="#">배정관리</a></li>
+						<li><a href="#">Web 관리</a></li>
+						<li><a href="#">운영관리</a></li>
+						<li><a href="#">알림관리</a></li>
+						<li><a href="#">통계</a></li>
+					</ul>
+				</div>
+			</div>
+		<!-- Header[E] -->
+		<!-- Container -->
+			<div id="container">
+				<div class="lnb-area">
+					<ul class="lnb">
+						<li class="on"> <!-- 활성화 될 땐 on 클래스 부여 -->
+							<p class="lead-menu"><a href="#">수업개설관리</a></p>
+							<ul class="lnb-sub">
+								<li><a href="#">수업현황</a></li>
+								<li class="on"><a href="#">수업등록관리</a></li><!-- 활성화 될 땐 on 클래스 부여 -->
+								<li><a href="#">수업개설신청</a></li>
+								<li><a href="#">요청수업목록</a></li>
+							</ul>
+						</li>
+						<li>
+							<p class="lead-menu"><a href="#">수업정보관리</a></p>
+							<ul class="lnb-sub">
+								<li><a href="#">수업후기</a></li>
+								<li><a href="#">평점조회</a></li>
+								<li><a href="#">스튜디오현황</a></li>
+								<li><a href="#">MC 현황</a></li>
+							</ul>
+						</li>
+						<li>
+							<p class="lead-menu"><a href="#">기기제한설정</a></p>
+						</li>
+					</ul>
+				</div>
+				<div class="cont">
+					<div class="title-bar">
+						<h2>수업등록관리</h2>
+						<ul class="location">
+							<li class="home">Home</li>
+							<li>수업관리</li>
+							<li>수업개설관리</li>
+							<li>수업등록관리</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		<!-- Container[E] -->
+		<!-- Popup -->
+			<!-- Datepicker 스크립트 -->
+			<script type="text/javascript">
+				$(function() {
+					$( "#selectDate" ).datepicker({
+						showOn: "both",
+						buttonImage: "../images/ico_date.png",
+						buttonImagesOnly:true
+					});
+				 });
+			</script>
+			<!-- Datepicker 스크립트[E] -->
+			<div class="popup-area lesson-time">
+				<div class="pop-title-box">
+					<p class="pop-title">수업일시 추가</p>
+				</div>
+				<div class="pop-cont-box">
+					<table class="tbl-style">
+						<colgroup>
+							<col style="width:145px;">
+							<col>
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="col" class="ta-l">날짜</th>
+								<td><input type="text"id="selectDate"  class="date-input" /></td>
+							</tr>
+							<tr>
+								<th scope="col" class="ta-l">시간</th>
+								<td>
+									<span>시작</span>
+									<select>
+										<option value="">시</option>
+									</select>
+									<select>
+										<option value="">분</option>
+									</select>
+									<span class="ml10">종료</span>
+									<select>
+										<option value="">시</option>
+									</select>
+									<select>
+										<option value="">분</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th scope="col" class="ta-l">스튜디오</th>
+								<td>
+									<label>
+										<input type="radio" name="use" /> 사용안함
+									</label>
+									<label class="pr10">
+										<input type="radio" name="use" /> 사용
+									</label>
+									<button type="button" class="btn-style01"><span class="search">스튜디오 찾기</span></button>
+								</td>
+							</tr>
+							<tr>
+								<th scope="col" class="ta-l">MC</th>
+								<td>
+									<label>
+										<input type="radio" name="use" /> 지정안함
+									</label>
+									<label>
+										<input type="radio" name="use" /> 직접지정
+									</label>
+									<button type="button" class="btn-style01"><span class="search">MC 찾기</span></button>
+								</td>
+							</tr>
+							<tr>
+								<th scope="col" class="ta-l">수업 신청 기기</th>
+								<td>
+									<input type="text" class="text ta-r" /><span> 대</span>
+									<span class="ml20">* 최대 4대까지 신청</span>
+								</td>
+							</tr>
+							<tr>
+								<th scope="col" class="ta-l">참관 신청 기기</th>
+								<td>
+									<input type="text" class="text ta-r" /><span> 대</span>
+									<span class="ml20">* 최대 25대까지 신청</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="btn-group-c">
+						<button type="button" class="btn-orange"><span class="search">저장</span></button>
+						<button type="button" class="btn-gray"><span class="search">취소</span></button>
+					</div>
+				</div>
+				<a href="#" class="btn-close-pop">닫기</a>
+			</div>
+		<!-- Popup[E] -->
+		<!-- Footer-->
+			<div id="footer">
+				<div class="fl-r">
+					<a href="#">개인정보취급방침</a>
+					<p class="copy">Copyright © mentor.career.go.kr. All rights reserved.</p>
+				</div>
+			</div>
+		<!-- Footer[E] -->
+	</div>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>산들바람 관리자</title>
+
+	<link rel="stylesheet" href="../css/basic.css" />
+	<link rel="stylesheet" href="../css/common.css" />
+	<!-- datapicker / jqgrid -->
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.theme.min.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/plugins/ui.multiselect.css" />
+	<script src="../resources/js/jquery-1.11.0.min.js" type="text/javascript"></script>
+	<script src="../resources/js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="../resources/js/i18n/grid.locale-en.js" type="text/javascript"></script>
+	<script src="../resources/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+</head>
+<body>
+	<div class="wrap">
+		<!-- Header -->
+			<div id="header">
+				<h1 class="h1-logo"><a href="#"><img src="../images/h1_logo.png" alt="산들바람" /></a></h1>
+				<div class="header-top">
+					<ul class="util">
+						<li class="total-manager"><a href="#">전체관리자</a></li>
+						<li><a href="#"><img src="../images/ico_setting.png" alt="설정" /></a></li>
+						<li ><a href="#"><img src="../images/ico_logout.png" alt="로그아웃" /></a></li>
+					</ul>
+				</div>
+				<div class="header-bot">
+					<ul class="gnb">
+						<li><a href="#">회원관리</a></li>
+						<li><a href="#">학교관리</a></li>
+						<li><a href="#">수업관리</a></li>
+						<li><a href="#">배정관리</a></li>
+						<li><a href="#">Web 관리</a></li>
+						<li><a href="#">운영관리</a></li>
+						<li><a href="#">알림관리</a></li>
+						<li class="on"><a href="#">통계&amp;리포트</a></li><!-- 활성화 될 땐 on 클래스 부여 -->
+					</ul>
+				</div>
+			</div>
+		<!-- Header[E] -->
+		<!-- Container -->
+			<div id="container">
+				<div class="lnb-area">
+					<ul class="lnb">
+						<li class="on"><!-- 활성화 될 땐 on 클래스 부여 -->
+							<p class="lead-menu"><a href="#">회원통계</a></p>
+							<ul class="lnb-sub">
+								<li><a href="#">접속현황</a></li>
+								<li class="on"><a href="#">가입현황</a></li><!-- 활성화 될 땐 on 클래스 부여 -->
+							</ul>
+						</li>
+						<li>
+							<p class="lead-menu"><a href="#">수업통계</a></p>
+							<ul class="lnb-sub">
+								<li><a href="#">수업현황</a></li>
+								<li><a href="#">수업신청/취소현황</a></li>
+							</ul>
+						</li>
+						<li>
+							<p class="lead-menu"><a href="#">멘토리포트</a></p>
+							<ul class="lnb-sub">
+								<li><a href="#">직업별</a></li>
+								<li><a href="#">특징분류별</a></li>
+								<li><a href="#">멘토목록</a></li>
+								<li><a href="#">멘토별수업</a></li>
+							</ul>
+						</li>
+						<li>
+							<p class="lead-menu"><a href="#">클래스리포트</a></p>
+							<ul class="lnb-sub">
+								<li><a href="#">클래스별</a></li>
+								<li><a href="#">학교별</a></li>
+							</ul>
+						</li>
+						<li>
+							<p class="lead-menu"><a href="#">종합리포트</a></p>
+							<ul class="lnb-sub">
+								<li><a href="#">종합현황</a></li>
+								<li><a href="#">학교별참여현황</a></li>
+								<li><a href="#">직업별수업수</a></li>
+								<li><a href="#">직업분류별통계</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<div class="cont">
+					<div class="title-bar">
+						<h2>가입현황</h2>
+						<ul class="location">
+							<li class="home">Home</li>
+							<li>통계&amp;리포트</li>
+							<li>회원통계</li>
+							<li>가입현황</li>
+						</ul>
+					</div>
+					<!-- Datepicker 스크립트 -->
+					<script type="text/javascript">
+						$(function() {
+							$( "#startDate" ).datepicker({
+								showOn: "both",
+								buttonImage: "../images/ico_date.png",
+								buttonImagesOnly:true
+							});
+							$( "#endDate" ).datepicker({
+								showOn: "both",
+								buttonImage: "../images/ico_date.png",
+								buttonImagesOnly:true
+							});
+						 });
+					</script>
+					<!-- Datepicker 스크립트[E] -->
+					<div class="search-area general-srch">
+						<ul>
+							<li>
+								<strong>기간</strong>
+								<input type="text"id="startDate"  class="date-input" />
+								<span> ~ </span>
+								<input type="text"id="endDate"  class="date-input" />
+								<button class="btn-style01" type="button"><span>1일</span></button>
+								<button class="btn-style01" type="button"><span>7일</span></button>
+								<button class="btn-style01" type="button"><span>1개월</span></button>
+								<button class="btn-style01" type="button"><span>6개월</span></button>
+							</li><!-- 2016-06-27 수정[E] -->
+						</ul>
+						<p class="search-btnbox">
+							<button type="button" class="btn-style02"><span class="search">조회</span></button>
+						</p>
+					</div>
+					<div class="board-area" id="boardArea">
+						<div class="board-top">
+							<ul>
+								<li>
+									<button type="button" class="btn-style02"><span>엑셀다운로드</span></button>
+								</li>
+							</ul>
+						</div>
+						<table id="boardTable"></table>
+						<div class="empty-data">표시할 데이터가 없습니다.</div> <!-- 2016-06-15 데이터 없을 경우 노출 -->
+						<p class="ta-right pt5">* Update : 00월 00일 00시 기준</p>
+					<!-- jqgrid 스크립트 -->
+						<script type="text/javascript">
+							jQuery("#boardTable").jqGrid({
+								datatype: "local",
+								height: 'auto',
+								colNames:['일시','일반','교사', '멘토','전체'],	// th에 들어갈 항목
+								colModel:[// th 갯수와 맞춰야 함
+									{name:'date',index:'date', align:'center', width:100},
+									{name:'general',index:'general', align:'center'},
+									{name:'teacher',index:'teacher', align:'center'},
+									{name:'mento',index:'mento', align:'center'},
+									{name:'total',index:'total',align:'center'}
+								],
+								rowNum: 10,	// 초기 보여질 게시물 갯수
+								//rowList:[10,20,30],	// 셋팅 할 수 있는 게시물 갯수 옵션
+								multiselect: false,	// 게시물 앞에 체크박스
+								//pager: "#tblPager",
+								viewrecords: false, // 게시글 수
+								caption: false,
+								footerrow: true,
+								userDataOnFooter:true,
+								loadComplete: function(data){ // tfoot 합계 노출
+									var generalSum = $("#boardTable").jqGrid('getCol','general', false, 'sum');
+									var teacherSum = $("#boardTable").jqGrid('getCol','teacher', false, 'sum');
+									var mentoSum = $("#boardTable").jqGrid('getCol','mento', false, 'sum');
+									var totalSum = generalSum + teacherSum + mentoSum;
+									$("#boardTable").jqGrid('footerData','set',{date:'합계',general:generalSum, teacher:teacherSum, mento:mentoSum, total:totalSum});
+								}
+							});
+							var mydata = [
+								{date:"2016-08-24", general:"54",teacher:"54", mento:"0", total:"0"}, // key값에 태그 삽입 가능
+								{date:"2016-08-24", general:"54",teacher:"54", mento:"0", total:"0"},
+								{date:"2016-08-24", general:"54",teacher:"54", mento:"0", total:"0"},
+								{date:"2016-08-24", general:"54",teacher:"54", mento:"0", total:"0"},
+								{date:"2016-08-24", general:"54",teacher:"54", mento:"0", total:"0"},
+								{date:"2016-08-24", general:"54",teacher:"54", mento:"0", total:"0"},
+								{date:"2016-08-24", general:"54",teacher:"54", mento:"0", total:"0"}
+							];
+							for(var i=0;i<=mydata.length;i++)
+								jQuery("#boardTable").jqGrid('addRowData',i+1,mydata[i]);
+
+							// 셀 병합 메서드
+							jQuery("#boardTable").jqGrid('setGroupHeaders', {
+							useColSpanStyle:true,
+								groupHeaders: [
+									{startColumnName: 'general', numberOfColumns: 2, titleText: '학교포털 가입자'},
+									{startColumnName: 'mento', numberOfColumns: 1, titleText: '멘토포털 가입자'}
+								]
+							});
+							// 테이블 resize 함수
+							/*
+							* @param string grid_id 사이즈를 변경할 그리드의 아이디
+							* @param string div_id 그리드의 사이즈의 기준을 제시할 div 의 아이디
+							* @param string width 그리드의 초기화 width 사이즈
+							*/
+							function resizeJqGridWidth(grid_id, div_id, width){
+								// window에 resize 이벤트를 바인딩 한다.
+								$(window).bind('resize', function() {
+									// 그리드의 width 초기화
+									$('#' + grid_id).setGridWidth(width, false);
+									// 그리드의 width를 div 에 맞춰서 적용
+									$('#' + grid_id).setGridWidth($('#' + div_id).width() , true); // Resized to new width as per window
+								}).trigger('resize');
+							}
+							resizeJqGridWidth("boardTable","boardArea",500);
+						</script>
+					<!-- jqgrid 스크립트[E] -->
+					</div>
+				</div>
+			</div>
+		<!-- Container[E] -->
+		<!-- Footer-->
+			<div id="footer">
+				<div class="fl-r">
+					<a href="#">개인정보취급방침</a>
+					<p class="copy">Copyright © mentor.career.go.kr. All rights reserved.</p>
+				</div>
+			</div>
+		<!-- Footer[E] -->
+	</div>
+</body>
+</html>

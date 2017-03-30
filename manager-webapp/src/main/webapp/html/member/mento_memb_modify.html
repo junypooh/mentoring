@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>산들바람 관리자</title>
+	
+	<link rel="stylesheet" href="../css/basic.css" />
+	<link rel="stylesheet" href="../css/common.css" />
+	<!-- datapicker / jqgrid -->
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.theme.min.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/plugins/ui.multiselect.css" />
+	<script src="../resources/js/jquery-1.11.0.min.js" type="text/javascript"></script> 
+	<script src="../resources/js/jquery-ui.min.js" type="text/javascript"></script> 
+	<script src="../resources/js/i18n/grid.locale-en.js" type="text/javascript"></script>
+	<script src="../resources/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+</head>
+<body>
+	<div class="wrap">
+		<!-- Header -->
+			<div id="header">
+				<h1 class="h1-logo"><a href="#"><img src="../images/h1_logo.png" alt="산들바람" /></a></h1>
+				<div class="header-top">
+					<ul class="util">
+						<li class="total-manager"><a href="#">전체관리자</a></li>
+						<li><a href="#"><img src="../images/ico_setting.png" alt="설정" /></a></li>
+						<li ><a href="#"><img src="../images/ico_logout.png" alt="로그아웃" /></a></li>
+					</ul>
+				</div>
+				<div class="header-bot">
+					<ul class="gnb">
+						<li class="on"><a href="#">회원관리</a></li><!-- 활성화 될 땐 on 클래스 부여 -->
+						<li><a href="#">학교관리</a></li>
+						<li><a href="#">수업관리</a></li>
+						<li><a href="#">배정관리</a></li>
+						<li><a href="#">Web 관리</a></li>
+						<li><a href="#">운영관리</a></li>
+						<li><a href="#">알림관리</a></li>
+						<li><a href="#">통계</a></li>
+					</ul>
+				</div>
+			</div>	
+		<!-- Header[E] -->
+		<!-- Container -->
+			<div id="container">
+				<div class="lnb-area">
+					<ul class="lnb">
+						<li>
+							<p class="lead-menu"><a href="#">일반회원관리</a></p>
+							<ul class="lnb-sub">
+								<li><a href="#">일반회원</a></li>
+								<li><a href="#">교사회원</a></li>
+								<li><a href="#">학교회원</a></li>
+							</ul>
+						</li>
+						<li class="on"> <!-- 활성화 될 땐 on 클래스 부여 -->
+							<p class="lead-menu"><a href="#">멘토회원관리</a></p>
+							<ul class="lnb-sub">
+								<li class="on"><a href="#">멘토회원</a></li><!-- 활성화 될 땐 on 클래스 부여 -->
+								<li><a href="#">가입탈퇴승인</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<div class="cont">
+					<div class="title-bar">
+						<h2>멘토회원</h2>
+						<ul class="location">
+							<li class="home">Home</li>
+							<li>회원관리</li>
+							<li>멘토회원관리</li>
+							<li>멘토회원</li>
+						</ul>
+					</div>
+					<div class="board-area" id="boardArea">
+						<table class="tbl-style tbl-mento-modify">
+							<colgroup>
+								<col style="width:147px;" />
+								<col style="width:100px;" />
+								<col />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="col">회원유형</th>
+									<td colspan="2">멘토회원</td>
+								</tr>
+								<tr>
+									<th scope="col">아이디</th>
+									<td colspan="2">Test01</td>
+								</tr>
+								<tr>
+									<th scope="col">이름 <span class="red-point">*</span></th>
+									<td colspan="2">
+										<input type="text" class="text mr10" placeholder="홍길동" />
+										<label>
+											<input type="radio" name="gender" checked="checked" /> 남
+										</label>
+										<label>
+											<input type="radio" name="gender" checked="checked" /> 여
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<th scope="col">생년월일 <span class="red-point">*</span></th>
+									<td colspan="2">
+										<select>
+											<option value="">2016년</option>
+										</select>
+										<select>
+											<option value="">12월</option>
+										</select>
+										<select class="mr10">
+											<option value="">28일</option>
+										</select>
+										<label>
+											<input type="radio" name="birthday" checked="checked" /> 양력
+										</label>
+										<label>
+											<input type="radio" name="birthday" checked="checked" /> 음력
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<th scope="col">휴대전화</th>
+									<td colspan="2" class="mobile">
+										<select>
+											<option value="">010</option>
+										</select>
+										-
+										<input type="text" class="text" />
+										-
+										<input type="text" class="text"  />
+									</td>
+								</tr>
+								<tr>
+									<th scope="col">이메일 <span class="red-point">*</span></th>
+									<td colspan="2">
+										<input type="text" class="text" />
+										<span>@</span>
+										<select>
+											<option value="">직접입력</option>
+										</select>
+										<input type="text" class="text" />
+									</td>
+								</tr>
+								<tr>
+									<th scope="col">이메일 수신 <span class="red-point">*</span></th>
+									<td colspan="2">
+										<label><input type="radio" name="emailAgree" /> 동의</label>
+										<label><input type="radio" name="emailAgree" /> 동의안함</label>
+									</td>
+								</tr>
+								<tr>
+									<th rowspan="3">직업</th>
+									<td>특정분류</td>
+									<td class="select-category">
+										<select>
+											<option value="">선택</option>
+										</select>
+										<button type="button" class="btn-style01"><span>추가</span></button>
+										<span class="ml5">* 최대 3개까지 추가가 가능합니다. 분류 선택 후 추가 버튼을 클릭하세요.</span>
+										<ul class="category-list">
+											<li>
+												<span class="underline">선택된분류01</span>
+												<button class="item-delete"><img src="../images/btn_attach_delete.gif" alt="삭제" /></button>
+											</li>
+											<li>
+												<span class="underline">선택된분류02</span>
+												<button class="item-delete"><img src="../images/btn_attach_delete.gif" alt="삭제" /></button>
+											</li>
+											<li>
+												<span class="underline">선택된분류03</span>
+												<button class="item-delete"><img src="../images/btn_attach_delete.gif" alt="삭제" /></button>
+											</li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>직업분류</td>
+									<td>
+										<select>
+											<option value="">1차분류</option>
+										</select>
+										<select>
+											<option value="">2차분류</option>
+										</select>
+										<select>
+											<option value="">3차분류</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>직업명</td>
+									<td>
+										<select>
+											<option value="">4차분류</option>
+										</select>
+										<input type="text" class="text" />
+										<!-- <button type="button" class="btn-style01"><span>직업명 등록/추가</span></button>2016-06-27 삭제 -->
+										<span class="ml5">* 등록된 직업명이 없는 경우 직접입력항목을 클릭하세요.</span>
+									</td>
+								</tr>
+								<tr>
+									<th scope="col">멘토약력 및 자기소개</th>
+									<td colspan="2">
+										<div class="textarea-wrap">
+											<textarea class="textarea" cols="30" rows="10"></textarea>
+											<p class="count-byte"><strong>0</strong> / 200자</p>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th scope="col">사용유무 <span class="red-point">*</span></th>
+									<td colspan="2">
+										<label><input type="radio" name="useCheck" /> 사용중</label>
+										<label><input type="radio" name="useCheck" /> 사용안함</label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="board-bot">
+							<ul>
+								<li><button type="button" class="btn-orange"><span>저장</span></button></li>
+								<li><button type="button" class="btn-gray"><span>취소</span></button></li>
+							</ul>
+						</div>
+					</div> 
+				</div>
+			</div>
+		<!-- Container[E] -->
+		<!-- Footer-->
+			<div id="footer">
+				<div class="fl-r">
+					<a href="#">개인정보취급방침</a>
+					<p class="copy">Copyright © mentor.career.go.kr. All rights reserved.</p>
+				</div>
+			</div>
+		<!-- Footer[E] -->
+	</div>
+</body>
+</html>

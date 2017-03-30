@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+
+    <definition name="main-layout" template="/WEB-INF/jsp/layouts/layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/jsp/layouts/header.jsp" />
+        <put-attribute name="lnb" value="/WEB-INF/jsp/layouts/lnb.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/layouts/footer.jsp" />
+    </definition>
+
+    <definition name="empty-layout" template="/WEB-INF/jsp/layouts/empty-layout.jsp">
+    </definition>
+
+    <definition name="login-layout" template="/WEB-INF/jsp/layouts/login-layout.jsp">
+    </definition>
+
+    <!-- load 로 사용할 페이지(상세 화면 tab) layout -->
+    <definition name="tab-layout" template="/WEB-INF/jsp/layouts/tab-layout.jsp">
+    </definition>
+
+    <definition name="sub-layout" template="/WEB-INF/jsp/layouts/sub-layout.jsp">
+    </definition>
+
+    <definition name="popup-layout" template="/WEB-INF/jsp/layouts/popup-layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/jsp/layouts/header.jsp" />
+    </definition>
+
+    <definition name="windowPopup/*" extends="popup-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/windowPopup/{1}.jsp" />
+    </definition>
+
+    <definition name="login" extends="login-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/login.jsp" />
+    </definition>
+<!--
+    <definition name="layouts/*" extends="empty-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/layouts/{1}.jsp" />
+    </definition>
+
+    <definition name="layer/popup*" extends="popup-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/layer/popup{1}.jsp" />
+    </definition>
+
+    <definition name="popup/*" extends="sub-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/popup/{1}.jsp" />
+    </definition>
+
+    <definition name="layer/popup*" extends="popup-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/layer/popup{1}.jsp" />
+    </definition>
+-->
+
+
+    <definition name="layer/*" extends="sub-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/layer/{1}.jsp" />
+    </definition>
+
+    <definition name="popup/*" extends="sub-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/popup/{1}.jsp" />
+    </definition>
+    <definition name="daumeditor/*/*/*" extends="empty-layout">
+        <put-attribute name="body" expression="/daumeditor/{1}/{2}/{3}.jsp" />
+    </definition>
+
+    <definition name="*" extends="main-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/{1}.jsp" />
+    </definition>
+
+    <definition name="*/*" extends="main-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/{1}/{2}.jsp" />
+    </definition>
+
+    <definition name="*/*/tab*" extends="tab-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/{1}/{2}/tab{3}.jsp" />
+    </definition>
+
+    <definition name="*/*/*" extends="main-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+    </definition>
+
+    <!-- WildCard '*' 4개 사용부터 개수제한(?)이 있어보임... -->
+    <definition name="member/*/*/tab*" extends="tab-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/member/{1}/{2}/tab/tab{3}.jsp" />
+    </definition>
+    <definition name="member/*/*/*" extends="main-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/member/{1}/{2}/{3}.jsp" />
+    </definition>
+
+    <definition name="school/*/tab*" extends="tab-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/member/{1}/{2}/{3}.jsp" />
+    </definition>
+    <definition name="school/*/*" extends="main-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/school/{1}/{2}/{3}.jsp" />
+    </definition>
+
+    <definition name="lecture/*/*/tab*" extends="tab-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/lecture/{1}/{2}/tab/tab{3}.jsp" />
+    </definition>
+    <definition name="lecture/*/*/*" extends="main-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/lecture/{1}/{2}/{3}.jsp" />
+    </definition>
+
+    <definition name="assign/*/*/tab*" extends="tab-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/member/{1}/{2}/tab{3}.jsp" />
+    </definition>
+    <definition name="assign/*/*/*" extends="main-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/assign/{1}/{2}/{3}.jsp" />
+    </definition>
+
+    <definition name="web/*/*/tab*" extends="tab-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/member/{1}/{2}/tab{3}.jsp" />
+    </definition>
+    <definition name="web/*/*/*" extends="main-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/web/{1}/{2}/{3}.jsp" />
+    </definition>
+
+    <definition name="opr/*/*/tab*" extends="tab-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/member/{1}/{2}/tab{3}.jsp" />
+    </definition>
+    <definition name="opr/*/*/*" extends="main-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/opr/{1}/{2}/{3}.jsp" />
+    </definition>
+
+    <definition name="notify/*/*/tab*" extends="tab-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/member/{1}/{2}/tab{3}.jsp" />
+    </definition>
+    <definition name="notify/*/*/*" extends="main-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/notify/{1}/{2}/{3}.jsp" />
+    </definition>
+
+
+    <definition name="statistics/*/*/tab*" extends="tab-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/member/{1}/{2}/tab{3}.jsp" />
+    </definition>
+    <definition name="statistics/*/*/*" extends="main-layout">
+        <put-attribute name="body" expression="/WEB-INF/jsp/statistics/{1}/{2}/{3}.jsp" />
+    </definition>
+
+
+
+</tiles-definitions>

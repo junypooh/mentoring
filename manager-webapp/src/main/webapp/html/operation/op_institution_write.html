@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>산들바람 관리자</title>
+	
+	<link rel="stylesheet" href="../css/basic.css" />
+	<link rel="stylesheet" href="../css/common.css" />
+	<!-- datapicker / jqgrid -->
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/jquery-ui.theme.min.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/css/ui.jqgrid.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../resources/plugins/ui.multiselect.css" />
+	<script src="../resources/js/jquery-1.11.0.min.js" type="text/javascript"></script> 
+	<script src="../resources/js/jquery-ui.min.js" type="text/javascript"></script> 
+	<script src="../resources/js/i18n/grid.locale-en.js" type="text/javascript"></script>
+	<script src="../resources/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+</head>
+<body>
+	<div class="wrap">
+		<!-- Header -->
+			<div id="header">
+				<h1 class="h1-logo"><a href="#"><img src="../images/h1_logo.png" alt="산들바람" /></a></h1>
+				<div class="header-top">
+					<ul class="util">
+						<li class="total-manager"><a href="#">전체관리자</a></li>
+						<li><a href="#"><img src="../images/ico_setting.png" alt="설정" /></a></li>
+						<li ><a href="#"><img src="../images/ico_logout.png" alt="로그아웃" /></a></li>
+					</ul>
+				</div>
+				<div class="header-bot">
+					<ul class="gnb">
+						<li><a href="#">회원관리</a></li>
+						<li><a href="#">학교관리</a></li>
+						<li><a href="#">수업관리</a></li>
+						<li><a href="#">배정관리</a></li>
+						<li><a href="#">Web 관리</a></li>
+						<li class="on"><a href="#">운영관리</a></li><!-- 활성화 될 땐 on 클래스 부여 -->
+						<li><a href="#">알림관리</a></li>
+						<li><a href="#">통계</a></li>
+					</ul>
+				</div>
+			</div>	
+		<!-- Header[E] -->
+		<!-- Container -->
+			<div id="container">
+				<div class="lnb-area">
+					<ul class="lnb">
+						<li>
+							<p class="lead-menu"><a href="#">유지보수요청</a></p>
+						</li>
+						<li>
+							<p class="lead-menu"><a href="#">메뉴관리</a></p>
+						</li>
+						<li>
+							<p class="lead-menu"><a href="#">직업관리</a></p>
+						</li>
+						<li class="on"> <!-- 활성화 될 땐 on 클래스 부여 -->
+							<p class="lead-menu"><a href="#">기관관리</a></p>
+						</li>
+						<li>
+							<p class="lead-menu"><a href="#">권한관리</a></p>
+						</li>
+						<li>
+							<p class="lead-menu"><a href="#">관리자관리</a></p>
+						</li>
+						<li>
+							<p class="lead-menu"><a href="#">개인정보접속관리</a></p>
+						</li>
+					</ul>
+				</div>
+				<div class="cont">
+					<div class="title-bar">
+						<h2>기관관리</h2>
+						<ul class="location">
+							<li class="home">Home</li>
+							<li>운영관리</li>
+							<li>기관관리</li>
+						</ul>
+					</div>
+					<div class="board-area" id="boardArea">
+						<table class="tbl-style tbl-none-search">
+							<colgroup>
+								<col style="width:130px;" />
+								<col />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="col" class="ta-l">구분 <span class="red-point">*</span></th>
+									<td>
+										<select>
+											<option value="">교육주관기관</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">아이디 <span class="red-point">*</span></th>
+									<td>
+										<input type="text" class="text" />
+										<button type="button" class="btn-style01"><span>중복확인</span></button>
+										<span class="red-txt ml5">* 중복아이디가 있습니다. 다시 검색해주세요</span>
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">비밀번호 <span class="red-point">*</span></th>
+									<td>
+										<input type="password" class="text" />
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">기관/기업명 <span class="red-point">*</span></th>
+									<td>
+										<input type="text" class="text" />
+										<button type="button" class="btn-style01"><span>찾기</span></button>
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">사업자등록번호</th>
+									<td class="business-num">
+										<input type="text" class="text" />
+										-
+										<input type="text" class="text" />
+										-
+										<input type="text" class="text" />
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">담당자명 <span class="red-point">*</span></th>
+									<td>
+										<input type="text" class="text" />
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">연락처 <span class="red-point">*</span></th>
+									<td class="mobile">
+										<select>
+											<option value="">010</option>
+										</select>
+										-
+										<input type="text" class="text" />
+										-
+										<input type="text" class="text" />
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">유선전화</th>
+									<td class="mobile">
+										<select>
+											<option value="">02</option>
+										</select>
+										-
+										<input type="text" class="text" />
+										-
+										<input type="text" class="text" />
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">팩스번호</th>
+									<td class="mobile">
+										<select>
+											<option value="">02</option>
+										</select>
+										-
+										<input type="text" class="text" />
+										-
+										<input type="text" class="text" />
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">주소</th>
+									<td class="address">
+										<p>
+											<input type="text" class="text" />
+											<button class="btn-style01"><span>우편번호찾기</span></button>
+										</p>
+										<p><input type="text" class="text" /></p>
+										<p><input type="text" class="text" /></p>
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">활동유무</th>
+									<td>
+										<label>
+											<input type="radio" name="active" /> 활동
+										</label>
+										<label>
+											<input type="radio" name="active" /> 활동유무
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">등록자</th>
+									<td>이재한 (police)</td>
+								</tr>
+								<tr>
+									<th scope="col" class="ta-l">등록일</th>
+									<td>2016.10.01</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="board-bot">
+							<ul>
+								<li><button type="button" class="btn-orange"><span>등록</span></button></li>
+								<li><button type="button" class="btn-gray"><span>취소</span></button></li>
+							</ul> <!-- write 일 때 -->
+							<!-- <ul>
+								<li><button type="button" class="btn-orange"><span>등록</span></button></li>
+								<li><button type="button" class="btn-gray"><span>취소</span></button></li>
+							</ul> edit/view 일 때 -->
+						</div>
+					</div> 
+				</div>
+			</div>
+		<!-- Container[E] -->
+		<!-- Footer-->
+			<div id="footer">
+				<div class="fl-r">
+					<a href="#">개인정보취급방침</a>
+					<p class="copy">Copyright © mentor.career.go.kr. All rights reserved.</p>
+				</div>
+			</div>
+		<!-- Footer[E] -->
+	</div>
+</body>
+</html>
