@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.tomms.TommsMapper">
+
+    <select id="retrieveSuccessedObservation"
+            parameterType="list"
+            resultType="kr.or.career.mentor.domain.WithdrawInfo">
+        <![CDATA[
+            SELECT  t.sessionId
+                    ,t.userid
+                    ,t.clasRoomSer
+            from (
+                    SELECT  SESSIONID as sessionId
+                            ,userid
+                            ,PERCENTAGE
+                            ,case when substring(userid from 1 for 1) = 'L'
+                                    then  substring(USERID from 12)
+                                 else substring(USERID from 11)
+                            end as clasRoomSer
+                            ,row_number() over (PARTITION BY sessionId,
+                                                case when substring(userid from 1 for 1) = 'L'
+                                                        then  substring(USERID from 12)
+                                                     else substring(USERID from 11)
+                                                end
+                                                order by PERCENTAGE desc
+                            )  as rnum
+                    FROM VW_LOG_FOR_VALIDATION
+                            JOIN
+        ]]>
+        <foreach item="item" index="index" collection="list" open="(VALUES" separator="," close=")">
+            (#{item.sessionId, jdbcType=INTEGER},#{item.tommsId, jdbcType=VARCHAR})
+        </foreach>
+        <![CDATA[
+                            AS t (s,t)
+                                ON s = sessionid AND t = userid
+                    WHERE   PERCENTAGE >= 80
+                    ) t
+            WHERE   t.rnum = 1
+        ]]>
+    </select>
+
+</mapper>

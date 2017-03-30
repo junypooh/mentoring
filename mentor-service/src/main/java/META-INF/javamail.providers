@@ -1,0 +1,4 @@
+mail.transport.protocol   = smtp
+mail.smtp.port           = 465
+mail.smtp.host           = smtp.gmail.com
+mail.smtp.auth           = false

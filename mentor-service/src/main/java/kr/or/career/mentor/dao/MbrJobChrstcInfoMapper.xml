@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MbrJobChrstcInfoMapper">
+
+    <!-- 회원 직업 특성 정보 목록 -->
+    <select id="listMbrJobChrstcInfoBy" resultType="kr.or.career.mentor.domain.MbrJobChrstcInfo">
+        SELECT
+            mbr_no,
+            job_chrstc_cd,
+            (SELECT cd_nm FROM cnet_code WHERE cd = Mjci.job_chrstc_cd) AS job_chrstc_cd_nm,
+            reg_dtm
+        FROM cnet_mbr_job_chrstc_info Mjci
+        WHERE 1 = 1
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mbrNo)">
+                AND mbr_no = #{mbrNo}
+            </if>
+    </select>
+
+
+    <!-- 회원 직업특성 정보 등록 -->
+    <insert id="insertMbrJobChrstcInfo" parameterType="kr.or.career.mentor.domain.MbrJobChrstcInfo">
+        INSERT INTO cnet_mbr_job_chrstc_info (
+            mbr_no,
+            job_chrstc_cd
+        )
+        VALUES (
+            #{mbrNo},
+            #{jobChrstcCd}
+        )
+    </insert>
+
+
+    <!-- 직업특성 정보 삭제 -->
+    <delete id="deleteMbrJobChrstcInfosBy">
+        DELETE
+        FROM cnet_mbr_job_chrstc_info
+        WHERE 1 = 1
+            AND mbr_no = #{mbrNo}
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(jobChrstcCd)">
+                AND job_chrstc_cd = #{jobChrstcCd}
+            </if>
+    </delete>
+</mapper>

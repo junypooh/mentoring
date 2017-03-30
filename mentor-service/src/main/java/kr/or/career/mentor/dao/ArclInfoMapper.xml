@@ -1,0 +1,2728 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.ArclInfoMapper">
+
+  <resultMap id="arclInfoResult" type="kr.or.career.mentor.domain.ArclInfo" autoMapping="true">
+    <id property="arclSer" column="ARCL_SER" javaType="int" />
+  </resultMap>
+
+  <resultMap id="comunityBoardResult" extends="arclInfoResult" type="arclInfo">
+    <association property="ansArclInfo" column="{arclSer=SUP_ARCL_SER}" notNullColumn="arclSer" select="kr.or.career.mentor.dao.ArclInfoMapper.getAnsArclInfo" autoMapping="true"></association>
+    <collection property="listArclCmtInfo" column="{arclSer=ARCL_SER}" notNullColumn="arclSer" select="kr.or.career.mentor.dao.ArclCmtInfoMapper.getCmtInfoList" autoMapping="true"></collection>
+    <collection property="listArclFileInfo" column="{arclSer=ARCL_SER}" notNullColumn="arclSer" select="kr.or.career.mentor.dao.ArclFileInfoMapper.getArclFileList" autoMapping="true"></collection>
+  </resultMap>
+
+  <resultMap id="lectureFiledResult" extends="arclInfoResult" type="arclInfo">
+    <collection property="listArclFileInfo" column="{arclSer=ARCL_SER}" notNullColumn="arclSer" select="kr.or.career.mentor.dao.ArclFileInfoMapper.getArclFileList" autoMapping="true"></collection>
+  </resultMap>
+
+  <resultMap id="RatingCmtDTOData" type="kr.or.career.mentor.domain.RatingCmtDTO" autoMapping="true">
+    <collection property="listArclCmtInfo" column="{supCmtSer=CMT_SER}" notNullColumn="supCmtSer" select="kr.or.career.mentor.dao.ArclCmtInfoMapper.getSubCmtInfoAllList" autoMapping="true"></collection>
+  </resultMap>
+
+  <select id="getLectureArclInfo" parameterType="kr.or.career.mentor.domain.ArclInfo" resultType="kr.or.career.mentor.domain.ArclInfo" >
+    SELECT
+      ARCL_SER
+    FROM CNET_ARCL_INFO
+    <where>
+      AND BOARD_ID = #{boardId}
+      AND CNTNTS_TARGT_CD = '101511'
+      AND CNTNTS_TARGT_NO = #{cntntsTargtNo}
+      AND USE_YN = 'Y'
+      AND ROWNUM = 1
+    </where>
+  </select>
+
+  <select id="getArticleListWithoutFile" parameterType="kr.or.career.mentor.domain.ArclInfo" resultType="kr.or.career.mentor.domain.ArclInfo" >
+    <include refid="listArcl" />
+  </select>
+
+  <select id="getArticleListJustNotiable" parameterType="kr.or.career.mentor.domain.ArclInfo" resultMap="comunityBoardResult" >
+      SELECT
+      A.ARCL_SER
+      , A.BOARD_ID
+      , A.SUP_ARCL_SER
+      , A.TITLE
+      , A.SUB_TITLE
+      , A.PREF_NO
+      , C.PREF_NM
+      , A.SUST
+      , '' AS LECT_TITLE
+      , A.CNTNTS_TARGT_CD
+      , A.CNTNTS_TARGT_NO
+      , A.CNTNTS_TARGT_ID
+      , A.CNTNTS_TARGT_NM
+      , A.CNTNTS_TYPE_CD
+      , A.CNTNTS_ID
+      , A.CNTNTS_SUST
+      , A.CNTNTS_SMRY_INFO
+      , A.CNTNTS_DAY
+      , A.CNTNTS_API_PATH
+      , A.VCNT
+      , A.RCNT
+      , A.RECOM_YN
+      , A.SCRT_ARCL_YN
+      , A.NOTI_YN
+      , A.MR_ARCL_YN
+      , A.RSS_PUB_YN
+      , A.USE_YN
+      , A.REG_DTM
+      , A.REG_MBR_NO
+      , A.CHG_DTM
+      , A.CHG_MBR_NO
+      , A.ANS_REG_DTM
+      , A.ANS_REG_MBR_NO
+      , E.NM AS ANS_REG_MBR_NM
+      , A.ANS_CHG_DTM
+      , A.ANS_CHG_MBR_NO
+      , A.EXPS_TARGT_CD
+      , A.CNTNTS_TARGT_TIMS
+      , A.CNTNTS_TARGT_SEQ
+      , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS rn
+      , (SELECT COUNT(*) FROM CNET_ARCL_CMT_INFO C WHERE A.ARCL_SER = C.ARCL_SER AND C.USE_YN = 'Y' ) AS CMT_COUNT
+      , B.ID AS REG_MBR_ID
+      , B.NM AS REG_MBR_NM
+      , B.MBR_CLASS_CD
+      , CASE
+      WHEN B.MBR_CLASS_CD = '101505' THEN 'mentor'
+      WHEN B.MBR_CLASS_CD = '100858' THEN 'student'
+      WHEN B.MBR_CLASS_CD = '100859' THEN 'teacher'
+      ELSE ' ' END AS MBR_CLASS_NM
+      , E.MBR_CLASS_CD AS ANS_MBR_CLASS_CD
+      , CASE
+      WHEN E.MBR_CLASS_CD = '101505' THEN 'mentor'
+      WHEN E.MBR_CLASS_CD = '100858' THEN 'student'
+      WHEN B.MBR_CLASS_CD = '100859' THEN 'teacher'
+      ELSE ' ' END AS ANS_MBR_CLASS_NM
+      , D.JOB_NO
+      , D.JOB_NM
+      <if test="fileCnt lt 0">
+          ,(SELECT COUNT(*) FROM CNET_ARCL_FILE_INFO S1 WHERE S1.ARCL_SER = A.ARCL_SER) AS file_cnt
+      </if>
+      , CASE WHEN SYSDATE - A.REG_DTM <![CDATA[<=]]> 2 THEN 'Y' ELSE 'N' END AS NEW_YN
+      FROM CNET_ARCL_INFO A
+      INNER JOIN CNET_MBR_INFO B
+      ON A.REG_MBR_NO=B.MBR_NO
+      LEFT OUTER JOIN CNET_BOARD_PREF_INFO C
+      ON A.PREF_NO = C.PREF_NO
+      AND A.BOARD_ID = C.BOARD_ID
+      LEFT OUTER JOIN CNET_MBR_JOB_INFO D
+      <choose>
+          <when test='boardId eq "lecQnA"'>
+              ON A.CNTNTS_TARGT_ID = D.MBR_NO
+          </when>
+          <otherwise>
+              ON A.REG_MBR_NO = D.MBR_NO
+          </otherwise>
+      </choose>
+      LEFT OUTER JOIN CNET_MBR_INFO E
+      ON A.ANS_REG_MBR_NO = E.MBR_NO
+      <where>
+          AND A.BOARD_ID = #{boardId}
+          AND A.USE_YN = 'Y'
+          AND A.NOTI_YN = 'Y'
+          <if test='cntntsTargtNo != null and cntntsTargtNo != 0'>
+              AND CNTNTS_TARGT_NO = #{cntntsTargtNo}
+          </if>
+          <if test='cntntsTargtTims != null and cntntsTargtTims != 0'>
+              AND CNTNTS_TARGT_TIMS = #{cntntsTargtTims}
+          </if>
+          <if test="arclSer != null">
+              AND A.arcl_ser = #{arclSer}
+          </if>
+          <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(expsTargtCd)">
+              AND A.EXPS_TARGT_CD IN ('101634', #{expsTargtCd})
+          </if>
+      </where>
+  </select>
+
+  <select id="getArclList" parameterType="kr.or.career.mentor.domain.ArclInfo" resultMap="comunityBoardResult" >
+    /* Execute getArclList Query */
+    <include refid="listArcl" />
+  </select>
+
+  <sql id="listArcl">
+    /* paging */
+    SELECT *
+    /* paging */
+    FROM
+    (
+     <if test="dispNotice eq true and currentPageNo eq 1">
+      SELECT
+        A.ARCL_SER
+        , A.BOARD_ID
+        , A.SUP_ARCL_SER
+        , A.TITLE
+        , A.SUB_TITLE
+        , A.PREF_NO
+        , C.PREF_NM
+        , A.SUST
+        , '' AS LECT_TITLE
+        , A.CNTNTS_TARGT_CD
+        , A.CNTNTS_TARGT_NO
+        , A.CNTNTS_TARGT_ID
+        , A.CNTNTS_TARGT_NM
+        , A.CNTNTS_TYPE_CD
+        , A.CNTNTS_ID
+        , A.CNTNTS_SUST
+        , A.CNTNTS_SMRY_INFO
+        , A.CNTNTS_DAY
+        , A.CNTNTS_API_PATH
+        , A.VCNT
+        , A.RCNT
+        , A.RECOM_YN
+        , A.SCRT_ARCL_YN
+        , A.NOTI_YN
+        , A.MR_ARCL_YN
+        , A.RSS_PUB_YN
+        , A.USE_YN
+        , A.REG_DTM
+        , A.REG_MBR_NO
+        , A.CHG_DTM
+        , A.CHG_MBR_NO
+        , A.ANS_REG_DTM
+        , A.ANS_REG_MBR_NO
+        , E.NM AS ANS_REG_MBR_NM
+        , A.ANS_CHG_DTM
+        , A.ANS_CHG_MBR_NO
+        , A.EXPS_TARGT_CD
+        , A.CNTNTS_TARGT_TIMS
+        , A.CNTNTS_TARGT_SEQ
+        , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS rn
+        , (SELECT COUNT(*) FROM CNET_ARCL_CMT_INFO C WHERE A.ARCL_SER = C.ARCL_SER AND C.USE_YN = 'Y' ) AS CMT_COUNT
+        , B.ID AS REG_MBR_ID
+        , B.NM AS REG_MBR_NM
+        , B.MBR_CLASS_CD
+        , CASE
+          WHEN B.MBR_CLASS_CD = '101505' THEN 'mentor'
+          WHEN B.MBR_CLASS_CD = '100858' THEN 'student'
+          WHEN B.MBR_CLASS_CD = '100859' THEN 'teacher'
+          ELSE ' ' END AS MBR_CLASS_NM
+        , E.MBR_CLASS_CD AS ANS_MBR_CLASS_CD
+        , CASE
+          WHEN E.MBR_CLASS_CD = '101505' THEN 'mentor'
+          WHEN E.MBR_CLASS_CD = '100858' THEN 'student'
+          WHEN B.MBR_CLASS_CD = '100859' THEN 'teacher'
+          ELSE ' ' END AS ANS_MBR_CLASS_NM
+        , D.JOB_NO
+        , D.JOB_NM
+        <if test="fileCnt lt 0">
+        ,(SELECT COUNT(*) FROM CNET_ARCL_FILE_INFO S1 WHERE S1.ARCL_SER = A.ARCL_SER) AS file_cnt
+        </if>
+        , CASE WHEN SYSDATE - A.REG_DTM <![CDATA[<=]]> 2 THEN 'Y' ELSE 'N' END AS NEW_YN
+        , '' AS LECTR_NM
+      FROM CNET_ARCL_INFO A
+      INNER JOIN CNET_MBR_INFO B
+      ON A.REG_MBR_NO=B.MBR_NO
+      LEFT OUTER JOIN CNET_BOARD_PREF_INFO C
+      ON A.PREF_NO = C.PREF_NO
+      AND A.BOARD_ID = C.BOARD_ID
+      LEFT OUTER JOIN CNET_MBR_JOB_INFO D
+      <choose>
+        <when test='boardId eq "lecQnA"'>
+          ON A.CNTNTS_TARGT_ID = D.MBR_NO
+        </when>
+        <otherwise>
+          ON A.REG_MBR_NO = D.MBR_NO
+        </otherwise>
+      </choose>
+      LEFT OUTER JOIN CNET_MBR_INFO E
+      ON A.ANS_REG_MBR_NO = E.MBR_NO
+      <where>
+        AND A.BOARD_ID = #{boardId}
+        AND A.USE_YN = 'Y'
+        AND A.NOTI_YN = 'Y'
+        <if test='cntntsTargtNo != null and cntntsTargtNo != 0'>
+          AND CNTNTS_TARGT_NO = #{cntntsTargtNo}
+        </if>
+        <if test='cntntsTargtTims != null and cntntsTargtTims != 0'>
+          AND CNTNTS_TARGT_TIMS = #{cntntsTargtTims}
+        </if>
+        <if test="arclSer != null">
+            AND A.arcl_ser = #{arclSer}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(expsTargtCd)">
+          AND A.EXPS_TARGT_CD IN ('101634', #{expsTargtCd})
+        </if>
+      </where>
+      UNION ALL
+      </if>
+      SELECT
+        A.ARCL_SER
+        , A.BOARD_ID
+        , A.SUP_ARCL_SER
+        , A.TITLE
+        , A.SUB_TITLE
+        , A.PREF_NO
+        , C.PREF_NM
+        , A.SUST
+        , F.LECT_TITLE
+        , A.CNTNTS_TARGT_CD
+        , A.CNTNTS_TARGT_NO
+        , A.CNTNTS_TARGT_ID
+        , A.CNTNTS_TARGT_NM
+        , A.CNTNTS_TYPE_CD
+        , A.CNTNTS_ID
+        , A.CNTNTS_SUST
+        , A.CNTNTS_SMRY_INFO
+        , A.CNTNTS_DAY
+        , A.CNTNTS_API_PATH
+        , A.VCNT
+        , A.RCNT
+        , A.RECOM_YN
+        , A.SCRT_ARCL_YN
+        , A.NOTI_YN
+        , A.MR_ARCL_YN
+        , A.RSS_PUB_YN
+        , A.USE_YN
+        , A.REG_DTM
+        , A.REG_MBR_NO
+        , A.CHG_DTM
+        , A.CHG_MBR_NO
+        , A.ANS_REG_DTM
+        , A.ANS_REG_MBR_NO
+        , E.NM AS ANS_REG_MBR_NM
+        , A.ANS_CHG_DTM
+        , A.ANS_CHG_MBR_NO
+        , A.EXPS_TARGT_CD
+        , A.CNTNTS_TARGT_TIMS
+        , A.CNTNTS_TARGT_SEQ
+        , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS rn
+        , (SELECT COUNT(*) FROM CNET_ARCL_CMT_INFO C WHERE A.ARCL_SER = C.ARCL_SER AND C.USE_YN = 'Y' ) AS CMT_COUNT
+        , B.ID AS REG_MBR_ID
+        , B.NM AS REG_MBR_NM
+        , B.MBR_CLASS_CD
+        , CASE
+          WHEN B.MBR_CLASS_CD = '101505' THEN 'mentor'
+          WHEN B.MBR_CLASS_CD = '100858' THEN 'student'
+          WHEN B.MBR_CLASS_CD = '100859' THEN 'teacher'
+          ELSE '' END AS MBR_CLASS_NM
+        , E.MBR_CLASS_CD AS ANS_MBR_CLASS_CD
+        , CASE
+          WHEN E.MBR_CLASS_CD = '101505' THEN 'mentor'
+          WHEN E.MBR_CLASS_CD = '100858' THEN 'student'
+          WHEN B.MBR_CLASS_CD = '100859' THEN 'teacher'
+          ELSE '' END AS ANS_MBR_CLASS_NM
+        , D.JOB_NO
+        , D.JOB_NM
+        <if test="fileCnt lt 0">
+        ,(SELECT COUNT(*) FROM CNET_ARCL_FILE_INFO S1 WHERE S1.ARCL_SER = A.ARCL_SER) AS file_cnt
+        </if>
+        , CASE WHEN SYSDATE - A.REG_DTM <![CDATA[<=]]> 2 THEN 'Y' ELSE 'N' END AS NEW_YN
+        , (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = F.LECTR_MBR_NO) AS LECTR_NM
+      FROM CNET_ARCL_INFO A
+      INNER JOIN CNET_MBR_INFO B
+      ON A.REG_MBR_NO=B.MBR_NO
+      LEFT OUTER JOIN CNET_BOARD_PREF_INFO C
+      ON A.PREF_NO = C.PREF_NO
+      AND A.BOARD_ID = C.BOARD_ID
+      LEFT OUTER JOIN CNET_MBR_JOB_INFO D
+      <choose>
+        <when test='boardId eq "lecQnA"'>
+          ON A.CNTNTS_TARGT_ID = D.MBR_NO
+        </when>
+        <otherwise>
+          ON A.REG_MBR_NO = D.MBR_NO
+        </otherwise>
+      </choose>
+      LEFT OUTER JOIN CNET_MBR_INFO E
+      ON A.ANS_REG_MBR_NO = E.MBR_NO
+      LEFT OUTER JOIN CNET_LECT_INFO F
+      ON A.CNTNTS_TARGT_NO = F.LECT_SER
+      <where>
+        AND A.BOARD_ID = #{boardId}
+        AND A.USE_YN = 'Y'
+        AND A.NOTI_YN = 'N'
+        <if test="arclSer != null">
+            AND A.arcl_ser = #{arclSer}
+        </if>
+        <if test="searchWord != null and searchWord != ''">
+          <choose>
+            <when test='searchKey eq "0"'>
+              AND ( A.TITLE LIKE '%'||#{searchWord}||'%' OR A.SUST LIKE '%'||#{searchWord}||'%' OR A.CNTNTS_SUST LIKE '%'||#{searchWord}||'%' )
+            </when>
+            <when test='searchKey eq "1"'>
+              AND A.TITLE LIKE '%'||#{searchWord}||'%'
+            </when>
+            <otherwise>
+              AND B.NM LIKE '%'||#{searchWord}||'%'
+            </otherwise>
+          </choose>
+        </if>
+        <if test='prefNo != null and prefNo != ""'>
+          AND A.PREF_NO = #{prefNo}
+        </if>
+        <if test='sJobNo != null and sJobNo != ""' >
+          <choose>
+            <when test='boardId eq "lecQnA"'>
+              AND A.CNTNTS_TARGT_ID IN (
+            </when>
+            <otherwise>
+              AND A.REG_MBR_NO IN (
+            </otherwise>
+          </choose>
+              SELECT MBR_NO
+                FROM CNET_MBR_JOB_INFO
+               WHERE JOB_NO IN (
+                                  SELECT JOB_NO
+                                    FROM CNET_JOB_INFO
+                                   WHERE 1 = 1
+                                     AND JOB_CLSF_CD IN (
+                                                          SELECT CD
+                                                            FROM CNET_JOB_CLSF_CD
+                                                           WHERE 1 = 1
+                                                             AND CD_LV = 3
+                                                           START WITH CD = #{sJobNo}
+                                                         CONNECT BY NOCYCLE PRIOR CD = SUP_CD
+                                                         )
+                                )
+          )
+        </if>
+        <if test='sJobChrstcCds != null and sJobChrstcCds.size() gt 0' >
+          <choose>
+            <when test='boardId eq "lecQnA"'>
+              AND A.CNTNTS_TARGT_ID IN (
+            </when>
+            <otherwise>
+              AND A.REG_MBR_NO IN (
+            </otherwise>
+          </choose>
+            <!--SELECT MBR_NO-->
+            <!--FROM CNET_MBR_JOB_CHRSTC_INFO-->
+            <!--WHERE JOB_CHRSTC_CD IN-->
+            <!--<foreach collection="sJobChrstcCds" item="item" index="index" separator="," open="(" close=")">-->
+              <!--#{item}-->
+            <!--</foreach>-->
+          <foreach collection="sJobChrstcCds" item="item" index="index" separator="INTERSECT">
+            SELECT mbr_no FROM cnet_mbr_job_chrstc_info WHERE job_chrstc_cd =  #{item}
+          </foreach>
+          )
+        </if>
+        <if test='cntntsTargtNo != null and cntntsTargtNo != 0'>
+          AND CNTNTS_TARGT_NO = #{cntntsTargtNo}
+        </if>
+        <if test='cntntsTargtTims != null and cntntsTargtTims != 0'>
+          AND CNTNTS_TARGT_TIMS = #{cntntsTargtTims}
+        </if>
+        <choose>
+            <when test='boardId eq "lecFreeBoard"' >
+                <if test='siteGbn eq "sMyComm"'>
+                    AND A.REG_MBR_NO = #{srchMbrNo}
+                </if>
+            </when>
+            <when test='boardId eq "lecWork"' >
+                <if test='@org.apache.commons.lang3.StringUtils@equals(teacherYn,"Y")'>
+                    AND (A.REG_MBR_NO IN (
+                                            SELECT
+                                                   DISTINCT S3.MBR_NO
+                                              FROM CNET_LECT_APPL_INFO S
+                                             INNER JOIN CNET_CLAS_ROOM_REG_REQ_HIST S2 ON S.CLAS_ROOM_SER = S2.CLAS_ROOM_SER
+                                             INNER JOIN CNET_MBR_INFO S3 ON S2.REQ_MBR_NO = S3.MBR_NO
+                                             WHERE S.APPL_MBR_NO = #{srchMbrNo}
+                                               AND  S3.MBR_CLASS_CD = '100858' /*학생만*/
+                                            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(clasRoomSer)">
+                                                AND S.CLAS_ROOM_SER = #{clasRoomSer}
+                                            </if>
+                    )
+                        OR A.REG_MBR_NO = #{srchMbrNo} )
+                </if>
+                <if test='@org.apache.commons.lang3.StringUtils@equals(teacherYn,"N")'>
+                    AND A.REG_MBR_NO = #{srchMbrNo}
+                </if>
+            </when>
+            <when test='boardId eq "lecFile"' >
+                /* lec File */
+                <choose>
+                    <when test='siteGbn != null and siteGbn eq "sMyComm"'>
+                        /* siteGbn is sMyComm and is not empty srchMbrNo */
+                        AND A.CNTNTS_TARGT_NO IN (
+                          SELECT LECT.LECT_SER
+                          FROM CNET_CLAS_ROOM_REG_REQ_HIST HIST
+                          INNER JOIN CNET_LECT_APPL_INFO APPL
+                          ON HIST.CLAS_ROOM_SER = APPL.CLAS_ROOM_SER
+                          AND APPL.APPL_STAT_CD IN ('101576','101577')
+                          INNER JOIN CNET_LECT_INFO LECT
+                          ON APPL.LECT_SER = LECT.LECT_SER
+                          WHERE HIST.REQ_MBR_NO = #{srchMbrNo}
+                          AND HIST.REG_STAT_CD = '101526' )
+                    </when>
+                    <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(srchMbrNo)">
+                        /* is not empty srchMbrNo */
+                        AND A.REG_MBR_NO = #{srchMbrNo}
+                    </when>
+                </choose>
+            </when>
+            <when test='boardId eq "lecQnA"' >
+                <choose>
+                    <when test='siteGbn eq "sMyComm"'>
+                        AND A.REG_MBR_NO = #{srchMbrNo}
+                    </when>
+                    <when test='siteGbn eq "sMentorQnA"'>
+                        AND A.CNTNTS_TARGT_ID = #{srchMentorMbrNo}
+                    </when>
+                </choose>
+            </when>
+        </choose>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(expsTargtCd)">
+            AND A.EXPS_TARGT_CD IN ('101634', #{expsTargtCd})
+        </if>
+      </where>
+    )
+  </sql>
+
+  <select id="getAnsArclInfo" parameterType="kr.or.career.mentor.domain.ArclInfo" resultType="kr.or.career.mentor.domain.ArclInfo" >
+    SELECT
+      A.ARCL_SER
+      , A.BOARD_ID
+      , A.SUP_ARCL_SER
+      , A.TITLE
+      , A.SUB_TITLE
+      , A.PREF_NO
+      , A.SUST
+      , A.CNTNTS_TARGT_CD
+      , A.CNTNTS_TARGT_NO
+      , A.CNTNTS_TARGT_ID
+      , A.CNTNTS_TARGT_NM
+      , A.CNTNTS_TYPE_CD
+      , A.CNTNTS_ID
+      , A.CNTNTS_SUST
+      , A.CNTNTS_SMRY_INFO
+      , A.CNTNTS_DAY
+      , A.CNTNTS_API_PATH
+      , A.VCNT
+      , A.RCNT
+      , A.RECOM_YN
+      , A.SCRT_ARCL_YN
+      , A.NOTI_YN
+      , A.MR_ARCL_YN
+      , A.RSS_PUB_YN
+      , A.USE_YN
+      , A.REG_DTM
+      , A.REG_MBR_NO
+      , A.CHG_DTM
+      , A.CHG_MBR_NO
+      , A.ANS_REG_DTM
+      , A.ANS_REG_MBR_NO
+      , A.ANS_CHG_DTM
+      , A.ANS_CHG_MBR_NO
+      , A.EXPS_TARGT_CD
+      , A.CNTNTS_TARGT_TIMS
+      , A.CNTNTS_TARGT_SEQ
+      , B.ID AS REG_MBR_ID
+      , B.NM AS REG_MBR_NM
+      , B.MBR_CLASS_CD
+      , CASE
+          WHEN B.MBR_CLASS_CD = '101505' THEN 'mentor'
+          WHEN B.MBR_CLASS_CD = '100858' THEN 'student'
+          WHEN B.MBR_CLASS_CD = '100859' THEN 'teacher'
+          ELSE ' ' END AS MBR_CLASS_NM
+    FROM CNET_ARCL_INFO A,
+      CNET_MBR_INFO B
+    <where>
+      AND A.REG_MBR_NO = B.MBR_NO
+      AND A.SUP_ARCL_SER = #{arclSer}
+      AND A.SUP_ARCL_SER != 0
+      AND A.USE_YN = 'Y'
+    </where>
+  </select>
+
+  <insert id="registArcl" parameterType="kr.or.career.mentor.domain.ArclInfo">
+    <selectKey resultType="int" keyProperty="arclSer" order="BEFORE">
+      SELECT SQ_ARCL_INFO.nextval FROM DUAL
+    </selectKey>
+    INSERT INTO CNET_ARCL_INFO (
+      ARCL_SER
+      , BOARD_ID
+      <if test='supArclSer != null and supArclSer != ""'>
+      , SUP_ARCL_SER
+      </if>
+      , TITLE
+      <if test='subTitle != null and subTitle != ""'>
+      , SUB_TITLE
+      </if>
+      <if test='prefNo != null and prefNo != ""'>
+      , PREF_NO
+      </if>
+      , SUST
+      <if test='cntntsTargtCd != null and cntntsTargtCd != ""'>
+      , CNTNTS_TARGT_CD
+      </if>
+      <if test='cntntsTargtNo != null and cntntsTargtNo != ""'>
+      , CNTNTS_TARGT_NO
+      </if>
+      <if test='cntntsTargtId != null and cntntsTargtId != ""'>
+      , CNTNTS_TARGT_ID
+      </if>
+      <if test='cntntsTargtNm != null and cntntsTargtNm != ""'>
+      , CNTNTS_TARGT_NM
+      </if>
+      <if test='cntntsTypeCd != null and cntntsTypeCd != ""'>
+      , CNTNTS_TYPE_CD
+      </if>
+      <if test='cntntsId != null and cntntsId != ""'>
+      , CNTNTS_ID
+      </if>
+      <if test='cntntsSust != null and cntntsSust != ""'>
+      , CNTNTS_SUST
+      </if>
+      <if test='cntntsSmryInfo != null and cntntsSmryInfo != ""'>
+      , CNTNTS_SMRY_INFO
+      </if>
+      <if test='cntntsDay != null and cntntsDay != ""'>
+      , CNTNTS_DAY
+      </if>
+      <if test='cntntsPlayTime != null and cntntsPlayTime != ""'>
+      , CNTNTS_PLAY_TIME
+      </if>
+      <if test='cntntsThumbPath != null and cntntsThumbPath != ""'>
+      , CNTNTS_THUMB_PATH
+      </if>
+      <if test='cntntsApiPath != null and cntntsApiPath != ""'>
+      , CNTNTS_API_PATH
+      </if>
+      <if test='vcnt != null and vcnt != ""'>
+      , VCNT
+      </if>
+      <if test='rcnt != null and rcnt != ""'>
+      , RCNT
+      </if>
+      <if test='recomYn != null and recomYn != ""'>
+      , RECOM_YN
+      </if>
+      <if test='scrtArclYn != null and scrtArclYn != ""'>
+      , SCRT_ARCL_YN
+      </if>
+      <if test='notiYn != null and notiYn != ""'>
+      , NOTI_YN
+      </if>
+      <if test='mrArclYn != null and mrArclYn != ""'>
+      , MR_ARCL_YN
+      </if>
+      <if test='rssPubYn != null and rssPubYn != ""'>
+      , RSS_PUB_YN
+      </if>
+      , USE_YN
+      , REG_DTM
+      , REG_MBR_NO
+      <if test='ansRegDtm != null and ansRegDtm != ""'>
+      , ANS_REG_DTM
+      </if>
+      <if test='ansRegMbrNo != null and ansRegMbrNo != ""'>
+      , ANS_REG_MBR_NO
+      </if>
+      <if test='expsTargtCd != null and expsTargtCd != ""'>
+      , EXPS_TARGT_CD
+      </if>
+      <if test='cntntsTargtTims != null and cntntsTargtTims != ""'>
+      , CNTNTS_TARGT_TIMS
+      </if>
+      <if test='cntntsTargtSeq != null and cntntsTargtSeq != ""'>
+      , CNTNTS_TARGT_SEQ
+      </if>
+      <if test='popupYn != null and popupYn != ""'>
+      , POPUP_YN
+      </if>
+      <if test='popupWidth != null and popupWidth != ""'>
+      , POPUP_WIDTH
+      </if>
+      <if test='popupHigh != null and popupHigh != ""'>
+      , POPUP_HIGH
+      </if>
+      ) VALUES (
+      #{arclSer}
+      , #{boardId}
+      <if test='supArclSer != null and supArclSer != ""'>
+      , #{supArclSer}
+      </if>
+      , #{title}
+      <if test='subTitle != null and subTitle != ""'>
+      , #{subTitle}
+      </if>
+      <if test='prefNo != null and prefNo != ""'>
+      , #{prefNo}
+      </if>
+      , #{sust, jdbcType=VARCHAR}
+      <if test='cntntsTargtCd != null and cntntsTargtCd != ""'>
+      , #{cntntsTargtCd}
+      </if>
+      <if test='cntntsTargtNo != null and cntntsTargtNo != ""'>
+      , #{cntntsTargtNo}
+      </if>
+      <if test='cntntsTargtId != null and cntntsTargtId != ""'>
+      , #{cntntsTargtId}
+      </if>
+      <if test='cntntsTargtNm != null and cntntsTargtNm != ""'>
+      , #{cntntsTargtNm}
+      </if>
+      <if test='cntntsTypeCd != null and cntntsTypeCd != ""'>
+      , #{cntntsTypeCd}
+      </if>
+      <if test='cntntsId != null and cntntsId != ""'>
+      , #{cntntsId}
+      </if>
+      <if test='cntntsSust != null and cntntsSust != ""'>
+      , #{cntntsSust}
+      </if>
+      <if test='cntntsSmryInfo != null and cntntsSmryInfo != ""'>
+      , #{cntntsSmryInfo}
+      </if>
+      <if test='cntntsDay != null and cntntsDay != ""'>
+      , #{cntntsDay}
+      </if>
+      <if test='cntntsPlayTime != null and cntntsPlayTime != ""'>
+      , #{cntntsPlayTime}
+      </if>
+      <if test='cntntsThumbPath != null and cntntsThumbPath != ""'>
+      , #{cntntsThumbPath}
+      </if>
+      <if test='cntntsApiPath != null and cntntsApiPath != ""'>
+      , #{cntntsApiPath}
+      </if>
+      <if test='vcnt != null and vcnt != ""'>
+      , #{vcnt}
+      </if>
+      <if test='rcnt != null and rcnt != ""'>
+      , #{rcnt}
+      </if>
+      <if test='recomYn != null and recomYn != ""'>
+      , #{recomYn}
+      </if>
+      <if test='scrtArclYn != null and scrtArclYn != ""'>
+      , #{scrtArclYn}
+      </if>
+      <if test='notiYn != null and notiYn != ""'>
+      , #{notiYn}
+      </if>
+      <if test='mrArclYn != null and mrArclYn != ""'>
+      , #{mrArclYn}
+      </if>
+      <if test='rssPubYn != null and rssPubYn != ""'>
+      , #{rssPubYn}
+      </if>
+      , #{useYn}
+      , SYSDATE
+      , #{regMbrNo}
+      <if test='ansRegDtm != null and ansRegDtm != ""'>
+      , #{ansRegDtm}
+      </if>
+      <if test='ansRegMbrNo != null and ansRegMbrNo != ""'>
+      , #{ansRegMbrNo}
+      </if>
+      <if test='expsTargtCd != null and expsTargtCd != ""'>
+      , #{expsTargtCd}
+      </if>
+      <if test='cntntsTargtTims != null and cntntsTargtTims != ""'>
+      , #{cntntsTargtTims}
+      </if>
+      <if test='cntntsTargtSeq != null and cntntsTargtSeq != ""'>
+      , #{cntntsTargtSeq}
+      </if>
+      <if test='popupYn != null and popupYn != ""'>
+      , #{popupYn}
+      </if>
+      <if test='popupWidth != null and popupWidth != ""'>
+      , #{popupWidth}
+      </if>
+      <if test='popupHigh != null and popupHigh != ""'>
+      , #{popupHigh}
+      </if>
+      )
+  </insert>
+
+  <update id="updateArcl" parameterType="kr.or.career.mentor.domain.ArclInfo">
+    UPDATE CNET_ARCL_INFO
+    <set>
+      <if test='title != null'>
+      TITLE =  #{title},
+      </if>
+      <if test='supArclSer > 0 '>
+      SUP_ARCL_SER = #{supArclSer},
+      </if>
+      <if test='subTitle != null'>
+      SUB_TITLE = #{subTitle},
+      </if>
+      <if test='prefNo != null and prefNo != ""'>
+      PREF_NO = #{prefNo},
+      </if>
+      <if test='sust != null'>
+      SUST = #{sust},
+      </if>
+      <if test='cntntsTargtCd != null and cntntsTargtCd != ""'>
+      CNTNTS_TARGT_CD = #{cntntsTargtCd},
+      </if>
+      <if test='cntntsTargtNo != null and cntntsTargtNo != ""'>
+      CNTNTS_TARGT_NO = #{cntntsTargtNo},
+      </if>
+      <if test='cntntsTargtId != null and cntntsTargtId != ""'>
+      CNTNTS_TARGT_ID = #{cntntsTargtId},
+      </if>
+      <if test='cntntsTargtNm != null and cntntsTargtNm != ""'>
+      CNTNTS_TARGT_NM = #{cntntsTargtNm},
+      </if>
+      <if test='cntntsTypeCd != null and cntntsTypeCd != ""'>
+      CNTNTS_TYPE_CD = #{cntntsTypeCd},
+      </if>
+      <if test='cntntsId != null and cntntsId != ""'>
+      CNTNTS_ID = #{cntntsId},
+      </if>
+      <if test='cntntsSust != null'>
+      CNTNTS_SUST = #{cntntsSust},
+      </if>
+      <if test='cntntsSmryInfo != null and cntntsSmryInfo != ""'>
+      CNTNTS_SMRY_INFO = #{cntntsSmryInfo},
+      </if>
+      <if test='cntntsDay != null and cntntsDay != ""'>
+      CNTNTS_DAY = #{cntntsDay},
+      </if>
+      <if test='cntntsPlayTime != null and cntntsPlayTime != ""'>
+      CNTNTS_PLAY_TIME = #{cntntsPlayTime},
+      </if>
+      <if test='cntntsThumbPath != null and cntntsThumbPath != ""'>
+      CNTNTS_THUMB_PATH = #{cntntsThumbPath},
+      </if>
+      <if test='cntntsApiPath != null and cntntsApiPath != ""'>
+      CNTNTS_API_PATH = #{cntntsApiPath},
+      </if>
+      <if test='vcnt > 0 '>
+      VCNT = #{vcnt},
+      </if>
+      <if test='rcnt > 0 '>
+      RCNT = #{rcnt},
+      </if>
+      <if test='useYn != null and useYn != ""'>
+      USE_YN = #{useYn},
+      </if>
+      <if test='recomYn != null and recomYn != ""'>
+      RECOM_YN = #{recomYn},
+      </if>
+      <if test='scrtArclYn != null and scrtArclYn != ""'>
+      SCRT_ARCL_YN = #{scrtArclYn},
+      </if>
+      <if test='notiYn != null and notiYn != ""'>
+      NOTI_YN = #{notiYn},
+      </if>
+      <if test='mrArclYn != null and mrArclYn != ""'>
+      MR_ARCL_YN = #{mrArclYn},
+      </if>
+      <if test='rssPubYn != null and rssPubYn != ""'>
+      RSS_PUB_YN = #{rssPubYn},
+      </if>
+      <if test='chgMbrNo != null and chgMbrNo != ""'>
+      CHG_DTM = SYSDATE,
+      CHG_MBR_NO = #{chgMbrNo},
+      </if>
+      <if test='ansRegMbrNo != null and ansRegMbrNo != ""'>
+      ANS_REG_DTM = SYSDATE,
+      ANS_REG_MBR_NO = #{ansRegMbrNo},
+      </if>
+      <if test='ansChgMbrNo != null and ansChgMbrNo != ""'>
+      ANS_CHG_DTM = SYSDATE,
+      ANS_CHG_MBR_NO = #{ansChgMbrNo},
+      </if>
+      <if test='expsTargtCd != null and expsTargtCd != ""'>
+      EXPS_TARGT_CD = #{expsTargtCd},
+      </if>
+      <if test='cntntsTargtTims != null and cntntsTargtTims != ""'>
+      CNTNTS_TARGT_TIMS = #{cntntsTargtTims},
+      </if>
+      <if test='cntntsTargtSeq != null and cntntsTargtSeq != ""'>
+      CNTNTS_TARGT_SEQ = #{cntntsTargtSeq},
+      </if>
+      <if test='popupYn != null and popupYn != ""'>
+      POPUP_YN = #{popupYn},
+      </if>
+      <if test='popupWidth != null and popupWidth != ""'>
+      POPUP_WIDTH = #{popupWidth},
+      </if>
+      <if test='popupHigh != null and popupHigh != ""'>
+      POPUP_HIGH = #{popupHigh},
+      </if>
+    </set>
+    <where>
+      AND ARCL_SER = #{arclSer}
+      AND BOARD_ID = #{boardId}
+    </where>
+  </update>
+
+  <update id="deleteArcl" parameterType="kr.or.career.mentor.domain.ArclInfo">
+    /* [ArclInfoMapper.xml#deleteArcl] */
+    UPDATE CNET_ARCL_INFO
+    SET
+      USE_YN = 'N',
+      CHG_DTM = SYSDATE,
+      CHG_MBR_NO = #{chgMbrNo}
+    WHERE
+      ARCL_SER = #{arclSer}
+  </update>
+
+    <update id="deleteArclReply" parameterType="kr.or.career.mentor.domain.ArclInfo">
+        UPDATE CNET_ARCL_INFO
+        SET
+        CNTNTS_SUST = null,
+        CHG_DTM = SYSDATE,
+        CHG_MBR_NO = #{chgMbrNo}
+        WHERE
+        ARCL_SER = #{arclSer}
+    </update>
+
+  <select id="getBoardPrefInfoList" parameterType="kr.or.career.mentor.domain.BoardPrefInfo" resultType="kr.or.career.mentor.domain.BoardPrefInfo">
+    SELECT
+      BOARD_ID
+      , PREF_NO
+      , PREF_NM
+      , DISP_SEQ
+    FROM CNET_BOARD_PREF_INFO
+    <where>
+      AND BOARD_ID = #{boardId}
+    </where>
+    ORDER BY DISP_SEQ
+  </select>
+
+  <!--최신 강의 후기-->
+  <select id="listRecentPostscript" resultType="kr.or.career.mentor.domain.ArclCmtInfoRS">
+        SELECT /*+ INDEX_DESC (B PLAIN  PK_CNET_ARCL_CMT_INFO)*/
+                  A.cntnts_targt_no, C.lect_title, C.lectr_nm
+                , B.cmt_ser, B.board_id, B.arcl_ser , B.cmt_title, B.cmt_sust
+                , (SELECT nm FROM CNET_MBR_INFO S WHERE S.MBR_NO = B.REG_MBR_NO) AS reg_nm
+                , ROW_NUMBER() OVER(ORDER BY B.cmt_ser desc) AS rn
+                      FROM CNET_ARCL_INFO A
+                INNER JOIN CNET_ARCL_CMT_INFO B
+                        ON A.arcl_ser = B.arcl_ser AND B.sup_cmt_ser IS NULL  and b.use_yn = 'Y'
+                INNER JOIN CNET_LECT_INFO C
+                        ON A.CNTNTS_TARGT_NO = C.LECT_SER
+                     WHERE A.cntnts_targt_cd = '101511' /*강의후기*/
+                       AND ROWNUM &lt;= 9
+  </select>
+
+  <select id="getLastLectList" parameterType="string" resultType="map">
+    SELECT
+        C.LECT_SER,
+        C.LECT_TIMS,
+        D.LECT_TITLE,
+        A.CLAS_ROOM_SER
+    FROM CNET_CLAS_ROOM_REG_REQ_HIST A
+    INNER JOIN CNET_LECT_APPL_INFO B
+    ON A.CLAS_ROOM_SER = B.CLAS_ROOM_SER
+    AND B.APPL_STAT_CD IN ('101576', '101577')
+    INNER JOIN CNET_LECT_TIMS_INFO C
+    ON B.LECT_SER = C.LECT_SER
+    AND B.LECT_TIMS = C.LECT_TIMS
+    AND C.LECT_STAT_CD = '101551'
+    AND C.EXPS_YN = 'Y'
+    INNER JOIN CNET_LECT_INFO D
+    ON C.LECT_SER = D.LECT_SER
+    WHERE A.REG_STAT_CD = '101526'
+    AND A.REQ_MBR_NO = #{mbrNo}
+  </select>
+
+  <update id="insertAnswer" parameterType="kr.or.career.mentor.domain.ArclInfo">
+    UPDATE CNET_ARCL_INFO
+    SET
+      CNTNTS_SUST = #{cntntsSust},
+      <choose>
+        <when test='ansChgMbrNo != null and ansChgMbrNo != "" '>
+          ANS_CHG_DTM = SYSDATE,
+          ANS_CHG_MBR_NO = #{ansChgMbrNo}
+        </when>
+        <otherwise>
+          ANS_REG_DTM = SYSDATE,
+          ANS_REG_MBR_NO = #{ansRegMbrNo}
+        </otherwise>
+      </choose>
+    WHERE
+      ARCL_SER = #{arclSer}
+  </update>
+
+ <!-- 기존 질문답변, 수업과제 , 메인포함 [삭제예정] -->
+  <select id="getMentorDataArclList" parameterType="kr.or.career.mentor.domain.ArclInfo" resultMap="comunityBoardResult" >
+    /* paging */
+    SELECT
+      *
+    /* paging */
+    FROM (
+    <if test='dispNotice eq true and currentPageNo eq 1'>
+      SELECT
+        A.ARCL_SER
+        , A.BOARD_ID
+        , A.SUP_ARCL_SER
+        , A.TITLE
+        , A.SUB_TITLE
+        , A.PREF_NO
+        , C.PREF_NM
+        , A.SUST
+        , '' AS LECT_TITLE
+        , A.CNTNTS_TARGT_CD
+        , A.CNTNTS_TARGT_NO
+        , A.CNTNTS_TARGT_ID
+        , A.CNTNTS_TARGT_NM
+        , A.CNTNTS_TYPE_CD
+        , A.CNTNTS_ID
+        , A.CNTNTS_SUST
+        , A.CNTNTS_SMRY_INFO
+        , A.CNTNTS_DAY
+        , A.CNTNTS_API_PATH
+        , A.VCNT
+        , A.RCNT
+        , A.RECOM_YN
+        , A.SCRT_ARCL_YN
+        , 'Y' AS NOTI_YN
+        , A.MR_ARCL_YN
+        , A.RSS_PUB_YN
+        , A.USE_YN
+        , A.REG_DTM
+        , A.REG_MBR_NO
+        , A.CHG_DTM
+        , A.CHG_MBR_NO
+        , A.ANS_REG_DTM
+        , A.ANS_REG_MBR_NO
+        , '' AS ANS_REG_MBR_NM
+        , A.ANS_CHG_DTM
+        , A.ANS_CHG_MBR_NO
+        , A.EXPS_TARGT_CD
+        , A.CNTNTS_TARGT_TIMS
+        , A.CNTNTS_TARGT_SEQ
+        , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS rn
+        , (SELECT COUNT(*) FROM CNET_ARCL_CMT_INFO C WHERE A.ARCL_SER = C.ARCL_SER AND C.USE_YN = 'Y' ) AS CMT_COUNT
+        , B.ID AS REG_MBR_ID
+        , B.NM AS REG_MBR_NM
+        , B.MBR_CLASS_CD
+        , CASE
+            WHEN B.MBR_CLASS_CD = '101505' THEN 'mentor'
+            WHEN B.MBR_CLASS_CD = '100858' THEN 'student'
+            WHEN B.MBR_CLASS_CD = '100859' THEN 'teacher'
+            ELSE ' ' END AS MBR_CLASS_NM
+        , '' AS ANS_MBR_CLASS_CD
+        , '' AS ANS_MBR_CLASS_NM
+        , D.JOB_NO
+        , D.JOB_NM
+      FROM CNET_ARCL_INFO A
+      INNER JOIN CNET_MBR_INFO B
+      ON A.REG_MBR_NO=B.MBR_NO
+      LEFT OUTER JOIN CNET_BOARD_PREF_INFO C
+      ON A.PREF_NO = C.PREF_NO
+      AND A.BOARD_ID = C.BOARD_ID
+      LEFT OUTER JOIN CNET_MBR_JOB_INFO D
+      ON A.REG_MBR_NO = D.MBR_NO
+      <where>
+        AND A.USE_YN = 'Y'
+        AND A.NOTI_YN = 'Y'
+        AND A.BOARD_ID = #{boardId}
+        <if test='boardId eq "lecFile"'>
+          AND A.REG_MBR_NO = #{srchMbrNo}
+        </if>
+      </where>
+      UNION ALL
+    </if>
+    SELECT
+      A.ARCL_SER
+      , A.BOARD_ID
+      , A.SUP_ARCL_SER
+      , A.TITLE
+      , A.SUB_TITLE
+      , A.PREF_NO
+      , C.PREF_NM
+      , A.SUST
+      , F.LECT_TITLE
+      , A.CNTNTS_TARGT_CD
+      , A.CNTNTS_TARGT_NO
+      , A.CNTNTS_TARGT_ID
+      , A.CNTNTS_TARGT_NM
+      , A.CNTNTS_TYPE_CD
+      , A.CNTNTS_ID
+      , A.CNTNTS_SUST
+      , A.CNTNTS_SMRY_INFO
+      , A.CNTNTS_DAY
+      , A.CNTNTS_API_PATH
+      , A.VCNT
+      , A.RCNT
+      , A.RECOM_YN
+      , A.SCRT_ARCL_YN
+      , 'N' AS NOTI_YN
+      , A.MR_ARCL_YN
+      , A.RSS_PUB_YN
+      , A.USE_YN
+      , A.REG_DTM
+      , A.REG_MBR_NO
+      , A.CHG_DTM
+      , A.CHG_MBR_NO
+      , A.ANS_REG_DTM
+      , A.ANS_REG_MBR_NO
+      , E.NM AS ANS_REG_MBR_NM
+      , A.ANS_CHG_DTM
+      , A.ANS_CHG_MBR_NO
+      , A.EXPS_TARGT_CD
+      , A.CNTNTS_TARGT_TIMS
+      , A.CNTNTS_TARGT_SEQ
+      , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS rn
+      , (SELECT COUNT(*) FROM CNET_ARCL_CMT_INFO C WHERE A.ARCL_SER = C.ARCL_SER AND C.USE_YN = 'Y' ) AS CMT_COUNT
+      , B.ID AS REG_MBR_ID
+      , B.NM AS REG_MBR_NM
+      , B.MBR_CLASS_CD
+      , CASE
+          WHEN B.MBR_CLASS_CD = '101505' THEN 'mentor'
+          WHEN B.MBR_CLASS_CD = '100858' THEN 'student'
+          WHEN B.MBR_CLASS_CD = '100859' THEN 'teacher'
+          ELSE ' ' END AS MBR_CLASS_NM
+      , E.MBR_CLASS_CD AS ANS_MBR_CLASS_CD
+      , CASE
+        WHEN E.MBR_CLASS_CD = '101505' THEN 'mentor'
+        WHEN E.MBR_CLASS_CD = '100858' THEN 'student'
+        WHEN E.MBR_CLASS_CD = '100859' THEN 'teacher'
+        ELSE ' ' END AS ANS_MBR_CLASS_NM
+      , D.JOB_NO
+      , D.JOB_NM
+    FROM CNET_ARCL_INFO A
+    INNER JOIN CNET_MBR_INFO B
+    ON A.REG_MBR_NO=B.MBR_NO
+    LEFT OUTER JOIN CNET_BOARD_PREF_INFO C
+    ON A.PREF_NO = C.PREF_NO
+    AND A.BOARD_ID = C.BOARD_ID
+    LEFT OUTER JOIN CNET_MBR_JOB_INFO D
+    ON A.ANS_REG_MBR_NO = D.MBR_NO
+    LEFT OUTER JOIN CNET_MBR_INFO E
+    ON A.ANS_REG_MBR_NO = E.MBR_NO
+    LEFT OUTER JOIN CNET_LECT_INFO F
+    ON A.CNTNTS_TARGT_NO = F.LECT_SER
+    <where>
+      AND A.USE_YN = 'Y'
+      AND A.BOARD_ID = #{boardId}
+      <if test="boardId eq 'lecFile'">
+        <choose>
+          <!-- mentorLecture : 조회 Query 사용시 구분을 주기 위해 사용(mentorLecture : 멘토 포탈/수업상세 탭페이지에서 -->
+          <when test='siteGbn != null and siteGbn eq "mentorLecture"'>
+            <if test='cntntsTargtNo != null and cntntsTargtNo != 0'>
+              AND CNTNTS_TARGT_NO = #{cntntsTargtNo}
+            </if>
+            <if test='cntntsTargtTims != null and cntntsTargtTims != 0'>
+              AND CNTNTS_TARGT_TIMS = #{cntntsTargtTims}
+            </if>
+          </when>
+          <otherwise>
+            AND A.REG_MBR_NO = #{srchMbrNo}
+          </otherwise>
+        </choose>
+      </if>
+      <if test="boardId eq 'lecQnA'">
+        <choose>
+          <!-- mentorLecture : 조회 Query 사용시 구분을 주기 위해 사용(mentorLecture : 멘토 포탈/수업상세 탭페이지에서 -->
+          <when test='siteGbn != null and siteGbn eq "mentorLecture"'>
+            <if test='cntntsTargtNo != null and cntntsTargtNo != 0'>
+              AND CNTNTS_TARGT_NO = #{cntntsTargtNo}
+            </if>
+            <if test='cntntsTargtTims != null and cntntsTargtTims != 0'>
+              AND CNTNTS_TARGT_TIMS = #{cntntsTargtTims}
+            </if>
+          </when>
+          <otherwise>
+            AND (A.CNTNTS_TARGT_ID = #{srchMbrNo}
+              OR A.CNTNTS_TARGT_ID IN (SELECT REG_MBR_NO FROM CNET_MBR_REL_MAPP WHERE TARGT_MBR_NO = #{srchMbrNo}) )
+          </otherwise>
+        </choose>
+      </if>
+      <if test="boardId eq 'lecWork'">
+        <choose>
+          <!-- mentorLecture : 조회 Query 사용시 구분을 주기 위해 사용(mentorLecture : 멘토 포탈/수업상세 탭페이지에서 -->
+          <when test='siteGbn != null and siteGbn eq "mentorLecture"'>
+            <if test='cntntsTargtNo != null and cntntsTargtNo != 0'>
+              AND CNTNTS_TARGT_NO = #{cntntsTargtNo}
+            </if>
+            <if test='cntntsTargtTims != null and cntntsTargtTims != 0'>
+              AND CNTNTS_TARGT_TIMS = #{cntntsTargtTims}
+            </if>
+          </when>
+          <otherwise>
+            AND A.CNTNTS_TARGT_NO IN (SELECT LECT_SER FROM CNET_LECT_INFO WHERE LECTR_MBR_NO = #{srchMbrNo})
+          </otherwise>
+        </choose>
+      </if>
+      <if test="searchWord != null and searchWord != ''">
+        <choose>
+          <when test='searchKey eq "0"'>
+            AND ( A.TITLE LIKE '%'||#{searchWord}||'%' OR A.SUST LIKE '%'||#{searchWord}||'%' )
+          </when>
+          <when test='searchKey eq "1"'>
+            AND A.TITLE LIKE '%'||#{searchWord}||'%'
+          </when>
+          <otherwise>
+            AND B.NM LIKE '%'||#{searchWord}||'%'
+          </otherwise>
+        </choose>
+      </if>
+    </where>
+    )
+  </select>
+
+  <select id="getNotiCount" parameterType="kr.or.career.mentor.domain.ArclInfo" resultType="int">
+    SELECT COUNT(1)
+    FROM CNET_ARCL_INFO
+    <where>
+      AND USE_YN = 'Y'
+      AND NOTI_YN = 'Y'
+      AND BOARD_ID = #{boardId}
+      AND REG_MBR_NO = #{srchMbrNo}
+    </where>
+  </select>
+
+  <select id="lectureFiledResult" parameterType="kr.or.career.mentor.domain.ArclInfo" resultMap="lectureFiledResult">
+    SELECT
+    A.ARCL_SER
+    , A.BOARD_ID
+    , A.SUP_ARCL_SER
+    , A.TITLE
+    , A.SUB_TITLE
+    , A.PREF_NO
+    , A.SUST
+    , A.CNTNTS_TARGT_CD
+    , A.CNTNTS_TARGT_NO
+    , A.CNTNTS_TARGT_ID
+    , A.CNTNTS_TARGT_NM
+    , A.CNTNTS_TYPE_CD
+    , A.CNTNTS_ID
+    , A.CNTNTS_SUST
+    , A.CNTNTS_SMRY_INFO
+    , A.CNTNTS_DAY
+    , A.CNTNTS_API_PATH
+    , A.VCNT
+    , A.RCNT
+    , A.RECOM_YN
+    , A.SCRT_ARCL_YN
+    , A.NOTI_YN
+    , A.MR_ARCL_YN
+    , A.RSS_PUB_YN
+    , A.USE_YN
+    , A.REG_DTM
+    , A.REG_MBR_NO
+    , A.CHG_DTM
+    , A.CHG_MBR_NO
+    , A.ANS_REG_DTM
+    , A.ANS_REG_MBR_NO
+    , A.ANS_CHG_DTM
+    , A.ANS_CHG_MBR_NO
+    , A.EXPS_TARGT_CD
+    , A.CNTNTS_TARGT_TIMS
+    , A.CNTNTS_TARGT_SEQ
+    , B.ID AS REG_MBR_ID
+    , B.NM AS REG_MBR_NM
+    , B.MBR_CLASS_CD
+    , CASE
+    WHEN B.MBR_CLASS_CD = '101505' THEN 'mentor'
+    WHEN B.MBR_CLASS_CD = '100858' THEN 'student'
+    WHEN B.MBR_CLASS_CD = '100859' THEN 'teacher'
+    ELSE ' ' END AS MBR_CLASS_NM
+    FROM CNET_ARCL_INFO A,
+    CNET_MBR_INFO B
+    <where>
+      AND A.REG_MBR_NO = B.MBR_NO
+      AND A.BOARD_ID = 'lecFile'
+      AND A.CNTNTS_TARGT_NO = #{cntntsTargtNo}
+      AND A.SUP_ARCL_SER = 0
+      AND A.USE_YN = 'Y'
+    </where>
+  </select>
+
+  <select id="selectCompLectInfo" parameterType="kr.or.career.mentor.domain.CompLectInfoDTO" resultType="kr.or.career.mentor.domain.CompLectInfoDTO">
+      SELECT
+        LS.LECT_SER,
+        LS.LECT_TIMS,
+        LS.SCHD_SEQ,
+        LS.LECT_DAY,
+        LS.LECT_START_TIME,
+        LS.LECT_END_TIME,
+        J.JOB_NM,
+        M.MBR_NO AS MENTOR_MBR_NO,
+        M.NM AS MENTOR_NM,
+        L.LECT_TITLE,
+        ROW_NUMBER() OVER(ORDER BY L.LECT_SER DESC, LT.LECT_TIMS, LS.SCHD_SEQ) AS RN
+      FROM CNET_LECT_INFO L
+           INNER JOIN CNET_LECT_TIMS_INFO LT ON L.LECT_SER = LT.LECT_SER
+           INNER JOIN CNET_LECT_SCHD_INFO LS
+              ON LT.LECT_SER = LS.LECT_SER AND LT.LECT_TIMS = LS.LECT_TIMS
+           INNER JOIN CNET_MBR_INFO M ON L.LECTR_MBR_NO = M.MBR_NO
+           INNER JOIN CNET_MBR_JOB_INFO J ON M.MBR_NO = J.MBR_NO
+      <where>
+        LT.LECT_SER = #{lectSer}
+        AND LT.LECT_TIMS  = #{lectTims}
+      </where>
+  </select>
+
+  <select id="getReplayInfoList" parameterType="arclInfoDTO" resultType="arclInfoDTO">
+    /* paging */
+    SELECT ARCL.ARCL_SER,
+        ARCL.BOARD_ID,
+        ARCL.TITLE,
+        ARCL.CNTNTS_TARGT_CD,
+        ARCL.CNTNTS_TARGT_NO,
+        ARCL.CNTNTS_TARGT_ID,
+        ARCL.CNTNTS_TARGT_NM,
+        ARCL.CNTNTS_TYPE_CD,
+        ARCL.CNTNTS_ID,
+        ARCL.CNTNTS_API_PATH,
+        ARCL.CNTNTS_PLAY_TIME,
+        ARCL.CNTNTS_THUMB_PATH,
+        ARCL.VCNT,
+        ARCL.RECOM_YN,
+        ARCL.SCRT_ARCL_YN,
+        ARCL.NOTI_YN,
+        ARCL.MR_ARCL_YN,
+        ARCL.RSS_PUB_YN,
+        ARCL.USE_YN,
+        ARCL.REG_DTM,
+        ARCL.REG_MBR_NO,
+        ARCL.CNTNTS_TARGT_TIMS,
+        ARCL.CNTNTS_TARGT_SEQ,
+        LECT.LECT_TITLE,
+        LECT.LECT_TARGT_CD,
+        LECT.LECT_TYPE_CD,
+        SCHD.LECT_DAY,
+        SCHD.LECT_START_TIME,
+        SCHD.LECT_END_TIME,
+        MBR.NM AS MENTOR_MBR_NM,
+        <choose>
+            <when test='bestYn  != null and bestYn == "Y"'>
+                ROW_NUMBER() OVER(ORDER BY VCNT DESC, ARCL.ARCL_SER DESC) AS RN
+            </when>
+            <otherwise>
+                ROW_NUMBER() OVER(ORDER BY ARCL.ARCL_SER DESC) AS RN
+            </otherwise>
+        </choose>
+    /* paging */
+    FROM CNET_ARCL_INFO ARCL
+       INNER JOIN CNET_LECT_INFO LECT ON ARCL.CNTNTS_TARGT_NO = LECT.LECT_SER
+       INNER JOIN CNET_LECT_TIMS_INFO TIMS ON LECT.LECT_SER = TIMS.LECT_SER AND ARCL.CNTNTS_TARGT_TIMS = TIMS.LECT_TIMS
+       INNER JOIN CNET_LECT_SCHD_INFO SCHD ON TIMS.LECT_SER = SCHD.LECT_SER
+             AND TIMS.LECT_TIMS = SCHD.LECT_TIMS
+             AND ARCL.CNTNTS_TARGT_SEQ = SCHD.SCHD_SEQ
+             AND SCHD.LECT_STAT_CD = '101551'
+       INNER JOIN CNET_MBR_INFO MBR ON ARCL.CNTNTS_TARGT_ID = MBR.MBR_NO
+       LEFT OUTER JOIN CNET_MBR_JOB_INFO JOB ON MBR.MBR_NO = JOB.MBR_NO
+       /* 해당 쿼리 사용시 중복 리스트 나타남
+       LEFT OUTER JOIN CNET_MBR_JOB_CHRSTC_INFO CHRSTC ON MBR.MBR_NO = CHRSTC.MBR_NO
+       */
+    <where>
+        ARCL.BOARD_ID = 'lecReplay'
+        <if test="cntntsId != 0">
+            AND ARCL.CNTNTS_ID = #{cntntsId}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(title)">
+            AND ARCL.TITLE LIKE '%'||#{title}||'%'
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sLectTitle)">
+            AND LECT.LECT_TITLE LIKE '%'||#{sLectTitle}||'%'
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sMentorNm)">
+            AND MBR.NM = #{sMentorNm}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord)">
+            <choose>
+                <when test='searchKey eq "TITLE"'>
+                    AND ARCL.TITLE LIKE '%'||#{searchWord}||'%'
+                </when>
+                <when test='searchKey eq "LTITLE"'>
+                    AND LECT.LECT_TITLE LIKE '%'||#{searchWord}||'%'
+                </when>
+                <when test='searchKey eq "MENTOR"'>
+                    AND MBR.NM = #{searchWord}
+                </when>
+                <when test='searchKey eq "JOB"'>
+                    AND JOB.JOB_NM = #{searchWord}
+                </when>
+                <otherwise>
+                    AND ( ARCL.TITLE LIKE '%'||#{searchWord}||'%'
+                      OR LECT.LECT_TITLE LIKE '%'||#{searchWord}||'%'
+                      OR MBR.NM = #{searchWord}
+                      OR JOB.JOB_NM = #{searchWord} )
+                </otherwise>
+            </choose>
+        </if>
+        <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(lectTypeCd)'>
+            AND LECT.LECT_TYPE_CD = #{lectTypeCd}
+        </if>
+        <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(lectTargtCd)'>
+            AND LECT.LECT_TARGT_CD = #{lectTargtCd}
+        </if>
+        <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(lectTime)'>
+            AND SCHD.LECT_START_TIME <![CDATA[>=]]> #{lectTime}
+        </if>
+        <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(clasStartDay)'>
+            AND Regexp_Replace(SCHD.LECT_DAY, '[[:punct:]]', '') <![CDATA[>=]]> #{clasStartDay}
+        </if>
+        <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(clasEndDay)'>
+            AND Regexp_Replace(SCHD.LECT_DAY, '[[:punct:]]', '') <![CDATA[<=]]> #{clasEndDay}
+        </if>
+        <if test='cntntsTargtNo != 0'>
+            AND CNTNTS_TARGT_NO = #{cntntsTargtNo}
+        </if>
+        <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(cntntsTargtTims)'>
+            AND CNTNTS_TARGT_TIMS = #{cntntsTargtTims}
+        </if>
+        <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(cntntsTargtSeq)'>
+            AND CNTNTS_TARGT_SEQ = #{cntntsTargtSeq}
+        </if>
+        <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sJobNo)'>
+            AND JOB.JOB_NO = #{sJobNo}
+        </if>
+        <if test='sJobChrstcCds != null and sJobChrstcCds.size() gt 0' >
+            AND MBR.MBR_NO IN (
+                SELECT MBR_NO FROM CNET_MBR_JOB_CHRSTC_INFO CHRSTC
+                WHERE  JOB_CHRSTC_CD IN
+                <foreach collection="sJobChrstcCds" item="item" index="index" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            )
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(useYn)">
+          AND ARCL.USE_YN = #{useYn}
+        </if>
+    </where>
+  </select>
+
+  <select id="getReplayInfoDetail" parameterType="arclInfoDTO" resultType="arclInfoDTO">
+    SELECT ARCL.ARCL_SER,
+        ARCL.BOARD_ID,
+        ARCL.TITLE,
+        ARCL.SUST,
+        ARCL.CNTNTS_TARGT_CD,
+        ARCL.CNTNTS_TARGT_NO,
+        ARCL.CNTNTS_TARGT_ID,
+        ARCL.CNTNTS_TARGT_NM,
+        ARCL.CNTNTS_TYPE_CD,
+        ARCL.CNTNTS_ID,
+        ARCL.CNTNTS_SUST,
+        ARCL.CNTNTS_API_PATH,
+        ARCL.VCNT,
+        ARCL.RECOM_YN,
+        ARCL.SCRT_ARCL_YN,
+        ARCL.NOTI_YN,
+        ARCL.MR_ARCL_YN,
+        ARCL.RSS_PUB_YN,
+        ARCL.USE_YN,
+        ARCL.REG_DTM,
+        ARCL.REG_MBR_NO,
+        ARCL.CNTNTS_TARGT_TIMS,
+        ARCL.CNTNTS_TARGT_SEQ,
+        ARCL.CNTNTS_PLAY_TIME,
+        ARCL.CNTNTS_THUMB_PATH,
+        ARCL.CNTNTS_API_PATH,
+        LECT.LECT_TITLE,
+        SCHD.LECT_DAY,
+        SCHD.LECT_START_TIME,
+        SCHD.LECT_END_TIME,
+        MBR.NM AS MENTOR_MBR_NM
+    FROM CNET_ARCL_INFO ARCL
+       INNER JOIN CNET_LECT_INFO LECT ON ARCL.CNTNTS_TARGT_NO = LECT.LECT_SER
+       INNER JOIN CNET_LECT_TIMS_INFO TIMS ON LECT.LECT_SER = TIMS.LECT_SER  AND ARCL.CNTNTS_TARGT_TIMS = TIMS.LECT_TIMS
+       INNER JOIN
+       CNET_LECT_SCHD_INFO SCHD
+          ON     TIMS.LECT_SER = SCHD.LECT_SER
+             AND TIMS.LECT_TIMS = SCHD.LECT_TIMS
+             AND ARCL.CNTNTS_TARGT_SEQ = SCHD.SCHD_SEQ
+             AND SCHD.LECT_STAT_CD = '101551'
+       INNER JOIN CNET_MBR_INFO MBR ON ARCL.CNTNTS_TARGT_ID = MBR.MBR_NO
+    <where>
+        ARCL.BOARD_ID = 'lecReplay'
+        AND ARCL.ARCL_SER = #{arclSer}
+    </where>
+  </select>
+
+  <select id="getSimpleNoticeList" parameterType="kr.or.career.mentor.domain.ArclInfo" resultType="kr.or.career.mentor.domain.ArclInfo">
+    /* [ArclInfoMapper.xml#getSimpleNoticeList] */
+    SELECT *
+    FROM (SELECT ARCL.ARCL_SER,
+                 ARCL.BOARD_ID,
+                 ARCL.PREF_NO,
+                 ARCL.EXPS_TARGT_CD,
+                 ARCL.TITLE,
+                 ARCL.REG_DTM,
+                 ARCL.VCNT,
+                 ROW_NUMBER () OVER (ORDER BY ARCL.REG_DTM DESC) AS RN,
+                 (SELECT COUNT (1)
+                    FROM CNET_ARCL_FILE_INFO
+                   WHERE ARCL.ARCL_SER = ARCL_SER)
+                    AS FILE_CNT,
+                 PREF.PREF_NM,
+                 CODE.CD_NM AS EXPS_TARGT_NM
+            FROM CNET_ARCL_INFO ARCL
+                 LEFT OUTER JOIN
+                 CNET_BOARD_PREF_INFO PREF
+                    ON     ARCL.BOARD_ID = PREF.BOARD_ID
+                       AND ARCL.PREF_NO = PREF.PREF_NO
+                 LEFT OUTER JOIN CNET_CODE CODE
+                    ON CODE.SUP_CD = '101633' AND ARCL.EXPS_TARGT_CD = CODE.CD
+           WHERE     ARCL.BOARD_ID = #{boardId}
+                 AND ARCL.USE_YN = 'Y'
+                 AND ARCL.NOTI_YN = 'Y')
+   WHERE RN > 6
+  </select>
+
+      <!-- 수업자료실, 1:1문의, 공지사항 목록 -->
+      <select id="getSimpleArclList" parameterType="kr.or.career.mentor.domain.ArclInfo" resultType="kr.or.career.mentor.domain.ArclInfo">
+              /* [ArclInfoMapper.xml#getSimpleArclList] */
+              /* paging */
+              SELECT ROW_NUMBER () OVER (ORDER BY ARCL.REG_DTM DESC) AS RN
+                   , ARCL.ARCL_SER
+                   , '' AS DATA_TYPE                                                                                    /* 자료구분(멘토,수업) */
+                   , LECT.LECTR_NM                                                                                      /* 멘토명 */
+                   , MJI.JOB_NM                                                                                         /* 멘토직업명 */
+                   , ARCL.CNTNTS_TYPE_CD                                                                                /* 수업대상 */
+                   , (SELECT CD_NM FROM CNET_CODE WHERE LECT.LECT_TYPE_CD = CD) AS LECT_TYPE_NM                         /* 수업유형 */
+                   , LECT.LECT_TITLE                                                                                    /* 수업명 */
+                   , PREF.PREF_NM                                                                                       /* 자료분류, 문의유형 */
+                   , ARCL.TITLE AS TITLE                                                                                /* 자료명, 문의글제목 */
+                   , (SELECT COUNT(*) FROM CNET_ARCL_FILE_INFO WHERE ARCL.ARCL_SER = ARCL_SER) AS FILE_CNT              /* 첨부갯수 */
+                   , (SELECT NM FROM CNET_MBR_INFO WHERE ARCL.REG_MBR_NO = MBR_NO) AS REG_MBR_NM                        /* 등록자, 작성자 */
+                   , FILES.FILES_NM                                                                                     /* 첨부파일명 */
+                   , (CASE WHEN ARCL.CHG_DTM IS NULL THEN ARCL.REG_DTM
+                           ELSE ARCL.CHG_DTM END
+                     ) AS CHG_DTM                                                                                       /* 최종수정일 */
+                   , (CASE WHEN ARCL.CNTNTS_SUST IS NOT NULL THEN 'Y'
+                          ELSE 'N' END
+                     ) AS ANS_YN                                                                                        /* 답변여부 */
+                   , FN_CD_NM((SELECT MBR_CUALF_CD FROM CNET_MBR_INFO WHERE ARCL.REG_MBR_NO = MBR_NO)) AS MBR_CUALF_NM  /* 회원유형 */
+                   , FN_SPLIT_STR((FN_MBR_SCH_NM(ARCL.REG_MBR_NO)), 3,'||') AS SIDO_NM                                  /* 지역 */
+                   , FN_SPLIT_STR((FN_MBR_SCH_NM(ARCL.REG_MBR_NO)), 1,'||') AS SCH_NM                                   /* 학교 */
+                   , ARCL.SUST                                                                                           /* 내용 */
+                   , ARCL.REG_DTM                                                                                       /* 등록일 */
+                   , ARCL.ANS_REG_DTM                                                                                   /* 답변일 */
+                   , (SELECT NM FROM CNET_MBR_INFO WHERE ARCL.ANS_REG_MBR_NO = MBR_NO) AS ANS_REG_MBR_NM                /* 답변자 */
+                   , ARCL.VCNT                                                                                          /* 조회수 */
+                   , FN_CD_NM(ARCL.EXPS_TARGT_CD) AS EXPS_TARGT_NM                                                      /* 공지사항 포탈구분 */
+                   , ARCL.POPUP_YN                                                                                      /* 공지사항 팝업여부 */
+                   , (CASE WHEN ((ARCL.REG_DTM + 10) > SYSDATE) THEN 'Y'
+                           ELSE 'N' END
+                     ) AS NEW_YN                                                                                        /* NEW아이콘 여부 */
+              /* paging */
+              FROM CNET_ARCL_INFO ARCL
+   LEFT OUTER JOIN CNET_BOARD_PREF_INFO PREF
+                ON ARCL.BOARD_ID = PREF.BOARD_ID
+               AND ARCL.PREF_NO = PREF.PREF_NO
+   LEFT OUTER JOIN CNET_LECT_INFO LECT
+                ON ARCL.CNTNTS_TARGT_NO = LECT.LECT_SER
+   LEFT OUTER JOIN CNET_MBR_JOB_INFO MJI
+                ON LECT.LECTR_MBR_NO = MJI.MBR_NO
+   LEFT OUTER JOIN (
+                       SELECT
+                                A.ARCL_SER
+                              , LISTAGG(B.ORI_FILE_NM, '],[') WITHIN GROUP (ORDER BY B.ORI_FILE_NM)  AS FILES_NM
+                         FROM CNET_ARCL_FILE_INFO A, CNET_COM_FILE_INFO B
+                        WHERE A.FILE_SER = B.FILE_SER
+                       GROUP BY A.ARCL_SER
+                    )FILES
+                ON ARCL.ARCL_SER = FILES.ARCL_SER
+          <where>
+              AND ARCL.BOARD_ID = #{boardId}
+              <if test='boardId != "lecQnA" and boardId != "lecFreeBoard"'>
+                  AND ARCL.USE_YN = 'Y'
+              </if>
+
+              <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord)">
+                  <choose>
+                      <when test='searchKey eq "lectrNm"'>
+                          AND REGEXP_LIKE(LECT.LECTR_NM, #{searchWord})
+                      </when>
+                      <when test='searchKey eq "title"'>
+                          AND REGEXP_LIKE(ARCL.TITLE, #{searchWord})
+                      </when>
+                      <when test='searchKey eq "fileNm"'>
+                          AND REGEXP_LIKE(FILES.FILES_NM, #{searchWord})
+                      </when>
+                      <when test='searchKey eq "lectTitle"'>
+                          AND REGEXP_LIKE(LECT.LECT_TITLE, #{searchWord})
+                      </when>
+                      <when test='searchKey eq "sust"'>
+                          AND REGEXP_LIKE(ARCL.SUST, #{searchWord})
+                      </when>
+                      <otherwise>
+                          <if test='boardId eq "lecFile"'>
+                              AND (   REGEXP_LIKE(ARCL.LECT.LECTR_NM, #{searchWord})
+                                   OR REGEXP_LIKE(ARCL.TITLE, #{searchWord})
+                                   OR REGEXP_LIKE(FILES.FILES_NM, #{searchWord})
+                                   OR REGEXP_LIKE(LECT.LECT_TITLE, #{searchWord})
+                              )
+                          </if>
+                          <if test='boardId eq "lecQnA" or boardId eq "mtNotice"'>
+                              AND (   REGEXP_LIKE(ARCL.TITLE, #{searchWord})
+                                   OR REGEXP_LIKE(ARCL.SUST, #{searchWord})
+                              )
+                          </if>
+                      </otherwise>
+                  </choose>
+              </if>
+              <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(cntntsTypeCd)">
+                  AND ARCL.CNTNTS_TYPE_CD = #{cntntsTypeCd}
+              </if>
+              <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(prefNo)">
+                  AND ARCL.PREF_NO = #{prefNo}
+              </if>
+              <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(sStartDate)">
+                  AND TO_CHAR(ARCL.REG_DTM, 'YYYYMMDD') <![CDATA[ >= ]]> REGEXP_REPLACE(#{sStartDate}, '[[:punct:]]', '')
+              </if>
+              <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(sEndDate)">
+                  AND TO_CHAR(ARCL.REG_DTM, 'YYYYMMDD') <![CDATA[ <= ]]> REGEXP_REPLACE(#{sEndDate}, '[[:punct:]]', '')
+              </if>
+              <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ansYn)">
+                  <if test='ansYn eq "Y"'>
+                      AND ARCL.CNTNTS_SUST IS NOT NULL
+                  </if>
+                  <if test='ansYn eq "N"'>
+                      AND ARCL.CNTNTS_SUST IS NULL
+                  </if>
+              </if>
+              <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(notiYn)">
+                  AND ARCL.NOTI_YN = #{notiYn}
+              </if>
+              <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(expsTargtCd)">
+                  AND ARCL.EXPS_TARGT_CD = #{expsTargtCd}
+              </if>
+
+
+          </where>
+  </select>
+
+   <!-- 수업자료실, 1:1문의 상세, 공지사항 -->
+  <select id="getSimpleArclInfo" parameterType="kr.or.career.mentor.domain.ArclInfo" resultType="kr.or.career.mentor.domain.ArclInfo">
+              /* [ArclInfoMapper.xml#getSimpleArclInfo] */
+              SELECT ARCL.ARCL_SER
+                   , '' AS DATA_TYPE                                                                                    /* 구분 */
+                   , LECT.LECTR_NM                                                                                      /* 해당수업의 멘토명 */
+                   , MJI.JOB_NM                                                                                         /* 직업명 */
+                   , ARCL.CNTNTS_TYPE_CD                                                                                /* 대상 */
+                   , LECT.LECT_TYPE_CD                                                                                  /* 수업유형코드 */
+                   , LECT.LECT_TITLE                                                                                    /* 수업명 */
+                   , PREF.PREF_NO                                                                                       /* 자료분류코드 */
+                   , ARCL.TITLE                                                                                         /* 자료명, 문의하기제목 */
+                   ,(CASE WHEN ARCL.CHG_MBR_NO IS NULL THEN (SELECT NM FROM CNET_MBR_INFO WHERE ARCL.REG_MBR_NO = MBR_NO)
+                          ELSE (SELECT NM FROM CNET_MBR_INFO WHERE ARCL.CHG_MBR_NO = MBR_NO) END
+                     ) AS CHG_MBR_NM                                                                                    /* 최종수정자 */
+                   ,(CASE WHEN ARCL.CHG_DTM IS NULL THEN ARCL.REG_DTM
+                          ELSE ARCL.CHG_DTM END
+                     ) AS CHG_DTM                                                                                       /* 최종수정일 */
+                   , (CASE WHEN ARCL.CNTNTS_SUST IS NOT NULL THEN 'Y'
+                           ELSE 'N' END
+                     ) AS ANS_YN                                                                                        /* 답변여부 */
+                   , FN_CD_NM((SELECT MBR_CUALF_CD FROM CNET_MBR_INFO WHERE ARCL.REG_MBR_NO = MBR_NO)) AS MBR_CUALF_NM  /* 회원유형 */
+                   , (SELECT NM FROM CNET_MBR_INFO WHERE ARCL.REG_MBR_NO = MBR_NO) AS REG_MBR_NM                        /* 작성자 */
+                   , FN_SPLIT_STR((FN_MBR_SCH_NM(ARCL.REG_MBR_NO)), 3,'||') AS SIDO_NM                                  /* 지역 */
+                   , FN_SPLIT_STR((FN_MBR_SCH_NM(ARCL.REG_MBR_NO)), 1,'||') AS SCH_NM                                   /* 학교 */
+                   , PREF.PREF_NM                                                                                       /* 문의유형 */
+                   , (CASE WHEN (ARCL.PREF_NO = 'qnaMentor' AND ARCL.CNTNTS_TARGT_ID IS NOT NULL) THEN 'MENT'
+                           WHEN (ARCL.PREF_NO = 'qnaClass' AND ARCL.CNTNTS_TARGT_NO IS NOT NULL) THEN 'LECT'
+                           WHEN (ARCL.CNTNTS_TARGT_ID IS NULL AND ARCL.CNTNTS_TARGT_NO IS NULL) THEN 'COMM' END
+                     ) AS QNA_GBN                                                                                       /* 유입된 1:1문의 구분 */
+                   , (SELECT NM FROM CNET_MBR_INFO WHERE ARCL.CNTNTS_TARGT_ID = MBR_NO) AS MENTOR_MBR_NM                /* 멘토문의하기의 대상 멘토명 */
+                   , ARCL.SUST                                                                                          /* 내용 */
+                   , ARCL.REG_DTM                                                                                       /* 등록일 */
+                   , ARCL.VCNT                                                                                          /* 조회수 */
+                   , (SELECT NM FROM CNET_MBR_INFO WHERE ARCL.ANS_REG_MBR_NO = MBR_NO AND CNTNTS_SUST IS NOT NULL) AS ANS_REG_MBR_NM /* 답변자 */
+                   , (CASE WHEN ARCL.CNTNTS_SUST IS NULL THEN NULL
+                           ELSE ARCL.ANS_REG_DTM END
+                     ) AS ANS_REG_DTM                                                                                   /* 답변일 */
+                   , ARCL.CNTNTS_SUST                                                                                   /* 답변내용 */
+                   , ARCL.POPUP_YN                                                                                      /* 공지사항 팝업여부 */
+                   , ARCL.EXPS_TARGT_CD                                                                                 /* 공지사항 포탈구분 */
+                   , ARCL.NOTI_YN                                                                                       /* 중요공지여부 */
+                   , ARCL.POPUP_WIDTH                                                                                   /* 공지사항 팝업 width */
+                   , ARCL.POPUP_HIGH                                                                                    /* 공지사항 팝업 hight */
+              FROM CNET_ARCL_INFO ARCL
+   LEFT OUTER JOIN CNET_BOARD_PREF_INFO PREF
+                ON ARCL.BOARD_ID = PREF.BOARD_ID
+               AND ARCL.PREF_NO = PREF.PREF_NO
+   LEFT OUTER JOIN CNET_LECT_INFO LECT
+                ON ARCL.CNTNTS_TARGT_NO = LECT.LECT_SER
+   LEFT OUTER JOIN CNET_MBR_JOB_INFO MJI
+                ON LECT.LECTR_MBR_NO = MJI.MBR_NO
+            WHERE ARCL.ARCL_SER = #{arclSer}
+  </select>
+
+    <!-- 수업과제 목록, 상세  -->
+  <select id="getClassTaskList" parameterType="kr.or.career.mentor.domain.ArclInfo" resultType="kr.or.career.mentor.domain.ArclInfo">
+              /* [ArclInfoMapper.xml#getClassTaskList] */
+              /* paging */
+              SELECT ROW_NUMBER () OVER (ORDER BY ARCL.REG_DTM DESC) AS RN
+                   , ARCL.ARCL_SER
+                   , SCHD.LECT_DAY                                                                          /* 수업일 */
+                   , LECT.LECTR_NM                                                                          /* 멘토명 */
+                   , JOB.JOB_NM                                                                             /* 직업명 */
+                   , ARCL.CNTNTS_TARGT_NM                                                                   /* 수업명 */
+                   , ARCL.TITLE                                                                             /* 수업과제 */
+                   , (SELECT NM FROM CNET_MBR_INFO WHERE ARCL.REG_MBR_NO = MBR_NO) AS REG_MBR_NM            /* 등록자 */
+                   , (SELECT COUNT(*) FROM CNET_ARCL_FILE_INFO WHERE ARCL.ARCL_SER = ARCL_SER) AS FILE_CNT  /* 첨부갯수 */
+                   , SCH.SIDO_NM AS SIDO_NM                                                                 /* 지역 */
+                   , SCH.SCH_NM                                                                             /* 학교 */
+                   , ROOM.CLAS_ROOM_NM                                                                      /* 반명 */
+                   , ARCL.REG_DTM                                                                           /* 등록일 */
+                   , ARCL.SUST                                                                              /* 내용 */
+              /* paging */
+                FROM CNET_ARCL_INFO ARCL
+     LEFT OUTER JOIN CNET_CLAS_ROOM_INFO ROOM
+                  ON ARCL.CNTNTS_ID = ROOM.CLAS_ROOM_SER
+     LEFT OUTER JOIN CNET_SCH_INFO SCH
+                  ON ROOM.SCH_NO = SCH.SCH_NO
+     LEFT OUTER JOIN CNET_LECT_INFO LECT
+                  ON ARCL.CNTNTS_TARGT_NO = LECT.LECT_SER
+     LEFT OUTER JOIN CNET_MBR_JOB_INFO JOB
+                  ON LECT.LECTR_MBR_NO =JOB.MBR_NO
+     LEFT OUTER JOIN (
+                      SELECT LECT_SER, LECT_TIMS, SCHD_SEQ , LECT_DAY, LECT_STAT_CD
+                      FROM CNET_LECT_SCHD_INFO
+                      WHERE SCHD_SEQ = '1'
+                     ) SCHD
+                  ON ARCL.CNTNTS_TARGT_NO = SCHD.LECT_SER
+                 AND ARCL.CNTNTS_TARGT_TIMS = SCHD.LECT_TIMS
+               WHERE ARCL.BOARD_ID = 'lecWork'
+                 AND ARCL.USE_YN = 'Y'
+                 AND SCHD.LECT_STAT_CD = '101551' /* 수업완료 */
+              <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord)">
+                  <choose>
+                      <when test='searchKey eq "title"'>
+                          AND REGEXP_LIKE(ARCL.TITLE, #{searchWord})
+                      </when>
+                      <when test='searchKey eq "cntntsTargtNm"'>
+                          AND REGEXP_LIKE(ARCL.CNTNTS_TARGT_NM, #{searchWord})
+                      </when>
+                      <when test='searchKey eq "lectrNm"'>
+                          AND REGEXP_LIKE(LECT.LECTR_NM, #{searchWord})
+                      </when>
+                      <when test='searchKey eq "schNm"'>
+                          AND REGEXP_LIKE(SCH.SCH_NM, #{searchWord})
+                      </when>
+                      <when test='searchKey eq "clasRoomNm"'>
+                          AND REGEXP_LIKE(ROOM.CLAS_ROOM_NM, #{searchWord})
+                      </when>
+                      <otherwise>
+                          AND (   REGEXP_LIKE(ARCL.TITLE, #{searchWord})
+                               OR REGEXP_LIKE(ARCL.CNTNTS_TARGT_NM, #{searchWord})
+                               OR REGEXP_LIKE(LECT.LECTR_NM, #{searchWord})
+                               OR REGEXP_LIKE(SCH.SCH_NM, #{searchWord})
+                               OR REGEXP_LIKE(ROOM.CLAS_ROOM_NM, #{searchWord})
+                          )
+                      </otherwise>
+                  </choose>
+              </if>
+              <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(sStartDate)">
+                  AND TO_CHAR(ARCL.REG_DTM, 'YYYYMMDD') <![CDATA[ >= ]]> REGEXP_REPLACE(#{sStartDate}, '[[:punct:]]', '')
+              </if>
+              <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(sEndDate)">
+                  AND TO_CHAR(ARCL.REG_DTM, 'YYYYMMDD') <![CDATA[ <= ]]> REGEXP_REPLACE(#{sEndDate}, '[[:punct:]]', '')
+              </if>
+              <if test="arclSer != null">
+                  AND ARCL.ARCL_SER = #{arclSer}
+              </if>
+  </select>
+
+    <!-- 평점조회 > 수업별 리스트 -->
+    <select id="getRatingByLecture" parameterType="kr.or.career.mentor.domain.RatingDTO" resultType="kr.or.career.mentor.domain.RatingDTO">
+        /* [ArclInfoMapper.xml#getRatingByLecture] */
+        /* paging */
+        SELECT ROW_NUMBER () OVER (ORDER BY A.TECHER_POINT DESC, A.STU_POINT DESC) AS RN
+             , A.*
+        /* paging */
+          FROM (
+                SELECT LECT.LECT_SER
+                     , FN_CD_NM(LECT.LECT_TYPE_CD) AS LECT_TYPE_NM    /* 수업유형 */
+                     , FN_CD_NM(LECT.LECT_TARGT_CD) AS LECT_TARGT_NM  /* 수업대상 */
+                     , LECT.LECT_TARGT_CD                             /* 수업대상코드 */
+                     , LECT.LECT_TITLE                                /* 수업명 */
+                     , LECT.LECTR_NM                                  /* 멘토명 */
+                     , JOB.JOB_NM                                     /* 직업명 */
+                     , GRP.GRP_NM                                     /* 배정사업 */
+                     , (
+                         SELECT COUNT(*) AS CNT
+                           FROM CNET_ARCL_INFO AI
+                     INNER JOIN CNET_ARCL_CMT_INFO ACI
+                             ON AI.BOARD_ID = ACI.BOARD_ID
+                            AND AI.ARCL_SER = ACI.ARCL_SER
+                            AND ACI.USE_YN = 'Y'
+                            AND ACI.SUP_CMT_SER IS NULL
+                     INNER JOIN CNET_MBR_INFO MI
+                             ON ACI.REG_MBR_NO = MI.MBR_NO
+                            AND MI.MBR_CLASS_CD = '100859'
+                          WHERE AI.BOARD_ID = 'lecAppr'
+                            AND CNTNTS_TARGT_NO = LECT.LECT_SER
+                     ) AS TEACHER_CNT                                /* 교사(명) */
+                     , NVL(( SELECT ROUND(SUM(ASM_PNT)/COUNT(*),1) AS CNT
+                               FROM CNET_ARCL_INFO AI
+                         INNER JOIN CNET_ARCL_CMT_INFO ACI
+                                 ON AI.BOARD_ID = ACI.BOARD_ID
+                                AND AI.ARCL_SER = ACI.ARCL_SER
+                                AND ACI.USE_YN = 'Y'
+                                AND ACI.SUP_CMT_SER IS NULL
+                         INNER JOIN CNET_MBR_INFO MI
+                                 ON ACI.REG_MBR_NO = MI.MBR_NO
+                                AND MI.MBR_CLASS_CD = '100859'
+                              WHERE AI.BOARD_ID = 'lecAppr'
+                                 AND CNTNTS_TARGT_NO = LECT.LECT_SER
+                     ),0) AS TECHER_POINT                           /* 교사평점 */
+                     , (
+                         SELECT COUNT(*) AS CNT
+                           FROM CNET_ARCL_INFO AI
+                     INNER JOIN CNET_ARCL_CMT_INFO ACI
+                             ON AI.BOARD_ID = ACI.BOARD_ID
+                            AND AI.ARCL_SER = ACI.ARCL_SER
+                            AND ACI.SUP_CMT_SER IS NULL
+                            AND ACI.USE_YN = 'Y'
+                     INNER JOIN CNET_MBR_INFO MI
+                             ON ACI.REG_MBR_NO = MI.MBR_NO
+                            AND MI.MBR_CLASS_CD = '100858'
+                          WHERE AI.BOARD_ID = 'lecAppr'
+                            AND CNTNTS_TARGT_NO = LECT.LECT_SER
+                     ) AS STU_CNT                                   /* 학생(명) */
+                     , NVL(( SELECT ROUND(SUM(ASM_PNT)/COUNT(*),1) AS CNT
+                             FROM CNET_ARCL_INFO AI
+                       INNER JOIN CNET_ARCL_CMT_INFO ACI
+                               ON AI.BOARD_ID = ACI.BOARD_ID
+                              AND AI.ARCL_SER = ACI.ARCL_SER
+                              AND ACI.SUP_CMT_SER IS NULL
+                              AND ACI.USE_YN = 'Y'
+                       INNER JOIN CNET_MBR_INFO MI
+                               ON ACI.REG_MBR_NO = MI.MBR_NO
+                              AND MI.MBR_CLASS_CD = '100858'
+                            WHERE AI.BOARD_ID = 'lecAppr'
+                              AND CNTNTS_TARGT_NO = LECT.LECT_SER
+                     ),0) AS STU_POINT                              /* 학생평점 */
+                FROM CNET_LECT_INFO LECT
+     LEFT OUTER JOIN CNET_JOB_INFO JOB
+                  ON LECT.LECTR_JOB_NO = JOB.JOB_NO
+     LEFT OUTER JOIN CNET_BIZ_GRP_INFO GRP
+                  ON LECT.LECT_GRP_NO = GRP.GRP_NO
+               WHERE 1 = 1
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectTypeCd)">
+                 AND LECT.LECT_TYPE_CD = #{lectTypeCd}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(jobNm)">
+                 AND REGEXP_LIKE(JOB.JOB_NM, #{jobNm})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectTitle)">
+                 AND REGEXP_LIKE(LECT.LECT_TITLE, #{lectTitle})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectrNm)">
+                 AND REGEXP_LIKE(LECT.LECTR_NM, #{lectrNm})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpNm)">
+                AND REGEXP_LIKE(GRP.GRP_NM, #{grpNm})
+            </if>
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(schoolGrdExList)" >
+                AND LECT.LECT_TARGT_CD NOT IN
+                <foreach collection="schoolGrdExList" item="schoolGrdExList"   open="(" close=")" separator=",">
+                    #{schoolGrdExList}
+                </foreach>
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schoolEtcGrd)">
+                AND LECT.LECT_TARGT_CD = #{schoolEtcGrd}
+            </if>
+        ) A
+        WHERE 1 = 1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(avgPoint)">
+            <![CDATA[
+            AND (A.TECHER_POINT >= TO_NUMBER(#{avgPoint}) AND A.TECHER_POINT < TO_NUMBER(#{avgPoint}) + 1 OR A.STU_POINT >= TO_NUMBER(#{avgPoint}) AND A.STU_POINT < TO_NUMBER(#{avgPoint}) + 1)
+            ]]>
+        </if>
+    </select>
+
+    <!-- 평점조회 > 멘토별 리스트 -->
+    <select id="getRatingByMentor" parameterType="kr.or.career.mentor.domain.RatingDTO" resultType="kr.or.career.mentor.domain.RatingDTO">
+        /* [ArclInfoMapper.xml#getRatingByMentor] */
+        /* paging */
+        SELECT ROW_NUMBER () OVER (ORDER BY A.TECHER_POINT DESC, A.STU_POINT DESC, A.LECT_CNT DESC) AS RN
+             , A.*
+        /* paging */
+          FROM (
+                SELECT MBR.NM AS LECTR_NM               /* 멘토 */
+                     , JOB.JOB_NM                       /* 직업명 */
+                     , (SELECT COUNT(*)
+                          FROM CNET_LECT_INFO LECT
+                    INNER JOIN CNET_LECT_TIMS_INFO TIMS
+                            ON LECT.LECT_SER = TIMS.LECT_SER
+                    INNER JOIN
+                               (
+                                   SELECT LECT_SER
+                                     FROM CNET_LECT_SCHD_INFO
+                                    WHERE 1 = 1
+                                    <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectStartDay) and @org.apache.commons.lang3.StringUtils@isNotEmpty(lectEndDay)">
+                                      AND LECT_DAY BETWEEN REGEXP_REPLACE(#{lectStartDay}, '[[:punct:]]', '') AND REGEXP_REPLACE(#{lectEndDay}, '[[:punct:]]', '')
+                                    </if>
+                                 GROUP BY LECT_SER
+                               ) SCHD
+                            ON TIMS.LECT_SER = SCHD.LECT_SER
+                         WHERE LECT.LECTR_MBR_NO = MBR.MBR_NO
+                           AND TIMS.LECT_STAT_CD IN ('101543','101544','101548','101549','101550','101551')
+                       ) AS LECT_CNT                   /* 수업수 */
+                     , (SELECT COUNT(*)
+                          FROM CNET_ARCL_INFO AI
+                    INNER JOIN CNET_ARCL_CMT_INFO ACI
+                            ON AI.BOARD_ID = ACI.BOARD_ID
+                           AND AI.ARCL_SER = ACI.ARCL_SER
+                           AND ACI.SUP_CMT_SER IS NULL
+                           AND ACI.USE_YN = 'Y'
+                    INNER JOIN CNET_MBR_INFO MI
+                            ON ACI.REG_MBR_NO = MI.MBR_NO
+                           AND MI.MBR_CLASS_CD = '100859'
+                         WHERE AI.BOARD_ID = 'lecAppr'
+                           AND CNTNTS_TARGT_NO IN (
+                                                    SELECT LECT.LECT_SER
+                                                      FROM CNET_LECT_INFO LECT
+                                                INNER JOIN CNET_LECT_TIMS_INFO TIMS
+                                                        ON LECT.LECT_SER = TIMS.LECT_SER
+                                                INNER JOIN
+                                                           (
+                                                                SELECT LECT_SER
+                                                                  FROM CNET_LECT_SCHD_INFO
+                                                                 WHERE 1 = 1
+                                                                 <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectStartDay) and @org.apache.commons.lang3.StringUtils@isNotEmpty(lectEndDay)">
+                                                                   AND LECT_DAY BETWEEN REGEXP_REPLACE(#{lectStartDay}, '[[:punct:]]', '') AND REGEXP_REPLACE(#{lectEndDay}, '[[:punct:]]', '')
+                                                                 </if>
+                                                              GROUP BY LECT_SER
+                                                           ) SCHD
+                                                        ON TIMS.LECT_SER = SCHD.LECT_SER
+                                                     WHERE LECT.LECTR_MBR_NO = MBR.MBR_NO
+                                                       AND TIMS.LECT_STAT_CD IN ('101543','101544','101548','101549','101550','101551')
+                                                 )
+                       ) AS TEACHER_CNT                 /* 교사(명) */
+                     , NVL((SELECT ROUND(SUM(ASM_PNT)/COUNT(*),1) AS CNT
+                              FROM CNET_ARCL_INFO AI
+                        INNER JOIN CNET_ARCL_CMT_INFO ACI
+                                ON AI.BOARD_ID = ACI.BOARD_ID
+                               AND AI.ARCL_SER = ACI.ARCL_SER
+                               AND ACI.SUP_CMT_SER IS NULL
+                               AND ACI.USE_YN = 'Y'
+                        INNER JOIN CNET_MBR_INFO MI
+                                ON ACI.REG_MBR_NO = MI.MBR_NO
+                               AND MI.MBR_CLASS_CD = '100859'
+                             WHERE AI.BOARD_ID = 'lecAppr'
+                               AND CNTNTS_TARGT_NO IN (
+                                                            SELECT LECT.LECT_SER
+                                                              FROM CNET_LECT_INFO LECT
+                                                        INNER JOIN CNET_LECT_TIMS_INFO TIMS
+                                                                ON LECT.LECT_SER = TIMS.LECT_SER
+                                                        INNER JOIN
+                                                                   (
+                                                                        SELECT LECT_SER
+                                                                          FROM CNET_LECT_SCHD_INFO
+                                                                         WHERE 1 = 1
+                                                                         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectStartDay) and @org.apache.commons.lang3.StringUtils@isNotEmpty(lectEndDay)">
+                                                                           AND LECT_DAY BETWEEN REGEXP_REPLACE(#{lectStartDay}, '[[:punct:]]', '') AND REGEXP_REPLACE(#{lectEndDay}, '[[:punct:]]', '')
+                                                                         </if>
+                                                                     GROUP BY LECT_SER
+                                                                   ) SCHD
+                                                            ON TIMS.LECT_SER = SCHD.LECT_SER
+                                                            WHERE LECT.LECTR_MBR_NO = MBR.MBR_NO
+                                                            AND TIMS.LECT_STAT_CD IN ('101543','101544','101548','101549','101550','101551')
+                                                       )
+                       ),0) AS TECHER_POINT              /* 교사평점 */
+                     , (SELECT COUNT(*)
+                          FROM CNET_ARCL_INFO AI
+                    INNER JOIN CNET_ARCL_CMT_INFO ACI
+                            ON AI.BOARD_ID = ACI.BOARD_ID
+                           AND AI.ARCL_SER = ACI.ARCL_SER
+                           AND ACI.SUP_CMT_SER IS NULL
+                           AND ACI.USE_YN = 'Y'
+                    INNER JOIN CNET_MBR_INFO MI
+                            ON ACI.REG_MBR_NO = MI.MBR_NO
+                           AND MI.MBR_CLASS_CD = '100858'
+                         WHERE AI.BOARD_ID = 'lecAppr'
+                           AND CNTNTS_TARGT_NO IN (
+                                                    SELECT LECT.LECT_SER
+                                                      FROM CNET_LECT_INFO LECT
+                                                INNER JOIN CNET_LECT_TIMS_INFO TIMS
+                                                        ON LECT.LECT_SER = TIMS.LECT_SER
+                                                INNER JOIN
+                                                           (
+                                                                SELECT LECT_SER
+                                                                  FROM CNET_LECT_SCHD_INFO
+                                                                 WHERE 1 = 1
+                                                                 <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectStartDay) and @org.apache.commons.lang3.StringUtils@isNotEmpty(lectEndDay)">
+                                                                   AND LECT_DAY BETWEEN REGEXP_REPLACE(#{lectStartDay}, '[[:punct:]]', '') AND REGEXP_REPLACE(#{lectEndDay}, '[[:punct:]]', '')
+                                                                 </if>
+                                                              GROUP BY LECT_SER
+                                                           ) SCHD
+                                                        ON TIMS.LECT_SER = SCHD.LECT_SER
+                                                     WHERE LECT.LECTR_MBR_NO = MBR.MBR_NO
+                                                       AND TIMS.LECT_STAT_CD IN ('101543','101544','101548','101549','101550','101551')
+                                                  )
+                       ) AS STU_CNT                      /* 학생(명) */
+                     , NVL((SELECT ROUND(SUM(ASM_PNT)/COUNT(*),1) AS CNT
+                              FROM CNET_ARCL_INFO AI
+                        INNER JOIN CNET_ARCL_CMT_INFO ACI
+                                ON AI.BOARD_ID = ACI.BOARD_ID
+                               AND AI.ARCL_SER = ACI.ARCL_SER
+                               AND ACI.SUP_CMT_SER IS NULL
+                               AND ACI.USE_YN = 'Y'
+                        INNER JOIN CNET_MBR_INFO MI
+                                ON ACI.REG_MBR_NO = MI.MBR_NO
+                               AND MI.MBR_CLASS_CD = '100858'
+                             WHERE AI.BOARD_ID = 'lecAppr'
+                               AND CNTNTS_TARGT_NO IN
+                                                      (
+                                                        SELECT LECT.LECT_SER
+                                                          FROM CNET_LECT_INFO LECT
+                                                    INNER JOIN CNET_LECT_TIMS_INFO TIMS
+                                                            ON LECT.LECT_SER = TIMS.LECT_SER
+                                                    INNER JOIN
+                                                               (
+                                                                    SELECT LECT_SER
+                                                                      FROM CNET_LECT_SCHD_INFO
+                                                                     WHERE 1 = 1
+                                                                     <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectStartDay) and @org.apache.commons.lang3.StringUtils@isNotEmpty(lectEndDay)">
+                                                                       AND LECT_DAY BETWEEN REGEXP_REPLACE(#{lectStartDay}, '[[:punct:]]', '') AND REGEXP_REPLACE(#{lectEndDay}, '[[:punct:]]', '')
+                                                                     </if>
+                                                                  GROUP BY LECT_SER
+                                                               ) SCHD
+                                                            ON TIMS.LECT_SER = SCHD.LECT_SER
+                                                         WHERE LECT.LECTR_MBR_NO = MBR.MBR_NO
+                                                           AND TIMS.LECT_STAT_CD IN ('101543','101544','101548','101549','101550','101551')
+                                                      )
+                       ),0) AS STU_POINT                 /* 학생평점 */
+                FROM CNET_MBR_INFO MBR
+     LEFT OUTER JOIN CNET_MBR_JOB_INFO MJOB
+                  ON MBR.MBR_NO = MJOB.MBR_NO
+     LEFT OUTER JOIN CNET_JOB_INFO JOB
+                  ON MJOB.JOB_NO = JOB.JOB_NO
+               WHERE MBR.MBR_CLASS_CD = '101505'
+                <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectrNm)">
+                 AND REGEXP_LIKE(MBR.NM, #{lectrNm})
+                </if>
+                <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(jobNm)">
+                 AND REGEXP_LIKE(JOB.JOB_NM, #{jobNm})
+                </if>
+                ) A
+                WHERE 1 = 1
+                <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(avgPoint)">
+                    <![CDATA[
+                    AND (A.TECHER_POINT >= TO_NUMBER(#{avgPoint}) AND A.TECHER_POINT < TO_NUMBER(#{avgPoint}) + 1 OR A.STU_POINT >= TO_NUMBER(#{avgPoint}) AND A.STU_POINT < TO_NUMBER(#{avgPoint}) + 1)
+                    ]]>
+                </if>
+
+    </select>
+
+    <!-- 수업후기 목록 -->
+    <select id="getLectureReview" parameterType="kr.or.career.mentor.domain.RatingCmtDTO" resultType="kr.or.career.mentor.domain.RatingCmtDTO">
+        /* [ArclInfoMapper.xml#getLectureReview] */
+        /* paging */
+        SELECT ROW_NUMBER () OVER (ORDER BY CMT.REG_DTM DESC) AS RN
+             , CMT.CMT_SER
+             , FN_CD_NM(LECT.LECT_TYPE_CD) AS LECT_TYPE_NM      /* 수업유형 */
+             , LECT.LECT_TITLE                                  /* 수업명 */
+             , LECT.LECTR_NM                                    /* 멘토 */
+             , JOB.JOB_NM                                       /* 직업명 */
+             , CMT.CMT_SUST                                     /* 후기내용 */
+             , CMT.ASM_PNT                                      /* 평점 */
+             , FN_CD_NM(LECT.LECT_TARGT_CD) AS LECT_TARGT_NM    /* 수업대상(학교급) */
+             , LECT.LECT_TARGT_CD                               /* 수업대상(학교급)코드 */
+             , MBR.NM AS REG_MBR_NM                             /* 작성자 */
+             , FN_CD_NM(MBR.MBR_CUALF_CD) AS MBR_CUALF_NM       /* 작성자회원유형 */
+             , MBR.MBR_CUALF_CD                                 /* 작성자회원유형코드 */
+             , CMT.REG_DTM                                      /* 등록일 */
+             , CO.CO_NM                                         /* 교육수행기관 */
+             , GRP.GRP_NM                                       /* 배정사업 */
+             , CLAS.CLAS_ROOM_NM                                /* 반명 */
+             , SCH.SCH_NM                                       /* 학교명 */
+             , MBR.ID AS REG_MBR_ID                             /* 작성자ID */
+        /* paging */
+          FROM CNET_ARCL_CMT_INFO CMT
+    LEFT OUTER JOIN CNET_ARCL_INFO ARCL
+            ON CMT.BOARD_ID = ARCL.BOARD_ID
+           AND CMT.ARCL_SER = ARCL.ARCL_SER
+    LEFT OUTER JOIN CNET_LECT_INFO LECT
+            ON ARCL.CNTNTS_TARGT_NO = LECT.LECT_SER
+    LEFT OUTER JOIN CNET_JOB_INFO JOB
+            ON LECT.LECTR_JOB_NO = JOB.JOB_NO
+    LEFT OUTER JOIN CNET_MBR_INFO MBR
+            ON CMT.REG_MBR_NO = MBR.MBR_NO
+    LEFT OUTER JOIN CNET_BIZ_GRP_INFO GRP
+            ON LECT.LECT_GRP_NO = GRP.GRP_NO
+    LEFT OUTER JOIN CNET_CO_INFO CO
+            ON LECT.LECT_CO_NO = CO.CO_NO
+    LEFT OUTER JOIN CNET_CLAS_ROOM_INFO CLAS
+            ON CMT.CLAS_ROOM_SER = CLAS.CLAS_ROOM_SER
+    LEFT OUTER JOIN CNET_SCH_INFO SCH
+            ON CLAS.SCH_NO = SCH.SCH_NO
+         WHERE CMT.BOARD_ID = 'lecAppr'
+           AND CMT.USE_YN = 'Y'
+           AND CMT.SUP_CMT_SER IS NULL
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectTypeCd)">
+           AND LECT.LECT_TYPE_CD = #{lectTypeCd}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mbrCualfType)">
+            <if test='mbrCualfType eq "student"'>
+                AND MBR.MBR_CUALF_CD IN ('100205', '100206', '100207', '100208')
+            </if>
+            <if test='mbrCualfType eq "teacher"'>
+                AND MBR.MBR_CUALF_CD IN ('100214', '100215')
+            </if>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectTitle)">
+           AND REGEXP_LIKE(LECT.LECT_TITLE, #{lectTitle})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectrNm)">
+           AND REGEXP_LIKE(LECT.LECTR_NM, #{lectrNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpNm)">
+           AND REGEXP_LIKE(GRP.GRP_NM, #{grpNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(jobNm)">
+           AND REGEXP_LIKE(JOB.JOB_NM, #{jobNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(coNm)">
+           AND REGEXP_LIKE(CO.CO_NM, #{coNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate) and @org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            AND TO_CHAR(CMT.REG_DTM, 'YYYYMMDD') BETWEEN REGEXP_REPLACE(#{searchStDate}, '[[:punct:]]', '') AND REGEXP_REPLACE(#{searchEndDate}, '[[:punct:]]', '')
+        </if>
+        <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(schoolGrdExList)" >
+            AND LECT.LECT_TARGT_CD NOT IN
+            <foreach collection="schoolGrdExList" item="schoolGrdExList"   open="(" close=")" separator=",">
+                #{schoolGrdExList}
+            </foreach>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schoolEtcGrd)">
+            AND LECT.LECT_TARGT_CD = #{schoolEtcGrd}
+        </if>
+        <if test="cmtSer != null">
+            AND CMT.CMT_SER = #{cmtSer}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(regMbrNm)">
+            AND REGEXP_LIKE(MBR.NM, #{regMbrNm})
+        </if>
+    </select>
+
+    <!-- 수업후기 삭제 -->
+    <update id="deleteLectureReview" parameterType="kr.or.career.mentor.domain.RatingCmtDTO">
+        UPDATE CNET_ARCL_CMT_INFO
+           SET USE_YN = 'N'
+             , DEL_DTM = SYSDATE
+             , DEL_MBR_NO = #{delMbrNo}
+         WHERE CMT_SER = #{cmtSer}
+    </update>
+
+  <update id="addVcnt" parameterType="kr.or.career.mentor.domain.ArclInfo">
+      UPDATE CNET_ARCL_INFO
+      <set>
+        VCNT = VCNT + 1
+      </set>
+      <where>
+        ARCL_SER = #{arclSer}
+      </where>
+  </update>
+
+  <select id="listRating" parameterType="kr.or.career.mentor.domain.RatingDTO" resultType="kr.or.career.mentor.domain.RatingDTO">
+  /* [ArclInfoMapper.xml#listRating] */
+  /* paging */
+  SELECT A.*
+  <choose>
+        <when test='orderType eq "1"'>
+     , ROW_NUMBER() OVER(ORDER BY TECHER_POINT DESC) AS rn
+        </when>
+        <otherwise>
+     , ROW_NUMBER() OVER(ORDER BY STU_POINT DESC) AS rn
+        </otherwise>
+    </choose>
+        /* paging */
+        FROM (
+          SELECT A.mbr_no, A.NM, B.JOB_NM
+                    , (SELECT COUNT(*)
+                         FROM CNET_LECT_INFO LI
+                   INNER JOIN CNET_LECT_TIMS_INFO LT
+                           ON LI.LECT_SER = LT.LECT_SER
+                        WHERE LI.LECTR_MBR_NO = A.MBR_NO
+                          AND LT.LECT_STAT_CD IN ('101543','101544','101548','101549','101550','101551')) AS LECT_CNT
+                   ,(SELECT S2.CD_NM
+                       FROM CNET_CODE S2
+                      WHERE C.JOB_CHRSTC_CD = S2.CD) AS JOB_CHRSTC_NM
+                   ,(SELECT S3.CD_NM
+                       FROM CNET_JOB_CLSF_CD S3
+                      WHERE S3.CD = D.JOB_CLSF_CD) AS JOB_CLSF_NM
+                   ,NVL(( SELECT ROUND(SUM(ASM_PNT)/COUNT(*),1) AS PNT
+                        FROM CNET_ARCL_INFO AI
+                  INNER JOIN CNET_ARCL_CMT_INFO ACI
+                          ON AI.BOARD_ID = ACI.BOARD_ID
+                         AND AI.ARCL_SER = ACI.ARCL_SER
+                         AND ACI.SUP_CMT_SER IS NULL
+                         AND ACI.USE_YN = 'Y'
+                  INNER JOIN CNET_MBR_INFO MI
+                          ON ACI.REG_MBR_NO = MI.MBR_NO
+                         AND MI.MBR_CLASS_CD = '100859'
+                       WHERE AI.BOARD_ID = 'lecAppr'
+                         AND CNTNTS_TARGT_NO IN (  SELECT LI.LECT_SER
+                                                     FROM CNET_LECT_INFO LI
+                                                    WHERE LI.LECTR_MBR_NO = A.MBR_NO)
+                    ),0) AS TECHER_POINT
+                   ,NVL(( SELECT ROUND(SUM(ASM_PNT)/COUNT(*),1) AS PNT
+                        FROM CNET_ARCL_INFO AI
+                  INNER JOIN CNET_ARCL_CMT_INFO ACI
+                          ON AI.BOARD_ID = ACI.BOARD_ID
+                         AND AI.ARCL_SER = ACI.ARCL_SER
+                         AND ACI.SUP_CMT_SER IS NULL
+                         AND ACI.USE_YN = 'Y'
+                  INNER JOIN CNET_MBR_INFO MI
+                          ON ACI.REG_MBR_NO = MI.MBR_NO
+                         AND MI.MBR_CLASS_CD = '100858'
+                       WHERE AI.BOARD_ID = 'lecAppr'
+                        AND CNTNTS_TARGT_NO IN (  SELECT LI.LECT_SER
+                                                    FROM CNET_LECT_INFO LI
+                                                   WHERE LI.LECTR_MBR_NO = A.MBR_NO)
+                    ),0) AS STU_POINT
+                    ,FN_SPLIT_STR((FN_MBR_SCH_NM(A.MBR_NO)), 1, '||') AS LECTR_SCH_NM
+             FROM CNET_MBR_INFO A
+  LEFT OUTER JOIN CNET_MBR_JOB_INFO B
+               ON A.MBR_NO = B.MBR_NO
+  LEFT OUTER JOIN CNET_MBR_JOB_CHRSTC_INFO C
+               ON A.MBR_NO = C.MBR_NO
+  LEFT OUTER JOIN CNET_JOB_INFO D
+               ON B.JOB_NO = D.JOB_NO
+            WHERE A.MBR_CLASS_CD = '101505'
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord)">
+            <choose>
+                <when test='searchKey eq "nm"'>
+              AND REGEXP_LIKE(A.NM,#{searchWord})
+                </when>
+                <when test='searchKey eq "job"'>
+              AND REGEXP_LIKE(B.JOB_NM,#{searchWord})
+                </when>
+                <otherwise>
+              AND ( REGEXP_LIKE(A.NM,#{searchWord}) OR REGEXP_LIKE(B.JOB_NM,#{searchWord}) )
+                </otherwise>
+            </choose>
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectrMbrNo)">
+            AND A.MBR_NO = #{lectrMbrNo}
+            </if>
+            ) A
+  </select>
+
+    <!-- 멘토포탈 > 질문답변, 수업과제 리스트, 메인포함 -->
+    <!-- 학교포탈 > 마이페이지 > 나의커뮤니티 수업과제 리스트 -->
+    <select id="getMentorArclInfoList" parameterType="kr.or.career.mentor.domain.ArclInfo" resultType="kr.or.career.mentor.domain.ArclInfo">
+        /* [ArclInfoMapper.xml#getMentorArclInfoList] */
+        /* paging */
+        SELECT
+               ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS rn
+             , A.*
+        /* paging */
+         FROM (
+                SELECT
+                        ARCL.ARCL_SER
+                      , PREF.PREF_NM                                    /* 구분 */
+                      , PREF.PREF_NO                                    /* 구분코드 */
+                      , ARCL.TITLE                                      /* 제목 */
+                      , (CASE WHEN CNTNTS_SUST IS NULL THEN 'N'
+                              ELSE 'Y' END
+                         ) AS ANS_YN                                     /* 답변여부 */
+                      , REG_MBR.NM AS REG_MBR_NM                         /* 작성자 */
+                      , REG_MBR.MBR_NO AS REG_MBR_NO                     /* 작성자 */
+                      , (CASE WHEN REG_MBR.MBR_CLASS_CD = '101505' THEN 'mentor'
+                              WHEN REG_MBR.MBR_CLASS_CD = '100858' THEN 'student'
+                              WHEN REG_MBR.MBR_CLASS_CD = '100859' THEN 'teacher'
+                              ELSE ' ' END
+                        ) AS REG_CLASS_NM                               /* 회원구분 */
+                      , ARCL.REG_DTM                                    /* 작성일 */
+                      , LECT.LECT_TITLE                                 /* 수업명 */
+                      , (CASE WHEN PREF.PREF_NO = 'qnaMentor' THEN (SELECT NM FROM CNET_MBR_INFO WHERE ARCL.CNTNTS_TARGT_ID = MBR_NO)
+                              ELSE LECT.LECTR_NM END
+                        ) AS LECTR_NM                                   /* 멘토명 */
+                      , LECT.LECT_DAY                                   /* 수업일 */
+                      , LECT.LECT_START_TIME                            /* 수업시작시간 */
+                      , LECT.LECT_END_TIME                              /* 수업종료시간 */
+                      , ROUND((TO_DATE(LECT.LECT_DAY||LECT.LECT_END_TIME,'YYYYMMDDHH24MI') - TO_DATE(LECT.LECT_DAY||LECT.LECT_START_TIME,'YYYYMMDDHH24MI') ) * 24 * 60) AS LECT_RUN_TIME
+                      , (CASE WHEN PREF.PREF_NO = 'qnaMentor' THEN (SELECT JOB_NM FROM CNET_MBR_JOB_INFO WHERE ARCL.CNTNTS_TARGT_ID = MBR_NO)
+                              ELSE JOB.JOB_NM END
+                        ) AS JOB_NM                                     /* 직업명 */
+                      , ARCL.SUST                                       /* 내용 */
+                      , ARCL.CNTNTS_SUST                                /* 답변내용 */
+                      , (CASE WHEN (ANS_MBR.MBR_CLASS_CD = '101504' AND ANS_MBR.MBR_CUALF_CD = '101501') THEN CO.CO_NM
+                              WHEN ANS_MBR.MBR_CLASS_CD = '100860' THEN '운영자'
+                              ELSE ANS_MBR.NM END
+                        ) AS ANS_REG_MBR_NM                             /* 답변자 */
+                      , ARCL.ANS_REG_DTM                                /* 답변일 */
+                      , LECT.LECT_CO_NO                                 /* 업체번호 */
+                      , LECT.LECT_SER                                   /* 강의일련번호 */
+                      , ARCL.CNTNTS_ID                                  /* 반일련번호 */
+                      , SCH.SCH_NM                                      /* 학교명 */
+                      , SCH.SIDO_NM                                     /* 학교 시도명 */
+                      , ROOM.CLAS_ROOM_NM                               /* 반명 */
+                      , ARCL.SCRT_ARCL_YN                               /* 비밀글여부 */
+                     , (SELECT SUM(CEIL(B.FILE_SIZE/(1024)/(1024)))
+                          FROM CNET_ARCL_FILE_INFO A, CNET_COM_FILE_INFO B
+                         WHERE A.FILE_SER = B.FILE_SER
+                           AND A.ARCL_SER= ARCL.ARCL_SER
+                        ) AS FILE_TOTAL_SIZE                            /* 파일사이즈 */
+                     , (SELECT COUNT (1)
+                          FROM CNET_ARCL_FILE_INFO
+                         WHERE ARCL.ARCL_SER = ARCL_SER
+                       ) AS FILE_CNT                                    /* 파일갯수 */
+                     , ARCL.CNTNTS_TARGT_TIMS                           /* 수업차수 */
+        FROM CNET_ARCL_INFO ARCL
+     LEFT OUTER JOIN CNET_BOARD_PREF_INFO PREF
+                  ON ARCL.BOARD_ID = PREF.BOARD_ID
+                 AND ARCL.PREF_NO = PREF.PREF_NO
+     LEFT OUTER JOIN CNET_MBR_INFO REG_MBR
+                  ON ARCL.REG_MBR_NO = REG_MBR.MBR_NO
+     LEFT OUTER JOIN (SELECT LECT.LECT_SER
+                           , LECT.LECTR_MBR_NO
+                           , LECT.LECT_TITLE
+                           , LECT.LECTR_NM
+                           , LECT.LECTR_JOB_NO
+                           , LECT.LECT_CO_NO
+                           , TIMS.LECT_TIMS
+                           , SCHD.LECT_DAY
+                           , SCHD.LECT_START_TIME
+                           , SCHD.LECT_END_TIME
+                        FROM CNET_LECT_INFO LECT
+                  INNER JOIN CNET_LECT_TIMS_INFO TIMS
+                          ON LECT.LECT_SER = TIMS.LECT_SER
+                  INNER JOIN CNET_LECT_SCHD_INFO SCHD
+                          ON TIMS.LECT_SER = SCHD.LECT_SER
+                         AND TIMS.LECT_TIMS = SCHD.LECT_TIMS
+                       WHERE SCHD.SCHD_SEQ = '1'
+                    ) LECT
+                 ON ARCL.CNTNTS_TARGT_NO = LECT.LECT_SER
+                AND ARCL.CNTNTS_TARGT_TIMS = LECT.LECT_TIMS
+     LEFT OUTER JOIN CNET_JOB_INFO JOB
+                  ON LECT.LECTR_JOB_NO = JOB.JOB_NO
+     LEFT OUTER JOIN CNET_MBR_INFO ANS_MBR
+                  ON ARCL.ANS_REG_MBR_NO = ANS_MBR.MBR_NO
+     LEFT OUTER JOIN CNET_CO_INFO CO
+                  ON ANS_MBR.POS_CO_NO = CO.CO_NO
+     LEFT OUTER JOIN CNET_CLAS_ROOM_INFO ROOM
+                  ON ARCL.CNTNTS_ID = ROOM.CLAS_ROOM_SER
+     LEFT OUTER JOIN CNET_SCH_INFO SCH
+                  ON ROOM.SCH_NO = SCH.SCH_NO
+
+              WHERE ARCL.BOARD_ID = #{boardId}
+                AND ARCL.USE_YN = 'Y'
+        <choose>
+            <when test='mbrCualfCd eq "101501"'>
+                AND LECT.LECT_CO_NO = (SELECT POS_CO_NO FROM CNET_MBR_INFO WHERE MBR_NO = #{srchMbrNo})
+            </when>
+            <otherwise>
+                <if test='boardId eq "lecQnA"'>
+                    AND ARCL.CNTNTS_TARGT_ID = #{srchMbrNo}
+                </if>
+                <if test='boardId eq "lecWork"'>
+                    <choose>
+                        <!-- 학교포탈 나의커뮤니티 수업과제: 본인것만 조회 -->
+                        <when test='siteGbn eq "sMyComm"'>
+                            AND REG_MBR.MBR_NO = #{srchMbrNo}
+                        </when>
+                        <otherwise>
+                            AND LECT.LECTR_MBR_NO = #{srchMbrNo}
+                        </otherwise>
+                    </choose>
+                </if>
+            </otherwise>
+        </choose>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord)">
+            <choose>
+                <when test='searchKey eq "title"'>
+                    AND REGEXP_LIKE(ARCL.TITLE, #{searchWord})
+                </when>
+                <when test='searchKey eq "jobNm"'>
+                    AND REGEXP_LIKE(ARCL.SUST, #{searchWord})
+                </when>
+                <when test='searchKey eq "regMbrNm"'>
+                    AND REGEXP_LIKE(REG_MBR.NM, #{searchWord})
+                </when>
+                <otherwise>
+                    AND (   REGEXP_LIKE(ARCL.TITLE, #{searchWord})
+                         OR REGEXP_LIKE(ARCL.SUST, #{searchWord})
+                        )
+                </otherwise>
+            </choose>
+        </if>
+
+        ) A
+        WHERE 1 = 1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ansYn)">
+            AND A.ANS_YN = #{ansYn}
+        </if>
+        <if test="arclSer != null">
+            AND A.ARCL_SER = #{arclSer}
+        </if>
+    </select>
+
+    <!-- 기존 평점 및 후기 수업별 [삭제예정] -->
+    <select id="ratingListByLecture" parameterType="kr.or.career.mentor.domain.RatingDTO" resultType="kr.or.career.mentor.domain.RatingDTO">
+    /* [ArclInfoMapper.xml#ratingListByLecture] */
+    /* paging */
+    SELECT A.*
+    <choose>
+        <when test='orderType eq "1"'>
+     , ROW_NUMBER() OVER(ORDER BY TECHER_POINT DESC) AS rn
+        </when>
+        <otherwise>
+     , ROW_NUMBER() OVER(ORDER BY STU_POINT DESC) AS rn
+        </otherwise>
+    </choose>
+    /* paging */
+    FROM (
+             SELECT A.LECT_SER, A.LECTR_NM , A.LECT_TITLE , A.LECT_TYPE_CD, B.CD_NM AS LECT_TYPE_NM  , D.LECT_DAY, D.LECT_START_TIME, D.LECT_END_TIME
+                     ,NVL(( SELECT ROUND(SUM(ASM_PNT)/COUNT(*),1) AS PNT
+                          FROM CNET_ARCL_INFO AI
+                    INNER JOIN CNET_ARCL_CMT_INFO ACI
+                            ON AI.BOARD_ID = ACI.BOARD_ID
+                           AND AI.ARCL_SER = ACI.ARCL_SER
+                           AND ACI.USE_YN = 'Y'
+                           AND ACI.SUP_CMT_SER IS NULL
+                    INNER JOIN CNET_MBR_INFO MI
+                            ON ACI.REG_MBR_NO = MI.MBR_NO
+                           AND MI.MBR_CLASS_CD = '100859'
+                         WHERE AI.BOARD_ID = 'lecAppr'
+                           AND CNTNTS_TARGT_NO = A.LECT_SER ),0) AS TECHER_POINT
+                     ,NVL(( SELECT ROUND(SUM(ASM_PNT)/COUNT(*),1) AS PNT
+                          FROM CNET_ARCL_INFO AI
+                    INNER JOIN CNET_ARCL_CMT_INFO ACI
+                            ON AI.BOARD_ID = ACI.BOARD_ID
+                           AND AI.ARCL_SER = ACI.ARCL_SER
+                           AND ACI.SUP_CMT_SER IS NULL
+                           AND ACI.USE_YN = 'Y'
+                    INNER JOIN CNET_MBR_INFO MI
+                            ON ACI.REG_MBR_NO = MI.MBR_NO
+                           AND MI.MBR_CLASS_CD = '100858'
+                         WHERE AI.BOARD_ID = 'lecAppr'
+                           AND CNTNTS_TARGT_NO = A.LECT_SER ),0) AS STU_POINT
+                     ,FN_SPLIT_STR((FN_MBR_SCH_NM(A.REG_MBR_NO)), 1, '||') AS LECTR_SCH_NM
+             FROM CNET_LECT_INFO A
+       INNER JOIN CNET_CODE B
+               ON A.LECT_TYPE_CD = B.CD
+              AND B.SUP_CD = '101528'
+       INNER JOIN CNET_LECT_TIMS_INFO C
+               ON A.LECT_SER = C.LECT_SER
+       INNER JOIN CNET_LECT_SCHD_INFO D
+               ON C.LECT_SER = D.LECT_SER
+              AND C.LECT_TIMS = D.LECT_TIMS
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord)">
+            <choose>
+                <when test='searchKey eq "nm"'>
+              AND REGEXP_LIKE(A.LECTR_NM,#{searchWord})
+                </when>
+                <when test='searchKey eq "lectNm"'>
+              AND REGEXP_LIKE(A.LECT_TITLE,#{searchWord})
+                </when>
+                <otherwise>
+              AND ( REGEXP_LIKE(A.LECTR_NM,#{searchWord}) OR REGEXP_LIKE(B.LECT_TITLE,#{searchWord}) )
+                </otherwise>
+            </choose>
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectTypeCd)">
+            AND A.LECT_TYPE_CD = #{lectTypeCd}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectTargtCd)">
+            AND A.LECT_TARGT_CD = #{lectTargtCd}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectrMbrNo)">
+            AND A.LECTR_MBR_NO = #{lectrMbrNo}
+            </if>
+            <if test="lectSer != null">
+            AND A.LECT_SER = #{lectSer}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectStartDay)">
+            AND D.LECT_DAY >= Regexp_Replace(lectStartDay, '[[:punct:]]', '')
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectEndDay)">
+            AND Regexp_Replace(lectEndDay, '[[:punct:]]', '') >= D.LECT_DAY
+            </if>
+            ) A
+    </select>
+
+    <select id="listRatingCmt" parameterType="kr.or.career.mentor.domain.RatingCmtDTO" resultType="kr.or.career.mentor.domain.RatingCmtDTO">
+                   /* [ArclInfoMapper.xml#listRatingCmt] */
+                   /* paging */
+                   SELECT AI.CNTNTS_TARGT_NO AS LECT_SER, ACI.CMT_SER , ACI.CMT_SUST , ACI.ASM_PNT, MI.MBR_CLASS_CD  , MI.NM, MI.id
+                          ,(SELECT COUNT(*) FROM CNET_ARCL_CMT_INFO S WHERE S.SUP_CMT_SER = ACI.CMT_SER) AS CNT
+                          ,FN_SPLIT_STR((FN_MBR_SCH_NM(MI.MBR_NO)), 1, '||') AS REG_SCH_NM
+                          ,ROW_NUMBER () OVER (ORDER BY AI.REG_DTM DESC) AS rn /* paging */
+                     FROM CNET_ARCL_INFO AI
+               INNER JOIN CNET_ARCL_CMT_INFO ACI
+                       ON AI.BOARD_ID = ACI.BOARD_ID
+                      AND AI.ARCL_SER = ACI.ARCL_SER
+                      AND ACI.USE_YN = 'Y'
+               INNER JOIN CNET_MBR_INFO MI
+                       ON ACI.REG_MBR_NO = MI.MBR_NO
+                    WHERE AI.BOARD_ID = 'lecAppr'
+                      AND AI.CNTNTS_TARGT_NO = #{lectSer}
+                      AND ACI.SUP_CMT_SER IS NULL
+    </select>
+
+    <select id="retrieveRatingCmt" parameterType="kr.or.career.mentor.domain.RatingCmtDTO" resultMap="RatingCmtDTOData">
+            SELECT A.CMT_SER, A.CMT_SUST, A.ASM_PNT, A.USE_YN, A.REG_DTM
+                  ,B.ID, B.NM, B.MBR_CLASS_CD
+              FROM CNET_ARCL_CMT_INFO A
+        INNER JOIN CNET_MBR_INFO B
+                ON A.REG_MBR_NO = B.MBR_NO
+             WHERE A.CMT_SER = #{cmtSer}
+    </select>
+
+    <select id="lectList" parameterType="kr.or.career.mentor.domain.LectArclDTO" resultType="kr.or.career.mentor.domain.LectArclDTO">
+      /* paging */
+      SELECT LECT.LECT_SER,
+             TIMS.LECT_TIMS,
+             SCHD.SCHD_SEQ,
+             LECT.LECTR_MBR_NO,
+             LECT.LECTR_NM,
+             LECT.LECT_TITLE,
+             SCHD.LECT_DAY,
+             SCHD.LECT_START_TIME,
+             SCHD.LECT_END_TIME,
+             (SELECT COUNT (1)
+                FROM CNET_ARCL_INFO
+               WHERE BOARD_ID = 'lecWork' AND CNTNTS_TARGT_NO = LECT.LECT_SER)
+                AS WORK_CNT,
+             ROW_NUMBER() OVER(ORDER BY LECT.REG_DTM DESC, LECT.LECT_SER DESC, TIMS.LECT_TIMS, SCHD.SCHD_SEQ) AS rn
+        /* paging */
+        FROM CNET_LECT_INFO LECT
+             INNER JOIN CNET_LECT_TIMS_INFO TIMS ON LECT.LECT_SER = TIMS.LECT_SER
+             INNER JOIN
+             CNET_LECT_SCHD_INFO SCHD
+                ON     TIMS.LECT_SER = SCHD.LECT_SER
+                   AND TIMS.LECT_TIMS = SCHD.LECT_TIMS
+      <where>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStartDate)">
+            AND SCHD.LECT_DAY <![CDATA[>=]]> #{searchStartDate}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            AND SCHD.LECT_DAY <![CDATA[<=]]> #{searchEndDate}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord)">
+            <choose>
+                <when test='searchKey eq "LECT"'>
+                    AND LECT.LECT_TITLE LIKE '%'||#{searchWord}||'%'
+                </when>
+                <when test='searchKey eq "MENT"'>
+                    AND LECT.LECTR_NM = #{searchWord}
+                </when>
+                <otherwise>
+                    AND ( LECT.LECT_TITLE LIKE '%'||#{searchWord}||'%' OR LECT.LECTR_NM = #{searchWord} )
+                </otherwise>
+            </choose>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectTargtCd)">
+            AND LECT.LECT_TARGT_CD = #{lectTargtCd}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectTypeCd)">
+            AND LECT.LECT_TYPE_CD = #{lectTypeCd}
+        </if>
+        <if test="lectSer != null">
+            AND LECT.LECT_SER = #{lectSer}
+        </if>
+      </where>
+    </select>
+
+    <select id="isValidateArcl" resultType="boolean">
+        SELECT DECODE(COUNT(*), 0, 1, 0)
+        FROM CNET_ARCL_INFO
+        WHERE ARCL_SER = #{arclSer}
+    </select>
+
+    <!-- 기존 수업자료실, 1:1문의 목록 [삭제예정] -->
+    <select id="getSimpleArclListTemp" parameterType="kr.or.career.mentor.domain.ArclInfo" resultType="kr.or.career.mentor.domain.ArclInfo">
+        /* [ArclInfoMapper.xml#getSimpleArclListTemp] */
+        /* paging */
+        SELECT  ARCL.ARCL_SER,
+                ARCL.BOARD_ID,
+                ARCL.PREF_NO,
+                ARCL.EXPS_TARGT_CD,
+                ARCL.CNTNTS_TYPE_CD,
+                ARCL.TITLE,
+                ARCL.REG_DTM,
+                ARCL.CHG_DTM,
+                ARCL.REG_MBR_NO,
+                ARCL.VCNT,
+                (CASE WHEN ANS_CHG_DTM IS NOT NULL THEN ANS_CHG_DTM
+                      ELSE ANS_REG_DTM END
+                ) AS ANS_REG_DTM,
+                (CASE
+                WHEN ARCL.CNTNTS_SUST IS NOT NULL THEN 'Y'
+                ELSE 'N' END) AS ANS_YN,
+                ROW_NUMBER () OVER (ORDER BY ARCL.REG_DTM DESC) AS RN,
+                (SELECT COUNT (1)
+                   FROM CNET_ARCL_FILE_INFO
+                  WHERE ARCL.ARCL_SER = ARCL_SER)
+                AS FILE_CNT,
+                PREF.PREF_NM,
+                CODE.CD_NM AS EXPS_TARGT_NM,
+                LECT.LECT_TITLE,
+                (CASE
+                    WHEN LECT.LECTR_NM IS NOT NULL THEN LECT.LECTR_NM
+                    ELSE (SELECT NM FROM CNET_MBR_INFO WHERE ARCL.CNTNTS_TARGT_ID = MBR_NO ) END) AS LECTR_NM,
+                MBR.NM AS REG_MBR_NM,
+                SUBSTR(FN_MBR_SCH_NM(ARCL.CNTNTS_TARGT_ID), 1, INSTR(FN_MBR_SCH_NM(ARCL.CNTNTS_TARGT_ID), '|')-1) AS LECTR_SCH_NM,
+                SUBSTR(FN_MBR_SCH_NM(ARCL.REG_MBR_NO), 1, INSTR(FN_MBR_SCH_NM(ARCL.REG_MBR_NO), '|')-1) AS REG_SCH_NM,
+                (CASE WHEN  ARCL.CNTNTS_SUST IS NULL THEN ''
+                      ELSE (SELECT NM FROM CNET_MBR_INFO WHERE ARCL.ANS_REG_MBR_NO = MBR_NO) END
+                ) AS ANS_REG_MBR_NM,
+                FILES.FILES_NM,
+                LECT.LECT_SER,
+                MJI.JOB_NM,
+                (SELECT CD_NM FROM CNET_CODE WHERE LECT.LECT_TYPE_CD = CD) AS LECT_TYPE_NM
+         /* paging */
+        FROM CNET_ARCL_INFO ARCL
+             LEFT OUTER JOIN CNET_BOARD_PREF_INFO PREF
+                ON ARCL.BOARD_ID = PREF.BOARD_ID AND ARCL.PREF_NO = PREF.PREF_NO
+             LEFT OUTER JOIN CNET_CODE CODE
+                ON CODE.SUP_CD = '101633' AND ARCL.EXPS_TARGT_CD = CODE.CD
+             LEFT OUTER JOIN CNET_LECT_INFO LECT
+                ON ARCL.CNTNTS_TARGT_NO = LECT.LECT_SER
+             INNER JOIN CNET_MBR_INFO MBR
+                ON ARCL.REG_MBR_NO = MBR.MBR_NO
+             LEFT OUTER JOIN CNET_MBR_JOB_INFO MJI
+                ON ARCL.CNTNTS_TARGT_ID = MJI.MBR_NO
+             LEFT OUTER JOIN (
+                                SELECT
+                                A.ARCL_SER
+                                , LISTAGG(B.ORI_FILE_NM, '],[') WITHIN GROUP (ORDER BY B.ORI_FILE_NM)  AS FILES_NM
+                                FROM CNET_ARCL_FILE_INFO A, CNET_COM_FILE_INFO B
+                                WHERE A.FILE_SER = B.FILE_SER
+                                GROUP BY A.ARCL_SER
+                               ) FILES
+                ON FILES.ARCL_SER = ARCL.ARCL_SER
+        <where>
+            AND ARCL.BOARD_ID = #{boardId}
+            <if test='boardId != "lecQnA" and boardId != "lecFreeBoard"'>
+                AND ARCL.USE_YN = 'Y'
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord)">
+                <choose>
+                    <when test='searchKey eq "dataNm"'>
+                        AND REGEXP_LIKE(ARCL.TITLE, #{searchWord})
+                    </when>
+                    <when test='searchKey eq "fileNm"'>
+                        AND REGEXP_LIKE(FILES.FILES_NM, #{searchWord})
+                    </when>
+                    <when test='searchKey eq "lectNm"'>
+                        AND REGEXP_LIKE(LECT.LECT_TITLE, #{searchWord})
+                    </when>
+                    <otherwise>
+                        AND (   REGEXP_LIKE(ARCL.TITLE, #{searchWord})
+                        OR REGEXP_LIKE(FILES.FILES_NM, #{searchWord})
+                        OR REGEXP_LIKE(LECT.LECT_TITLE, #{searchWord})
+                        )
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(cntntsTypeCd)">
+                AND ARCL.CNTNTS_TYPE_CD = #{cntntsTypeCd}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(prefNo)">
+                AND ARCL.PREF_NO = #{prefNo}
+            </if>
+        </where>
+    </select>
+
+    <!-- 기존 수업자료실, 1:1문의 상세 [삭제예정] -->
+    <select id="getSimpleArclInfoTemp" parameterType="kr.or.career.mentor.domain.ArclInfo" resultType="kr.or.career.mentor.domain.ArclInfo">
+        /* [ArclInfoMapper.xml#getSimpleArclInfo] */
+        SELECT
+        ARCL.ARCL_SER,
+        ARCL.BOARD_ID,
+        ARCL.PREF_NO,
+        ARCL.PREF.PREF_NM,
+        ARCL.EXPS_TARGT_CD,
+        CODE.CD_NM AS EXPS_TARGT_NM,
+        ARCL.CNTNTS_TARGT_NO,
+        ARCL.CNTNTS_TARGT_TIMS,
+        ARCL.CNTNTS_TARGT_SEQ,
+        ARCL.CNTNTS_TARGT_ID,
+        ARCL.TITLE,
+        ARCL.SUST,
+        ARCL.REG_DTM,
+        ARCL.REG_MBR_NO,
+        ARCL.VCNT,
+        ARCL.NOTI_YN,
+        ARCL.USE_YN,
+        LECT.LECT_TITLE,
+        ARCL.CNTNTS_TYPE_CD,
+        (CASE
+        WHEN LECT.LECTR_NM IS NOT NULL THEN LECT.LECTR_NM
+        ELSE (SELECT NM FROM CNET_MBR_INFO WHERE ARCL.CNTNTS_TARGT_ID = MBR_NO ) END) AS LECTR_NM,
+        (SELECT COUNT (1)
+        FROM CNET_ARCL_FILE_INFO
+        WHERE ARCL.ARCL_SER = ARCL_SER)
+        AS FILE_CNT,
+        MBR.NM AS REG_MBR_NM,
+        ARCL.ANS_REG_DTM,
+        MBR2.NM AS ANS_REG_MBR_NM,
+        ARCL.CNTNTS_SUST,
+        SUBSTR(FN_MBR_SCH_NM(ARCL.CNTNTS_TARGT_ID), 1, INSTR(FN_MBR_SCH_NM(ARCL.CNTNTS_TARGT_ID), '|')-1) AS LECTR_SCH_NM,
+        SUBSTR(FN_MBR_SCH_NM(ARCL.REG_MBR_NO), 1, INSTR(FN_MBR_SCH_NM(ARCL.REG_MBR_NO), '|')-1) AS REG_SCH_NM,
+        (CASE WHEN ARCL.CHG_DTM IS NULL THEN ARCL.REG_DTM
+        ELSE ARCL.CHG_DTM END
+        ) AS CHG_DTM,
+        ARCL.CHG_MBR_NO,
+        (CASE WHEN ARCL.CHG_MBR_NO IS NULL THEN MBR.NM
+        ELSE (SELECT NM FROM CNET_MBR_INFO WHERE ARCL.CHG_MBR_NO = MBR_NO) END
+        ) AS CHG_MBR_NM,
+        LECT.LECTR_MBR_NO
+        FROM CNET_ARCL_INFO ARCL
+        LEFT OUTER JOIN  CNET_BOARD_PREF_INFO PREF
+        ON ARCL.BOARD_ID = PREF.BOARD_ID
+        AND ARCL.PREF_NO = PREF.PREF_NO
+        LEFT OUTER JOIN CNET_CODE CODE
+        ON CODE.SUP_CD = '101633'
+        AND ARCL.EXPS_TARGT_CD = CODE.CD
+        LEFT OUTER JOIN CNET_LECT_INFO LECT
+        ON ARCL.CNTNTS_TARGT_NO = LECT.LECT_SER
+        INNER JOIN CNET_MBR_INFO MBR
+        ON ARCL.REG_MBR_NO = MBR.MBR_NO
+        LEFT OUTER JOIN CNET_MBR_INFO MBR2
+        ON ARCL.ANS_REG_MBR_NO = MBR2.MBR_NO
+        <where>
+            ARCL.ARCL_SER = #{arclSer}
+        </where>
+    </select>
+
+    <!-- 기존 수업과제 [삭제예정] -->
+    <select id="selectCompLectList" parameterType="kr.or.career.mentor.domain.CompLectInfoDTO" resultType="kr.or.career.mentor.domain.CompLectInfoDTO">
+        /* paging */
+        SELECT
+        LS.LECT_SER,
+        LS.LECT_TIMS,
+        LS.SCHD_SEQ,
+        LS.LECT_DAY,
+        LS.LECT_START_TIME,
+        LS.LECT_END_TIME,
+        J.JOB_NM,
+        M.MBR_NO AS MENTOR_MBR_NO,
+        M.NM AS MENTOR_NM,
+        L.LECT_TITLE,
+        ROW_NUMBER() OVER(ORDER BY LS.LECT_DAY DESC, LS.LECT_START_TIME DESC, LS.LECT_END_TIME DESC, L.LECT_TITLE) AS RN
+        /* paging */
+        FROM CNET_LECT_INFO L
+        INNER JOIN CNET_LECT_TIMS_INFO LT ON L.LECT_SER = LT.LECT_SER
+        INNER JOIN CNET_LECT_SCHD_INFO LS
+        ON LT.LECT_SER = LS.LECT_SER AND LT.LECT_TIMS = LS.LECT_TIMS
+        INNER JOIN CNET_MBR_INFO M ON L.LECTR_MBR_NO = M.MBR_NO
+        INNER JOIN CNET_MBR_JOB_INFO J ON M.MBR_NO = J.MBR_NO
+        <where>
+            LS.LECT_STAT_CD = '101551'
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchLectType)">
+                AND L.LECT_TYPE_CD = #{searchLectType}
+            </if>
+            <if test='searchWord != null and searchWord != "" '>
+                <choose>
+                    <when test='searchKey eq "jobNm"'>
+                        AND J.JOB_NM = #{searchWord}
+                    </when>
+                    <when test='searchKey eq "mentorNm"'>
+                        AND M.NM = #{searchWord}
+                    </when>
+                    <when test='searchKey eq "lectNm"'>
+                        AND L.LECT_TITLE = #{searchWord}
+                    </when>
+                    <otherwise>
+                        AND ( J.JOB_NM = #{searchWord}
+                        OR M.NM = #{searchWord}
+                        OR L.LECT_TITLE = #{searchWord} )
+                    </otherwise>
+                </choose>
+            </if>
+            <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(clasStartDay)'>
+                AND Regexp_Replace(LS.LECT_DAY, '[[:punct:]]', '') <![CDATA[>=]]> #{clasStartDay}
+            </if>
+            <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(clasEndDay)'>
+                AND Regexp_Replace(LS.LECT_DAY, '[[:punct:]]', '') <![CDATA[<=]]> #{clasEndDay}
+            </if>
+        </where>
+    </select>
+
+</mapper>

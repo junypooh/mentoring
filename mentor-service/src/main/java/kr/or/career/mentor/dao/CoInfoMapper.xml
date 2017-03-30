@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.CoInfoMapper">
+
+    <sql id="selectConInfo">
+        /* paging */
+        SELECT
+            A.CO_NO
+            , A.CO_NM
+            , (SELECT NM FROM CNET_MBR_INFO S WHERE S.POS_CO_NO = A.CO_NO AND ROWNUM = 1) AS CO_MBR_NM
+            , (SELECT MBR_NO FROM CNET_MBR_INFO S WHERE S.POS_CO_NO = A.CO_NO AND ROWNUM = 1) AS CO_MBR_NO
+            , A.CO_CLASS_CD
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = A.CO_CLASS_CD) AS CO_CLASS_NM
+            , A.POST_CD
+            , A.LOCA_ADDR
+            , A.LOCA_DETAIL_ADDR
+            , A.TEL
+            , A.FAX
+            , A.BIZNO
+            , A.MNGR_NM
+            , A.USE_YN
+            , A.REG_DTM
+            , A.REG_MBR_NO
+            , (SELECT ID FROM CNET_MBR_INFO S WHERE S.MBR_NO = A.REG_MBR_NO AND ROWNUM = 1) AS REG_MBR_ID
+            , (SELECT NM FROM CNET_MBR_INFO S WHERE S.MBR_NO = A.REG_MBR_NO AND ROWNUM = 1) AS REG_MBR_NM
+            , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS RN
+        /* paging */
+        FROM CNET_CO_INFO A
+    </sql>
+
+    <!-- 기관/업체 목록조회 -->
+    <select id="listCoInfo" resultType="kr.or.career.mentor.domain.CoInfo">
+        <include refid="selectConInfo"/>
+         <where>
+        <if test="regDtmBegin neq null">
+            AND A.REG_DTM &gt; TRUNC(#{regDtmBegin})
+        </if>
+        <if test="regDtmEnd neq null">
+            AND A.REG_DTM &lt; TRUNC(#{regDtmEnd}) + 1
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(coClassCd)">
+            AND A.CO_CLASS_CD = #{coClassCd}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(coNm)">
+            AND REGEXP_LIKE(A.CO_NM, #{coNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(bizno)">
+            AND REGEXP_REPLACE(A.BIZNO, '[[:punct:]]', '') = #{bizno}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(useYn)">
+            AND A.USE_YN = #{useYn}
+        </if>
+         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(coNo)">
+             AND A.CO_NO = #{coNo}
+         </if>
+        </where>
+    </select>
+
+    <insert id="insertCoInfo" parameterType="kr.or.career.mentor.domain.CoInfo">
+        INSERT INTO CNET_CO_INFO
+        (
+            CO_NO, CO_NM, CO_CLASS_CD, POST_CD, LOCA_ADDR, TEL, FAX, BIZNO, MNGR_NM
+            , LOCA_DETAIL_ADDR, USE_YN, REG_DTM, REG_MBR_NO
+        )
+        VALUES
+        (
+            LPAD(SQ_CO_INFO.NEXTVAL, 10, 0), #{coNm}, #{coClassCd}, #{postCd, jdbcType=VARCHAR}, #{locaAddr, jdbcType=VARCHAR}, #{tel}, #{fax, jdbcType=VARCHAR}, #{bizno, jdbcType=VARCHAR}, #{mngrNm}
+            , #{locaDetailAddr, jdbcType=VARCHAR}, #{useYn}, SYSDATE, #{regMbrNo}
+        )
+    </insert>
+
+    <update id="updateCoInfo" parameterType="kr.or.career.mentor.domain.CoInfo">
+        UPDATE CNET_CO_INFO
+        <set>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(coNm)">CO_NM = #{coNm},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(coClassCd)">CO_CLASS_CD = #{coClassCd},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(postCd)">POST_CD = #{postCd},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(locaAddr)">LOCA_ADDR = #{locaAddr},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(locaDetailAddr)">LOCA_DETAIL_ADDR = #{locaDetailAddr},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(tel)">TEL = #{tel},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(fax)">FAX = #{fax},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(bizno)">BIZNO = #{bizno},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mngrNm)">MNGR_NM = #{mngrNm},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(useYn)">USE_YN = #{useYn},</if>
+            chg_dtm = SYSDATE,
+            chg_mbr_no = #{chgMbrNo}
+        </set>
+        WHERE CO_NO = #{coNo}
+    </update>
+
+    <!-- 회원의 기관/업체 정보 조회 -->
+    <select id="retrieveCoInfoByUser" parameterType="kr.or.career.mentor.domain.User" resultType="kr.or.career.mentor.domain.CoInfo">
+        SELECT
+                A.BIZNO
+              , A.CO_CLASS_CD
+              , A.CO_NM
+              , A.CO_NO
+              , A.FAX
+              , A.LOCA_ADDR
+              , A.POST_CD
+              , A.TEL
+          FROM CNET_CO_INFO A
+         INNER JOIN CNET_MBR_INFO B ON (B.POS_CO_NO = A.CO_NO)
+         WHERE B.MBR_NO = #{mbrNo}
+    </select>
+
+    <select id="getInstMbrNo" parameterType="kr.or.career.mentor.domain.CoInfo" resultType="string">
+        select mbr_no as mbrNo
+        from CNET_MBR_INFO
+        where POS_CO_NO = #{coNo, jdbcType=VARCHAR}
+        and rownum = 1
+    </select>
+
+
+    <!-- 기관/업체 목록조회 -->
+    <select id="listCoInfoByCoClassCd" resultType="kr.or.career.mentor.domain.CoInfo">
+        <include refid="selectConInfo"/>
+        <where>
+            AND A.CO_CLASS_CD = #{coClassCd}
+        </where>
+        ORDER BY A.CO_NM
+    </select>
+</mapper>

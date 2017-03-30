@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MentorCommonMapper">
+
+    <!-- 특정분류정보 목록 -->
+    <select id="listChrstcClsf" resultType="kr.or.career.mentor.domain.ChrstcClsfDTO">
+        /* [MentorCommonMapper.xml#listJobClsf][특정분류 정보] */
+        <include refid="sqlListChrstcClsf" />
+    </select>
+
+    <sql id="sqlListChrstcClsf">
+        SELECT
+            cd AS chrstc_cd,
+            cd_nm AS chrstc_nm,
+            (
+                SELECT
+                    NVL(COUNT(*), 0)
+                FROM cnet_mbr_info sMi LEFT JOIN cnet_mbr_job_chrstc_info sMjci ON(sMi.mbr_no = sMjci.mbr_no)
+                WHERE sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                    AND sMi.mbr_class_cd = '101505' /* 멘토 */
+                    AND sMi.sch_site_exps_yn = 'Y'
+                    AND sMi.login_perm_yn = 'Y'
+                    AND sMjci.job_chrstc_cd = c.cd
+            ) AS mentor_cnt
+        FROM cnet_code c
+        WHERE sup_cd = '101564' /* 직업특성 코드 */
+    </sql>
+
+    <!-- 직업분류 정보 목록 -->
+    <select id="listJobClsf" resultType="kr.or.career.mentor.domain.JobClsfDTO">
+        /* [MentorCommonMapper.xml#listJobClsf][직업분류 정보] */
+        SELECT
+            cd as job_cd,
+            cd_nm as job_nm,
+                (SELECT COUNT(sJi.job_no)
+                   FROM cnet_job_clsf_cd sJcc
+                   LEFT JOIN cnet_job_info sJi ON (sJi.job_clsf_cd = sJcc.cd)
+                  WHERE 1 = 1
+                    AND cd_lv = 3
+                  START WITH cd = Jcc.cd
+                CONNECT BY NOCYCLE PRIOR cd = sup_cd) as mentor_cnt
+        FROM cnet_job_clsf_cd Jcc
+        WHERE 1= 1
+        AND cd_lv = 1
+        AND sup_cd = '100040'
+        order by job_nm
+    </select>
+
+    <!-- 특정분류정보 목록 통계 -->
+    <select id="listChrstcStatistics" resultType="kr.or.career.mentor.domain.ChrstcClsfDTO">
+        SELECT
+                cd AS chrstc_cd,
+                cd_nm AS chrstc_nm,
+                (
+                    SELECT
+                            NVL(COUNT(*), 0)
+                      FROM cnet_mbr_info sMi LEFT JOIN cnet_mbr_job_chrstc_info sMjci ON(sMi.mbr_no = sMjci.mbr_no)
+                     WHERE sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                       AND sMi.mbr_class_cd = '101505' /* 멘토 */
+                       AND sMjci.job_chrstc_cd = c.cd
+                ) AS mentor_cnt,
+                (
+                    SELECT
+                            COUNT(*)
+                      FROM cnet_mbr_info sMi
+                      LEFT JOIN cnet_mbr_job_chrstc_info sMjci ON(sMi.mbr_no = sMjci.mbr_no)
+                      LEFT JOIN cnet_lect_info sCl ON (sCl.lectr_mbr_no = sMi.mbr_no)
+                      LEFT JOIN cnet_lect_tims_info sClm ON (sCl.lect_ser = sClm.lect_ser)
+                      LEFT JOIN cnet_lect_schd_info sCls ON (sCls.lect_ser = sClm.lect_ser and sCls.lect_tims = sClm.lect_tims)
+                     WHERE 1 = 1
+                       AND sMi.mbr_class_cd = '101505'
+                       AND sMi.mbr_stat_cd = '100862'
+                       AND sCls.lect_stat_cd = '101543'
+                       AND sMjci.job_chrstc_cd = c.cd) as lecture_cnt
+        FROM cnet_code c
+       WHERE sup_cd = '101564'
+
+    </select>
+
+    <!-- 특정분류정보 목록 -->
+    <select id="listChrstcClsfInfo" resultType="kr.or.career.mentor.domain.ChrstcClsfDTO">
+        /* [MentorCommonMapper.xml#listChrstcClsfInfo][특정분류 정보] */
+        <include refid="sqlListChrstcClsfInfo" />
+    </select>
+
+    <sql id="sqlListChrstcClsfInfo">
+        SELECT
+            cd AS chrstc_cd,
+            cd_nm AS chrstc_nm,
+            (
+                SELECT
+                    NVL(COUNT(DISTINCT(sJi.JOB_NO)), 0)
+                FROM cnet_mbr_info sMi
+           LEFT JOIN cnet_mbr_job_chrstc_info sMjci
+                  ON (sMi.mbr_no = sMjci.mbr_no)
+           LEFT JOIN cnet_mbr_job_info sMji
+                  ON (sMi.MBR_NO = sMji.MBR_NO)
+           LEFT JOIN cnet_job_info sJi
+                  ON (sMji.JOB_NO = sJi.JOB_NO)
+               WHERE sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                 AND sMi.mbr_class_cd = '101505' /* 멘토 */
+                 AND sMjci.job_chrstc_cd = c.cd
+                 AND sJi.JOB_NO IS NOT NULL
+            ) AS mentor_cnt
+        FROM cnet_code c
+        WHERE sup_cd = '101564' /* 직업특성 코드 */
+    </sql>
+
+
+    <!-- 멘토 > 직업소개 직업분류(직업기준) 정보 목록 -->
+    <select id="listJobClsfInfo" resultType="kr.or.career.mentor.domain.JobClsfDTO">
+        /* [MentorCommonMapper.xml#listJobClsfInfo][직업분류 정보] */
+        <include refid="sqlListJobClsf" />
+    </select>
+
+    <sql id="sqlListJobClsf">
+        SELECT
+            cd as job_cd,
+            cd_nm as job_nm,
+                (SELECT COUNT(sJi.job_no)
+                  FROM cnet_job_clsf_cd sJcc
+                  LEFT JOIN cnet_job_info sJi ON (sJi.job_clsf_cd = sJcc.cd)
+                 WHERE 1 = 1
+                   AND cd_lv = '3'
+                 START WITH cd = Jcc.cd
+               CONNECT BY NOCYCLE PRIOR cd = sup_cd) as mentor_cnt
+        FROM cnet_job_clsf_cd Jcc
+        WHERE 1= 1
+        AND cd_lv = 1
+        AND sup_cd ='100040'
+        order by job_nm
+    </sql>
+
+    <!-- 멘토 > 멘토소개 직업분류(멘토기준) 정보 목록 -->
+    <select id="listJobClsfInfoStndMento" resultType="kr.or.career.mentor.domain.JobClsfDTO">
+        /* [MentorCommonMapper.xml#listJobClsfInfoStndMento][직업분류 정보] */
+        <include refid="sqlListJobClsfStndMento" />
+    </select>
+
+    <!-- 멘토 > 멘토소개 직업분류(멘토기준) 정보 목록 -->
+    <select id="listJobClsfInfoStndMentoWithSearch" resultType="kr.or.career.mentor.domain.JobClsfDTO" parameterType="String">
+        /* [MentorCommonMapper.xml#listJobClsfInfoStndMento][직업분류 정보] */
+        <include refid="sqlListJobClsfStndMento" />
+    </select>
+
+    <sql id="sqlListJobClsfStndMento">
+        SELECT
+                CD AS JOB_CD,
+                CD_NM AS JOB_NM,
+                (
+                   SELECT COUNT(MI.MBR_NO)
+                     FROM CNET_JOB_CLSF_CD SJCC
+                     LEFT JOIN CNET_JOB_INFO SJI
+                       ON (SJI.JOB_CLSF_CD = SJCC.CD)
+                     LEFT JOIN CNET_MBR_JOB_INFO MJI
+                       ON (SJI.JOB_NO = MJI.JOB_NO)
+                     LEFT JOIN CNET_MBR_INFO MI
+                       ON (MJI.MBR_NO = MI.MBR_NO)
+                   WHERE 1 = 1
+                     AND CD_LV = 3
+                     AND MI.MBR_CLASS_CD = '101505' /* 회원구분 - 멘토 */
+                     AND MI.MBR_STAT_CD IN ('100862', '101572') /* 회원상태 - 정상이용, 탈퇴요청 */
+                     AND MI.SCH_SITE_EXPS_YN = 'Y'
+                     AND MI.LOGIN_PERM_YN = 'Y'
+                     <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(value)">
+                     AND ( REGEXP_LIKE(MJI.JOB_NM, #{value}) OR REGEXP_LIKE(MJI.JOB_TAG_INFO, #{value}) OR REGEXP_LIKE(MI.NM, #{value}))
+                     </if>
+                   START WITH CD = JCC.CD
+                   CONNECT BY NOCYCLE PRIOR CD = SUP_CD
+                ) AS MENTOR_CNT
+        FROM CNET_JOB_CLSF_CD JCC
+        WHERE 1= 1
+        AND CD_LV = 1
+        AND SUP_CD = '100040'
+        ORDER BY JOB_NM
+    </sql>
+
+    <!-- 특정분류정보(직업기준) 총 갯수 -->
+    <select id="listChrstcStatisticsByTotCnt" resultType="int">
+        /* [MentorCommonMapper.xml#listChrstcStatisticsByTotCnt][특정분류정보 총 갯수] */
+        SELECT SUM(mentor_cnt)
+        FROM (
+                <include refid="sqlListChrstcClsfInfo" />
+             )
+    </select>
+
+    <!-- 직업분류정보(직업기준) 직업 총 갯수 -->
+    <select id="listJobClsfByTotCnt" resultType="int">
+        /* [MentorCommonMapper.xml#listJobClsfByTotCnt][직업분류정보(직업기준) 직업 총 갯수] */
+        SELECT SUM(mentor_cnt)
+        FROM (
+                <include refid="sqlListJobClsf" />
+             )
+    </select>
+
+    <!-- 특정분류정보(멘토기준) 총 갯수 -->
+    <select id="listChrstcClsfByTotCnt" resultType="int">
+        /* [MentorCommonMapper.xml#listChrstcClsfByTotCnt][직업분류정보(직업기준) 직업 총 갯수] */
+        SELECT SUM(mentor_cnt)
+        FROM (
+        <include refid="sqlListChrstcClsf" />
+        )
+    </select>
+
+    <!-- 직업분류정보(멘토기준) 직업 총 갯수 -->
+    <select id="listJobClsfInfoStndMentoByTotCnt" resultType="int">
+        /* [MentorCommonMapper.xml#listJobClsfInfoStndMentoByTotCnt][직업분류정보(멘토기준) 직업 총 갯수] */
+        SELECT SUM(mentor_cnt)
+        FROM (
+        <include refid="sqlListJobClsfStndMento" />
+        )
+    </select>
+
+    <!-- 금주 날짜 정보 가져오기 -->
+    <select id="listThisWeekInfo" parameterType="kr.or.career.mentor.domain.CalendarInfo" resultType="kr.or.career.mentor.domain.CalendarInfo">
+        SELECT
+            STR_DAY
+            , SUBSTR(STR_DAY,1,4) AS "YEAR"
+            , SUBSTR(STR_DAY,5,2) AS "MONTH"
+            , SUBSTR(STR_DAY,7,2) AS "DAY"
+            , TO_CHAR(TO_NUMBER(SUBSTR(STR_DAY,5,2)))||'월'||' '||TO_NUMBER(SUBSTR(STR_DAY,7,2))||'일 ('||TO_CHAR(TO_DATE(STR_DAY,'YYYYMMDD'),'dy','NLS_DATE_LANGUAGE=korean')||')' AS "DATE"
+        FROM CNET_CAL_INFO
+        <where>
+            <choose>
+                <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchDate)">
+                    AND STR_DAY BETWEEN FN_GET_STR_DAY_WEEK(#{searchDate}) AND FN_GET_END_DAY_WEEK(#{searchDate})
+                </when>
+                <otherwise>
+                    AND STR_DAY BETWEEN FN_GET_STR_DAY_WEEK(TO_CHAR(SYSDATE, 'YYYYMMDD')) AND FN_GET_END_DAY_WEEK(TO_CHAR(SYSDATE, 'YYYYMMDD'))
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY STR_DAY
+    </select>
+
+    <!-- 학교포털 메인 NEW 멘토 가져오기 -->
+    <select id="listNewMentorInfo" resultType="kr.or.career.mentor.domain.MentorDTO">
+        <![CDATA[
+            SELECT * FROM (
+                SELECT * FROM (
+                    SELECT
+                        MBR.MBR_NO
+                        , MBR.NM
+                        , JOB.JOB_NO
+                        , JOB.JOB_NM
+                        , INFO.INTDC_INFO AS PROF_INTDC_INFO
+                        , MBR.REG_DTM
+                        , (SELECT MAX(FILE_SER) FROM CNET_MBR_PROF_PIC_INFO WHERE MBR_NO = MBR.MBR_NO) AS PROF_FILE_SER
+                        , ROW_NUMBER() OVER( ORDER BY MBR.REG_DTM DESC) AS RN
+                    FROM CNET_MBR_INFO MBR
+                    , CNET_MBR_JOB_INFO JOB
+                    , CNET_MBR_PROF_INFO INFO
+                    WHERE MBR.MBR_NO = JOB.MBR_NO
+                    AND MBR.MBR_NO = INFO.MBR_NO
+                    AND MBR.MBR_CLASS_CD = '101505'
+                    AND MBR.MBR_STAT_CD IN ('100862', '101572') /* 회원상태 - 정상이용, 탈퇴요청 */
+                    AND MBR.SCH_SITE_EXPS_YN = 'Y'
+                    AND MBR.LOGIN_PERM_YN = 'Y'
+                ) WHERE RN <= 18
+                ORDER BY DBMS_RANDOM.RANDOM()
+            ) WHERE ROWNUM <= 6
+        ]]>
+    </select>
+</mapper>

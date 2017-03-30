@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.AuthMapper">
+
+    <select id="listAuthInfo" parameterType="kr.or.career.mentor.domain.AuthInfo"  resultType="kr.or.career.mentor.domain.AuthInfo">
+        /* paging */
+        SELECT
+            A.AUTH_CD, A.AUTH_DESC, A.AUTH_NM, A.AUTH_TYPE, A.REG_DTM, A.REG_MBR_NO
+            , (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = A.REG_MBR_NO) AS REG_MBR_NM
+            , ROW_NUMBER() OVER(ORDER BY A.AUTH_NM) AS RN
+        /* paging */
+        FROM CNET_AUTH_INFO A
+        , CNET_USER_AUTH_MAPP B
+        WHERE A.AUTH_CD = B.AUTH_CD
+        AND B.MBR_CLASS_CD = '100860'
+        AND B.MBR_CUALF_CD != '100850' /* SUPERADM 제외 */
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(authType)">
+            AND A.AUTH_TYPE = #{authType}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(authCd)">
+            AND A.AUTH_CD = #{authCd}
+        </if>
+    </select>
+
+    <select id="isValidateId" resultType="boolean">
+        SELECT DECODE(COUNT(*), 0, 1, 0)
+        FROM CNET_AUTH_INFO
+        WHERE AUTH_CD = #{authCd}
+    </select>
+
+    <insert id="insertAuthInfo" parameterType="kr.or.career.mentor.domain.AuthInfo">
+        INSERT INTO CNET_AUTH_INFO
+        (AUTH_CD, AUTH_NM, AUTH_DESC, REG_DTM, REG_MBR_NO, AUTH_TYPE)
+        VALUES
+        (#{authCd}, #{authNm}, NVL(#{authDesc, jdbcType=VARCHAR}, #{authNm}), SYSDATE, #{regMbrNo}, #{authType})
+    </insert>
+
+    <update id="updateAuthInfo" parameterType="kr.or.career.mentor.domain.AuthInfo">
+        UPDATE CNET_AUTH_INFO
+        <set>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(authNm)">AUTH_NM =  #{authNm},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(authType)">AUTH_TYPE =  #{authType},</if>
+            REG_DTM = SYSDATE,
+            REG_MBR_NO = #{regMbrNo}
+        </set>
+        WHERE AUTH_CD = #{authCd}
+    </update>
+
+    <insert id="insertUserAuthMappInfo" parameterType="kr.or.career.mentor.domain.AuthInfo">
+        INSERT INTO CNET_USER_AUTH_MAPP
+        (AUTH_TARGT_ID, MBR_CLASS_CD, MBR_CUALF_CD, AUTH_CD, REG_DTM, REG_MBR_NO)
+        VALUES
+        (
+            (SELECT TO_CHAR(MAX(TO_NUMBER(AUTH_TARGT_ID))+1) FROM CNET_USER_AUTH_MAPP)
+            , '100860', #{mbrCualfCd}, #{authCd}, SYSDATE, #{regMbrNo}
+        )
+    </insert>
+
+    <delete id="deleteMnuAuthMappInfo" parameterType="kr.or.career.mentor.domain.AuthInfo">
+        DELETE CNET_MNU_AUTH_MAPP
+        WHERE AUTH_CD = #{authCd}
+        AND MNU_ID IN (
+            SELECT MNU_ID FROM CNET_MNU_INFO
+            START WITH SUP_MNU_ID = #{supMnuId}
+            CONNECT BY PRIOR  MNU_ID = SUP_MNU_ID
+        )
+    </delete>
+
+    <insert id="insertMnuAuthMappInfo" parameterType="kr.or.career.mentor.domain.AuthInfo">
+        INSERT INTO CNET_MNU_AUTH_MAPP
+        (AUTH_CD, MNU_ID, REG_DTM, REG_MBR_NO)
+        VALUES
+        (#{authCd}, #{mnuId}, SYSDATE, #{regMbrNo})
+    </insert>
+
+    <delete id="deleteRollAuthMappInfo" parameterType="kr.or.career.mentor.domain.AuthInfo">
+        DELETE CNET_ROLL_AUTH_MAPP A
+        WHERE AUTH_CD = #{authCd}
+        AND EXISTS ( SELECT 1 FROM CNET_ROLL_INFO WHERE SITE_CLASS = #{site} AND USE_YN = 'Y' AND ROLL_CD = A.ROLL_CD )
+    </delete>
+
+    <insert id="insertRollAuthMappInfo" parameterType="kr.or.career.mentor.domain.AuthInfo">
+        INSERT INTO CNET_ROLL_AUTH_MAPP
+        (ROLL_CD, AUTH_CD,  REG_DTM, REG_MBR_NO)
+        SELECT
+            ROLL_CD, #{authCd}, SYSDATE, #{regMbrNo}
+        FROM CNET_ROLL_INFO WHERE SITE_CLASS = #{site} AND USE_YN = 'Y'
+        <foreach collection="mnuIds" item="mnuId" open="AND ROLL_CD IN (" close=")" separator=",">
+            #{mnuId}
+        </foreach>
+    </insert>
+
+    <insert id="insertRollRelMappInfo" parameterType="kr.or.career.mentor.domain.AuthInfo">
+        INSERT INTO CNET_ROLL_REL_MAPP
+        (SUP_ROLL_CD, SUB_ROLL_CD, REG_DTM)
+        VALUES
+        ('ROLE_USER', #{authCd}, SYSDATE)
+    </insert>
+
+    <select id="listAuthCdList" resultType="kr.or.career.mentor.domain.AuthInfo">
+        SELECT
+            B.AUTH_TARGT_ID, A.AUTH_CD, A.AUTH_DESC, A.AUTH_NM, A.AUTH_TYPE, A.REG_DTM, A.REG_MBR_NO, B.MBR_CUALF_CD
+        FROM CNET_AUTH_INFO A
+        , CNET_USER_AUTH_MAPP B
+        WHERE A.AUTH_CD = B.AUTH_CD
+        AND B.MBR_CLASS_CD IN ('100860', '101504')
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(authType)">
+            AND A.AUTH_TYPE =  #{authType}
+        </if>
+        ORDER BY A.AUTH_TYPE, B.MBR_CUALF_CD
+    </select>
+
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.transfer.EmsMapper">
+
+    <insert id="insertEmsMailQueue" parameterType="kr.or.career.mentor.domain.EmsMail">
+        <![CDATA[
+        insert into EMS_MAILQUEUE
+        (
+            MASTER_SEQ
+            ,MAIL_CODE
+            ,TO_ID
+            ,TO_NAME
+            ,TO_EMAIL
+            ,FROM_NAME
+            ,FROM_EMAIL
+            ,SUBJECT
+            ,MAP_LONG
+        )
+        values
+        (
+            EMS_MAILQUEUE_SEQ.nextval
+            ,#{mailCode,jdbcType=NUMERIC}
+            ,#{toId,jdbcType=VARCHAR}
+            ,#{toName,jdbcType=VARCHAR}
+            ,#{toEmail,jdbcType=VARCHAR}
+            ,#{fromName,jdbcType=VARCHAR}
+            ,#{fromEmail,jdbcType=VARCHAR}
+            ,#{subject,jdbcType=VARCHAR}
+            ,#{mapLong,jdbcType=VARCHAR}
+        )
+        ]]>
+    </insert>
+
+</mapper>

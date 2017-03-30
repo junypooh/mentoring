@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MessageMapper">
+
+
+    <insert id="insertSendMessage" parameterType="kr.or.career.mentor.domain.SendAndResult">
+        INSERT INTO CNET_MSG_SEND_INFO
+        (
+            MSG_SER,
+            TARGT_DVC_CD,
+            SEND_TYPE_CD,
+            SEND_TARGT_CD,
+            SEND_RSV_DTM,
+            SEND_STAT_CD,
+            SEND_MSG,
+            SEND_DTM,
+            REG_DTM,
+            REG_MBR_NO,
+            SEND_TITLE
+        )
+        VALUES
+        (
+            SQ_MSG_INFO.nextval,
+            '101030',
+            '101034',
+            #{messageSendType},
+            sysdate,
+            #{statusCode},
+            #{sendContent},
+            sysdate,
+            sysdate,
+            #{regMbrNo},
+            #{sendTitle,jdbcType=VARCHAR}
+        )
+        <selectKey keyProperty="msgSer" resultType="Integer" order="AFTER">
+            SELECT SQ_MSG_INFO.currval FROM dual
+        </selectKey>
+    </insert>
+
+    <insert id="insertSendMessageTarget" parameterType="kr.or.career.mentor.domain.SendAndResult">
+        INSERT INTO CNET_MSG_SEND_TARGT_INFO
+        (
+            SEND_TARGT_SER,
+            MSG_SER,
+            SEND_TARGT_CD,
+            SEND_TARGT_MBR_NO,
+            SEND_TARGT_INFO,
+            SEND_STAT_CD,
+            SEND_TARGT_MBR_NM
+        )
+        VALUES
+        (
+            SQ_MSG_SEND_TARGT_INFO.nextval,
+            #{msgSer},
+            #{messageSendType},
+            #{reciever.memberNo},
+            #{sendTargetInfo},
+            #{statusCode},
+            #{reciever.name, jdbcType=VARCHAR}
+        )
+        <selectKey keyProperty="sendTargetSer" resultType="Integer" order="AFTER">
+            SELECT SQ_MSG_SEND_TARGT_INFO.currval FROM dual
+        </selectKey>
+    </insert>
+
+    <update id="updateSendMessage" parameterType="kr.or.career.mentor.domain.SendAndResult">
+        UPDATE CNET_MSG_SEND_INFO SET
+        SEND_STAT_CD = #{statusCode, jdbcType=VARCHAR}
+        WHERE MSG_SER = #{msgSer}
+    </update>
+
+    <update id="updateSendMessageTarget" parameterType="kr.or.career.mentor.domain.SendAndResult">
+        UPDATE CNET_MSG_SEND_TARGT_INFO SET
+        SEND_STAT_CD = #{statusCode, jdbcType=VARCHAR}
+        WHERE SEND_TARGT_SER = #{sendTargetSer}
+    </update>
+
+    <select id="selectLectureMessageReciever" resultType="kr.or.career.mentor.domain.MessageReciever" parameterType="kr.or.career.mentor.domain.LecturePayLoad">
+        SELECT
+                d.MBR_NO            as memberNo
+                ,d.TEL              as telNo
+                ,d.EMAIL_ADDR       as mailAddress
+                ,e.DVC_TKN_VAL      as deviceToken
+                ,e.DVC_OS_INFO      as osType
+        FROM    CNET_LECT_TIMS_INFO a
+                    inner join CNET_LECT_APPL_INFO c
+                        on  a.LECT_SER = c.LECT_SER
+                            and a.LECT_TIMS = c.LECT_TIMS
+                    inner join CNET_MBR_INFO d
+                        on  c.APPL_MBR_NO = d.MBR_NO
+                    left outer join CNET_MBR_DVC_INFO e
+                        on  d.MBR_NO = e.MBR_NO
+
+        WHERE    a.LECT_SER = #{lectSer, jdbcType=INTEGER}
+
+        AND      a.LECT_TIMS = #{lectTims, jdbcType=INTEGER}
+        AND      c.APPL_STAT_CD in ('101575','101576','101577')  /* 신청,승인,확정 */
+        order by a.LECT_SER,a.LECT_TIMS
+    </select>
+
+    <select id="selectMentorMessageReciever" resultType="kr.or.career.mentor.domain.MessageReciever" parameterType="kr.or.career.mentor.domain.LecturePayLoad">
+        SELECT
+                d.MBR_NO            as memberNo
+                ,d.TEL              as telNo
+                ,d.EMAIL_ADDR       as mailAddress
+                ,e.DVC_TKN_VAL      as deviceToken
+                ,e.DVC_OS_INFO      as osType
+        FROM    CNET_LECT_TIMS_INFO a
+                    inner join CNET_LECT_INFO c
+                        on  a.LECT_SER = c.LECT_SER
+                    inner join CNET_MBR_INFO d
+                        on  c.lectr_mbr_no = d.MBR_NO
+                    left outer join CNET_MBR_DVC_INFO e
+                        on  d.MBR_NO = e.MBR_NO
+        where   a.LECT_SER = #{lectSer}
+        AND     a.LECT_TIMS = #{lectTims}
+    </select>
+
+    <select id="selectMentorMessageRecieverForApprove" resultType="kr.or.career.mentor.domain.MessageReciever" parameterType="kr.or.career.mentor.domain.LecturePayLoad">
+        SELECT
+                d.MBR_NO            as memberNo
+                ,d.TEL              as telNo
+                ,d.EMAIL_ADDR       as mailAddress
+                ,e.DVC_TKN_VAL      as deviceToken
+                ,e.DVC_OS_INFO      as osType
+        FROM
+                CNET_LECT_INFO  b
+                    inner join CNET_MBR_INFO d
+                        on  b.lectr_mbr_no = d.MBR_NO
+                    left outer join CNET_MBR_DVC_INFO e
+                        on  d.MBR_NO = e.MBR_NO
+        where   b.LECT_SER = #{lectSer}
+    </select>
+
+    <select id="selectLecturePayLoad" resultType="kr.or.career.mentor.domain.LecturePayLoad" parameterType="kr.or.career.mentor.domain.LecturePayLoad">
+        SELECT  b.LECT_TITLE      as name
+                ,b.LECTR_NM       as mentor
+                ,a.LECT_SER       as lectSer
+                ,a.LECT_TIMS      as lectTims
+                ,to_char(to_date(min(c.lect_day||c.lect_start_time),'YYYY-MM-DD HH24:MI'),'YYYY-MM-DD HH24:MI') as startDate
+                ,to_char(to_date(max(c.lect_day||c.lect_end_time),'YYYY-MM-DD HH24:MI'),'HH24:MI') as endTime
+        FROM    CNET_LECT_TIMS_INFO a
+                    inner join CNET_LECT_INFO b
+                        on  a.LECT_SER = b.LECT_SER
+                    inner join CNET_LECT_SCHD_INFO c
+                        on  a.lect_ser = c.lect_ser
+                            and a.lect_tims = c.lect_tims
+        WHERE     a.LECT_SER = #{lectSer, jdbcType=INTEGER}
+        AND     a.LECT_TIMS = #{lectTims, jdbcType=INTEGER}
+        group by b.LECT_TITLE,b.LECTR_NM, a.lect_ser,a.lect_tims
+    </select>
+
+    <select id="selectLectureInfoPayLoad" resultType="kr.or.career.mentor.domain.LecturePayLoad" parameterType="kr.or.career.mentor.domain.LecturePayLoad">
+        SELECT  a.LECT_TITLE      as name
+                ,a.LECTR_NM       as mentor
+                ,a.lect_ser       as lectSer
+                ,1      as lectTims
+                ,'' as startDate
+                ,'' as endTime
+        FROM    CNET_LECT_INFO a
+        WHERE     a.LECT_SER = #{lectSer, jdbcType=INTEGER}
+    </select>
+
+    <select id="selectMemberMessageReciever" resultType="kr.or.career.mentor.domain.MessageReciever" parameterType="kr.or.career.mentor.domain.MemberPayLoad">
+        <![CDATA[
+        SELECT  a.MBR_NO            as memberNo
+                ,a.EMAIL_ADDR       as mailAddress
+                ,a.TEL              as telNo
+                ,b.DVC_OS_INFO      as osType
+                ,b.DVC_TKN_VAL      as deviceToken
+        FROM   CNET_MBR_INFO a
+                left outer join CNET_MBR_DVC_INFO b
+                    on a.MBR_NO = b.MBR_NO
+        ]]>
+        <trim prefix="WHERE" prefixOverrides="AND |OR">
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mbrNo)">
+                AND     a.MBR_NO = #{mbrNo}
+            </if>
+        </trim>
+    </select>
+
+    <select id="selectMemberPayLoad" resultType="kr.or.career.mentor.domain.MemberPayLoad" parameterType="kr.or.career.mentor.domain.MemberPayLoad">
+        <![CDATA[
+        SELECT  a.MBR_NO    as mbrNo
+                ,a.ID       as id
+                ,a.NM       as name
+                ,a.PWD      as password
+        FROM   CNET_MBR_INFO a
+        ]]>
+        <trim prefix="WHERE" prefixOverrides="AND |OR">
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mbrNo)">
+                AND     a.MBR_NO = #{mbrNo}
+            </if>
+        </trim>
+    </select>
+
+
+    <select id="selectMessageTarget" resultType="kr.or.career.mentor.domain.MessageReciever" parameterType="kr.or.career.mentor.domain.SearchOption">
+        <![CDATA[
+        /* NotificationMapper.xml 설명 : 메시지 발송을 위한 대상 조회, ID : selectNotificationTarget, 작성일 : 2015.11.16 */
+        /* paging */
+        SELECT  *
+        /* paging */
+        FROM
+                (
+                SELECT  E.SCH_NO            as schNo
+                        ,C.MBR_NO           as memberNo
+                        ,E.SCH_NM           as schNm
+                        ,D.CLAS_ROOM_NM     as classRoomNm
+                        ,(  SELECT CD_NM FROM CNET_CODE
+                            WHERE C.MBR_CUALF_CD = CD
+                         )                  AS typeNm
+                        ,C.NM               as name
+                        ,C.MOBILE           as telNo
+                        ,C.EMAIL_ADDR       as mailAddress
+                        ,F.DVC_TKN_VAL      as deviceToken
+                        ,F.DVC_OS_INFO      as osType
+                        ,ROW_NUMBER() OVER(ORDER BY B.REG_DTM DESC) AS RN
+                FROM    CNET_LECT_SCHD_INFO A
+                            INNER JOIN CNET_LECT_APPL_INFO B
+                                ON A.LECT_SER = B.LECT_SER
+                                    AND A.LECT_TIMS = B.LECT_TIMS
+                            INNER JOIN CNET_MBR_INFO C
+                                ON B.APPL_MBR_NO = C.MBR_NO
+                            INNER JOIN CNET_CLAS_ROOM_INFO D
+                                ON B.CLAS_ROOM_SER = D.CLAS_ROOM_SER
+                            INNER JOIN CNET_SCH_INFO E
+                                ON D.SCH_NO = E.SCH_NO
+                            LEFT OUTER JOIN CNET_MBR_DVC_INFO F
+                                ON C.MBR_NO = F.MBR_NO
+                WHERE   LECT_SESS_ID = #{keyword}
+                )
+        ]]>
+    </select>
+
+    <select id="selectSmsSendResult" parameterType="kr.or.career.mentor.domain.SendResultDTO" resultType="kr.or.career.mentor.domain.SendResultDTO">
+        <![CDATA[
+        /* paging */
+         SELECT to_char(A.SEND_DTM,'yyyy-MM-dd HH24:mi:ss') as sendDate
+                ,c.nm sender
+                ,30 AS price
+                ,'단문전송(1건)' as
+
+                ,ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS RN
+        /* paging */
+         FROM   CNET_MSG_SEND_INFO a
+                inner join CNET_MSG_SEND_TARGT_INFO b
+                    on a.MSG_SER = b.MSG_SER
+                inner join (
+                            select  mbr_no,nm
+                            from    CNET_MBR_INFO
+                            where
+                                mbr_class_cd = '101505'
+                                and pos_co_no = (
+                                    select  pos_co_no
+                                    from    CNET_MBR_INFO
+                                    where   mbr_no = #{mbrNo}
+                                    )
+                            ) c
+                    on  a.REG_MBR_NO = c.mbr_no
+         WHERE  B.SEND_TARGT_CD = '101673'
+         AND    B.SEND_STAT_CD = '101038'
+         ]]>
+         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+                   AND A.SEND_DTM >= to_date(#{searchStDate},'yyyy-MM-dd hh24:mi:ss')
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isEmpty(searchStDate)">
+            <![CDATA[
+                   AND A.SEND_DTM >= TRUNC (SYSDATE,'MM')
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+                   AND A.SEND_DTM <= to_date(#{searchEndDate},'yyyy-MM-dd hh24:mi:ss')
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isEmpty(searchEndDate)">
+            <![CDATA[
+                   AND A.SEND_DTM <= LAST_DAY (TRUNC (SYSDATE))
+            ]]>
+        </if>
+    </select>
+    <select id="selectSmsSendHistory" parameterType="kr.or.career.mentor.domain.SendResultDTO" resultType="kr.or.career.mentor.domain.SendResultDTO">
+        <![CDATA[
+        /* paging */
+        SELECT A.MSG_SER
+            ,A.SEND_TYPE_CD
+            , A.REG_MBR_NO
+            , C.NM
+            , C.POS_CO_NO
+            , D.CO_NM
+            , A.REG_DTM
+            , to_char(A.SEND_DTM,'yyyy.MM.dd') as sendDate
+            , A.SEND_TARGT_CD
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = A.SEND_TARGT_CD) AS SEND_TARGT_NM
+            , A.SEND_MSG
+            , A.SEND_TITLE
+            , B.SEND_TARGT_INFO
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = A.SEND_STAT_CD) AS SEND_STAT_NM
+            , (SELECT COUNT(MSG_SER) FROM cnet_msg_send_targt_info WHERE MSG_SER = A.MSG_SER) AS SEND_CNT
+            , (SELECT COUNT(MSG_SER) FROM cnet_msg_send_targt_info WHERE MSG_SER = A.MSG_SER AND SEND_STAT_CD = '101038') AS SEND_SUCCESS_CNT
+            , (SELECT COUNT(MSG_SER) FROM cnet_msg_send_targt_info WHERE MSG_SER = A.MSG_SER AND SEND_STAT_CD = '101040') AS SEND_FALL_CNT
+            , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS RN
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = A.TARGT_DVC_CD) AS TARGT_DVC_NM
+        /* paging */
+        FROM CNET_MSG_SEND_INFO A
+        LEFT OUTER JOIN (
+            SELECT CMSI.MSG_SER
+            ,WM_CONCAT(CMSTI.SEND_TARGT_INFO)  AS SEND_TARGT_INFO
+            FROM CNET_MSG_SEND_INFO CMSI, CNET_MSG_SEND_TARGT_INFO CMSTI
+            WHERE CMSTI.MSG_SER = CMSI.MSG_SER GROUP BY CMSI.MSG_SER
+            ) B
+            ON A.MSG_SER = B.MSG_SER
+        left outer join  CNET_MBR_INFO C ON
+               C.mbr_no = A.REG_MBR_NO
+        left outer join  CNET_CO_INFO D ON
+               C.POS_CO_NO = D.CO_NO
+         ]]>
+        <where>
+            DEL_YN = 'N' AND A.send_title <![CDATA[<>]]> '101767'
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(msgSer)">
+            AND A.MSG_SER = #{msgSer}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sendTargtCd)">
+            AND A.SEND_TARGT_CD = #{sendTargtCd}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+                   AND A.SEND_DTM >= to_date(#{searchStDate},'yyyy-MM-dd hh24:mi:ss')
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+                   AND A.SEND_DTM <= to_date(#{searchEndDate},'yyyy-MM-dd hh24:mi:ss')
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchType)">
+            <if test="searchType eq 1">
+                AND C.NM LIKE '%' || #{searchNm} || '%'
+            </if>
+            <if test="searchType eq 2">
+                AND A.SEND_MSG LIKE '%' || #{searchNm} || '%'
+            </if>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchType)">
+            AND C.NM IS NOT NULL
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchNm)">
+            AND (C.NM LIKE '%' || #{searchNm} || '%' OR A.SEND_MSG LIKE '%' || #{searchNm} || '%')
+            </if>
+        </if>
+        </where>
+    </select>
+
+
+    <select id="sendEmailView" parameterType="kr.or.career.mentor.domain.SendResultDTO" resultType="kr.or.career.mentor.domain.SendResultDTO">
+        <![CDATA[
+        /* paging */
+        SELECT A.MSG_SER
+            ,A.SEND_TYPE_CD
+            , A.REG_MBR_NO
+            , C.NM
+            , C.POS_CO_NO
+            , D.CO_NM
+            , A.REG_DTM
+            , to_char(A.SEND_DTM,'yyyy.MM.dd') as sendDate
+            , A.SEND_TARGT_CD
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = A.SEND_TARGT_CD) AS SEND_TARGT_NM
+            , A.SEND_MSG
+            , A.SEND_TITLE
+            , B.SEND_TARGT_INFO
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = A.SEND_STAT_CD) AS SEND_STAT_NM
+            , (SELECT COUNT(MSG_SER) FROM cnet_msg_send_targt_info WHERE MSG_SER = A.MSG_SER) AS SEND_CNT
+            , (SELECT COUNT(MSG_SER) FROM cnet_msg_send_targt_info WHERE MSG_SER = A.MSG_SER AND SEND_STAT_CD = '101038') AS SEND_SUCCESS_CNT
+            , (SELECT COUNT(MSG_SER) FROM cnet_msg_send_targt_info WHERE MSG_SER = A.MSG_SER AND SEND_STAT_CD = '101040') AS SEND_FALL_CNT
+            ,ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS RN
+        /* paging */
+        FROM CNET_MSG_SEND_INFO A
+        LEFT OUTER JOIN (
+            SELECT CMSI.MSG_SER
+            ,WM_CONCAT(CMSTI.SEND_TARGT_INFO)  AS SEND_TARGT_INFO
+            FROM CNET_MSG_SEND_INFO CMSI, CNET_MSG_SEND_TARGT_INFO CMSTI
+            WHERE CMSTI.MSG_SER = CMSI.MSG_SER GROUP BY CMSI.MSG_SER
+            ) B
+            ON A.MSG_SER = B.MSG_SER
+        inner join  CNET_MBR_INFO C ON
+               C.mbr_no = A.REG_MBR_NO
+        inner join  CNET_CO_INFO D ON
+               C.POS_CO_NO = D.CO_NO
+         ]]>
+        <where>
+                A.MSG_SER = #{msgSer}
+        </where>
+    </select>
+
+    <update id="deleteEmail" parameterType="kr.or.career.mentor.domain.SendResultDTO">
+        UPDATE CNET_MSG_SEND_INFO SET
+        DEL_YN = 'Y'
+        WHERE
+        <foreach collection="msgSers" item="msgSer" open="MSG_SER IN (" close=")" separator=",">
+            #{msgSer}
+        </foreach>
+    </update>
+
+    <select id="selectPushReciever" parameterType="kr.or.career.mentor.domain.Message" resultType="kr.or.career.mentor.domain.MessageReciever">
+        <![CDATA[
+        SELECT
+                a.MBR_NO            as memberNo
+                ,a.TEL              as telNo
+                ,a.EMAIL_ADDR       as mailAddress
+                ,b.DVC_TKN_VAL      as deviceToken
+                ,b.DVC_OS_INFO      as osType
+        FROM    CNET_MBR_INFO A
+                INNER JOIN CNET_MBR_DVC_INFO B
+                    ON A.MBR_NO = B.MBR_NO
+        ]]>
+        <where>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(osType)">
+                B.DVC_OS_INFO = #{osType}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="selectSmsSendResultTest" parameterType="kr.or.career.mentor.domain.SendResultDTO" resultType="kr.or.career.mentor.domain.SendResultDTO">
+        /* paging */
+         SELECT to_char(A.SEND_DTM,'yyyy-MM-dd HH24:mi:ss') as sendDate
+                ,c.nm sender
+                ,ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS RN
+                , MAX(CASE WHEN NVL (LENGTH (TRIM (a.SEND_MSG)), 0) > 30 THEN '장문전송' ELSE '단문전송' END) AS sendDetail
+                --, CASE WHEN NVL (LENGTH (TRIM (a.SEND_MSG)), 0) > 30 THEN '200' ELSE '30' END AS price
+                , SUM(CASE WHEN NVL (LENGTH (TRIM (a.SEND_MSG)), 0) > 30 THEN '200' ELSE '30' END) AS price
+                , COUNT(SEND_TARGT_SER) as  SEND_CNT
+                , A.MSG_SER
+        /* paging */
+         FROM   CNET_MSG_SEND_INFO a
+                left outer join CNET_MSG_SEND_TARGT_INFO b
+                    on a.MSG_SER = b.MSG_SER
+                inner join (
+                    select  mbr_no,nm
+                    from    CNET_MBR_INFO
+                    where   mbr_class_cd = '101505'
+                    <choose>
+                        <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(posCoYn)">
+                        and pos_co_no = (
+                                select  pos_co_no
+                                from    CNET_MBR_INFO
+                                where   mbr_no = #{mbrNo}
+                                )
+                        </when>
+                        <otherwise>
+                        AND MBR_NO = #{mbrNo}
+                        </otherwise>
+                    </choose>
+                ) c
+                    on  a.REG_MBR_NO = c.mbr_no
+         WHERE  B.SEND_TARGT_CD = '101673'
+         AND    B.SEND_STAT_CD = '101038'
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+                   AND A.SEND_DTM >= to_date(#{searchStDate},'yyyy-MM-dd hh24:mi:ss')
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isEmpty(searchStDate)">
+            <![CDATA[
+                   AND A.SEND_DTM >= TRUNC (SYSDATE,'MM')
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+                   AND A.SEND_DTM <= to_date(#{searchEndDate},'yyyy-MM-dd hh24:mi:ss')
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isEmpty(searchEndDate)">
+            <![CDATA[
+                   AND A.SEND_DTM <= LAST_DAY (TRUNC (SYSDATE))
+            ]]>
+        </if>
+        GROUP BY C.NM, A.SEND_DTM, A.MSG_SER, A.REG_DTM
+    </select>
+
+
+
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.JobClsfCdMapper">
+
+    <select id="listJobClsfCd" resultType="kr.or.career.mentor.domain.JobClsfCd">
+        SELECT
+            cd,
+            sup_cd,
+            cd_nm,
+            cd_desc,
+            cd_clsf_info,
+            cd_lv,
+            old_cd,
+            disp_seq,
+            use_yn,
+            reg_dtm,
+            reg_mbr_no,
+            chg_dtm,
+            chg_mbr_no
+        FROM cnet_job_clsf_cd
+        <where>
+            AND use_yn = 'Y'
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(supCd)">
+                AND sup_cd = #{supCd}
+            </if>
+            <if test="cdLv != null">
+                AND cd_lv = #{cdLv}
+            </if>
+            OR 1 != 1 /* 전체 다 가져오는 부분은 없음 */
+        </where>
+        START WITH cd = '100040'
+        CONNECT BY NOCYCLE PRIOR cd = sup_cd
+        ORDER BY cd_nm
+    </select>
+</mapper>

@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.FrontManageMapper">
+
+    <select id="listRecommandLecture" resultType="kr.or.career.mentor.domain.RecommandInfo">
+        <![CDATA[
+                SELECT  A.SORT_SEQ
+                        ,A.RECOM_SER
+                        ,(SELECT CD_NM FROM CNET_CODE WHERE CD = B.LECT_TARGT_CD) AS LECT_TARGT_NM
+                        ,(SELECT CD_NM FROM CNET_CODE WHERE CD = B.LECT_TYPE_CD) AS LECT_TYPE_NM
+                        ,(SELECT JOB_NM FROM CNET_JOB_INFO WHERE JOB_NO = B.LECTR_JOB_NO) AS JOB_NM
+                        ,B.LECT_TITLE
+                        ,E.NM AS lectrMbrNm
+                        ,CASE WHEN (SELECT     COUNT(1)
+                                    FROM    CNET_LECT_APPL_INFO Z
+                                    WHERE   Z.LECT_SER = D.LECT_SER
+                                    AND     Z.LECT_TIMS = D.LECT_TIMS
+                                    AND     Z.APPL_STAT_CD IN ('101576','101577')
+                                    GROUP BY Z.LECT_SER,Z.LECT_TIMS)  = C.MAX_APPL_CNT
+                                AND C.LECT_STAT_CD IN ('101543','101548')
+                        THEN '정원마감'
+                        ELSE
+                            (SELECT CD_NM FROM CNET_CODE Z WHERE Z.SUP_CD = '101541' AND Z.CD = C.LECT_STAT_CD)
+                        END AS LECT_STAT_NM
+                        ,D.LECT_DAY
+                        ,C.REG_DTM
+                FROM    CNET_MNGR_RECOM_INFO A
+                          INNER JOIN CNET_LECT_INFO B
+                            ON A.RECOM_TARGT_NO = B.LECT_SER
+                          INNER JOIN CNET_LECT_TIMS_INFO C
+                            ON A.RECOM_TARGT_NO = C.LECT_SER
+                              AND A.LECT_TIMS = C.LECT_TIMS
+                          INNER JOIN CNET_LECT_SCHD_INFO D
+                            ON C.LECT_SER = D.LECT_SER
+                              AND C.LECT_TIMS = D.LECT_TIMS
+                              AND D.SCHD_SEQ = 1
+                          INNER JOIN CNET_MBR_INFO E
+                            ON B.LECTR_MBR_NO = E.MBR_NO
+                WHERE A.RECOM_TARGT_CD = 101643
+                AND   A.USE_YN = 'Y'
+                ORDER BY A.SORT_SEQ
+            ]]>
+    </select>
+
+    <update id="updateChangeOrder" parameterType="kr.or.career.mentor.domain.OrderChanger">
+        <![CDATA[
+            UPDATE  CNET_MNGR_RECOM_INFO
+        ]]>
+        <if test="fromIndex gt toIndex">
+            SET     SORT_SEQ = SORT_SEQ + 1
+        </if>
+        <if test="fromIndex lt toIndex">
+            SET     SORT_SEQ = SORT_SEQ - 1
+        </if>
+        <![CDATA[
+            WHERE   RECOM_TARGT_CD = #{targtCd}
+            AND     USE_YN = 'Y'
+        ]]>
+        <if test="fromIndex gt toIndex">
+            <![CDATA[
+            AND     SORT_SEQ >= ${toIndex}
+            AND     SORT_SEQ < ${fromIndex}
+        ]]>
+        </if>
+        <if test="fromIndex lt toIndex">
+            <![CDATA[
+            AND     SORT_SEQ > ${fromIndex}
+            AND     SORT_SEQ <= ${toIndex}
+        ]]>
+        </if>
+    </update>
+
+    <update id="updateMoved" parameterType="kr.or.career.mentor.domain.OrderChanger">
+        <![CDATA[
+            update  CNET_MNGR_RECOM_INFO
+            set     sort_seq = #{toIndex}
+            where   RECOM_TARGT_CD = #{targtCd}
+            and     RECOM_SER = #{id}
+        ]]>
+    </update>
+
+    <select id="searchLectTimesInfoList" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.RecommandInfo">
+        <![CDATA[
+            /* paging */
+            SELECT
+                    C.LECT_SER as recomTargtNo
+                    ,C.LECT_TIMS
+                    ,(SELECT CD_NM FROM CNET_CODE Z WHERE Z.SUP_CD = '101528' AND Z.CD = A.LECT_TYPE_CD) AS LECT_TYPE_NM
+                    ,(SELECT CD_NM FROM CNET_CODE Z WHERE Z.SUP_CD = '101533' AND Z.CD = A.LECT_TARGT_CD) AS LECT_TARGT_NM
+                    ,A.LECT_TITLE
+                    ,C.LECT_DAY
+                    ,A.LECTR_NM as lectrMbrNm
+                    ,(SELECT Z.JOB_NM FROM CNET_JOB_INFO Z WHERE Z.JOB_NO = A.LECTR_JOB_NO) AS JOB_NM
+                    ,(SELECT CD_NM FROM CNET_CODE Z WHERE Z.SUP_CD = '101541' AND Z.CD = B.LECT_STAT_CD) AS LECT_STAT_NM
+                    , ROW_NUMBER() OVER(ORDER BY C.LECT_DAY DESC, C.LECT_START_TIME DESC) AS rn
+            /* paging */
+            FROM    CNET_LECT_INFO A
+                      INNER JOIN CNET_LECT_TIMS_INFO B
+                        ON A.LECT_SER = B.LECT_SER
+                      INNER JOIN CNET_LECT_SCHD_INFO C
+                        ON B.LECT_SER = C.LECT_SER
+                          AND B.LECT_TIMS = C.LECT_TIMS
+                          AND C.SCHD_SEQ = 1
+                      LEFT OUTER JOIN CNET_MNGR_RECOM_INFO D
+                        ON D.RECOM_TARGT_NO = C.LECT_SER
+                          AND D.LECT_TIMS = C.LECT_TIMS
+                          AND D.RECOM_TARGT_CD = 101643
+                          AND D.USE_YN = 'Y'
+                      LEFT OUTER JOIN CNET_JOB_INFO E
+                        ON A.LECTR_JOB_NO = E.JOB_NO
+            WHERE   D.RECOM_SER IS NULL
+            AND     B.EXPS_YN = 'Y'
+        ]]>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schoolGrd)">
+            <choose>
+                <when test="@org.apache.commons.lang3.StringUtils@equals(schoolGrd, '101534')">
+                    AND A.LECT_TARGT_CD IN ('101534', '101537' ,'101539', '101540')
+                </when>
+                <when test="@org.apache.commons.lang3.StringUtils@equals(schoolGrd, '101535')">
+                    AND A.LECT_TARGT_CD IN ('101535', '101537' ,'101538', '101540')
+                </when>
+                <when test="@org.apache.commons.lang3.StringUtils@equals(schoolGrd, '101536')">
+                    AND A.LECT_TARGT_CD IN ('101536', '101538' ,'101539', '101540')
+                </when>
+                <otherwise>
+                    AND A.LECT_TARGT_CD = #{schoolGrd}
+                </otherwise>
+            </choose>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectType)">
+            AND A.LECT_TYPE_CD = #{lectType}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectStatCd)">
+            AND B.LECT_STAT_CD = #{lectStatCd}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey)">
+            AND (
+            A.LECTR_NM LIKE '%' || #{searchKey} || '%'
+            OR E.JOB_NM LIKE '%' || #{searchKey} || '%'
+            OR A.LECT_TITLE LIKE '%' || #{searchKey} || '%'
+            )
+        </if>
+    </select>
+
+    <update id="removeRecommand" parameterType="java.util.List">
+        <![CDATA[
+            update CNET_MNGR_RECOM_INFO
+            set use_yn = 'N'
+            where RECOM_SER in
+        ]]>
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+
+    <update id="updateRecommand" parameterType="string">
+        <![CDATA[
+            MERGE INTO CNET_MNGR_RECOM_INFO T
+            USING
+            (
+                SELECT  A.*,ROW_NUMBER() OVER(ORDER BY a.sort_seq) AS rn
+                FROM    CNET_MNGR_RECOM_INFO A
+                where   a.RECOM_TARGT_CD = #{targtCd}
+                and     a.USE_YN = 'Y'
+                order by a.sort_seq
+            ) DT ON (T.recom_ser = dt.recom_ser)
+            WHEN MATCHED THEN UPDATE
+            SET T.sort_seq = DT.rn
+        ]]>
+    </update>
+
+    <insert id="insertRecommand" parameterType="kr.or.career.mentor.domain.RecommandInfo">
+        <selectKey keyProperty="recomSer" resultType="int" order="BEFORE">
+            <!--SELECT  SQ_MNGR_RECOM_INFO.NEXTVAL as recomSer,sortSeq
+            FROM    (
+                        SELECT  MAX(SORT_SEQ) + 1 as sortSeq
+                        FROM    CNET_MNGR_RECOM_INFO
+                        WHERE   RECOM_TARGT_CD = 101643
+                        AND     USE_YN = 'Y'
+                    )-->
+            SELECT  SQ_MNGR_RECOM_INFO.NEXTVAL FROM DUAL
+        </selectKey>
+        <![CDATA[
+            INSERT INTO CNET_MNGR_RECOM_INFO
+            (
+                RECOM_SER
+                ,RECOM_TARGT_CD
+                ,RECOM_TARGT_NO
+                ,SORT_SEQ
+                ,USE_YN
+                ,REG_DTM
+                ,REG_MBR_NO
+                ,LECT_TIMS
+            )
+            SELECT
+                    #{recomSer, jdbcType=NUMERIC}
+                    ,#{recomTargtCd, jdbcType=VARCHAR}
+                    ,#{recomTargtNo, jdbcType=VARCHAR}
+                    ,NVL(MAX(SORT_SEQ) + 1,1)
+                    ,'Y'
+                    ,SYSDATE
+                    ,#{regMbrNo, jdbcType=VARCHAR}
+                    ,#{lectTims, jdbcType=NUMERIC}
+            FROM    CNET_MNGR_RECOM_INFO
+            WHERE   RECOM_TARGT_CD = #{recomTargtCd, jdbcType=VARCHAR}
+            AND     USE_YN = 'Y'
+        ]]>
+    </insert>
+
+    <select id="listRecommandMentor" resultType="kr.or.career.mentor.domain.RecommandInfo" parameterType="string">
+        <![CDATA[
+            SELECT  A.SORT_SEQ
+                    ,A.RECOM_SER
+                    ,B.MBR_NO
+                    ,C.JOB_NM
+                    ,B.NM as mbr_nm
+                    ,A.REG_DTM
+                    ,(SELECT  MIN(IC.LECT_DAY)
+                      FROM    CNET_LECT_INFO IA
+                              INNER JOIN CNET_LECT_TIMS_INFO IB
+                                ON IA.LECT_SER = IB.LECT_SER
+                              INNER JOIN CNET_LECT_SCHD_INFO IC
+                                ON IB.LECT_SER = IC.LECT_SER
+                                  AND IB.LECT_TIMS = IC.LECT_TIMS
+                                  AND IC.SCHD_SEQ = 1
+                      WHERE TO_DATE(IC.LECT_DAY || IC.LECT_START_TIME,'YYYYMMDDHH24MI') > SYSDATE
+                      AND   IB.LECT_STAT_CD IN (101543,101548)
+                      AND   B.MBR_NO = IA.LECTR_MBR_NO
+                      ) AS expectLectDay
+                     ,(SELECT  MAX(IC.LECT_DAY)
+                      FROM    CNET_LECT_INFO IA
+                              INNER JOIN CNET_LECT_TIMS_INFO IB
+                                ON IA.LECT_SER = IB.LECT_SER
+                              INNER JOIN CNET_LECT_SCHD_INFO IC
+                                ON IB.LECT_SER = IC.LECT_SER
+                                  AND IB.LECT_TIMS = IC.LECT_TIMS
+                                  AND IC.SCHD_SEQ = 1
+                      WHERE TO_DATE(IC.LECT_DAY || IC.LECT_START_TIME,'YYYYMMDDHH24MI') < SYSDATE
+                      AND   IB.LECT_STAT_CD = 101551
+                      AND   B.MBR_NO = IA.LECTR_MBR_NO
+                      ) AS recentLectDay
+            FROM    CNET_MNGR_RECOM_INFO A
+                      INNER JOIN CNET_MBR_INFO B
+                        on A.RECOM_TARGT_NO = B.MBR_NO
+                      inner join CNET_MBR_JOB_INFO C
+                        on B.mbr_no = c.mbr_no
+            WHERE A.RECOM_TARGT_CD = #{targtCd}
+            AND   A.USE_YN = 'Y'
+            ORDER BY A.SORT_SEQ
+        ]]>
+    </select>
+
+    <select id="searchMentorInfoList" resultType="kr.or.career.mentor.domain.RecommandInfo" parameterType="kr.or.career.mentor.domain.MentorSearch">
+        <![CDATA[
+            /* paging */
+            SELECT
+                    C.JOB_NM
+                    ,A.MBR_NO as recomTargtNo
+                    ,A.NM as mbrNm
+                    ,(SELECT  MIN(IC.LECT_DAY)
+                      FROM    CNET_LECT_INFO IA
+                              INNER JOIN CNET_LECT_TIMS_INFO IB
+                                ON IA.LECT_SER = IB.LECT_SER
+                              INNER JOIN CNET_LECT_SCHD_INFO IC
+                                ON IB.LECT_SER = IC.LECT_SER
+                                  AND IB.LECT_TIMS = IC.LECT_TIMS
+                                  AND IC.SCHD_SEQ = 1
+                      WHERE TO_DATE(IC.LECT_DAY || IC.LECT_START_TIME,'YYYYMMDDHH24MI') > SYSDATE
+                      AND   IB.LECT_STAT_CD IN (101543,101548)
+                      AND   A.MBR_NO = IA.LECTR_MBR_NO
+                      ) AS expectLectDay
+                     ,(SELECT  MAX(IC.LECT_DAY)
+                      FROM    CNET_LECT_INFO IA
+                              INNER JOIN CNET_LECT_TIMS_INFO IB
+                                ON IA.LECT_SER = IB.LECT_SER
+                              INNER JOIN CNET_LECT_SCHD_INFO IC
+                                ON IB.LECT_SER = IC.LECT_SER
+                                  AND IB.LECT_TIMS = IC.LECT_TIMS
+                                  AND IC.SCHD_SEQ = 1
+                      WHERE TO_DATE(IC.LECT_DAY || IC.LECT_START_TIME,'YYYYMMDDHH24MI') < SYSDATE
+                      AND   IB.LECT_STAT_CD = 101551
+                      AND   A.MBR_NO = IA.LECTR_MBR_NO
+                      ) AS recentLectDay
+                      , ROW_NUMBER() OVER(ORDER BY A.NM) AS rn
+            /* paging */
+            FROM    CNET_MBR_INFO A
+                      LEFT OUTER JOIN CNET_MNGR_RECOM_INFO B
+                        ON B.RECOM_TARGT_NO = A.MBR_NO
+                          AND B.RECOM_TARGT_CD = #{targtCd}
+                          AND B.USE_YN = 'Y'
+                      LEFT OUTER JOIN CNET_MBR_JOB_INFO C
+                        ON A.MBR_NO = C.MBR_NO
+            WHERE   B.RECOM_SER IS NULL
+            AND     A.MBR_CLASS_CD = 101505
+            AND     A.MBR_STAT_CD = 100862
+            AND     A.sch_site_exps_yn = 'Y'
+        ]]>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchKey)">
+            <choose>
+                <when test="searchType eq 'mentor'">
+                    AND REGEXP_LIKE(A.nm, #{searchKey})
+                </when>
+                <when test="searchType eq 'tag'">
+                    AND REGEXP_LIKE(C.job_tag_info, #{searchKey})
+                </when>
+                <when test="searchType eq 'job'">
+                    AND REGEXP_LIKE(C.job_nm, #{searchKey})
+                </when>
+                <otherwise>
+                    AND (REGEXP_LIKE(A.nm, #{searchKey})
+                        OR REGEXP_LIKE(C.job_tag_info, #{searchKey})
+                        OR REGEXP_LIKE(C.job_nm, #{searchKey})
+                    )
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
+    <select id="listRecommandJob" resultType="kr.or.career.mentor.domain.RecommandInfo">
+        <![CDATA[
+            SELECT
+                    A.RECOM_SER
+                    ,A.SORT_SEQ
+                    ,C.CD_NM as jobClsfNm
+                    ,B.JOB_NO
+                    ,B.JOB_NM
+                    ,(SELECT  COUNT(1) FROM CNET_MBR_JOB_INFO IA WHERE IA.JOB_NO = B.JOB_NO) AS MENTOR_CNT
+                    ,(SELECT  COUNT(1)
+                      FROM    CNET_MBR_ITRST_INFO IA
+                      WHERE   IA.ITRST_TARGT_CD = 101514 AND IA.ITRST_TARGT_NO = B.JOB_NO) AS INTEREST_CNT
+                    ,A.REG_DTM
+            FROM    CNET_MNGR_RECOM_INFO A
+                      INNER JOIN CNET_JOB_INFO B
+                        on A.RECOM_TARGT_NO = B.JOB_NO
+                      inner join CNET_JOB_CLSF_CD C
+                        on B.JOB_CLSF_CD = c.CD
+            WHERE A.RECOM_TARGT_CD = 101756
+            AND   A.USE_YN = 'Y'
+            ORDER BY A.SORT_SEQ
+        ]]>
+    </select>
+
+    <select id="selectRecommandTargetJob" resultType="kr.or.career.mentor.domain.RecommandInfo" parameterType="kr.or.career.mentor.domain.MentorSearch">
+        <![CDATA[
+            SELECT
+                    B.JOB_NO
+                    ,C.CD_NM as jobClsfNm
+                    ,B.JOB_NM
+                    ,(  SELECT  COUNT(1)
+                        FROM    CNET_MBR_JOB_INFO IA
+                                INNER JOIN CNET_MBR_INFO IB
+                                    ON IA.MBR_NO = IB.MBR_NO
+                                        AND IB.MBR_STAT_CD IN (100862,100863)
+                        WHERE IA.JOB_NO = B.JOB_NO
+                     ) AS MENTOR_CNT
+                    ,(  SELECT  COUNT(1)
+                        FROM    CNET_MBR_ITRST_INFO IA
+                        WHERE   IA.ITRST_TARGT_CD = 101514 AND IA.ITRST_TARGT_NO = B.JOB_NO
+                     ) AS INTEREST_CNT
+                    ,A.REG_DTM
+                    , ROW_NUMBER() OVER(ORDER BY B.JOB_NM) AS rn
+            FROM    CNET_JOB_INFO B
+                      INNER JOIN CNET_JOB_CLSF_CD C
+                        ON B.JOB_CLSF_CD = c.CD
+        ]]>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchKey) or @org.apache.commons.collections.CollectionUtils@isNotEmpty(chrstcClsfCds)">
+        <![CDATA[
+                      LEFT OUTER JOIN (SELECT  DISTINCT IB.JOB_NO
+                                        FROM    CNET_MBR_INFO IA
+                                                LEFT OUTER JOIN CNET_MBR_JOB_INFO IB
+                                                  ON IA.MBR_NO = IB.MBR_NO
+                                                LEFT OUTER JOIN CNET_MBR_JOB_CHRSTC_INFO IC
+                                                  ON IA.MBR_NO = IC.MBR_NO
+                                          WHERE   IA.MBR_CLASS_CD = 101505
+                                          AND     IA.MBR_STAT_CD in (100862,100863)
+        ]]>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchKey)">
+            <choose>
+                <when test="searchType eq 'mentor'">
+                    AND REGEXP_LIKE(IA.nm, #{searchKey})
+                </when>
+                <when test="searchType eq 'tag'">
+                    AND REGEXP_LIKE(IB.job_tag_info, #{searchKey})
+                </when>
+                <otherwise>
+                    AND (REGEXP_LIKE(IA.nm, #{searchKey})
+                    OR REGEXP_LIKE(IB.job_tag_info, #{searchKey}))
+                </otherwise>
+            </choose>
+            </if>
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(chrstcClsfCds)" >
+                <foreach collection="chrstcClsfCds" item="chrstcClsfCd" open="AND IC.JOB_CHRSTC_CD in (" close=")" separator=",">
+                    #{chrstcClsfCd}
+                </foreach>
+            </if>
+        <![CDATA[
+                                      ) D
+                        on B.JOB_NO = D.JOB_NO
+        ]]>
+        </if>
+        <![CDATA[
+                      LEFT OUTER JOIN CNET_MNGR_RECOM_INFO A
+                        ON A.RECOM_TARGT_NO = B.JOB_NO
+                            AND A.RECOM_TARGT_CD = 101756
+                            AND A.USE_YN = 'Y'
+            WHERE A.RECOM_SER IS NULL
+        ]]>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(jobClsfCd)">
+            <![CDATA[
+            AND B.job_no IN (
+            SELECT
+            job_no
+            FROM cnet_job_info
+            WHERE job_clsf_cd IN (
+            SELECT
+            cd
+            FROM cnet_job_clsf_cd
+            WHERE 1 = 1
+            AND cd_lv = 3
+            START WITH cd = #{jobClsfCd}
+            CONNECT BY NOCYCLE PRIOR cd = sup_cd
+            )
+            )
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchKey)">
+        <choose>
+            <when test="searchType eq 'job'">
+                AND REGEXP_LIKE(B.job_nm, #{searchKey}) AND D.JOB_NO IS NULL
+            </when>
+            <when test="@org.apache.commons.lang3.StringUtils@isBlank(searchType)">
+                AND (REGEXP_LIKE(B.job_nm, #{searchKey}) OR D.JOB_NO IS NOT NULL)
+            </when>
+        </choose>
+        </if>
+        <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(chrstcClsfCds)">
+            AND D.JOB_NO IS NOT NULL
+        </if>
+
+    </select>
+
+    <select id="listMentorByJobNo" parameterType="kr.or.career.mentor.domain.MentorSearch" resultType="kr.or.career.mentor.domain.RecommandInfo">
+        <![CDATA[
+            SELECT
+                    B.JOB_NM
+                    ,B.JOB_NO
+                    ,A.MBR_NO as recomTargtNo
+                    ,A.NM as mbrNm
+                    ,(SELECT  MIN(IC.LECT_DAY)
+                      FROM    CNET_LECT_INFO IA
+                              INNER JOIN CNET_LECT_TIMS_INFO IB
+                                ON IA.LECT_SER = IB.LECT_SER
+                              INNER JOIN CNET_LECT_SCHD_INFO IC
+                                ON IB.LECT_SER = IC.LECT_SER
+                                  AND IB.LECT_TIMS = IC.LECT_TIMS
+                                  AND IC.SCHD_SEQ = 1
+                      WHERE TO_DATE(IC.LECT_DAY || IC.LECT_START_TIME,'YYYYMMDDHH24MI') > SYSDATE
+                      AND   IB.LECT_STAT_CD IN (101543,101548)
+                      AND   A.MBR_NO = IA.LECTR_MBR_NO
+                      ) AS expectLectDay
+                     ,(SELECT  MAX(IC.LECT_DAY)
+                      FROM    CNET_LECT_INFO IA
+                              INNER JOIN CNET_LECT_TIMS_INFO IB
+                                ON IA.LECT_SER = IB.LECT_SER
+                              INNER JOIN CNET_LECT_SCHD_INFO IC
+                                ON IB.LECT_SER = IC.LECT_SER
+                                  AND IB.LECT_TIMS = IC.LECT_TIMS
+                                  AND IC.SCHD_SEQ = 1
+                      WHERE TO_DATE(IC.LECT_DAY || IC.LECT_START_TIME,'YYYYMMDDHH24MI') < SYSDATE
+                      AND   IB.LECT_STAT_CD = 101551
+                      AND   A.MBR_NO = IA.LECTR_MBR_NO
+                      ) AS recentLectDay
+                      , ROW_NUMBER() OVER(ORDER BY A.NM) AS rn
+            FROM    CNET_MBR_INFO A
+                      INNER JOIN CNET_MBR_JOB_INFO B
+                        ON A.MBR_NO = B.MBR_NO
+            WHERE   A.MBR_CLASS_CD = 101505
+            AND     A.MBR_STAT_CD = 100862
+            AND     B.JOB_NO = #{jobNo}
+            ORDER BY A.NM
+        ]]>
+    </select>
+</mapper>

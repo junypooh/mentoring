@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MbrAgrInfoMapper">
+
+    <!-- 회원 동의정보 목록 -->
+    <select id="listMbrAgrInfo" resultType="kr.or.career.mentor.domain.MbrAgrInfo">
+        SELECT
+            mbr_no,
+            agr_class_cd,
+            agr_dtm
+        FROM cnet_mbr_agr_info
+        WHERE 1 = 1
+            AND mbr_no = #{mbrNo}
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(agrClassCd)">
+                AND agr_class_cd = #{agrClassCd}
+            </if>
+    </select>
+
+    <!-- 회원 동의 정보 등록 -->
+    <insert id="insertMbrAgrInfo" parameterType="kr.or.career.mentor.domain.MbrAgrInfo">
+        INSERT INTO cnet_mbr_agr_info (
+            mbr_no,
+            agr_class_cd
+        )
+        VALUES (
+            #{mbrNo},
+            #{agrClassCd}
+        )
+    </insert>
+
+    <!-- 등록된 동의정보가 있을경우 날짜 업데이트, 아니면 추가 -->
+    <insert id="mergeMbrAgrInfo">
+        MERGE INTO cnet_mbr_agr_info
+        USING dual ON (mbr_no = #{mbrNo} AND agr_class_cd = #{agrClassCd})
+            WHEN MATCHED THEN
+                UPDATE
+                SET
+                    agr_dtm = SYSDATE
+            WHEN NOT MATCHED THEN
+                INSERT (
+                    mbr_no,
+                    agr_class_cd,
+                    agr_dtm
+                )
+                VALUES (
+                    #{mbrNo},
+                    #{agrClassCd},
+                    SYSDATE
+                )
+    </insert>
+
+    <!-- 회원 동의 정보 삭제 -->
+    <delete id="deleteMbrAgrInfo">
+        DELETE
+        FROM cnet_mbr_agr_info
+        WHERE 1 = 1
+            AND mbr_no = #{mbrNo}
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(agrClassCd)">
+                AND agr_class_cd = #{agrClassCd}
+            </if>
+    </delete>
+</mapper>
+

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+    <context:component-scan base-package="kr.or.career.mentor">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <context:annotation-config/>	<!--  registered for JavaConfig -->
+
+<!--    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:properties/ESAPI.properties</value>
+            </list>
+        </property>
+    </bean>-->
+
+    <bean id="quartzScheduler"
+          class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="transactionManager" ref="txManager" />
+        <property name="configLocation" value="classpath:/quartz.properties" />
+        <property name="applicationContextSchedulerContextKey" value="applicationContext" />
+        <!--<property name="overwriteExistingJobs" value="true" />-->
+        <!--<property name="waitForJobsToCompleteOnShutdown" value="true" />-->
+        <property name="autoStartup" value="false" />
+    </bean>
+
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>classpath:/messages/message-common</value>
+                <value>classpath:/messages/message-code</value>
+<!--                <value>classpath:/egovframework/rte/fdl/idgnr/messages/idgnr</value>
+                <value>classpath:/egovframework/rte/fdl/property/messages/properties</value>
+                <value>classpath:/egovframework/egovProps/globals</value>-->
+            </list>
+        </property>
+        <property name="cacheSeconds">
+            <value>60</value>
+        </property>
+    </bean>
+
+    <!--<bean id="egovMessageSource" class="egovframework.com.cmm.EgovMessageSource">
+        <property name="reloadableResourceBundleMessageSource">
+            <ref bean="messageSource" />
+        </property>
+    </bean>-->
+
+    <!-- 실행환경에서 빈 이름 참조(AbstractServiceImpl) -->
+    <bean id="leaveaTrace" class="egovframework.rte.fdl.cmmn.trace.LeaveaTrace">
+        <property name="traceHandlerServices">
+            <list>
+                <ref bean="egov.traceHandlerService" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="egov.traceHandlerService" class="egovframework.rte.fdl.cmmn.trace.manager.DefaultTraceHandleManager">
+        <property name="reqExpMatcher">
+            <ref bean="egov.antPathMater" />
+        </property>
+        <property name="patterns">
+            <list>
+                <value>*</value>
+            </list>
+        </property>
+        <property name="handlers">
+            <list>
+                <ref bean="egov.defaultTraceHandler" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="egov.antPathMater" class="org.springframework.util.AntPathMatcher" />
+
+    <bean id="egov.defaultTraceHandler" class="egovframework.rte.fdl.cmmn.trace.handler.DefaultTraceHandler" />
+
+    <!--<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="64.233.179.109" />
+        <property name="port" value="465" />
+        <property name="username" value="mentoringcareergo@gmail.com" />
+        <property name="password" value="mentoring!@" />
+        <property name="defaultEncoding" value="UTF-8" />
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.debug">true</prop>
+                <prop key="mail.smtps.auth">true</prop>
+                <prop key="mail.transport.protocol">smtps</prop>
+                <prop key="mail.smtp.socketFactory.port">465</prop>
+                <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+                <prop key="mail.smtp.socketFactory.fallback">false</prop>
+            </props>
+        </property>
+    </bean>-->
+
+    <bean id="velocityEngine"
+        class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+            <props>
+                <prop key="resource.loader">class</prop>
+                <prop key="class.resource.loader.class">
+                    org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+                </prop>
+                <prop key="class.resource.loader.cache">true</prop>
+                <prop key="input.encoding">UTF-8</prop>
+                <prop key="output.encoding">UTF-8</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="excelView" class="kr.or.career.mentor.view.GenericExcelView" />
+
+    <bean id="excelListView" class="kr.or.career.mentor.view.GenericListExcelView" />
+
+    <bean id="adminSchoolExcelView" class="kr.or.career.mentor.view.AdminSchoolExcelView" />
+
+    <bean id="multiSheetExcelView" class="kr.or.career.mentor.view.MultiSheetExcelView" />
+
+    <bean id="messageTransfer" class="kr.or.career.mentor.transfer.MessageTransferManager"/>
+
+    <bean id="emailTransfer" class="kr.or.career.mentor.transfer.EmailTransfer"/>
+
+    <bean id="smsTransfer" class="kr.or.career.mentor.transfer.SmsTransfer"/>
+
+    <bean id="pushTransfer" class="kr.or.career.mentor.transfer.PushTransfer"/>
+
+    <bean id="contextUtil" class="kr.or.career.mentor.util.ApplicationContextUtils" />
+
+    <!-- use Log4jNestedDiagnosticContextFilter  -->
+    <bean id="log4jMDCFilter" class="kr.or.career.mentor.filter.Log4jMDCFilter" />
+
+    <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="kr.or.career.mentor.exception.AuthorityException" >errors/authError</prop>
+                <prop key="org.springframework.web.multipart.MaxUploadSizeExceededException" >errors/maxUploadSizeExceededException</prop>
+                <prop key="java.lang.Exception">errors/500</prop>
+            </props>
+        </property>
+        <property name="defaultErrorView" value="errors/error" />
+        <property name="statusCodes">
+            <props>
+                <prop key="errors/authError" >403</prop>
+                <prop key="errors/maxUploadSizeExceededException" >405</prop>
+                <prop key="errors/500" >500</prop>
+            </props>
+        </property>
+    </bean>
+</beans>

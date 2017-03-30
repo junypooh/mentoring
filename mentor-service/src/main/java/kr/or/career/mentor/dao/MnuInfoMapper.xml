@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MnuInfoMapper">
+    <!-- <cache /> -->
+    <resultMap id="menuList" type="kr.or.career.mentor.domain.MnuInfo">
+        <result property="mnuId" column="MNU_ID"/>
+        <result property="mnuNm" column="MNU_NM"/>
+        <result property="linkUrl" column="LINK_URL"/>
+        <result property="dispSeq" column="DISP_SEQ"/>
+        <collection property="subMnuInfo" column="{mnuId=MNU_ID,mbrNo=MBR_NO}" javaType="java.util.ArrayList" ofType="mnuInfo" select="listMnuInfoLvl2ByMbrNo"/>
+    </resultMap>
+
+    <sql id="selectMenuInfo">
+        /* paging */
+       SELECT DISTINCT A.MNU_ID, A.SUP_MNU_ID, A.MNU_NM, A.LINK_URL, A.DISP_SEQ, A.SCUT_YN, #{mbrNo} AS MBR_NO
+        /* paging */
+          FROM CNET_MNU_INFO A
+      <if test='mbrNo != "NULL"'>
+    INNER JOIN CNET_MNU_AUTH_MAPP B
+    ON A.MNU_ID = B.MNU_ID
+      </if>
+        WHERE sup_mnu_id = #{mnuId}
+          AND A.use_yn = 'Y'
+          <if test='mbrNo != "NULL"'>
+            AND B.AUTH_CD IN (<include refid="kr.or.career.mentor.dao.UserMapper.fullUserAuthCd"></include>)
+          </if>
+      ORDER BY DISP_SEQ
+    </sql>
+
+    <select id="listMnuInfoByMbrNo" parameterType="map" resultMap="menuList">
+        <include refid="selectMenuInfo"></include>
+    </select>
+
+    <select id="listMnuInfoLvl2ByMbrNo" resultType="mnuInfo" useCache="false">
+        <include refid="selectMenuInfo"></include>
+    </select>
+
+    <!-- 신규 구축 관리자 포털 메뉴 가져오기 -->
+    <resultMap id="globalMenuList" type="kr.or.career.mentor.domain.GlobalMnuInfo" autoMapping="true">
+        <id column="MNU_ID" property="mnuId" />
+        <collection property="globalSubMnuInfos" javaType="ArrayList" ofType="kr.or.career.mentor.domain.GlobalMnuInfo" autoMapping="true">
+            <id column="MNU_ID" property="supMnuId" />
+            <id column="S2ND_MNU_ID" property="mnuId" />
+            <result column="S2ND_MNU_NM" property="mnuNm" />
+            <result column="S2ND_DISP_SEQ" property="dispSeq" />
+            <result column="S2ND_SCUT_YN" property="scutYn" />
+            <result column="S2ND_URL_PTTN" property="urlPttn" />
+            <result column="S2ND_LINK_URL" property="linkUrl" />
+            <collection property="globalSubMnuInfos" javaType="ArrayList" ofType="kr.or.career.mentor.domain.GlobalMnuInfo" autoMapping="true">
+                <id column="MNU_ID"/>
+                <id column="S2ND_MNU_ID" property="supMnuId" />
+                <id column="S3ND_MNU_ID" property="mnuId" />
+                <result column="S3ND_MNU_NM" property="mnuNm" />
+                <result column="S3ND_DISP_SEQ" property="dispSeq" />
+                <result column="S3ND_SCUT_YN" property="scutYn" />
+                <result column="S3ND_URL_PTTN" property="urlPttn" />
+                <result column="S3ND_LINK_URL" property="linkUrl" />
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="listMangerMnuInfo" parameterType="map" resultMap="globalMenuList">
+        /* MnuInfoMapper.xml 설명 : 신규 구축 관리자 포털 메뉴 가져오기, ID : listGlobalMnuInfo, 작성자 : 박경준, 작성일 : 2016.06.10 */
+        SELECT
+            A.MNU_ID, A.SUP_MNU_ID, A.MNU_NM, A.DISP_SEQ, A.SCUT_YN
+            , SUBSTR(A.LINK_URL, 1, INSTR(A.LINK_URL, '/', 2, 1)) AS URL_PTTN, A.LINK_URL
+            , B.MNU_ID AS S2ND_MNU_ID, B.SUP_MNU_ID AS S2ND_SUP_MNU_ID, B.MNU_NM AS S2ND_MNU_NM, B.DISP_SEQ AS S2ND_DISP_SEQ, B.SCUT_YN AS S2ND_SCUT_YN
+            , SUBSTR(B.LINK_URL, 1, INSTR(B.LINK_URL, '/', 2, 2)) AS S2ND_URL_PTTN, B.LINK_URL AS S2ND_LINK_URL
+            , C.MNU_ID AS S3ND_MNU_ID, C.SUP_MNU_ID AS S3ND_SUP_MNU_ID, C.MNU_NM AS S3ND_MNU_NM, C.DISP_SEQ AS S3ND_DISP_SEQ, C.SCUT_YN AS S3ND_SCUT_YN
+            , SUBSTR(C.LINK_URL, 1, INSTR(C.LINK_URL, '/', 2, 3)) AS S3ND_URL_PTTN, C.LINK_URL AS S3ND_LINK_URL
+        FROM CNET_MNU_INFO A
+        INNER JOIN CNET_MNU_AUTH_MAPP MAPP
+        ON (A.MNU_ID = MAPP.MNU_ID AND MAPP.AUTH_CD = #{authCd})
+        LEFT OUTER JOIN (
+            SELECT
+                B1.MNU_ID, B1.SUP_MNU_ID, B1.MNU_NM, B1.LINK_URL, B1.LINK_MTHD_CD, B1.SCUT_YN, B1.DISP_SEQ, B1.USE_YN
+            FROM CNET_MNU_INFO B1
+            INNER JOIN CNET_MNU_AUTH_MAPP B2
+            ON (B1.MNU_ID = B2.MNU_ID AND B2.AUTH_CD = #{authCd})
+        ) B ON (B.SUP_MNU_ID = A.MNU_ID AND B.USE_YN = 'Y')
+        LEFT OUTER JOIN (
+            SELECT
+                C1.MNU_ID, C1.SUP_MNU_ID, C1.MNU_NM, C1.LINK_URL, C1.LINK_MTHD_CD, C1.SCUT_YN, C1.DISP_SEQ, C1.USE_YN
+            FROM CNET_MNU_INFO C1
+            INNER JOIN CNET_MNU_AUTH_MAPP C2
+            ON (C1.MNU_ID = C2.MNU_ID AND C2.AUTH_CD = #{authCd})
+        ) C ON (C.SUP_MNU_ID = B.MNU_ID AND C.USE_YN = 'Y')
+        WHERE A.SUP_MNU_ID = #{mnuId}
+        AND A.USE_YN = 'Y'
+        ORDER BY A.DISP_SEQ, B.DISP_SEQ, C.DISP_SEQ
+    </select>
+
+    <select id="listMangerFullMnuInfo" parameterType="map" resultMap="globalMenuList">
+        /* MnuInfoMapper.xml 설명 : 권한 관리 전체 메뉴 가져오기, ID : listMangerFullMnuInfo, 작성자 : 박경준, 작성일 : 2016.07.01 */
+        SELECT
+            A.MNU_ID, A.SUP_MNU_ID, A.MNU_NM, A.DISP_SEQ, A.SCUT_YN
+            , SUBSTR(A.LINK_URL, 1, INSTR(A.LINK_URL, '/', 2, 1)) AS URL_PTTN, A.LINK_URL
+            , B.MNU_ID AS S2ND_MNU_ID, B.SUP_MNU_ID AS S2ND_SUP_MNU_ID, B.MNU_NM AS S2ND_MNU_NM, B.DISP_SEQ AS S2ND_DISP_SEQ, B.SCUT_YN AS S2ND_SCUT_YN
+            , SUBSTR(B.LINK_URL, 1, INSTR(B.LINK_URL, '/', 2, 2)) AS S2ND_URL_PTTN, B.LINK_URL AS S2ND_LINK_URL
+            , C.MNU_ID AS S3ND_MNU_ID, C.SUP_MNU_ID AS S3ND_SUP_MNU_ID, C.MNU_NM AS S3ND_MNU_NM, C.DISP_SEQ AS S3ND_DISP_SEQ, C.SCUT_YN AS S3ND_SCUT_YN
+            , SUBSTR(C.LINK_URL, 1, INSTR(C.LINK_URL, '/', 2, 3)) AS S3ND_URL_PTTN, C.LINK_URL AS S3ND_LINK_URL
+        FROM CNET_MNU_INFO A
+        LEFT OUTER JOIN CNET_MNU_INFO B ON (B.SUP_MNU_ID = A.MNU_ID AND B.USE_YN = 'Y')
+        LEFT OUTER JOIN CNET_MNU_INFO C ON (C.SUP_MNU_ID = B.MNU_ID AND C.USE_YN = 'Y')
+        WHERE A.SUP_MNU_ID = #{mnuId}
+        AND A.USE_YN = 'Y'
+        ORDER BY A.DISP_SEQ, B.DISP_SEQ, C.DISP_SEQ
+    </select>
+
+</mapper>

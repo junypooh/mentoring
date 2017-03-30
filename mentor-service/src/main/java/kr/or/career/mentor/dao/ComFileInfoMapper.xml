@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.ComFileInfoMapper">
+
+  <resultMap id="comFileInfoResult" type="kr.or.career.mentor.domain.ComFileInfo" autoMapping="true">
+    <id property="fileSer" column="FILE_SER" javaType="int" />
+  </resultMap>
+
+  <select id="getComFileList" parameterType="kr.or.career.mentor.domain.ComFileInfo" resultMap="comFileInfoResult" >
+    SELECT
+      FILE_SER
+      , FILE_NM
+      , FILE_PATH
+      , FILE_SIZE
+      , FILE_EXT
+      , ORI_FILE_NM
+      , DW_CNT
+      , USE_YN
+      , REG_DTM
+      , REG_MBR_NO
+      , CHG_DTM
+      , CHG_MBR_NO
+    FROM CNET_COM_FILE_INFO
+    <where>
+      FILE_SER = #{fileSer}
+    </where>
+  </select>
+
+  <insert id="registComFileInfo" parameterType="kr.or.career.mentor.domain.ComFileInfo">
+    INSERT INTO CNET_COM_FILE_INFO
+      (FILE_SER
+      , FILE_NM
+      , FILE_PATH
+      , FILE_SIZE
+      , FILE_EXT
+      , ORI_FILE_NM
+      , DW_CNT
+      , USE_YN
+      , REG_DTM
+      , REG_MBR_NO)
+    VALUES
+      ( #{fileSer}
+      , #{fileNm}
+      , #{filePath}
+      , #{fileSize}
+      , #{fileExt}
+      , #{oriFileNm}
+      , #{dwCnt}
+      , #{useYn}
+      , SYSDATE
+      , #{regMbrNo})
+  </insert>
+
+  <update id="deleteComFileInfo" parameterType="kr.or.career.mentor.domain.ComFileInfo">
+    UPDATE CNET_COM_FILE_INFO
+    SET
+     USE_YN = 'N',
+     CHG_DTM = SYSDATE,
+     CHG_MBR_NO = #{chgMbrNo}
+    <where>
+     FILE_SER = #{fileSer}
+    </where>
+  </update>
+
+</mapper>

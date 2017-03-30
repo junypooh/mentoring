@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.FileMapper">
+    <resultMap type="kr.or.career.mentor.domain.FileInfo" id="fileInfo" autoMapping="true">
+    </resultMap>
+    <resultMap type="kr.or.career.mentor.domain.ArclFileInfo" id="arclFiles" autoMapping="true">
+        <id column="arcl_ser" property="arclSer"/>
+        <id column="file_ser" property="fileSer"/>
+        <id column="board_id" property="boardId"/>
+        <association property="fileInfo" columnPrefix="fi_" resultMap="fileInfo" autoMapping="true"/>
+    </resultMap>
+
+    <resultMap type="kr.or.career.mentor.domain.LectPicInfo" id="lectFiles" autoMapping="true">
+        <result column="lect_ser" property="lectSer"/>
+        <result column="file_ser" property="fileSer"/>
+        <association property="fileInfo" columnPrefix="fi_" resultMap="fileInfo" autoMapping="true"/>
+    </resultMap>
+
+    <insert id="insertFileInfs" parameterType="list" >
+        INSERT ALL
+        <foreach collection="list" item="element" index="index" >
+        INTO CNET_COM_FILE_INFO (file_ser, file_nm, file_path, file_size, file_ext, ori_file_nm, use_yn, reg_dtm, reg_mbr_no, chg_dtm, chg_mbr_no, dw_cnt)
+         values (SQ_COM_FILE_INFO.nextval, #{element.fileNm},#{element.filePath},#{element.fileSize},#{element.fileExt},#{element.oriFileNm},'Y',SYSDATE,#{element.regMbrNo, jdbcType=VARCHAR},SYSDATE,#{element.chgMbrNo, jdbcType=VARCHAR},0)
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insertFileInfo" parameterType="kr.or.career.mentor.domain.FileInfo" >
+        INSERT INTO CNET_COM_FILE_INFO
+        (file_ser, file_nm, file_path, file_size, file_ext, ori_file_nm, use_yn, reg_dtm, reg_mbr_no, chg_dtm, chg_mbr_no, dw_cnt, file_thumb_path)
+         values
+         (SQ_COM_FILE_INFO.nextval, #{fileNm},#{filePath},#{fileSize},#{fileExt},#{oriFileNm},'Y',SYSDATE,#{regMbrNo, jdbcType=VARCHAR},SYSDATE,#{chgMbrNo, jdbcType=VARCHAR},0, #{fileThumbPath,jdbcType=VARCHAR})
+        <selectKey keyProperty="fileSer" resultType="Integer" order="AFTER">
+            SELECT SQ_COM_FILE_INFO.currval FROM dual
+        </selectKey>
+    </insert>
+
+    <select id="retrieveFile" parameterType="kr.or.career.mentor.domain.FileInfo" resultType="kr.or.career.mentor.domain.FileInfo">
+        /* paging */
+        SELECT file_ser, file_nm, file_path, file_size, file_ext, ori_file_nm, use_yn, reg_dtm, reg_mbr_no, chg_dtm, chg_mbr_no, dw_cnt, file_thumb_path
+        /* paging */
+          FROM CNET_COM_FILE_INFO
+         WHERE file_ser = #{fileSer}
+           AND use_yn = 'Y'
+    </select>
+
+    <update id="updateFile" parameterType="kr.or.career.mentor.domain.FileInfo">
+        <![CDATA[
+            UPDATE  CNET_COM_FILE_INFO
+            SET FILE_THUMB_PATH = #{fileThumbPath,jdbcType=VARCHAR}
+            where file_ser = #{fileSer}
+        ]]>
+    </update>
+
+    <select id="listArclFileInfo" parameterType="kr.or.career.mentor.domain.ArclFileInfo" resultMap="arclFiles">
+        /* paging */
+         SELECT A.ARCL_SER ,A.BOARD_ID , A.FILE_SER
+                , B.FILE_SER as fi_file_ser
+                , B.FILE_NM as fi_file_nm
+                , B.FILE_PATH as fi_file_path
+                , B.FILE_SIZE as fi_file_size
+                , B.FILE_EXT as fi_file_ext
+                , B.ORI_FILE_NM as fi_ori_file_nm
+                , B.USE_YN as fi_use_yn
+                , B.REG_DTM as fi_reg_dtm
+                , B.REG_MBR_NO as fi_reg_mbr_no
+                , B.CHG_DTM as fi_chg_dtm
+                , B.CHG_MBR_NO as fi_chg_mbr_no
+                , B.DW_CNT as fi_dw_cnt
+        /* paging */
+           FROM CNET_ARCL_FILE_INFO A
+     INNER JOIN CNET_COM_FILE_INFO B
+             ON A.FILE_SER = B.FILE_SER
+          WHERE A.ARCL_SER  = #{arclSer}
+            AND A.BOARD_ID = #{boardId}
+            AND B.USE_YN = 'Y'
+    </select>
+
+    <insert id="insertArclFileInfo" parameterType="kr.or.career.mentor.domain.ArclFileInfo" >
+        INSERT INTO CNET_ARCL_FILE_INFO
+        (ARCL_SER, BOARD_ID, FILE_SER, REG_DTM, REG_MBR_NO)
+        VALUES
+        (#{arclSer}, #{boardId}, #{fileSer}, SYSDATE, #{regMbrNo, jdbcType=VARCHAR})
+    </insert>
+
+    <update id="incrementFileDwCnt" parameterType="int">
+        UPDATE CNET_COM_FILE_INFO
+        SET
+            DW_CNT = NVL(DW_CNT, 0) + 1
+        WHERE FILE_SER = #{fileSer}
+    </update>
+
+    <delete id="deleteArclFileInfoByArclSer" parameterType="kr.or.career.mentor.domain.ArclFileInfo">
+        DELETE FROM CNET_ARCL_FILE_INFO
+         WHERE arcl_ser = #{arclSer}
+           AND board_id = #{boardId}
+    </delete>
+
+    <delete id="deleteArclFileInfoExclude" parameterType="kr.or.career.mentor.domain.ArclInfo">
+        DELETE FROM CNET_ARCL_FILE_INFO
+         WHERE arcl_ser = #{arclSer}
+           AND board_id = #{boardId}
+           AND file_ser NOT IN
+           <foreach collection="listArclFileInfo" open="(" close=")" separator="," item="fi" >
+           <choose>
+               <when test="fi != null and fi.fileSer != null">
+               #{fi.fileSer, jdbcType=INTEGER}
+               </when>
+               <otherwise>
+               -1
+               </otherwise>
+           </choose>
+           </foreach>
+    </delete>
+
+    <select id="listLectPicInfo" parameterType="kr.or.career.mentor.domain.LectPicInfo" resultMap="lectFiles">
+        /* paging */
+         SELECT A.LECT_SER , A.FILE_SER
+                , B.FILE_NM as fi_file_nm
+                , B.FILE_PATH as fi_file_path
+                , B.FILE_SIZE as fi_file_size
+                , B.FILE_EXT as fi_file_ext
+                , B.ORI_FILE_NM as fi_ori_file_nm
+                , B.USE_YN as fi_use_yn
+                , B.REG_DTM as fi_reg_dtm
+                , B.REG_MBR_NO as fi_reg_mbr_no
+                , B.CHG_DTM as fi_chg_dtm
+                , B.CHG_MBR_NO as fi_chg_mbr_no
+                , B.DW_CNT as fi_dw_cnt
+        /* paging */
+      FROM CNET_LECT_PIC_INFO A
+     INNER JOIN CNET_COM_FILE_INFO B
+             ON A.FILE_SER = B.FILE_SER
+          WHERE A.LECT_SER  = #{lectSer}
+    </select>
+
+    <insert id="insertLectPicInfo" parameterType="kr.or.career.mentor.domain.LectPicInfo" >
+        INSERT INTO CNET_LECT_PIC_INFO
+        (LECT_SER, FILE_SER, REG_DTM, REG_MBR_NO)
+        VALUES
+        (#{lectSer}, #{fileSer}, SYSDATE, #{regMbrNo, jdbcType=VARCHAR})
+    </insert>
+
+    <delete id="deleteLectPicInfoExclude" parameterType="kr.or.career.mentor.domain.LectInfo">
+        DELETE FROM CNET_LECT_PIC_INFO
+         WHERE lect_ser = #{lectSer}
+           AND file_ser NOT IN
+           <foreach collection="listLectPicInfo" open="(" close=")" separator="," item="fi" >
+           <choose>
+               <when test="fi != null and fi.fileSer != null">
+               #{fi.fileSer, jdbcType=INTEGER}
+               </when>
+               <otherwise>
+               -1
+               </otherwise>
+           </choose>
+           </foreach>
+    </delete>
+
+    <delete id="deleteLectPicInfoFile" parameterType="kr.or.career.mentor.domain.LectInfo">
+        DELETE FROM CNET_LECT_PIC_INFO
+        WHERE lect_ser = #{lectSer}
+          AND file_ser = #{delFileSer, jdbcType=INTEGER}
+    </delete>
+
+    <delete id="deleteLectComFileInfo" parameterType="kr.or.career.mentor.domain.LectInfo">
+        DELETE FROM CNET_COM_FILE_INFO
+        WHERE file_ser = #{delFileSer, jdbcType=INTEGER}
+    </delete>
+</mapper>

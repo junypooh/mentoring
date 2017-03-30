@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.StatisticsMentorMapper">
+
+    <!-- 멘토리포트 > 직업별 -->
+    <select id="selectStatisticsJob" resultType="kr.or.career.mentor.domain.StatisticsMentor">
+        SELECT ROW_NUMBER() OVER(ORDER BY R.JOB_STRUCT1 ASC, R.JOB_STRUCT2 ASC, R.JOB_STRUCT3 ASC) AS rn
+             , R.*
+          FROM (
+                SELECT
+                        (
+                            SELECT TRIM(CD_NM)
+                              FROM CNET_JOB_CLSF_CD
+                             WHERE CD_LV = 1
+                            START WITH CD = JCC.CD
+                            CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+                        ) AS JOB_STRUCT1
+                      , (
+                            SELECT TRIM(CD_NM)
+                              FROM CNET_JOB_CLSF_CD
+                             WHERE CD_LV = 2
+                            START WITH CD = JCC.CD
+                            CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+                            ) AS JOB_STRUCT2
+                      , (
+                            SELECT TRIM(CD_NM)
+                              FROM CNET_JOB_CLSF_CD
+                             WHERE CD_LV = 3
+                            START WITH CD = JCC.CD
+                            CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+                        ) AS JOB_STRUCT3
+                      , NVL(A.HAVE_MENTOR, 0) AS HAVE_MENTOR
+                      , NVL(B.HAVE_LECT, 0) AS HAVE_LECT
+                  FROM
+                        CNET_JOB_CLSF_CD JCC
+        LEFT OUTER JOIN
+                        (
+                            SELECT
+                                   JI.JOB_CLSF_CD
+                                 , COUNT(*) AS HAVE_MENTOR
+                              FROM CNET_JOB_INFO JI
+                        INNER JOIN CNET_MBR_JOB_INFO MJI
+                                ON MJI.JOB_NO = JI.JOB_NO
+                        INNER JOIN CNET_MBR_INFO MI
+                                ON MJI.MBR_NO = MI.MBR_NO
+                             WHERE MI.MBR_CLASS_CD = '101505'
+                               AND MI.MBR_CUALF_CD IN ('101502','101503')
+                               AND MI.MBR_STAT_CD IN ('100862', '101572', '101644') /* 정상이용, 탈퇴요청 */
+                               AND MI.LOGIN_PERM_YN = 'Y'
+                            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchStDate)">
+                               AND TO_CHAR(MJI.REG_DTM, 'YYYYMMDD') <![CDATA[ >= ]]> REGEXP_REPLACE(#{searchStDate}, '[[:punct:]]', '')
+                            </if>
+                            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchEndDate)">
+                               AND TO_CHAR(MJI.REG_DTM, 'YYYYMMDD') <![CDATA[ <= ]]> REGEXP_REPLACE(#{searchEndDate}, '[[:punct:]]', '')
+                            </if>
+                            GROUP BY JI.JOB_CLSF_CD
+                        ) A
+                     ON JCC.CD = A.JOB_CLSF_CD
+        LEFT OUTER JOIN
+                        (
+                            SELECT JI.JOB_CLSF_CD
+                                 , COUNT(*) AS HAVE_LECT
+                              FROM CNET_JOB_INFO JI
+                        INNER JOIN CNET_LECT_INFO LI
+                                ON JI.JOB_NO = LI.LECTR_JOB_NO
+                        INNER JOIN CNET_LECT_TIMS_INFO LTI
+                                ON LI.LECT_SER = LTI.LECT_SER
+                        INNER JOIN CNET_LECT_SCHD_INFO LSI
+                                ON LTI.LECT_SER = LSI.LECT_SER
+                               AND LTI.LECT_TIMS = LSI.LECT_TIMS
+                            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchStDate)">
+                               AND LSI.LECT_DAY <![CDATA[ >= ]]> REGEXP_REPLACE(#{searchStDate}, '[[:punct:]]', '')
+                            </if>
+                            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchEndDate)">
+                               AND LSI.LECT_DAY <![CDATA[ <= ]]> REGEXP_REPLACE(#{searchEndDate}, '[[:punct:]]', '')
+                            </if>
+                            GROUP BY JI.JOB_CLSF_CD
+                        ) B
+                    ON JCC.CD = B.JOB_CLSF_CD
+               ) R
+         WHERE 1 = 1
+           AND JOB_STRUCT1 IS NOT NULL
+           AND JOB_STRUCT2 IS NOT NULL
+           AND JOB_STRUCT3 IS NOT NULL
+    </select>
+
+    <!-- 직업분류 depth 별 카운트 -->
+    <select id="selectDepthCnt" resultType="kr.or.career.mentor.domain.StatisticsMentor">
+        SELECT
+                (
+                    SELECT COUNT(*) AS JOB1
+                    FROM CNET_JOB_CLSF_CD
+                    WHERE CD_LV = 1
+                    START WITH CD = 100040
+                    CONNECT BY NOCYCLE PRIOR CD = SUP_CD
+                ) AS JOB_STRUCT1_CNT
+                ,(
+                    SELECT COUNT(*) AS JOB1
+                    FROM CNET_JOB_CLSF_CD
+                    WHERE CD_LV = 2
+                    START WITH CD = 100040
+                    CONNECT BY NOCYCLE PRIOR CD = SUP_CD
+                ) AS JOB_STRUCT2_CNT
+                ,(
+                    SELECT COUNT(*) AS JOB1
+                    FROM CNET_JOB_CLSF_CD
+                    WHERE CD_LV = 3
+                    START WITH CD = 100040
+                    CONNECT BY NOCYCLE PRIOR CD = SUP_CD
+                ) AS JOB_STRUCT3_CNT
+        FROM DUAL
+    </select>
+
+    <!-- 멘토리포트 > 특징분류별 -->
+    <select id="selectStatisticsChrstc" resultType="kr.or.career.mentor.domain.StatisticsMentor">
+            SELECT CD.CD_NM AS CHRSTC_NM
+                 , NVL(A.HAVE_MENTOR, 0) AS HAVE_MENTOR
+                 , NVL(B.HEVE_LECT, 0) AS HAVE_LECT
+             FROM CNET_CODE CD
+  LEFT OUTER JOIN
+                  (
+                    SELECT MJCI.JOB_CHRSTC_CD, COUNT(*) AS HAVE_MENTOR
+                      FROM CNET_MBR_JOB_CHRSTC_INFO MJCI
+                INNER JOIN CNET_MBR_INFO MI
+                        ON MJCI.MBR_NO = MI.MBR_NO
+                     WHERE MI.MBR_CLASS_CD = '101505'
+                       AND MI.MBR_CUALF_CD IN ('101502','101503')
+                       AND MI.MBR_STAT_CD IN ('100862', '101572', '101644') /* 정상이용, 탈퇴요청 */
+                       AND MI.LOGIN_PERM_YN = 'Y'
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchStDate)">
+                       AND TO_CHAR(MJCI.REG_DTM, 'YYYYMMDD') <![CDATA[ >= ]]> REGEXP_REPLACE(#{searchStDate}, '[[:punct:]]', '')
+                    </if>
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchEndDate)">
+                       AND TO_CHAR(MJCI.REG_DTM, 'YYYYMMDD') <![CDATA[ <= ]]> REGEXP_REPLACE(#{searchEndDate}, '[[:punct:]]', '')
+                    </if>
+                  GROUP BY MJCI.JOB_CHRSTC_CD
+                  ) A
+                ON CD.CD = A.JOB_CHRSTC_CD
+  LEFT OUTER JOIN
+                  (
+                    SELECT MJCI.JOB_CHRSTC_CD, COUNT(*) AS HEVE_LECT
+                      FROM CNET_MBR_JOB_CHRSTC_INFO MJCI
+                INNER JOIN CNET_LECT_INFO LI
+                        ON MJCI.MBR_NO = LI.LECTR_MBR_NO
+                INNER JOIN CNET_LECT_TIMS_INFO LTI
+                        ON LI.LECT_SER = LTI.LECT_SER
+                INNER JOIN CNET_LECT_SCHD_INFO LSI
+                        ON LTI.LECT_SER = LSI.LECT_SER
+                       AND LTI.LECT_TIMS = LSI.LECT_TIMS
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchStDate)">
+                       AND LSI.LECT_DAY <![CDATA[ >= ]]> REGEXP_REPLACE(#{searchStDate}, '[[:punct:]]', '')
+                    </if>
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchEndDate)">
+                       AND LSI.LECT_DAY <![CDATA[ <= ]]> REGEXP_REPLACE(#{searchEndDate}, '[[:punct:]]', '')
+                    </if>
+                 GROUP BY MJCI.JOB_CHRSTC_CD
+                  ) B
+                 ON CD.CD = B.JOB_CHRSTC_CD
+              WHERE CD.SUP_CD = '101564' /* 직업특성 코드 */
+    </select>
+
+    <!-- 멘토리포트 > 멘토목록 -->
+    <select id="selectMentorList" resultType="kr.or.career.mentor.domain.MentorReportDTO">
+        SELECT  A.*
+            , ROW_NUMBER() OVER(ORDER BY A.MAX_LECT_DAY DESC) AS rn
+        FROM    (
+            SELECT  MI.MBR_NO
+                , MI.ID
+                , MI.NM
+                , TO_CHAR(MI.REG_DTM, 'YYYY-MM-DD') AS REG_DTM
+                , JI.JOB_NM
+                , JI.JOB_CLSF_CD
+                , (
+                    SELECT CD_NM
+                    FROM CNET_JOB_CLSF_CD
+                    WHERE 1 = 1
+                    AND CD_LV = 1
+                    START WITH CD = JI.JOB_CLSF_CD
+                    CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+                )   AS CD_NM
+                , NVL(TO_CHAR(TO_DATE(LSI.MIN_LECT_DAY, 'YYYYMMDD'), 'YYYY-MM-DD'), '-') AS MIN_LECT_DAY
+                , NVL(TO_CHAR(TO_DATE(LSI.MAX_LECT_DAY, 'YYYYMMDD'), 'YYYY-MM-DD'), '-') AS MAX_LECT_DAY
+                , LSI.LECT_DAY_CNT
+                , LSI.LECT_DAY_TOT_CNT
+            FROM    CNET_MBR_INFO MI
+            LEFT OUTER JOIN CNET_MBR_JOB_INFO  MJI
+            ON (MI.MBR_NO = MJI.MBR_NO)
+            LEFT OUTER JOIN CNET_JOB_INFO  JI
+            ON (MJI.JOB_NO = JI.JOB_NO)
+            LEFT OUTER JOIN CNET_JOB_CLSF_CD  JCC
+            ON (JI.JOB_CLSF_CD = JCC.CD)
+            LEFT OUTER JOIN
+            (
+                SELECT MIN(LECT_DAY) AS MIN_LECT_DAY
+                    , MAX(LECT_DAY) AS MAX_LECT_DAY
+                    , COUNT(DISTINCT LECT_DAY) AS LECT_DAY_CNT
+                    , COUNT(*) AS LECT_DAY_TOT_CNT
+                    , LI.LECTR_MBR_NO
+                FROM CNET_LECT_INFO LI
+                INNER JOIN CNET_LECT_SCHD_INFO LSI
+                ON (LI.LECT_SER = LSI.LECT_SER)
+                WHERE LSI.LECT_STAT_CD = '101551' /*수업완료*/
+                GROUP BY LI.LECTR_MBR_NO
+            ) LSI
+            ON (MI.MBR_NO = LSI.LECTR_MBR_NO)
+            WHERE   MI.MBR_STAT_CD = '100862'     /* 정상이용 */
+            AND   MI.MBR_CLASS_CD = '101505'    /* 회원구분(그룹) - 멘토 */
+        ) A
+        WHERE  1 = 1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            AND A.MAX_LECT_DAY <![CDATA[ >= ]]> #{searchStDate}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            AND A.MAX_LECT_DAY <![CDATA[ <= ]]> #{searchEndDate}
+        </if>
+    </select>
+
+    <!-- 멘토리포트 > 멘토별수업 -->
+    <select id="selectStatisticsMentorLect" resultType="kr.or.career.mentor.domain.StatisticsMentor">
+            SELECT
+                   MI.ID
+                 , MI.NM
+                 , JI.JOB_NM
+                 , LSI.LECT_TIMS
+                 , LI.LECT_SER
+                 , FN_CD_NM(LSI.LECT_STAT_CD) AS LECT_STAT_NM
+                 , TO_CHAR(TO_DATE(LSI.LECT_DAY, 'YYYYMMDD'), 'YYYY-MM-DD') AS LECT_DAY
+                 , LSI.LECT_START_TIME
+                 , LSI.LECT_END_TIME
+                 , TO_CHAR(TO_DATE(LSI.LECT_START_TIME, 'HH24MI'), 'HH24:MI') || ' ~ ' || TO_CHAR(TO_DATE(LSI.LECT_END_TIME, 'HH24MI'), 'HH24:MI') AS LECT_DATE_TIME
+                 , CI.CO_NM
+                 , (
+                    SELECT COUNT(*)
+                      FROM CNET_LECT_APPL_INFO
+                     WHERE LECT_SER = LI.LECT_SER
+                       AND LECT_TIMS = LSI.LECT_TIMS
+                       AND APPL_CLASS_CD = '101715' /* 수업신청 */
+                       AND APPL_STAT_CD IN ('101576', '101577') /* 신청 */
+                   ) APPL_CNT
+              FROM CNET_MBR_INFO MI
+        INNER JOIN CNET_LECT_INFO LI
+                ON MI.MBR_NO = LI.LECTR_MBR_NO
+   LEFT OUTER JOIN CNET_CO_INFO CI
+                ON LI.LECT_CO_NO = CI.CO_NO
+        INNER JOIN CNET_LECT_SCHD_INFO LSI
+                ON LI.LECT_SER = LSI.LECT_SER
+   LEFT OUTER JOIN CNET_JOB_INFO JI
+                ON LI.LECTR_JOB_NO = JI.JOB_NO
+             WHERE MI.MBR_CLASS_CD = '101505'
+               AND MI.MBR_CUALF_CD IN ('101502','101503')
+               AND MI.MBR_STAT_CD IN ('100862', '101572', '101644') /* 정상이용, 탈퇴요청 */
+               AND MI.LOGIN_PERM_YN = 'Y'
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchStDate)">
+               AND LSI.LECT_DAY <![CDATA[ >= ]]> REGEXP_REPLACE(#{searchStDate}, '[[:punct:]]', '')
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchEndDate)">
+               AND LSI.LECT_DAY <![CDATA[ <= ]]> REGEXP_REPLACE(#{searchEndDate}, '[[:punct:]]', '')
+            </if>
+          ORDER BY LSI.LECT_DAY DESC
+    </select>
+
+
+</mapper>

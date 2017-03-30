@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.ApprovalMapper">
+
+
+
+    <select id="listApprovalRequest" parameterType="kr.or.career.mentor.domain.SearchOption"  resultType="kr.or.career.mentor.domain.ApprovalRequest">
+        <![CDATA[
+        /* paging */
+        select  *
+        /* paging */
+        from
+            (
+                select  mbrNo
+                        ,content
+                        ,approveType
+                        ,approveTypeNm
+                        ,regDtm
+                        ,requestId
+                        ,requestSeq
+                        ,ROW_NUMBER() OVER(ORDER BY regdtm DESC) AS rn
+                from
+                (
+                    SELECT
+                            a.MBR_NO as mbrNo
+                            ,b.title as content
+                            ,a.MBR_STAT_CD as approveType
+                            ,(select cd_nm from  CNET_CODE where cd = a.mbr_stat_cd) as approveTypeNm
+                            ,a.REG_DTM as regDtm
+                            ,a.MBR_NO as requestId
+                            ,a.nm as requestNm
+                            ,0 as requestSeq
+                    FROM
+                            CNET_MBR_INFO A,
+                            CNET_MBR_PROF_INFO B
+                    where
+                            a.mbr_no = b.mbr_no
+                    and     a.MBR_CLASS_CD = '101505' /* 멘토 */
+                    and     a.MBR_STAT_CD in ('101506', '101572') /* 승인요청, 탈퇴요청 */
+                    union
+                    SELECT
+                            a.REG_MBR_NO as mbrNo
+                            ,b.LECT_TITLE as content
+                            ,a.LECT_STAT_CD as approveType
+                            ,(select cd_nm from cnet_code where cd = a.LECT_STAT_CD) as approveTypyNm
+                            ,a.REG_DTM as regDtm
+                            ,a.LECT_SER || '' as requestId
+                            ,b.LECTR_NM as requestNm
+                            ,a.LECT_TIMS as requestSeq
+                    FROM
+                            CNET_LECT_TIMS_INFO A,
+                            CNET_LECT_INFO B,
+                            CNET_MBR_INFO c
+                    where   A.LECT_SER = B.LECT_SER
+                    and     b.LECTR_MBR_NO = c.MBR_NO
+                    and     a.LECT_STAT_CD in ('101542', '101546', '101522') /* 수업요청, 모집취소요청, 수업취소요청 */
+                )
+            )
+        ]]>
+    </select>
+
+
+
+</mapper>

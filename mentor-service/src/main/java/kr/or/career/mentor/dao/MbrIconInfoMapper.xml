@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MbrIconInfoMapper">
+
+    <select id="getMbrIconInfo" resultType="kr.or.career.mentor.domain.MbrIconInfo">
+        SELECT
+            mbr_no,
+            icon_kind_cd,
+            reg_dtm,
+            reg_mbr_no
+        FROM cnet_mbr_icon_info
+        WHERE 1 = 1
+            AND mbr_no = #{mbrNo}
+            AND icon_kind_cd = #{iconKindCd}
+    </select>
+
+
+    <update id="mergeMbrIconInfo" parameterType="kr.or.career.mentor.domain.MbrIconInfo">
+        MERGE INTO cnet_mbr_icon_info
+        USING DUAL ON (mbr_no = #{mbrNo} AND icon_kind_cd = #{iconKindCd})
+        WHEN NOT MATCHED THEN
+            INSERT (
+                mbr_no,
+                icon_kind_cd,
+                reg_mbr_no
+            )
+            VALUES (
+                #{mbrNo},
+                #{iconKindCd},
+                #{regMbrNo, jdbcType=VARCHAR}
+            )
+    </update>
+</mapper>

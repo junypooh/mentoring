@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MbrProfPicInfoMapper">
+
+    <select id="listMbrProfPicInfoBy" resultType="kr.or.career.mentor.domain.MbrProfPicInfo">
+        SELECT
+            mbr_no,
+            file_ser,
+            reg_dtm
+        FROM cnet_mbr_prof_pic_info
+        WHERE 1 = 1
+            AND mbr_no = #{mbrNo}
+        ORDER BY file_ser
+    </select>
+
+
+    <insert id="insertMbrProfPicInfo" parameterType="kr.or.career.mentor.domain.MbrProfPicInfo">
+        <selectKey keyProperty="picSer" resultType="int" order="BEFORE">
+            SELECT sq_mbr_prof_pic_info.NEXTVAL FROM dual
+        </selectKey>
+        INSERT INTO cnet_mbr_prof_pic_info (
+            pic_ser,
+            file_ser,
+            mbr_no
+        )
+        VALUES (
+            #{picSer},
+            #{fileSer},
+            #{mbrNo}
+        )
+    </insert>
+
+
+    <!-- 해당 사용자의정보로 모들 등록 파일 삭제 -->
+    <delete id="deleteMbrProfPicInfosBy">
+        DELETE
+        FROM cnet_mbr_prof_pic_info
+        WHERE 1 = 1
+            AND mbr_no = #{mbrNo}
+    </delete>
+</mapper>

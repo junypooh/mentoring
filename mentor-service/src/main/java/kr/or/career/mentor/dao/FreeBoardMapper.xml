@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.FreeBoardMapper">
+
+  <resultMap id="comunityBoardResult" type="kr.or.career.mentor.domain.ArclInfoRS">
+    <id property="arclSer" column="ARCL_SER" javaType="int" />
+    <id property="boardId" column="BOARD_ID" javaType="java.lang.String" />
+    <result property="supArclSer" column="SUP_ARCL_SER" javaType="int" />
+    <result property="title" column="TITLE" javaType="java.lang.String" />
+    <result property="subTitle" column="SUB_TITLE" javaType="java.lang.String" />
+    <result property="prefNo" column="PREF_NO" javaType="java.lang.String" />
+    <result property="sust" column="SUST" javaType="java.lang.String" />
+    <result property="cntntsTargtCd" column="CNTNTS_TARGT_CD" javaType="java.lang.String" />
+    <result property="cntntsTargtNo" column="CNTNTS_TARGT_NO" javaType="java.lang.String" />
+    <result property="cntntsTargtId" column="CNTNTS_TARGT_ID" javaType="java.lang.String" />
+    <result property="cntntsTargtNm" column="CNTNTS_TARGT_NM" javaType="java.lang.String" />
+    <result property="cntntsTypeCd" column="CNTNTS_TYPE_CD" javaType="java.lang.String" />
+    <result property="cntntsId" column="CNTNTS_ID" javaType="java.lang.String" />
+    <result property="cntntsSust" column="CNTNTS_SUST" javaType="java.lang.String" />
+    <result property="cntntsSmryInfo" column="CNTNTS_SMRY_INFO" javaType="java.lang.String" />
+    <result property="cntntsDay" column="CNTNTS_DAY" javaType="java.lang.String" />
+    <result property="cntntsApiPath" column="CNTNTS_API_PATH" javaType="java.lang.String" />
+    <result property="vcnt" column="VCNT" javaType="int" />
+    <result property="rcnt" column="RCNT" javaType="int" />
+    <result property="recomYn" column="RECOM_YN" javaType="java.lang.String" />
+    <result property="scrtArclYn" column="SCRT_ARCL_YN" javaType="java.lang.String" />
+    <result property="notiYn" column="NOTI_YN" javaType="java.lang.String" />
+    <result property="mrArclYn" column="MR_ARCL_YN" javaType="java.lang.String" />
+    <result property="rssPubYn" column="RSS_PUB_YN" javaType="java.lang.String" />
+    <result property="useYn" column="USE_YN" javaType="java.lang.String" />
+    <result property="regDtm" column="REG_DTM" javaType="java.util.Date" />
+    <result property="regMbrNo" column="REG_MBR_NO" javaType="java.lang.String" />
+    <result property="chgDtm" column="CHG_DTM" javaType="java.util.Date" />
+    <result property="chgMbrNo" column="CHG_MBR_NO" javaType="java.lang.String" />
+    <result property="ansRegDtm" column="ANS_REG_DTM" javaType="java.util.Date" />
+    <result property="ansRegMbrNo" column="ANS_REG_MBR_NO" javaType="java.lang.String" />
+    <result property="ansChgDtm" column="ANS_CHG_DTM" javaType="java.lang.String" />
+    <result property="ansChgMbrNo" column="ANS_CHG_MBR_NO" javaType="java.lang.String" />
+    <result property="expsTargtCd" column="EXPS_TARGT_CD" javaType="java.lang.String" />
+    <result property="cntntsTargtTims" column="CNTNTS_TARGT_TIMS" javaType="java.lang.String" />
+    <result property="cntntsTargtSeq" column="CNTNTS_TARGT_SEQ" javaType="java.lang.String" />
+    <result property="rn" column="rn" javaType="int" />
+    <result property="cmtCount" column="CMT_COUNT" javaType="java.lang.String" />
+    <result property="regMbrId" column="ID" javaType="java.lang.String" />
+    <result property="regMbrNm" column="NM" javaType="java.lang.String" />
+  </resultMap>
+
+  <resultMap id="boardExResult" extends="comunityBoardResult" type="ArclInfoRS">
+    <collection property="arclCmtInfoRS" column="{arclSer=ARCL_SER}" select="getCmtInfoList"></collection>
+  </resultMap>
+
+  <select id="getFreeBoardList" parameterType="kr.or.career.mentor.domain.ArclInfoRS" resultType="kr.or.career.mentor.domain.ArclInfoRS">
+    /* paging */
+    SELECT
+      A.ARCL_SER
+      , A.BOARD_ID
+      , A.SUP_ARCL_SER
+      , A.TITLE
+      , A.SUB_TITLE
+      , A.PREF_NO
+      , A.SUST
+      , A.CNTNTS_TARGT_CD
+      , A.CNTNTS_TARGT_NO
+      , A.CNTNTS_TARGT_ID
+      , A.CNTNTS_TARGT_NM
+      , A.CNTNTS_TYPE_CD
+      , A.CNTNTS_ID
+      , A.CNTNTS_SUST
+      , A.CNTNTS_SMRY_INFO
+      , A.CNTNTS_DAY
+      , A.CNTNTS_API_PATH
+      , A.VCNT
+      , A.RCNT
+      , A.RECOM_YN
+      , A.SCRT_ARCL_YN
+      , A.NOTI_YN
+      , A.MR_ARCL_YN
+      , A.RSS_PUB_YN
+      , A.USE_YN
+      , A.REG_DTM
+      , A.REG_MBR_NO
+      , A.CHG_DTM
+      , A.CHG_MBR_NO
+      , A.ANS_REG_DTM
+      , A.ANS_REG_MBR_NO
+      , A.ANS_CHG_DTM
+      , A.ANS_CHG_MBR_NO
+      , A.EXPS_TARGT_CD
+      , A.CNTNTS_TARGT_TIMS
+      , A.CNTNTS_TARGT_SEQ
+      , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS rn
+      , (SELECT COUNT(*) FROM CNET_ARCL_CMT_INFO C WHERE A.ARCL_SER = C.ARCL_SER AND C.USE_YN = 'Y' ) AS CMT_COUNT
+      , B.ID AS REG_MBR_ID
+      , B.NM AS REG_MBR_NM
+    /* paging */
+    FROM CNET_ARCL_INFO A,
+      CNET_MBR_INFO B
+    <where>
+      A.REG_MBR_NO=B.MBR_NO
+      AND A.BOARD_ID = #{boardId}
+      AND A.USE_YN = 'Y'
+      <if test="searchWord != null and searchWord != ''">
+      <choose>
+        <when test='searchKey == "0"'>
+          AND ( A.TITLE LIKE '%'||#{searchWord}||'%' OR A.SUST LIKE '%'||#{searchWord}||'%' )
+        </when>
+        <when test='searchKey == "1"'>
+          AND A.TITLE LIKE '%'||#{searchWord}||'%'
+        </when>
+        <otherwise>
+          AND B.NM LIKE '%'||#{searchWord}||'%'
+        </otherwise>
+      </choose>
+    </if>
+    </where>
+  </select>
+
+  <insert id="registArcl" parameterType="kr.or.career.mentor.domain.ArclInfo">
+    INSERT INTO CNET_ARCL_INFO
+      (ARCL_SER
+      , BOARD_ID
+      , TITLE
+      , SUST
+      , VCNT
+      , RCNT
+      , USE_YN
+      , REG_DTM
+      , REG_MBR_NO)
+    VALUES
+      (SQ_MOVIE_ARCL_INFO.nextval
+      , 'lecFreeBoard'
+      , #{title}
+      , #{sust}
+      , 0
+      , 0
+      , 'Y'
+      , SYSDATE
+      , #{regMbrNo})
+  </insert>
+
+  <update id="updateArcl" parameterType="kr.or.career.mentor.domain.ArclInfo">
+    UPDATE CNET_ARCL_INFO
+    SET
+      TITLE = #{title},
+      SUST = #{sust},
+      CHG_DTM = SYSDATE,
+      CHG_MBR_NO = #{chgMbrNo}
+    WHERE
+      ARCL_SER = #{arclSer}
+  </update>
+
+  <update id="deleteArcl" parameterType="kr.or.career.mentor.domain.ArclInfo">
+    UPDATE CNET_ARCL_INFO
+    SET
+      USE_YN = 'N',
+      CHG_DTM = SYSDATE,
+      CHG_MBR_NO = #{chgMbrNo}
+    WHERE
+      ARCL_SER = #{arclSer}
+  </update>
+
+  <select id="getCmtInfoList" parameterType="kr.or.career.mentor.domain.ArclCmtInfo" resultType="kr.or.career.mentor.domain.ArclCmtInfoRS">
+    SELECT
+      A.CMT_SER
+      , A.BOARD_ID
+      , A.ARCL_SER
+      , A.SUP_CMT_SER
+      , A.CMT_TITLE
+      , A.CMT_SUST
+      , A.ASM_PNT
+      , A.VCNT
+      , A.RCNT
+      , A.RECOM_YN
+      , A.USE_YN
+      , A.REG_IP_ADDR
+      , A.REG_DTM
+      , A.REG_MBR_NO
+      , A.CHG_DTM
+      , A.CHG_MBR_NO
+      , A.DEL_DTM
+      , A.DEL_MBR_NO
+      , B.ID AS REG_MBR_ID
+      , B.NM AS REG_MBR_NM
+    FROM
+      CNET_ARCL_CMT_INFO A,
+      CNET_MBR_INFO B
+    WHERE ARCL_SER = #{arclSer}
+    AND USE_YN = 'Y'
+    AND A.REG_MBR_NO = B.MBR_NO
+    ORDER BY REG_DTM DESC
+  </select>
+
+  <insert id="insertRecomHist" parameterType="kr.or.career.mentor.domain.ArclRecomHist">
+    <selectKey resultType="int" keyProperty="cmtSer" order="BEFORE">
+      SELECT SQ_ARCL_CMT_INFO.nextval AS CMT_SER FROM DUAL
+    </selectKey>
+    INSERT INTO CNET_ARCL_RECOM_HIST
+      (
+        ARCL_SER
+      , CMT_SER
+      , RECOM_MBR_NO
+      , RECOM_DTM
+      )
+    VALUES
+      (
+        #{arclSer}
+      , #{cmtSer}
+      , #{recomMbrNo}
+      , SYSDATE
+      )
+  </insert>
+
+  <insert id="registCmt" parameterType="kr.or.career.mentor.domain.ArclCmtInfo">
+    INSERT INTO CNET_ARCL_CMT_INFO
+      ( CMT_SER
+      , BOARD_ID
+      , ARCL_SER
+      , SUP_CMT_SER
+      , CMT_SUST
+      , VCNT
+      , USE_YN
+      , REG_DTM
+      , REG_MBR_NO)
+    VALUES
+      ( SQ_ARCL_CMT_INFO.nextval
+      , #{boardId}
+      , #{arclSer}
+      , null
+      , #{cmtSust}
+      , 0
+      , 'Y'
+      , SYSDATE
+      , #{regMbrNo})
+  </insert>
+
+  <update id="deleteCmt" parameterType="kr.or.career.mentor.domain.ArclCmtInfo">
+    UPDATE CNET_ARCL_CMT_INFO
+    SET
+      USE_YN = 'N',
+      CHG_DTM = SYSDATE,
+      CHG_MBR_NO = #{chgMbrNo},
+      DEL_DTM = SYSDATE,
+      DEL_MBR_NO = #{delMbrNo}
+    WHERE
+      CMT_SER = #{cmtSer}
+  </update>
+
+</mapper>

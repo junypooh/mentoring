@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.StudioMapper">
+    <!-- 회원정보 -->
+    <resultMap type="kr.or.career.mentor.domain.User" id="user" autoMapping="true"/>
+
+    <!-- MC정보 -->
+    <resultMap type="kr.or.career.mentor.domain.McInfo" id="mcInfo" autoMapping="true"/>
+
+    <!-- 수업일정정보 -->
+    <resultMap type="kr.or.career.mentor.domain.LectSchdInfo" id="lectSchdInfo" autoMapping="true"/>
+
+    <!-- 스튜디오정보 -->
+    <resultMap type="kr.or.career.mentor.domain.StdoInfo" id="stdoInfo" autoMapping="true">
+        <id column="STDO_NO" property="stdoNo"/>
+        <association property="mcInfoDomain" resultMap="mcInfo" autoMapping="true"/>
+        <association property="userDomain" resultMap="user" autoMapping="true"/>
+        <association property="lectSchdInfoDomain" resultMap="lectSchdInfo" autoMapping="true"/>
+    </resultMap>
+
+
+    <!-- 스튜디오 중복 스케줄 존재하는지 건수 조회 -->
+    <select id="retrieveStudioScheduleDuplicationCnt" parameterType="kr.or.career.mentor.domain.LectSchdInfo" resultType="Integer">
+        /* StudioMapper.xml 설명 : 스튜디오 중복 스케줄 존재하는지 건수 조회, ID : retrieveStudioScheduleDuplicationCnt, 작성자 : 유지상, 작성일 : 2015.09.18 */
+        SELECT COUNT(*)
+          FROM CNET_LECT_SCHD_INFO
+         WHERE 1 = 1
+           AND STDO_NO = #{stdoNo}
+           AND LECT_DAY = #{lectDay}
+           AND LECT_START_TIME BETWEEN #{lectStartTime} AND #{lectEndTime}
+           AND LECT_END_TIME BETWEEN #{lectStartTime} AND #{lectEndTime}
+    </select>
+
+    <!-- 스튜디오정보 select문 -->
+    <sql id="selectStudio">
+        SELECT
+                A.STDO_NO
+              , A.STDO_NM
+              , A.FLOR_NM
+              , A.PLC_NM
+              , A.SIDO_NM
+              , A.SGGU_NM
+              , A.UMDNG_NM
+              , A.POST_CD
+              , A.LOCA_ADDR
+              , A.LOCA_DETAIL_ADDR
+              , A.INDR_YN
+              , DECODE(A.INDR_YN, 'Y', '내부', 'N', '외부', '') AS INDR_YN_NM
+              , A.POS_CO_NO
+              , (SELECT Z.NM FROM CNET_MBR_INFO Z WHERE Z.MBR_NO = A.POS_CO_NO) AS USERNAME /*기업멘토명*/
+              , (SELECT S.CO_NM FROM CNET_CO_INFO S WHERE A.POS_CO_NO = S.CO_NO ) AS POS_CO_NM /*소속기관*/
+              , A.REP_TEL
+              , A.CHRGR_NM
+              , A.USE_YN
+              , A.REG_DTM
+              , A.REG_MBR_NO
+              , (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = A.REG_MBR_NO) AS REG_MBR_NM
+              , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS RN
+    </sql>
+
+    <!-- 스튜디오정보 목록조회 -->
+    <select id="listStudio" parameterType="kr.or.career.mentor.domain.StdoInfo" resultMap="stdoInfo">
+        /* StudioMapper.xml 설명 : 스튜디오정보 목록조회, ID : listStudio, 작성자 : 유지상, 작성일 : 2015.09.18 */
+        <include refid="selectStudio"/>
+          FROM CNET_STDO_INFO A
+                left outer  join cnet_mbr_info C
+                    on a.pos_co_no = c.mbr_no
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectDay)
+                    and @org.apache.commons.lang3.StringUtils@isNotEmpty(lectStartTime)
+                    and @org.apache.commons.lang3.StringUtils@isNotEmpty(lectEndTime)">
+                left outer join (
+                        select  distinct stdo_no
+                        from
+                                CNET_LECT_SCHD_INFO
+                        WHERE
+                                lect_day = #{lectDay}
+                        and     LECT_STAT_CD in (101543,101548,101549,101550)
+                        and     (
+                                lect_start_time between #{lectStartTime} and #{lectEndTime}
+                                or lect_end_time between #{lectStartTime} and #{lectEndTime}
+                                )
+                        ) b
+                    on a.stdo_no = b.stdo_no
+        </if>
+        WHERE 1 = 1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectDay)
+                    and @org.apache.commons.lang3.StringUtils@isNotEmpty(lectStartTime)
+                    and @org.apache.commons.lang3.StringUtils@isNotEmpty(lectEndTime)">
+            <![CDATA[
+                and b.stdo_no is null
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(stdoNm)">
+            AND A.STDO_NM LIKE '%' || #{stdoNm} || '%'
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sidoNm)">
+            AND A.SIDO_NM = #{sidoNm}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(posCoNo)">
+            AND C.POS_CO_NO = #{posCoNo}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(useYn)">
+            AND A.USE_YN = #{useYn}
+        </if>
+    </select>
+
+    <!-- 기존 스튜디오정보 목록조회 -->
+    <select id="listStudioPaging" parameterType="kr.or.career.mentor.domain.StdoInfo" resultMap="stdoInfo">
+        /* StudioMapper.xml 설명 : 스튜디오정보 목록조회(페이징), ID : listStudioPaging, 작성자 : 유지상, 작성일 : 2015.09.18 */
+        /* paging */
+        <include refid="selectStudio"/>
+        /* paging */
+          FROM CNET_STDO_INFO A
+         WHERE 1 = 1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sidoNm)">
+            AND REGEXP_LIKE(loca_addr,#{sidoNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sgguNm)">
+            AND A.SGGU_CD = #{sgguNm}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(indrYn)">
+            AND A.INDR_YN = #{indrYn}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(stdoNm)">
+            AND A.STDO_NM LIKE '%' || #{stdoNm} || '%'
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(useYn)">
+            AND A.USE_YN = #{useYn}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(posCoNm)">
+            AND A.STDO_NM LIKE '%' || #{posCoNm} || '%'
+        </if>
+    </select>
+
+    <!-- 스튜디오정보 등록-->
+    <insert id="insertStudioInfo" parameterType="kr.or.career.mentor.domain.StdoInfo">
+        <selectKey keyProperty="stdoNo" resultType="String" order="BEFORE">
+            SELECT LPAD(SQ_STDO_INFO.NEXTVAL,10 ,'0') FROM DUAL
+        </selectKey>
+        /* StudioMapper.xml 설명 : 스튜디오정보 등록, ID : insertStudioInfo, 작성자 : 유지상, 작성일 : 2015.09.23 */
+        INSERT INTO CNET_STDO_INFO
+        (
+          STDO_NO , STDO_NM  , FLOR_NM
+         , PLC_NM , SIDO_NM , SGGU_NM
+         , UMDNG_NM , POST_CD , LOCA_ADDR , LOCA_DETAIL_ADDR
+         , INDR_YN , POS_CO_NO , REP_TEL
+         , CHRGR_NM , USE_YN , REG_DTM
+         , REG_MBR_NO
+        )  VALUES (
+            #{stdoNo, jdbcType=VARCHAR }
+          , #{stdoNm, jdbcType=VARCHAR }
+          , #{florNm, jdbcType=VARCHAR }
+          , #{plcNm, jdbcType=VARCHAR }
+          , #{sidoNm, jdbcType=VARCHAR }
+          , #{sgguNm, jdbcType=VARCHAR }
+          , #{umdngNm, jdbcType=VARCHAR }
+          , #{postCd, jdbcType=VARCHAR }
+          , #{locaAddr, jdbcType=VARCHAR }
+          , #{locaDetailAddr, jdbcType=VARCHAR }
+          , #{indrYn, jdbcType=VARCHAR }
+          , #{posCoNo, jdbcType=VARCHAR }
+          , #{repTel, jdbcType=VARCHAR }
+          , #{chrgrNm, jdbcType=VARCHAR }
+          , #{useYn, jdbcType=VARCHAR }
+          , SYSDATE
+          , #{regMbrNo, jdbcType=VARCHAR }
+          )
+    </insert>
+
+    <!-- 스튜디오정보 수정-->
+    <update id="updateStudioInfo" parameterType="kr.or.career.mentor.domain.StdoInfo">
+        /* StudioMapper.xml 설명 : 스튜디오정보 등록, ID : updateStudioInfo, 작성자 : 유지상, 작성일 : 2015.09.23 */
+        UPDATE CNET_STDO_INFO
+           SET
+                STDO_NM   = #{stdoNm, jdbcType=VARCHAR }
+              , FLOR_NM   = #{florNm, jdbcType=VARCHAR }
+              , PLC_NM    = #{plcNm, jdbcType=VARCHAR }
+              , SIDO_NM   = #{sidoNm, jdbcType=VARCHAR }
+              , SGGU_NM   = #{sgguNm, jdbcType=VARCHAR }
+              , UMDNG_NM  = #{umdngNm, jdbcType=VARCHAR }
+              , POST_CD   = #{postCd, jdbcType=VARCHAR }
+              , LOCA_ADDR = #{locaAddr, jdbcType=VARCHAR }
+              , LOCA_DETAIL_ADDR = #{locaDetailAddr, jdbcType=VARCHAR }
+              , INDR_YN   = #{indrYn, jdbcType=VARCHAR }
+              , POS_CO_NO = #{posCoNo, jdbcType=VARCHAR }
+              , REP_TEL   = #{repTel, jdbcType=VARCHAR }
+              , CHRGR_NM  = #{chrgrNm, jdbcType=VARCHAR }
+              , USE_YN    = #{useYn, jdbcType=VARCHAR }
+         WHERE STDO_NO = #{stdoNo, jdbcType=VARCHAR }
+    </update>
+
+    <!-- 스튜디오정보 상세조회-->
+    <select id="retrieveStudioInfo" parameterType="kr.or.career.mentor.domain.StdoInfo" resultMap="stdoInfo">
+        /* StudioMapper.xml 설명 : 스튜디오정보 상세조회, ID : retrieveStudioInfo, 작성자 : 유지상, 작성일 : 2015.09.23 */
+        <include refid="selectStudio"/>
+          FROM CNET_STDO_INFO A
+         WHERE 1 = 1
+           AND A.STDO_NO = #{stdoNo}
+    </select>
+
+    <delete id="deleteStudioInfo" parameterType="kr.or.career.mentor.domain.StdoInfo">
+        delete from   CNET_STDO_INFO
+        where  STDO_NO = #{stdoNo}
+    </delete>
+
+    <select id="retrieveRelatedLecture" parameterType="kr.or.career.mentor.domain.StdoInfo" resultType="int">
+        select count(1) from CNET_LECT_SCHD_INFO
+        where STDO_NO = #{stdoNo}
+    </select>
+
+    <!-- 스튜디오정보 목록 -->
+    <select id="getStudioInfo" parameterType="kr.or.career.mentor.domain.StdoInfo" resultType="kr.or.career.mentor.domain.StdoInfo">
+        /* [StudioMapper.xml#getStudioInfo] */
+        /* paging */
+        SELECT ROW_NUMBER() OVER(ORDER BY STDO.REG_DTM DESC) AS RN
+             , STDO.STDO_NO
+             , STDO.INDR_YN                                                                 /* 실내여부 */
+             , DECODE(STDO.INDR_YN, 'Y', '내부', 'N', '외부', '') AS INDR_YN_NM             /* 실내구분 */
+             , STDO.STDO_NM                                                                 /* 스튜디오명 */
+             , STDO.POST_CD                                                                 /* 우편번호 */
+             , STDO.SIDO_NM                                                                 /* 시도 */
+             , STDO.SGGU_NM                                                                 /* 구군 */
+             , STDO.UMDNG_NM                                                                 /* 읍명동 */
+             , STDO.LOCA_ADDR                                                               /* 주소 */
+             , CO.CO_NO AS POS_CO_NO                                                        /* 소속기관코드 */
+             , CO.CO_NM AS POS_CO_NM                                                        /* 소속기관 */
+             , STDO.USE_YN                                                                  /* 사용유무 */
+             , DECODE(STDO.USE_YN, 'Y', '사용중', 'N', '사용안함', '') AS USE_YN_NM         /* 사용유무명 */
+             , (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = STDO.REG_MBR_NO) AS REG_MBR_NM  /* 등록자 */
+             , STDO.REG_DTM                                                                 /* 등록일 */
+             , STDO.CHRGR_NM                                                                /* 담당자명 */
+             , STDO.REP_TEL                                                                 /* 전화번호 */
+             , STDO.FLOR_NM                                                                 /* 비고 */
+             , STDO.LOCA_DETAIL_ADDR                                                        /* 상세주소 */
+            , (SELECT B.CO_NM FROM CNET_MBR_INFO A, CNET_CO_INFO B WHERE MBR_NO = STDO.REG_MBR_NO AND A.POS_CO_NO = B.CO_NO) AS REG_MBR_CO_NM  /* 등록자 */
+        /* paging */
+          FROM CNET_STDO_INFO STDO
+    LEFT OUTER JOIN CNET_CO_INFO CO
+            ON STDO.POS_CO_NO = CO.CO_NO
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectDay)
+                    and @org.apache.commons.lang3.StringUtils@isNotEmpty(lectStartTime)
+                    and @org.apache.commons.lang3.StringUtils@isNotEmpty(lectEndTime)">
+            left outer join (
+                select  distinct stdo_no
+                from
+                CNET_LECT_SCHD_INFO
+                WHERE
+                    lect_day = #{lectDay}
+                    and     LECT_STAT_CD in (101543,101548,101549,101550)
+                    and     (
+                        lect_start_time between #{lectStartTime} and #{lectEndTime}
+                        or lect_end_time between #{lectStartTime} and #{lectEndTime}
+                )
+            ) b
+            on STDO.stdo_no = b.stdo_no
+        </if>
+         WHERE 1 = 1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(lectDay)
+                    and @org.apache.commons.lang3.StringUtils@isNotEmpty(lectStartTime)
+                    and @org.apache.commons.lang3.StringUtils@isNotEmpty(lectEndTime)">
+            <![CDATA[
+                and b.stdo_no is null
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(indrYn)">
+           AND STDO.INDR_YN = #{indrYn}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(useYn)">
+            AND STDO.USE_YN = #{useYn}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sidoNm)">
+            AND REGEXP_LIKE(STDO.SIDO_NM, #{sidoNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sgguNm)">
+            AND REGEXP_LIKE(STDO.SGGU_NM, #{sgguNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(posCoNo)">
+            AND CO.CO_NO = #{posCoNo}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(posCoNm)">
+            AND REGEXP_LIKE(CO.CO_NM, #{posCoNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(stdoNm)">
+            AND REGEXP_LIKE(STDO.STDO_NM, #{stdoNm})
+        </if>
+        <if test="stdoNo != null">
+            AND STDO.STDO_NO = #{stdoNo}
+        </if>
+        <if test="searchStDate neq null">
+            AND STDO.REG_DTM &gt; TRUNC(#{searchStDate})
+        </if>
+        <if test="searchEndDate neq null">
+            AND STDO.REG_DTM &lt; TRUNC(#{searchEndDate}) + 1
+        </if>
+    </select>
+
+    <!-- 스튜디오현황 지역시 조회 -->
+    <select id="getStudioSido" parameterType="kr.or.career.mentor.domain.StdoInfo" resultType="kr.or.career.mentor.domain.StdoInfo">
+        SELECT DISTINCT SIDO_NM
+          FROM CNET_STDO_INFO
+         WHERE SIDO_NM IS NOT NULL
+    </select>
+
+    <!-- 스튜디오현황 지역시에관한 지역구 조회 -->
+    <select id="getStudioSggu" parameterType="kr.or.career.mentor.domain.StdoInfo" resultType="kr.or.career.mentor.domain.StdoInfo">
+        SELECT DISTINCT SGGU_NM
+          FROM CNET_STDO_INFO
+         WHERE REGEXP_LIKE(SIDO_NM, #{sidoNm})
+    </select>
+
+
+    <!--
+        Query Name : kr.or.career.mentor.service.impl.LectureManagementServiceImpl.LectureInfomationMapper.stdoList
+        Description : 멘터 수업 스튜디오 리스트
+        author jhseo
+        since 2016. 7. 25.
+        Modification Information
+           since          author              description
+        ===========    =============    ===========================
+        2016. 7. 25.    jhseo                최초 생성
+    -->
+    <select id="stdoList" parameterType="kr.or.career.mentor.domain.StdoInfo" resultType="kr.or.career.mentor.domain.StdoInfo">
+        SELECT  /* ProgramID=kr.or.career.mentor.service.impl.LectureManagementServiceImpl.LectureInfomationMapper.stdoList */
+                      STDO.STDO_NO
+                    , STDO.STDO_NM
+                    , STDO.LOCA_ADDR
+                    , CO.CO_NM AS POS_CO_NM
+                    , STDO.FLOR_NM
+                    , STDO.INDR_YN
+        FROM
+                    CNET_STDO_INFO STDO
+        LEFT JOIN   CNET_CO_INFO CO ON CO.CO_NO = STDO.POS_CO_NO AND CO.USE_YN='Y'
+        WHERE
+                    STDO.USE_YN='Y'
+        AND NOT EXISTS( SELECT 1 FROM CNET_LECT_SCHD_INFO WHERE STDO_NO=STDO.STDO_NO AND LECT_DAY = #{lectDay}
+                        AND (LECT_START_TIME BETWEEN #{lectStartTime} and #{lectEndTime} OR LECT_END_TIME BETWEEN #{lectStartTime} and #{lectEndTime})
+                        AND  LECT_STAT_CD IN (101543,101548,101549,101550)
+                       )
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(stdoNm)">
+            AND       STDO.STDO_NM LIKE '%' || #{stdoNm} || '%'
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sidoCd)">
+            AND       STDO.SIDO_NM LIKE '%' || (SELECT CD_NM FROM CNET_CODE WHERE SUP_CD='100351' AND CD=#{sidoCd}) || '%'
+        </if>
+            AND       (STDO.POS_CO_NO = (SELECT LECT_CO_NO FROM CNET_LECT_INFO WHERE LECT_SER = #{lectSer}) OR STDO.POS_CO_NO IS NULL)
+        ORDER BY STDO.STDO_NM
+    </select>
+
+
+</mapper>

@@ -1,0 +1,775 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.AssignGroupMapper">
+
+    <resultMap type="kr.or.career.mentor.domain.SchInfo" id="schInfoData" autoMapping="true" >
+        <id column="sch_no" property="schNo"/>
+    </resultMap>
+
+    <resultMap type="kr.or.career.mentor.domain.BizGrpInfo" id="resultBizGrpInfo" autoMapping="true">
+        <id column="grp_no" property="grpNo"/>
+        <collection property="listSchInfo" resultMap="schInfoData" autoMapping="true" />
+    </resultMap>
+
+    <resultMap type="kr.or.career.mentor.domain.LectApplCnt" id="resultLectApplCnt" autoMapping="true" />
+
+    <resultMap type="kr.or.career.mentor.domain.CoInfo" id="resultCoInfo" autoMapping="true" />
+
+    <resultMap type="kr.or.career.mentor.domain.BizSetInfo" id="bizSetInfoData" autoMapping="true" extends="kr.or.career.mentor.dao.LectureInfomationMapper.resultBizSetInfo">
+        <id column="set_ser" property="setSer"/>
+        <association property="bizGrpInfo" resultMap="resultBizGrpInfo" autoMapping="true"/>
+        <association property="lectApplCnt" resultMap="resultLectApplCnt" autoMapping="true"/>
+        <association property="coInfo" resultMap="resultCoInfo" autoMapping="true"/>
+    </resultMap>
+
+    <!--배정그룹목록조회-->
+    <select id="listAssignGroup" parameterType="kr.or.career.mentor.domain.BizGrpSearch" resultMap="bizSetInfoData">
+    /* paging */
+        SELECT  A.GRP_NO, A.INST_MBR_NO,D.CO_NM, A.GRP_NM, A.GRP_DESC, C.NM
+        , B.SET_SER, B.SET_TARGT_CD, B.SET_TARGT_NO, B.CLAS_CNT, B.CLAS_START_DAY, B.CLAS_END_DAY
+        , to_date(B.REG_DTM, 'YYYY.MM.DD') AS REG_DTM
+        , (SELECT COUNT(*) FROM CNET_SCH_GRP_MAPP S1 WHERE S1.GRP_NO = A.GRP_NO) AS clas_appl_cnt
+        , ROW_NUMBER() OVER(ORDER BY A.reg_dtm DESC) AS rn
+        , TO_CHAR(B.CLAS_CNT, 'FM9,999,999') AS clas_cnt_comma
+        , TO_CHAR((SELECT COUNT(*) FROM CNET_SCH_GRP_MAPP S1 WHERE S1.GRP_NO = A.GRP_NO), 'FM9,999,999') AS clas_appl_cnt_comma
+        , NVL((SELECT SUM(CLAS_APPL_CNT) FROM CNET_LECT_APPL_CNT WHERE SET_SER = B.SET_SER), 0) AS clas_emp_cnt
+        , NVL((SELECT SUM(CASE WHEN CLAC.CLAS_PERM_CNT != 0 THEN CLAC.CLAS_PERM_CNT ELSE SBSI.CLAS_CNT END
+        ) AS CLAS_CNT FROM CNET_SCH_GRP_MAPP CSGM INNER JOIN CNET_BIZ_SET_INFO SBSI ON CSGM.GRP_NO
+        = SBSI.Set_Targt_NO LEFT OUTER JOIN CNET_LECT_APPL_CNT CLAC ON SBSI.Set_Ser = CLAC.Set_Ser  AND CLAC.SCH_NO = CSGM.SCH_NO
+        WHERE CSGM.GRP_NO = A.GRP_NO), 0) AS clas_perm_cnt
+        , CASE WHEN to_date(B.CLAS_START_DAY, 'YYYYMMDD') > SYSDATE THEN '예정'
+        WHEN to_date(B.CLAS_START_DAY, 'YYYYMMDD') <![CDATA[<=]]> SYSDATE AND to_date(B.CLAS_END_DAY, 'YYYYMMDD') <![CDATA[>=]]> SYSDATE THEN '진행중' ELSE '종료' END AS GRP_YN
+        , A.MAX_APPL_CNT
+        , A.MAX_OBSV_CNT
+    /* paging */
+          FROM  CNET_BIZ_GRP_INFO A
+                    INNER JOIN CNET_BIZ_SET_INFO B
+                        ON A.GRP_NO = B.SET_TARGT_NO
+                    INNER JOIN CNET_MBR_INFO C
+                        ON A.INST_MBR_NO = C.MBR_NO
+                    LEFT OUTER JOIN CNET_CO_INFO D
+                        ON C.POS_CO_NO = D.CO_NO
+          WHERE B.SET_TARGT_CD = '101601' /*101599 : 사업그룹*/
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schNm)">
+            AND A.GRP_NO IN (SELECT S2.GRP_NO FROM CNET_SCH_GRP_MAPP S2 INNER JOIN CNET_SCH_INFO S3 ON S2.SCH_NO = S3.SCH_NO WHERE S2.GRP_NO = A.GRP_NO AND REGEXP_LIKE(S3.SCH_NM , #{schNm}) )
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schClassCd)">
+            AND A.GRP_NO IN (SELECT S2.GRP_NO FROM CNET_SCH_GRP_MAPP S2 INNER JOIN CNET_SCH_INFO S3 ON S2.SCH_NO = S3.SCH_NO WHERE S2.GRP_NO = A.GRP_NO AND S3.SCH_CLASS_CD = #{schClassCd} )
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sidoNm)">
+            AND A.GRP_NO IN (SELECT S2.GRP_NO FROM CNET_SCH_GRP_MAPP S2 INNER JOIN CNET_SCH_INFO S3 ON S2.SCH_NO = S3.SCH_NO WHERE S2.GRP_NO = A.GRP_NO AND REGEXP_LIKE(S3.LOCA_ADDR , #{sidoNm}) )
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sgguNm)">
+            AND A.GRP_NO IN (SELECT S2.GRP_NO FROM CNET_SCH_GRP_MAPP S2 INNER JOIN CNET_SCH_INFO S3 ON S2.SCH_NO = S3.SCH_NO WHERE S2.GRP_NO = A.GRP_NO AND REGEXP_LIKE(S3.LOCA_ADDR , #{sgguNm}) )
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(clasStartDay) and @org.apache.commons.lang3.StringUtils@isEmpty(clasEndDay)">
+            AND Regexp_Replace(#{clasStartDay}, '[[:punct:]]', '') BETWEEN  to_date(B.CLAS_START_DAY,'YYYYMMDD') AND to_date(B.CLAS_END_DAY,'YYYYMMDD')
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(clasEndDay) and @org.apache.commons.lang3.StringUtils@isEmpty(clasStartDay)">
+            AND Regexp_Replace(#{clasEndDay}, '[[:punct:]]', '') BETWEEN to_date(B.CLAS_START_DAY,'YYYYMMDD') AND to_date(B.CLAS_END_DAY,'YYYYMMDD')
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(clasEndDay) and @org.apache.commons.lang3.StringUtils@isNotEmpty(clasStartDay)">
+            <![CDATA[
+            AND (
+                    to_date(B.CLAS_START_DAY,'YYYYMMDD') BETWEEN Regexp_Replace(#{clasStartDay}, '[[:punct:]]', '') AND Regexp_Replace(#{clasEndDay}, '[[:punct:]]', '')
+                    OR to_date(B.CLAS_END_DAY,'YYYYMMDD')  BETWEEN  Regexp_Replace(#{clasStartDay}, '[[:punct:]]', '')  AND Regexp_Replace(#{clasEndDay}, '[[:punct:]]', '')
+                )
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpNm)">
+            AND REGEXP_LIKE(A.GRP_NM , #{grpNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(setTargtNo)">
+            AND A.GRP_NO = #{setTargtNo}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(coNo)">
+            AND A.INST_MBR_NO IN (SELECT MBR_NO FROM CNET_MBR_INFO S WHERE S.POS_CO_NO = #{coNo})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(coNm)">
+            AND D.CO_NM LIKE '%'||#{coNm}||'%'
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpState)">
+            <choose>
+                <when test='grpState eq "1"'>
+                    AND to_date(B.CLAS_START_DAY,'YYYYMMDD') > SYSDATE
+                </when>
+                <when test='grpState eq "2"'>
+                    AND to_date(B.CLAS_START_DAY,'YYYYMMDD') <![CDATA[<=]]> SYSDATE AND to_date(B.CLAS_END_DAY,'YYYYMMDD') <![CDATA[>=]]> SYSDATE
+                </when>
+                <when test='grpState eq "3"'>
+                    AND to_date(B.CLAS_END_DAY,'YYYYMMDD') <![CDATA[<]]> SYSDATE
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="listAssignSchool" parameterType="kr.or.career.mentor.domain.BizGrpInfo" resultType="kr.or.career.mentor.domain.SchInfo">
+    /* paging */
+    SELECT D.SCH_NO, D.SCH_NM, D.SCH_CLASS_CD, E.CD_NM AS SCH_CLASS_NM
+            , D.SIDO_NM
+            , D.SGGU_NM
+            , D.UMDNG_NM
+            , D.POST_CD, D.LOCA_ADDR
+            , ROW_NUMBER() OVER(ORDER BY TO_CHAR(C.reg_dtm, 'YYYYMMDDHH24MISS')||D.SCH_NO DESC) AS rn
+            , NVL(G.CLAS_APPL_CNT, 0) AS CLAS_APPL_CNT
+            , NVL(G.CLAS_PERM_CNT, 0) AS CLAS_PERM_CNT
+            , NVL(F.CLAS_CNT, 0) AS CLAS_CNT
+    /* paging */
+      FROM CNET_SCH_GRP_MAPP C
+INNER JOIN CNET_SCH_INFO D
+        ON C.SCH_NO = D.SCH_NO
+INNER JOIN CNET_CODE E
+        ON D.SCH_CLASS_CD = E.CD
+       AND E.SUP_CD = '100494'
+INNER JOIN CNET_BIZ_SET_INFO F
+        ON C.GRP_NO = F.SET_TARGT_NO
+LEFT OUTER JOIN CNET_LECT_APPL_CNT G
+        ON C.SCH_NO = G.SCH_NO
+        AND F.SET_SER = G.SET_SER
+     WHERE C.GRP_NO = #{grpNo}
+     <if test="listSchInfo != null and listSchInfo.size() gt 0">
+       AND D.SCH_NO IN <foreach collection="listSchInfo" item="item" index="index" open="(" close=")" separator=",">#{item.schNo}</foreach>
+     </if>
+        ORDER BY TO_CHAR(C.reg_dtm, 'YYYYMMDDHH24MISS')||D.SCH_NO DESC
+    </select>
+
+    <select id="listAssignGroupListBySchool" parameterType="kr.or.career.mentor.domain.SchInfo" resultType="kr.or.career.mentor.domain.AssignGroupDTO">
+            /* paging */
+        SELECT A.GRP_NO, A.INST_MBR_NO, A.GRP_NM, A.GRP_DESC
+             , B.SET_SER, B.SET_TARGT_CD, B.SET_TARGT_NO, B.CLAS_CNT, B.CLAS_START_DAY, B.CLAS_END_DAY, B.REG_DTM
+             , NVL(D.CLAS_PERM_CNT, 0) AS CLAS_PERM_CNT, NVL(D.CLAS_APPL_CNT,0) AS CLAS_APPL_CNT
+             , DECODE(B.SET_TARGT_CD,'101601',F.CO_NM,'학교 자체 배정') AS CO_NM
+             , ROW_NUMBER() OVER(ORDER BY A.reg_dtm DESC) AS rn
+    /* paging */
+           FROM CNET_BIZ_GRP_INFO A
+     INNER JOIN CNET_BIZ_SET_INFO B
+             ON A.GRP_NO = B.SET_TARGT_NO
+INNER JOIN CNET_SCH_GRP_MAPP C
+             ON C.GRP_NO = A.GRP_NO
+LEFT OUTER JOIN CNET_LECT_APPL_CNT D
+             ON C.SCH_NO = D.SCH_NO
+            AND B.SET_SER = D.SET_SER
+     INNER JOIN CNET_MBR_INFO E
+             ON A.INST_MBR_NO = E.MBR_NO
+LEFT OUTER JOIN CNET_CO_INFO F
+             ON E.POS_CO_NO = F.CO_NO
+          WHERE C.SCH_NO = #{schNo}
+    </select>
+
+    <select id="retrieveAssignGroup" parameterType="kr.or.career.mentor.domain.BizSetInfo" resultMap="bizSetInfoData">
+    SELECT A.GRP_NO, A.INST_MBR_NO, A.GRP_NM, A.GRP_DESC
+            , B.SET_SER, B.SET_TARGT_CD, B.SET_TARGT_NO, B.CLAS_CNT, B.CLAS_START_DAY, B.CLAS_END_DAY, B.REG_DTM
+            , D.SCH_NO, D.SCH_NM, D.SCH_CLASS_CD, E.CD_NM AS SCH_CLASS_NM, D.SIDO_NM, D.SGGU_NM, D.UMDNG_NM, D.POST_CD, D.LOCA_ADDR
+              FROM CNET_BIZ_GRP_INFO A
+              INNER JOIN CNET_BIZ_SET_INFO B
+              ON A.GRP_NO = B.SET_TARGT_NO
+              INNER JOIN CNET_SCH_GRP_MAPP C
+                 ON C.GRP_NO = A.GRP_NO
+              INNER JOIN CNET_SCH_INFO D
+                ON C.SCH_NO = D.SCH_NO
+              INNER JOIN CNET_CODE E
+                ON D.SCH_CLASS_CD = E.CD
+                AND E.SUP_CD = '100494'
+              WHERE B.SET_TARGT_CD = '101601' /*101599 : 사업그룹*/
+                AND A.GRP_NO = #{setTargtNo}
+    </select>
+
+    <insert id="insertBizGrpInfo" parameterType="kr.or.career.mentor.domain.BizGrpInfo">
+    INSERT INTO CNET_BIZ_GRP_INFO
+    ( grp_no, inst_mbr_no, grp_nm, grp_desc, reg_dtm, reg_mbr_no, max_appl_cnt, max_obsv_cnt, co_no )
+    VALUES
+    ( #{grpNo}, #{instMbrNo}, #{grpNm}, #{grpDesc, jdbcType=VARCHAR}, SYSDATE, #{regMbrNo}, #{maxApplCnt}, #{maxObsvCnt}, #{coNo} )
+    <selectKey keyProperty="grpNo" resultType="string" order="BEFORE">
+    SELECT LPAD(SQ_BIZ_SET_INFO.NEXTVAL,10,'0') FROM DUAL
+    </selectKey>
+    </insert>
+
+    <update id="updateBizGrpInfo" parameterType="kr.or.career.mentor.domain.BizGrpInfo">
+    UPDATE CNET_BIZ_GRP_INFO
+    <set>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(instMbrNo)">inst_mbr_no = #{instMbrNo},</if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpNm)">grp_nm = #{grpNm},</if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpDesc)">grp_desc = #{grpDesc, jdbcType=VARCHAR},</if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(regMbrNo)">reg_mbr_no = #{regMbrNo},</if>
+        <if test="maxApplCnt != null">max_appl_cnt = #{maxApplCnt, jdbcType=INTEGER},</if>
+        <if test="maxObsvCnt != null">max_obsv_cnt = #{maxObsvCnt, jdbcType=INTEGER},</if>
+        reg_dtm = SYSDATE
+    </set>
+    WHERE grp_no = #{grpNo}
+    </update>
+
+    <insert id="insertBizSetInfo" parameterType="kr.or.career.mentor.domain.BizSetInfo">
+    INSERT INTO CNET_BIZ_SET_INFO
+    ( set_ser, set_targt_cd, set_targt_no, clas_cnt, clas_start_day, clas_end_day, reg_dtm, reg_mbr_no )
+    VALUES
+    ( #{setSer}, #{setTargtCd}, #{setTargtNo}, #{clasCnt}, Regexp_Replace(#{clasStartDay}, '[[:punct:]]', ''), Regexp_Replace(#{clasEndDay}, '[[:punct:]]', ''), SYSDATE, #{regMbrNo} )
+    </insert>
+
+    <update id="updateBizSetInfo" parameterType="kr.or.career.mentor.domain.BizSetInfo">
+    UPDATE CNET_BIZ_SET_INFO SET
+      clas_cnt = #{clasCnt}
+    , clas_start_day =  Regexp_Replace(#{clasStartDay}, '[[:punct:]]', '')
+    , clas_end_day = Regexp_Replace(#{clasEndDay}, '[[:punct:]]', '')
+    , reg_dtm = SYSDATE
+    , reg_mbr_no = #{regMbrNo}
+    WHERE set_ser = #{setSer}
+    </update>
+
+    <insert id="insertAssignSchool" parameterType="kr.or.career.mentor.domain.BizGrpInfo">
+        INSERT
+            INTO CNET_SCH_GRP_MAPP
+            ( grp_no, sch_no, reg_dtm, reg_mbr_no )
+            VALUES
+            (
+            #{grpNo}
+            , #{schNo}
+            , SYSDATE
+            , #{regMbrNo}
+            )
+    </insert>
+
+<!-- 배정할 기간에 이미 배정되어 있는 학교 목록 조회 -->
+    <select id="listSchoolAssign" parameterType="kr.or.career.mentor.domain.BizSetInfo" resultType="kr.or.career.mentor.domain.SchInfo">
+        SELECT B.SCH_NO
+               , (SELECT SCH_NM FROM CNET_SCH_INFO S WHERE S.SCH_NO = B.SCH_NO ) AS SCH_NM
+          FROM CNET_BIZ_SET_INFO A
+    INNER JOIN CNET_SCH_GRP_MAPP B
+              ON A.SET_TARGT_NO = B.GRP_NO
+     WHERE A.SET_TARGT_CD = '101600'
+         AND  Regexp_Replace(#{clasEndDay}, '[[:punct:]]', '') >= CLAS_START_DAY
+         AND  CLAS_END_DAY >= Regexp_Replace(#{clasStartDay}, '[[:punct:]]', '')
+         AND B.SCH_NO IN <foreach collection="bizGrpInfo.listSchInfo" open="(" separator="," close=")" item="item">#{item.schNo}</foreach>
+    </select>
+
+    <!--배정그룹목록조회 엑셀다운로드-->
+    <select id="excelDownListAssignGroup" parameterType="kr.or.career.mentor.domain.BizGrpSearch" resultType="kr.or.career.mentor.domain.AssignGroupExcelDTO">
+        SELECT
+                ROW_NUMBER () OVER (ORDER BY A.REG_DTM DESC, F.SCH_NM) AS RN
+              , E.CO_NM
+              , A.GRP_NM
+              , B.CLAS_CNT
+              , (TO_CHAR (TO_DATE(B.CLAS_START_DAY, 'YYYYMMDD'), 'YYYY.MM.DD') || ' ~ ' ||TO_CHAR (TO_DATE(B.CLAS_END_DAY, 'YYYYMMDD'), 'YYYY.MM.DD')) AS CLAS_PERIOD
+              , F.SIDO_NM
+              , F.LOCA_ADDR
+              , F.LOCA_DETAIL_ADDR
+              , F.SCH_NM
+              , B.REG_DTM
+          FROM CNET_BIZ_GRP_INFO A
+         INNER JOIN CNET_BIZ_SET_INFO B ON (A.GRP_NO = B.SET_TARGT_NO)
+         INNER JOIN CNET_SCH_GRP_MAPP C ON (C.GRP_NO = A.GRP_NO)
+         INNER JOIN CNET_MBR_INFO D ON (D.MBR_NO = A.INST_MBR_NO)
+         INNER JOIN CNET_CO_INFO E ON (E.CO_NO = D.POS_CO_NO)
+         INNER JOIN CNET_SCH_INFO F ON (F.SCH_NO = C.SCH_NO)
+         WHERE B.SET_TARGT_CD = '101601' /*101599 : 사업그룹*/
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schNm)">
+            AND A.GRP_NO IN (SELECT S2.GRP_NO FROM CNET_SCH_GRP_MAPP S2 INNER JOIN CNET_SCH_INFO S3 ON S2.SCH_NO = S3.SCH_NO WHERE S2.GRP_NO = A.GRP_NO AND REGEXP_LIKE(S3.SCH_NM , #{schNm}) )
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schClassCd)">
+            AND A.GRP_NO IN (SELECT S2.GRP_NO FROM CNET_SCH_GRP_MAPP S2 INNER JOIN CNET_SCH_INFO S3 ON S2.SCH_NO = S3.SCH_NO WHERE S2.GRP_NO = A.GRP_NO AND S3.SCH_CLASS_CD = #{schClassCd} )
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sidoNm)">
+            AND A.GRP_NO IN (SELECT S2.GRP_NO FROM CNET_SCH_GRP_MAPP S2 INNER JOIN CNET_SCH_INFO S3 ON S2.SCH_NO = S3.SCH_NO WHERE S2.GRP_NO = A.GRP_NO AND REGEXP_LIKE(S3.LOCA_ADDR , #{sidoNm}) )
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sgguNm)">
+            AND A.GRP_NO IN (SELECT S2.GRP_NO FROM CNET_SCH_GRP_MAPP S2 INNER JOIN CNET_SCH_INFO S3 ON S2.SCH_NO = S3.SCH_NO WHERE S2.GRP_NO = A.GRP_NO AND REGEXP_LIKE(S3.LOCA_ADDR , #{sgguNm}) )
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(clasStartDay)">
+            AND B.CLAS_START_DAY >= Regexp_Replace(#{clasStartDay}, '[[:punct:]]', '')
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(clasEndDay)">
+            AND Regexp_Replace(#{clasEndDay}, '[[:punct:]]', '') >= B.CLAS_END_DAY
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpNm)">
+            AND REGEXP_LIKE(A.GRP_NM , #{grpNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(setTargtNo)">
+            AND A.GRP_NO = #{setTargtNo}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(coNo)">
+            AND A.INST_MBR_NO IN (SELECT MBR_NO FROM CNET_MBR_INFO S WHERE S.POS_CO_NO = #{coNo})
+        </if>
+    </select>
+
+    <!-- 배정학교 전체 삭제 -->
+    <delete id="deleteSchGrpMapp" parameterType="kr.or.career.mentor.domain.BizGrpInfo">
+        <![CDATA[
+        DELETE CNET_SCH_GRP_MAPP A
+         WHERE A.GRP_NO = #{grpNo}
+           AND NOT EXISTS (SELECT 1 FROM CNET_BIZ_SET_INFO B, CNET_LECT_APPL_CNT C WHERE B.SET_TARGT_NO = A.GRP_NO  AND B.SET_SER = C.SET_SER AND A.SCH_NO = C.SCH_NO AND C.CLAS_APPL_CNT > 0)
+        ]]>
+    </delete>
+
+    <!-- 배정학교 삭제 -->
+    <delete id="deleteTargetSchGrpMapp" parameterType="kr.or.career.mentor.domain.SchInfo">
+        <![CDATA[
+        DELETE CNET_SCH_GRP_MAPP A
+         WHERE A.GRP_NO = #{grpNo}
+           AND A.SCH_NO = #{schNo}
+           AND NOT EXISTS (SELECT 1 FROM CNET_BIZ_SET_INFO B, CNET_LECT_APPL_CNT C WHERE B.SET_TARGT_NO = A.GRP_NO  AND B.SET_SER = C.SET_SER AND A.SCH_NO = C.SCH_NO AND C.CLAS_APPL_CNT > 0)
+        ]]>
+    </delete>
+
+    <!-- 배정그룹설정 삭제 -->
+    <delete id="deleteBizSetInfo" parameterType="kr.or.career.mentor.domain.BizGrpInfo">
+        DELETE CNET_BIZ_SET_INFO
+        WHERE SET_TARGT_NO = #{grpNo}
+    </delete>
+
+    <!-- 배정그룹 삭제 -->
+    <delete id="deleteBizGrpInfo" parameterType="kr.or.career.mentor.domain.BizGrpInfo">
+        DELETE CNET_BIZ_GRP_INFO
+        WHERE GRP_NO = #{grpNo}
+    </delete>
+
+    <!-- 지역시 조회 -->
+    <select id="listSidoInfo" parameterType="kr.or.career.mentor.domain.SchInfo" resultType="kr.or.career.mentor.domain.SchInfo">
+        SELECT  DISTINCT(SIDO_NM) AS SIDO_NM
+        FROM    CNET_SCH_INFO
+        WHERE   SIDO_NM IS NOT NULL
+        ORDER BY SIDO_NM
+    </select>
+
+
+    <!-- 지역시에 따른 지역구 조회 -->
+    <select id="selectSgguInfo" parameterType="kr.or.career.mentor.domain.SchInfo" resultType="kr.or.career.mentor.domain.SchInfo">
+        SELECT  DISTINCT(SGGU_NM) AS SGGU_NM
+        FROM    CNET_SCH_INFO
+        WHERE   SIDO_NM = #{sidoNm}
+        AND     SGGU_NM IS NOT NULL
+        ORDER BY SGGU_NM
+    </select>
+
+    <!-- 배정학교 추가시 중복학교 제외 -->
+    <select id="dupListAssignSchool" parameterType="kr.or.career.mentor.domain.BizGrpInfo" resultType="kr.or.career.mentor.domain.SchInfo">
+        SELECT A.sch_no,
+        A.sch_nm,
+        A.sch_class_cd,
+        E.CD_NM AS sch_class_nm,
+        A.sido_nm,
+        A.sggu_nm,
+        A.umdng_nm,
+        A.post_cd,
+        A.loca_addr,
+        A.loca_detail_addr,
+        A.cont_tel,
+        A.site_url,
+        A.found_day
+        FROM   CNET_SCH_INFO A INNER JOIN CNET_CODE E ON A.sch_class_cd = E.cd
+        AND    E.SUP_CD = '100494'
+        WHERE  A.use_yn = 'Y'
+        <if test="listSchInfo != null and listSchInfo.size() gt 0">
+        AND    A.SCH_NO IN <foreach collection="listSchInfo" item="item" index="index" open="(" close=")" separator=",">#{item.schNo}</foreach>
+        </if>
+        AND NOT EXISTS (SELECT 1 FROM CNET_SCH_GRP_MAPP L WHERE L.GRP_NO = #{grpNo} AND L.SCH_NO = A.SCH_NO)
+    </select>
+
+    <select id="schoolTcherInfo" parameterType="kr.or.career.mentor.domain.SchInfo" resultType="kr.or.career.mentor.domain.SchInfo">
+        /* paging */
+        SELECT
+            A.MBR_NO
+            , B.CLAS_ROOM_SER
+            , B.CLAS_ROOM_NM
+            , A.MBR_CLASS_CD
+            , A.MBR_CUALF_CD
+            , A.MBR_GRADE_CD
+            , A.LOGIN_PERM_YN
+            , A.NM AS USERNAME
+            , A.ID AS USER_ID
+            , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS RN
+            , (SELECT cd_nm FROM CNET_CODE WHERE CD = A.mbr_cualf_cd) as mbr_cualf_nm
+            ,  TO_CHAR(B.REQ_DTM,'YYYY.MM.DD') AS REQ_DTM
+            , A.CLAS_NM
+        /* paging */
+        FROM CNET_MBR_INFO A
+        LEFT OUTER JOIN
+        (
+        SELECT
+            IA.REQ_MBR_NO,
+            WM_CONCAT(IA.CLAS_ROOM_SER) AS CLAS_ROOM_SER,
+            WM_CONCAT(RS.CLAS_ROOM_NM) AS CLAS_ROOM_NM,
+            MIN(IA.REQ_DTM) AS REQ_DTM
+            FROM CNET_CLAS_ROOM_REG_REQ_HIST IA
+            LEFT OUTER JOIN CNET_CLAS_ROOM_INFO RS
+            ON IA.CLAS_ROOM_SER = RS.CLAS_ROOM_SER
+            LEFT OUTER JOIN CNET_SCH_INFO SI
+            ON RS.SCH_NO = SI.SCH_NO
+        WHERE IA.REG_STAT_CD = '101526'
+            AND SI.SCH_NO = #{schNo}
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(useYn)">
+                AND RS.USE_YN = #{useYn}
+            </if>
+        GROUP BY IA.REQ_MBR_NO
+        ORDER BY IA.REQ_MBR_NO DESC
+        ) B
+        ON A.MBR_NO = B.REQ_MBR_NO
+        <where>
+            AND A.MBR_CLASS_CD = #{mbrClassCd}
+            AND B.CLAS_ROOM_SER IS NOT NULL
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(loginPermYn)">
+            AND B.LOGIN_PERM_YN = #{loginPermYn}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(userId)">
+            AND A.ID like '%'||#{userId}||'%'
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(username)">
+            AND A.NM like '%'||#{username}||'%'
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(clasRoomNm)">
+            AND B.CLAS_ROOM_NM like '%'||#{clasRoomNm}||'%'
+            </if>
+        </where>
+    </select>
+
+
+    <select id="schoolClassRoomInfo" parameterType="kr.or.career.mentor.domain.SchInfo" resultType="kr.or.career.mentor.domain.SchInfo">
+        /* paging */
+        SELECT
+        A.CLAS_ROOM_SER,
+        A.CLAS_ROOM_NM,
+        A.CLAS_ROOM_TYPE,
+        A.REQ_MBR_NO,
+        A.TCHR_NM,
+        A.USERNAME,
+        A.REQ_DTM,
+        A.TCHR_MBR_NM,
+        A.MBR_CUALF_CD,
+        A.CLAS_USER_CNT,
+        A.STUD_CNT,
+        ROW_NUMBER() OVER(ORDER BY A.CLAS_ROOM_SER DESC) AS RN
+        /* paging */
+        FROM (
+        SELECT
+        IA.CLAS_ROOM_SER AS CLAS_ROOM_SER,
+        RS.CLAS_ROOM_NM AS CLAS_ROOM_NM,
+        (SELECT CD_NM FROM CNET_CODE WHERE CD = RS.CLAS_ROOM_TYPE_CD) AS CLAS_ROOM_TYPE,
+        WM_CONCAT(CASE WHEN MI.MBR_CLASS_CD = '100859' THEN IA.REQ_MBR_NO END) AS REQ_MBR_NO,
+        WM_CONCAT(CASE WHEN MI.MBR_CLASS_CD = '100859' THEN (SELECT NM || '(' || CD_NM || ')' FROM CNET_MBR_INFO MI, CNET_CODE CODE  WHERE MI.MBR_CLASS_CD = CODE.CD AND MBR_NO=IA.REQ_MBR_NO) END) AS TCHR_NM,
+        WM_CONCAT(CASE WHEN MI.MBR_CLASS_CD = '100859' THEN (SELECT NM || '(' || CD_NM || ')' FROM CNET_MBR_INFO MI, CNET_CODE CODE  WHERE MI.MBR_CLASS_CD = CODE.CD AND MBR_NO=IA.REQ_MBR_NO) END) AS USERNAME,
+        TO_CHAR(MIN(RS.REG_DTM),'YYYY.MM.DD') AS REQ_DTM
+        ,(SELECT NM || '(' || CD_NM || ')' FROM CNET_MBR_INFO MI, CNET_CODE CODE  WHERE MI.MBR_CUALF_CD = CODE.CD AND MBR_NO=RS.TCHR_MBR_NO) AS TCHR_MBR_NM
+        ,(SELECT CD_NM FROM CNET_MBR_INFO MI, CNET_CODE CODE  WHERE MI.MBR_CUALF_CD = CODE.CD AND MBR_NO=RS.TCHR_MBR_NO) AS MBR_CUALF_CD
+        , SUM(CASE WHEN IA.REG_STAT_CD = '101525' THEN 1 ELSE 0 END) AS CLAS_USER_CNT
+        , SUM(CASE WHEN IA.REG_STAT_CD = '101526' AND MI.MBR_CLASS_CD = '100858' THEN 1 ELSE 0 END) AS STUD_CNT
+        FROM CNET_CLAS_ROOM_REG_REQ_HIST IA
+        LEFT OUTER JOIN CNET_CLAS_ROOM_INFO RS
+            ON IA.CLAS_ROOM_SER = RS.CLAS_ROOM_SER AND RS.USE_YN = 'Y'
+        LEFT OUTER JOIN CNET_SCH_INFO SI
+            ON RS.SCH_NO = SI.SCH_NO
+        LEFT OUTER JOIN CNET_MBR_INFO MI
+            ON IA.REQ_MBR_NO=MI.MBR_NO
+        WHERE IA.REG_STAT_CD = '101526' AND SI.SCH_NO = #{schNo}
+        GROUP BY IA.CLAS_ROOM_SER, RS.CLAS_ROOM_NM, RS.TCHR_MBR_NO, RS.CLAS_ROOM_SER, RS.CLAS_ROOM_TYPE_CD) A
+    </select>
+
+    <select id="schoolClassRoomHistory" parameterType="kr.or.career.mentor.domain.SchInfo" resultType="kr.or.career.mentor.domain.SchInfo">
+        /* paging */
+        SELECT
+        (SELECT CD_NM FROM CNET_CODE WHERE CD = RS.CLAS_ROOM_TYPE_CD) AS CLAS_ROOM_TYPE,
+        RS.CLAS_ROOM_TYPE_CD,
+        RS.CLAS_ROOM_NM,
+        TO_CHAR(IA.REQ_DTM,'YYYY.MM.DD') AS REQ_DTM,
+        CASE WHEN  IA.REG_STAT_CD = '101525' THEN '승인요청'
+        WHEN  IA.REG_STAT_CD = '101526' THEN '승인완료'
+        ELSE '승인거절' END AS REQ_STAT_NM,
+        TO_CHAR(IA.AUTH_DTM,'YYYY.MM.DD') AS AUTH_DTM
+        , MI.NM || '(' || Cc.Cd_Nm || ')' AS TCHR_MBR_NM
+        , ROW_NUMBER() OVER(ORDER BY IA.AUTH_DTM, RS.CLAS_ROOM_TYPE_CD DESC) AS RN
+        /* paging */
+        FROM CNET_CLAS_ROOM_INFO RS
+        LEFT OUTER JOIN CNET_CLAS_ROOM_REG_REQ_HIST IA
+            ON IA.CLAS_ROOM_SER = RS.CLAS_ROOM_SER AND IA.REQ_MBR_NO=RS.TCHR_MBR_NO
+        LEFT OUTER JOIN CNET_MBR_INFO MI
+            ON IA.REQ_MBR_NO=MI.MBR_NO AND RS.TCHR_MBR_NO=MI.MBR_NO
+        LEFT OUTER JOIN CNET_CODE CC
+            ON CC.CD=MI.MBR_CLASS_CD
+        WHERE RS.SCH_NO = #{schNo}
+    </select>
+
+    <select id="schoolAssignGroupState" parameterType="kr.or.career.mentor.domain.BizGrpSearch" resultType="kr.or.career.mentor.domain.BizGrpSearch">
+        /* paging */
+        SELECT
+        E.GRP_NO,
+        E.SCH_NO,
+        A.INST_MBR_NO,D.CO_NM,
+        A.GRP_NM, A.GRP_DESC,
+        C.NM,
+        B.SET_SER,
+        B.SET_TARGT_CD,
+        B.SET_TARGT_NO,
+        B.CLAS_START_DAY,
+        B.CLAS_END_DAY,
+        B.REG_DTM
+        , TO_CHAR(B.CLAS_CNT, 'FM9,999,999') AS clas_cnt
+        , NVL((SELECT SUM(CLAS_APPL_CNT) FROM CNET_LECT_APPL_CNT WHERE SET_SER = B.SET_SER AND SCH_NO=E.SCH_NO), 0) AS clas_emp_cnt
+        , NVL((SELECT SUM(CLAS_PERM_CNT) FROM CNET_LECT_APPL_CNT WHERE SET_SER = B.SET_SER AND SCH_NO=E.SCH_NO), 0) AS CLAS_PERM_CNT
+        , ROW_NUMBER() OVER(ORDER BY A.reg_dtm DESC) AS rn
+        , CASE WHEN to_date(B.CLAS_START_DAY,'YYYYMMDD') > SYSDATE THEN '예정'
+        WHEN to_date(B.CLAS_START_DAY,'YYYYMMDD') <![CDATA[<=]]> SYSDATE AND to_date(B.CLAS_END_DAY,'YYYYMMDD') <![CDATA[>=]]> SYSDATE THEN '진행중' ELSE '종료' END AS GRP_YN
+        /* paging */
+        FROM  CNET_SCH_GRP_MAPP E
+        INNER JOIN CNET_BIZ_GRP_INFO A
+        ON E.GRP_NO = A.GRP_NO
+        INNER JOIN CNET_BIZ_SET_INFO B
+        ON E.GRP_NO = B.SET_TARGT_NO
+        INNER JOIN CNET_MBR_INFO C
+        ON A.INST_MBR_NO = C.MBR_NO
+        LEFT OUTER JOIN CNET_CO_INFO D
+        ON C.POS_CO_NO = D.CO_NO
+        <where>
+            AND E.SCH_NO = #{schNo}
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpState)">
+                <choose>
+                    <when test='grpState eq "1"'>
+                        AND to_date(B.CLAS_START_DAY,'YYYYMMDD') > SYSDATE
+                    </when>
+                    <when test='grpState eq "2"'>
+                        AND to_date(B.CLAS_START_DAY,'YYYYMMDD') <![CDATA[<=]]> SYSDATE AND to_date(B.CLAS_END_DAY,'YYYYMMDD') <![CDATA[>=]]> SYSDATE
+                    </when>
+                    <when test='grpState eq "3"'>
+                        AND to_date(B.CLAS_END_DAY,'YYYYMMDD') <![CDATA[<]]> SYSDATE
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
+
+
+    <select id="schoolClassRoomRepresent" parameterType="kr.or.career.mentor.domain.SchInfo" resultType="kr.or.career.mentor.domain.SchInfo">
+        /* paging */
+        SELECT
+            C.SCH_NM,
+            B.CLAS_ROOM_NM,
+            D.NM || '(' || (SELECT CD_NM FROM CNET_CODE WHERE CD = D.MBR_CLASS_CD) || ')' AS USERNAME
+            , ROW_NUMBER() OVER(ORDER BY A.REQ_DTM DESC) AS rn
+        /* paging */
+        FROM CNET_CLAS_ROOM_REG_REQ_HIST A
+        LEFT OUTER JOIN CNET_CLAS_ROOM_INFO B
+            ON A.CLAS_ROOM_SER = B.CLAS_ROOM_SER
+        LEFT OUTER JOIN CNET_SCH_INFO C
+            ON B.SCH_NO = C.SCH_NO
+        LEFT OUTER JOIN CNET_MBR_INFO D
+            ON A.REQ_MBR_NO = D.MBR_NO
+        WHERE C.SCH_NO = #{schNo}
+            AND A.CLAS_ROOM_CUALF_CD = '101691'
+    </select>
+
+    <select id="schoolClassTcherRepresent" parameterType="kr.or.career.mentor.domain.SchInfo" resultType="kr.or.career.mentor.domain.SchInfo">
+        /* paging */
+        SELECT
+            (SELECT CD_NM FROM CNET_CODE WHERE CD = B.SCH_MBR_CUALF_CD) AS SCH_MBR_CUALF_NM,
+            A.SCH_NM,
+            A.SCH_NO,
+            B.MBR_NO,
+            B.SCH_MBR_ROLL_SER,
+            C.ID AS USER_ID,
+            C.NM AS USERNAME,
+            (SELECT NM || '(' || (SELECT CD_NM FROM CNET_CODE WHERE CD = C.MBR_CLASS_CD) || ')' FROM CNET_MBR_INFO MI, CNET_CODE CC WHERE  MBR_NO = B.REG_MBR_NO AND MI.MBR_CLASS_CD = CC.CD)  AS AUTH_NM,
+            B.AUTH_DTM,
+            B.REG_DTM,
+            ROW_NUMBER() OVER(ORDER BY B.REG_DTM DESC) AS rn
+        /* paging */
+        FROM CNET_SCH_INFO A
+        INNER JOIN CNET_MBR_SCH_CUALF B
+        ON A.SCH_NO = B.SCH_NO
+        AND B.USE_YN = 'Y'
+        INNER JOIN CNET_MBR_INFO C
+        ON B.REG_MBR_NO = C.MBR_NO
+        <where>
+            <choose>
+                <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schMbrCualfCd)">
+                    AND B.SCH_MBR_CUALF_CD = #{schMbrCualfCd}
+                </when>
+                <otherwise>
+                    AND B.SCH_MBR_CUALF_CD = '101699' /* 학교관리자 */
+                </otherwise>
+            </choose>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(schNo)">
+                AND A.SCH_NO = #{schNo}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mbrNo)">
+                AND B.MBR_NO = #{mbrNo}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(cualfRegStatCd)">
+                AND B.CUALF_REG_STAT_CD = #{cualfRegStatCd}
+            </if>
+        </where>
+    </select>
+
+
+    <delete id="deleteSchoolTcher" parameterType="kr.or.career.mentor.domain.SchInfo">
+        UPDATE CNET_CLAS_ROOM_REG_REQ_HIST SET REG_STAT_CD = '101706' WHERE CLAS_ROOM_SER = #{clasRoomSer}
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mbrNo)">
+        AND REQ_MBR_NO = #{mbrNo}
+        </if>
+    </delete>
+
+    <delete id="deleteSchoolRoom" parameterType="kr.or.career.mentor.domain.SchInfo">
+        UPDATE CNET_CLAS_ROOM_INFO SET USE_YN = 'N' WHERE CLAS_ROOM_SER = #{clasRoomSer} AND SCH_NO = #{schNo}
+    </delete>
+
+    <update id="saveAssignLectAppl" parameterType="kr.or.career.mentor.domain.BizGrpInfo" >
+        MERGE INTO CNET_LECT_APPL_CNT
+        USING dual ON (sch_no = #{schNo, jdbcType=VARCHAR} AND set_ser = #{setSer, jdbcType=INTEGER})
+        WHEN MATCHED THEN
+        UPDATE
+        SET
+        CLAS_PERM_CNT = #{clasPermCnt, jdbcType=INTEGER}
+        WHEN NOT MATCHED THEN
+        INSERT (
+        SCH_NO
+        , SET_SER
+        , CLAS_PERM_CNT
+        , CLAS_APPL_CNT
+        )
+        VALUES (
+        #{schNo, jdbcType=VARCHAR}
+        , #{setSer, jdbcType=INTEGER}
+        , #{clasPermCnt, jdbcType=INTEGER}
+        , 0
+        )
+    </update>
+
+    <select id="getMaxSetChgSeq" resultType="int">
+        SELECT SQ_BIZ_SET_CHG_GRP_HIST.NEXTVAL FROM DUAL
+    </select>
+
+    <insert id="insertAssignSchoolHist" parameterType="kr.or.career.mentor.domain.BizGrpInfo">
+            INSERT
+            INTO CNET_BIZ_SET_CHG_HIST
+            (
+                GRP_NO,
+                SET_SER,
+                SET_CHG_SEQ,
+                SET_CHG_SER,
+                SCH_NO,
+                SCH_CHG_CLASS_CD,
+                CLAS_PERM_CNT,
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(clasStartDay)">
+                CLAS_START_DAY,
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(clasEndDay)">
+                CLAS_END_DAY,
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpNm)">
+                GRP_NM,
+            </if>
+                REG_MBR_NO,
+                REG_DTM
+            )
+            VALUES
+            (
+                #{grpNo}
+                , #{setSer}
+                , #{setChgSeq}
+                , SQ_BIZ_SET_CHG_HIST.NEXTVAL
+                , #{schNo}
+                , #{schChgClassCd}
+                , #{clasPermCnt}
+                <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(clasStartDay)">
+                , #{clasStartDay}
+                </if>
+                <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(clasEndDay)">
+                , #{clasEndDay}
+                </if>
+                <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpNm)">
+                , #{grpNm}
+                </if>
+                , #{regMbrNo}
+                , SYSDATE
+            )
+    </insert>
+
+
+    <select id="listAssignGroupHist" parameterType="kr.or.career.mentor.domain.BizGrpSearch" resultType="kr.or.career.mentor.domain.BizSetInfo">
+        SELECT * FROM (
+            SELECT
+                GRP_NO,
+                SET_SER,
+                SET_CHG_SEQ,
+                (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = A.REG_MBR_NO) AS NM,
+                MAX(REG_DTM) AS REG_DTM
+            FROM CNET_BIZ_SET_CHG_HIST A
+            WHERE GRP_NO = #{grpNo}
+            GROUP BY GRP_NO, SET_SER, SET_CHG_SEQ, REG_MBR_NO
+            ORDER BY REG_DTM DESC
+        ) WHERE ROWNUM <![CDATA[<=]]> 3
+    </select>
+
+
+    <select id="listBizGrpInfo"  resultType="kr.or.career.mentor.domain.BizGrpInfo">
+        SELECT
+                     GRP.GRP_NO
+                   , GRP.GRP_NM
+                   , GRP.MAX_APPL_CNT
+                   , GRP.MAX_OBSV_CNT
+        FROM
+                   CNET_BIZ_GRP_INFO GRP
+        INNER JOIN CNET_BIZ_SET_INFO BSET ON GRP.GRP_NO = BSET.SET_TARGT_NO
+        WHERE
+                   GRP.USE_YN='Y'
+        AND        SYSDATE BETWEEN TO_DATE(BSET.CLAS_START_DAY, 'YYYYMMDDHH24MI') AND TO_DATE(BSET.CLAS_END_DAY, 'YYYYMMDDHH24MI')
+    </select>
+
+    <!--학교별 배정사업현황 -->
+    <select id="listSchAssignGroup" parameterType="kr.or.career.mentor.domain.BizGrpSearch" resultMap="bizSetInfoData">
+        /* paging */
+        SELECT  A.GRP_NO, A.INST_MBR_NO,D.CO_NM, A.GRP_NM, A.GRP_DESC, C.NM
+        , B.SET_SER, B.SET_TARGT_CD, B.SET_TARGT_NO, B.CLAS_START_DAY, B.CLAS_END_DAY
+        , B.REG_DTM
+        , (SELECT COUNT(*) FROM CNET_SCH_GRP_MAPP S1 WHERE S1.GRP_NO = A.GRP_NO) AS clas_appl_cnt
+        , ROW_NUMBER() OVER(ORDER BY A.reg_dtm DESC) AS rn
+        , TO_CHAR(B.CLAS_CNT, 'FM9,999,999') AS clas_cnt
+        , TO_CHAR((SELECT COUNT(*) FROM CNET_SCH_GRP_MAPP S1 WHERE S1.GRP_NO = A.GRP_NO), 'FM9,999,999') AS clas_appl_cnt_comma
+        , TO_CHAR(NVL((SELECT SUM(CLAS_APPL_CNT) FROM CNET_LECT_APPL_CNT WHERE SET_SER = B.SET_SER
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schNo)">
+            AND SCH_NO = E.SCH_NO
+        </if>
+        ), 0)) AS clas_emp_cnt
+        , NVL((SELECT SUM(CASE WHEN CLAC.CLAS_PERM_CNT != 0 THEN CLAC.CLAS_PERM_CNT ELSE SBSI.CLAS_CNT END
+        ) AS CLAS_CNT FROM CNET_SCH_GRP_MAPP CSGM INNER JOIN CNET_BIZ_SET_INFO SBSI ON CSGM.GRP_NO
+        = SBSI.Set_Targt_NO LEFT OUTER JOIN CNET_LECT_APPL_CNT CLAC ON SBSI.Set_Ser = CLAC.Set_Ser and CSGM.SCH_NO = CLAC.SCH_NO
+        WHERE CSGM.GRP_NO = A.GRP_NO AND CLAC.SCH_NO = E.SCH_NO), 0) AS clas_perm_cnt
+        , CASE WHEN to_date(B.CLAS_START_DAY,'YYYYMMDD') > SYSDATE THEN '예정'
+        WHEN to_date(B.CLAS_START_DAY,'YYYYMMDD') <![CDATA[<=]]> SYSDATE AND to_date(B.CLAS_END_DAY,'YYYYMMDD') <![CDATA[>=]]> SYSDATE THEN '진행중' ELSE '종료' END AS GRP_YN
+        , A.MAX_APPL_CNT
+        , A.MAX_OBSV_CNT
+        /* paging */
+        FROM  CNET_BIZ_GRP_INFO A
+        INNER JOIN CNET_BIZ_SET_INFO B
+        ON A.GRP_NO = B.SET_TARGT_NO
+        INNER JOIN CNET_MBR_INFO C
+        ON A.INST_MBR_NO = C.MBR_NO
+        LEFT OUTER JOIN CNET_CO_INFO D
+        ON C.POS_CO_NO = D.CO_NO
+        INNER JOIN CNET_SCH_GRP_MAPP E
+        ON A.GRP_NO = E.GRP_NO AND E.SCH_NO = #{schNo}
+        WHERE B.SET_TARGT_CD = '101601' /*101599 : 사업그룹*/
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schNo)">
+            AND A.GRP_NO IN (SELECT S2.GRP_NO FROM CNET_SCH_GRP_MAPP S2 INNER JOIN CNET_SCH_INFO S3 ON S2.SCH_NO = S3.SCH_NO WHERE S2.GRP_NO = A.GRP_NO AND S3.SCH_NO = #{schNo} )
+        </if>
+
+    </select>
+
+
+    <select id="assignGroupName"  parameterType="kr.or.career.mentor.domain.BizGrpInfo"  resultType="int">
+        SELECT
+        count(*) AS cnt
+        FROM
+        CNET_BIZ_GRP_INFO
+        WHERE
+        GRP_NM = #{grpNm}
+    </select>
+
+    <select id="listAssignGroupByDistinct" resultType="kr.or.career.mentor.domain.BizGrpInfo">
+        <![CDATA[
+            select distinct GRP_NO,GRP_NM,B.SET_SER
+            from CNET_BIZ_GRP_INFO A
+                  inner join CNET_BIZ_SET_INFO B
+                    on A.GRP_NO = B.SET_TARGT_NO
+        ]]>
+    </select>
+
+</mapper>

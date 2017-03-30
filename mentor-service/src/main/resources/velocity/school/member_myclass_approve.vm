@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+<title>���ٶ� - ���ݿ��� ���θ��丵</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<table border="0" cellspacing="0" cellpadding="0" width="700" align="center">
+<!-- header -->
+<tr>
+	<td width="700">
+		<table border="0" cellspacing="0" cellpadding="0" width="700">
+		<tr>
+			<td>
+				<table border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td valign="bottom" style="font-size:0;"><a target="_blank" title="���ٶ� ���ݿ��� ���θ��丵" href="${url}"><img border="0" src="${imgUrl}images/ems/img_bl_bgs.gif" alt="���ٶ�bl" /></a></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<!-- //header -->
+<!-- point -->
+<tr>
+	<td>
+		<table border="0" cellspacing="0" cellpadding="0" width="700">
+		<tr>
+			<td style="font-size:0;"> 
+				<img src="${imgUrl}images/ems/img_email_h25.gif" alt="���ٶ� ���� ���� ������ �Ϸ�Ǿ����ϴ�." />
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<!-- //point -->
+<!-- content -->
+<tr>
+    <td>
+		<table border="0" cellspacing="0" cellpadding="0" width="700">
+			<tr>
+				<td colspan="3" style="font-size:0;">
+					<img src="${imgUrl}images/ems/img_email_info6-1.gif" alt="���� ���� ������ �Ϸ�Ǿ����ϴ�." />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table border="0" cellspacing="0" cellpadding="0" width="700">
+						<tr>
+							<td width="339" style="font-size:0;">
+								<img src="${imgUrl}images/ems/img_email_myclass.gif" alt="���Ǳ���" />
+							</td>
+							<td width="295">
+								<span style="display:inline-block;padding:5px 0 0 1px;font-size:14px;font-weight:bold;color:#4764c0;">��� �п� ����б� 1-6</span>
+							</td>
+							<td width="66" style="font-size:0;">
+								<img src="${imgUrl}images/ems/img_email_id1.gif" alt="���Ǳ���" />
+							</td>
+						</tr>
+						<tr>
+							<td width="339" style="font-size:0;">
+								<img src="${imgUrl}images/ems/img_email_teacher.gif" alt="�����" />
+							</td>
+							<td width="295">
+								<span style="display:inline-block;padding:5px 0 0 1px;font-size:14px;font-weight:bold;">ȫ�浿</span>
+							</td>
+							<td width="66" style="font-size:0;">
+								<img src="${imgUrl}images/ems/img_email_name1.gif" alt="�����" />
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td height="43" align="center" valign="bottom" style="font-size:0;">
+	<table border="0" cellspacing="0" cellpadding="0" width="700">
+		<tr>
+			<td colspan="3" style="font-size:0;">
+				<img src="${imgUrl}images/ems/img_email_info6-2.gif" alt="���� ������ ���ٶ� �α��� ��, ������������ > ���� ���ǡ����� ���� �����մϴ�." />
+			</td>
+		</tr>
+		<tr>
+			<td style="font-size:0;">
+				<img src="${imgUrl}images/ems/btn_member_empty1.gif" alt="" />
+			</td>
+			<td align="center" valign="bottom" style="font-size:0;">
+				<a href="member_myclass_approve.html" target="_blank"><img src="${imgUrl}images/ems/img_member_complete.gif" alt="���ٶ� �ٷΰ���"></a>
+			</td>
+			<td style="font-size:0;">
+				<img src="${imgUrl}images/ems/btn_member_empty2.gif" alt="" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" style="font-size:0;">
+				<img src="${imgUrl}images/ems/btn_member_empty3.gif" alt="" />
+			</td>
+		</tr>
+	</table>
+	</td>
+</tr>
+<!-- // content -->
+<!-- footer -->
+<tr>
+	<td>
+		<table border="0" cellspacing="0" cellpadding="0" style="border:1px solid #dfdfdf;font:normal 12px/16px '����', dotum, sans-serif;background:#fafafa;">
+		<tr>
+			<td style="padding:19px 0 21px 19px;color:#999;">
+				�� ������ �߽����� �����Դϴ�. �̿���� ���Ǵ� Ȩ�������� <a href="http://mentee.career.go.kr/community/qna/qnaList.do" style="color:#4764c0;" target="_blank">[�����ϱ�]</a>�� �̿����ּ���.
+			</td>
+		</tr>
+		<tr>
+			<td width="698">
+				<img src="${imgUrl}images/ems/img_footer_bg.gif" alt="�ּ�:����Ư����ġ�� ��û��� 370 ������å�������� ��ȸ��å�� �ѱ������ɷ°��߿� Ŀ����� �:�ѱ������ɷ°��߿� ���α������� ����:������ COPYRIGHTS KRIVET ALL RIGHTS RESERVED." />
+         	</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<!-- //footer -->
+</table>
+</body>
+</html>

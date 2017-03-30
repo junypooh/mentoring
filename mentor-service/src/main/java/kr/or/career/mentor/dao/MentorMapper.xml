@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MentorMapper">
+
+    <!-- 재작업 ==================================================================================== -->
+    <!-- 멘토 목록 -->
+    <select id="listMentorInfo" resultType="kr.or.career.mentor.domain.MentorDTO">
+        /* [MentorMapper.xml#listMentorInfo][멘토 목록] */
+        /* paging */
+        SELECT
+            Mi.mbr_no,
+            Mi.id,
+            Mi.nm,
+            Mpi.title AS prof_title,
+            Mji.job_nm,
+            (SELECT MAX(file_ser) FROM cnet_mbr_prof_pic_info WHERE mbr_no = Mi.mbr_no) AS prof_file_ser,
+            (SELECT icon_kind_cd FROM cnet_mbr_icon_info WHERE mbr_no = Mi.mbr_no AND icon_kind_cd = '101598') AS icon_kind_cd,
+            Mpi.INTDC_INFO as prof_intdc_info,
+            Mpi.SCH_CAR_INFO as prof_sch_car_info,
+            Mpi.CAREER_INFO as prof_career_info,
+            Mpi.AWARD_INFO as prof_award_info,
+            Mpi.BOOK_INFO as prof_book_info,
+            <choose>
+                <when test="isHopeful eq true">ROW_NUMBER() OVER(ORDER BY Ri.sort_seq) AS rn</when>
+                <otherwise>ROW_NUMBER() OVER(ORDER BY Mi.reg_dtm DESC) AS rn</otherwise>
+            </choose>
+        /* paging */
+        FROM cnet_mbr_info Mi
+            LEFT JOIN cnet_mbr_prof_info Mpi ON (Mi.mbr_no = Mpi.mbr_no and rownum = 1)
+            LEFT JOIN cnet_mbr_job_info Mji ON (Mi.mbr_no = Mji.mbr_no and rownum = 1)
+            <if test="isHopeful eq true">INNER JOIN CNET_MNGR_RECOM_INFO Ri ON (Mi.mbr_no = Ri.recom_targt_no AND Ri.recom_targt_cd = '101642' /* 101641 : 유망멘토*/)</if>
+        WHERE 1 = 1
+            AND Mi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+            AND Mi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(schSiteExpsYn)">
+                AND Mi.sch_site_exps_yn = #{schSiteExpsYn}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(genCd)">
+                AND Mi.gen_cd = #{genCd}
+            </if>
+            <!-- 감의 상태 코드 -->
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(lectStatCd)">
+                AND Mi.mbr_no IN (
+                    SELECT
+                        iLi.lectr_mbr_no
+                    FROM cnet_lect_info iLi
+                        INNER JOIN cnet_lect_schd_info iLsi ON (iLi.lect_ser = iLsi.lect_ser)
+                    AND iLsi.lect_stat_cd = #{lectStatCd}
+                    GROUP BY iLi.lectr_mbr_no
+                )
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchKey)">
+                <choose>
+                    <when test="searchType eq 'mentor'">
+                        AND REGEXP_LIKE(UPPER(Mi.nm), UPPER(#{searchKey}))
+                    </when>
+                    <when test="searchType eq 'job'">
+                        AND REGEXP_LIKE(UPPER(Mji.job_nm), UPPER(#{searchKey}))
+                    </when>
+                    <otherwise>
+                        AND (
+                               REGEXP_LIKE(UPPER(Mi.nm), UPPER(#{searchKey}))
+                            OR REGEXP_LIKE(UPPER(Mji.job_nm), UPPER(#{searchKey}))
+                        )
+                    </otherwise>
+                </choose>
+            </if>
+            <!-- 직업 검색 -->
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(jobClsfCd)">
+                AND Mji.job_no IN (
+                    SELECT
+                        job_no
+                    FROM cnet_job_info
+                    WHERE 1 = 1
+                        AND job_clsf_cd IN (
+                            SELECT
+                                cd
+                            FROM cnet_job_clsf_cd
+                            WHERE 1 = 1
+                                AND cd_lv = 3
+                            START WITH cd = #{jobClsfCd}
+                            CONNECT BY NOCYCLE PRIOR cd = sup_cd
+                        )
+                )
+            </if>
+            <!-- 직업특성 검색 -->
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(chrstcClsfCds)">
+                AND Mi.mbr_no IN (
+                    SELECT
+                        mbr_no
+                    FROM cnet_mbr_job_chrstc_info
+                    WHERE 1 = 1
+                        AND mbr_no = Mi.mbr_no
+                        <foreach collection="chrstcClsfCds" item="chrstcClsfCd" open="AND job_chrstc_cd IN (" close=")" separator=",">
+                            #{chrstcClsfCd}
+                        </foreach>
+                )
+            </if>
+    </select>
+
+
+    <!-- 멘토 상세 정보 -->
+    <select id="getMentorInfoBy" resultType="kr.or.career.mentor.domain.MentorDTO">
+        SELECT
+            MI.MBR_NO,
+            MI.NM,
+            MI.ID,
+            MI.EMAIL_ADDR AS EMAILADDR,
+            MPI.TITLE AS PROF_TITLE,
+            MPI.INTDC_INFO AS PROF_INTDC_INFO,
+            MPI.SCH_CAR_INFO AS PROF_SCH_CAR_INFO,
+            MPI.CAREER_INFO AS PROF_CAREER_INFO,
+            MPI.AWARD_INFO AS PROF_AWARD_INFO,
+            MPI.BOOK_INFO AS PROF_BOOK_INFO,
+            MJI.JOB_NO,
+            MJI.JOB_NM,
+            MJI.JOB_TAG_INFO,
+            MI.POS_CO_NO,
+            (SELECT ICON_KIND_CD FROM CNET_MBR_ICON_INFO WHERE MBR_NO = MI.MBR_NO AND ICON_KIND_CD = '101598') AS ICON_KIND_CD,
+            (
+                SELECT
+                    NVL((FLOOR((AVG(ASM_PNT)* 10 + 2) / 5) * 0.5), 0) /* 0.5 단위로 반올림 */
+                FROM CNET_ARCL_CMT_INFO
+                WHERE 1 = 1
+                    AND SUP_CMT_SER IS NULL
+                    AND ARCL_SER IN (
+                        SELECT
+                            ARCL_SER
+                        FROM CNET_ARCL_INFO
+                        WHERE 1 = 1
+                            AND CNTNTS_TARGT_CD = '101511' /* 강의 후기  */
+                            AND CNTNTS_TARGT_NO IN (
+                                SELECT
+                                    LECT_SER
+                                FROM CNET_LECT_INFO LI
+                                WHERE 1 = 1
+                                    AND LECTR_MBR_NO = MI.MBR_NO
+                            )
+                    )
+                    AND REG_MBR_NO IN (
+                        SELECT
+                            MBR_NO
+                        FROM CNET_MBR_INFO
+                        WHERE 1 = 1
+                            AND MBR_CLASS_CD = '100858' /* 일반회원 */
+                            AND MBR_CUALF_CD IN ('100205', '100206', '100207', '100208') /* 초,중,고,대 */
+                    )
+            ) AS STDNT_ASM_PNT,
+            (
+                SELECT
+                    NVL((FLOOR((AVG(ASM_PNT)* 10 + 2) / 5) * 0.5), 0) /* 0.5 단위로 반올림 */
+                FROM CNET_ARCL_CMT_INFO
+                WHERE 1 = 1
+                    AND SUP_CMT_SER IS NULL
+                    AND ARCL_SER IN (
+                        SELECT
+                            ARCL_SER
+                        FROM CNET_ARCL_INFO
+                        WHERE 1 = 1
+                            AND CNTNTS_TARGT_CD = '101511' /* 강의 후기  */
+                            AND CNTNTS_TARGT_NO IN (
+                                SELECT
+                                    LECT_SER
+                                FROM CNET_LECT_INFO LI
+                                WHERE 1 = 1
+                                    AND LECTR_MBR_NO = MI.MBR_NO
+                            )
+                    )
+                    AND REG_MBR_NO IN (
+                        SELECT
+                            MBR_NO
+                        FROM CNET_MBR_INFO
+                        WHERE 1 = 1
+                            AND MBR_CLASS_CD = '100859' /* 교사 */
+                    )
+            ) AS TCHR_ASM_PNT,
+            MI.MBR_CUALF_CD,
+            (SELECT MAX(FILE_SER) FROM CNET_MBR_PROF_PIC_INFO WHERE MBR_NO = MI.MBR_NO) AS PROF_FILE_SER,
+            (
+                SELECT TRIM(CD_NM)
+                  FROM CNET_JOB_CLSF_CD
+                 WHERE CD_LV = 3
+                START WITH CD = JI.JOB_CLSF_CD
+                CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+            ) AS JOB_STRUCT3
+        FROM CNET_MBR_INFO MI
+            LEFT JOIN CNET_MBR_PROF_INFO MPI ON (MI.MBR_NO = MPI.MBR_NO)
+            LEFT JOIN CNET_MBR_JOB_INFO MJI ON (MI.MBR_NO = MJI.MBR_NO)
+            LEFT JOIN CNET_JOB_INFO JI ON (MJI.JOB_NO = JI.JOB_NO)
+        WHERE 1 = 1
+            AND MI.MBR_NO = #{mbrNo}
+    </select>
+
+    <!-- 소속멘토 목록조회 -->
+    <select id="listBelongMentor" parameterType="kr.or.career.mentor.domain.MentorSearch" resultType="kr.or.career.mentor.domain.MentorDTO">
+        /* 소속멘토 목록조회 id:listBelongMentor */
+        /* paging */
+        SELECT
+            Mi.mbr_no,
+            Mi.id,
+            Mi.nm,
+            Mi.mbr_stat_cd,
+            (SELECT Z.CD_NM FROM CNET_CODE Z WHERE Z.SUP_CD = '100861' AND Z.CD = Mi.mbr_stat_cd) as mbr_stat_nm,
+            Mi.gen_cd,
+            Mi.login_perm_yn,
+            (SELECT cd_nm FROM CNET_CODE S WHERE S.cd = Mi.gen_cd and s.sup_cd = '100322') AS gen_nm,
+            Mi.reg_dtm,
+            Mji.job_nm,
+            Mji.job_no,
+            (
+                SELECT TRIM(CD_NM)
+                FROM CNET_JOB_CLSF_CD
+                WHERE CD_LV = 1
+                START WITH CD = JI.JOB_CLSF_CD
+                CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+            ) AS JOB_STRUCT1,
+            (
+                SELECT TRIM(CD_NM)
+                FROM CNET_JOB_CLSF_CD
+                WHERE CD_LV = 2
+                START WITH CD = JI.JOB_CLSF_CD
+                CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+            ) AS JOB_STRUCT2,
+            (
+                SELECT TRIM(CD_NM)
+                FROM CNET_JOB_CLSF_CD
+                WHERE CD_LV = 3
+                START WITH CD = JI.JOB_CLSF_CD
+                CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+            ) AS JOB_STRUCT3,
+            ROW_NUMBER() OVER(ORDER BY Mi.reg_dtm DESC) AS rn
+        /* paging */
+        FROM cnet_mbr_info Mi
+            LEFT JOIN cnet_mbr_job_info Mji ON (Mi.mbr_no = Mji.mbr_no)
+            left join cnet_job_info Ji on (Mji.job_no = Ji.job_no)
+        WHERE 1 = 1
+            AND Mi.mbr_class_cd = '101505' /* 회원 구분 - 멘토 */
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(posCoNo)">
+                AND Mi.pos_co_no = #{posCoNo}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mbrStatCd)">
+                AND Mi.mbr_stat_cd = #{mbrStatCd}  /* 회원상태코드 */
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(loginPermYn)">
+                AND Mi.login_perm_yn = #{loginPermYn}  /* 회원사용유무 */
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schSiteExpsYn)">
+                AND Mi.sch_site_exps_yn = #{schSiteExpsYn}  /* 학교사이트 노출여부 */
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mbrId)">
+                AND REGEXP_LIKE(Mi.id, #{mbrId})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mbrNm)">
+                AND REGEXP_LIKE(Mi.nm, #{mbrNm})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mbrJobNm)">
+                AND REGEXP_LIKE(Mji.job_nm, #{mbrJobNm})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey)">
+                <choose>
+                    <when test="searchType eq 'id'">
+                        AND REGEXP_LIKE(Mi.id, #{searchKey})
+                    </when>
+                    <when test="searchType eq 'nm'">
+                        AND REGEXP_LIKE(Mi.nm, #{searchKey})
+                    </when>
+                    <when test="searchType eq 'jobNm'">
+                        AND REGEXP_LIKE(Mji.job_nm, #{searchKey})
+                    </when>
+                    <when test="@org.apache.commons.lang3.StringUtils@isEmpty(searchType)">
+                        AND (
+                            REGEXP_LIKE(Mi.id, #{searchKey})
+                            OR REGEXP_LIKE(Mi.nm, #{searchKey})
+                        )
+                    </when>
+                </choose>
+            </if>
+            <!-- 직업 검색 -->
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(jobClsfCd)">
+                AND Mji.job_no IN (
+                    SELECT
+                        job_no
+                    FROM cnet_job_info
+                    WHERE 1 = 1
+                        AND job_clsf_cd IN (
+                            SELECT
+                                cd
+                            FROM cnet_job_clsf_cd
+                            WHERE 1 = 1
+                                AND cd_lv = 3
+                            START WITH cd = #{jobClsfCd}
+                            CONNECT BY NOCYCLE PRIOR cd = sup_cd
+                        )
+                )
+            </if>
+            <!-- 직업특성 검색 -->
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(chrstcClsfCds)">
+                AND Mi.mbr_no IN (
+                    SELECT
+                        mbr_no
+                    FROM cnet_mbr_job_chrstc_info
+                    WHERE 1 = 1
+                        AND mbr_no = Mi.mbr_no
+                        <foreach collection="chrstcClsfCds" item="chrstcClsfCd" open="AND job_chrstc_cd IN (" close=")" separator=",">
+                            #{chrstcClsfCd}
+                        </foreach>
+                )
+            </if>
+    </select>
+
+    <!--  승인요청중이 목록 조회 -->
+    <select id="listMentorApproval" parameterType="kr.or.career.mentor.domain.ApprovalDTO" resultType="kr.or.career.mentor.domain.ApprovalDTO">
+    /* paging */
+    SELECT T1.APP_TYPE_CD, T1.DETAIL, T1.LECT_SER, T1.LECT_TIMS, T1.MBR_NO, T1.NM, T1.REG_DTM
+            , T2.CD_NM AS APP_TYPE_NM
+            ,ROW_NUMBER() OVER(ORDER BY T1.REG_DTM, T1.NM DESC) AS rn
+    /* paging */
+      FROM (
+        SELECT A.MBR_STAT_CD AS APP_TYPE_CD,DECODE(A.MBR_STAT_CD,'101506','가입 승인요청','100863','반려','탈퇴 승인요청') AS DETAIL, -1 AS LECT_SER, -1 AS LECT_TIMS , A.MBR_NO, A.NM, DECODE(A.MBR_STAT_CD,'101506',A.REG_DTM,A.USE_STOP_DTM) AS REG_DTM
+          FROM CNET_MBR_INFO A
+         WHERE A.MBR_CLASS_CD = '101505' /*멘토*/
+           AND A.MBR_CUALF_CD = '101503' /*개인멘토*/
+           AND A.MBR_STAT_CD IN ( <choose><when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mbrStatCd) or @org.apache.commons.lang3.StringUtils@isNotEmpty(lectStatCd)">#{mbrStatCd}</when>
+           <otherwise>'101506' /*승인요청*/ ,'101572' /*탈퇴요청*/ , '100863' /*반려*/ </otherwise>
+           </choose> )
+           <if test="listMbrNo != null and listMbrNo.size() gt 0">
+           AND A.MBR_NO IN <foreach collection="listMbrNo" item="subMbrNo" open="(" separator="," close=")">#{subMbrNo}</foreach>
+           </if>
+     UNION ALL
+       SELECT C.LECT_STAT_CD AS APP_TYPE_CD, B.LECT_TITLE AS DETAIL, B.LECT_SER, C.LECT_TIMS , A.MBR_NO, A.NM, C.REG_DTM
+         FROM CNET_MBR_INFO A
+   INNER JOIN  CNET_LECT_INFO B
+           ON A.MBR_NO = B.LECTR_MBR_NO
+   INNER JOIN CNET_LECT_TIMS_INFO C
+           ON B.LECT_SER = C.LECT_SER
+        WHERE C.LECT_STAT_CD IN ( <choose><when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mbrStatCd) or @org.apache.commons.lang3.StringUtils@isNotEmpty(lectStatCd)">#{lectStatCd}</when>
+        <otherwise>'101546' /*모집취소요청*/</otherwise> </choose> )
+        <if test="listMbrNo != null and listMbrNo.size() gt 0">
+           AND A.MBR_NO IN <foreach collection="listMbrNo" item="subMbrNo" open="(" separator="," close=")">#{subMbrNo}</foreach>
+           </if>
+     UNION ALL
+       SELECT B.LECT_STAT_CD AS APP_TYPE_CD, B.LECT_TITLE AS DETAIL, B.LECT_SER,-1 AS LECT_TIMS, A.MBR_NO, A.NM, B.REG_DTM
+         FROM CNET_LECT_INFO B
+LEFT OUTER JOIN  CNET_MBR_INFO A
+           ON A.MBR_NO = B.LECTR_MBR_NO
+        WHERE B.LECT_STAT_CD =
+        <choose>
+            <when test="@org.apache.commons.lang3.StringUtils@isEmpty(mbrStatCd) and @org.apache.commons.lang3.StringUtils@isEmpty(lectStatCd)">'101542' /*수업개설요청*/</when>
+            <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mbrStatCd) and @org.apache.commons.lang3.StringUtils@isEmpty(lectStatCd)">#{lectStatCd}</when>
+            <when test="@org.apache.commons.lang3.StringUtils@equals(lectStatCd, '101542')">'101542' /*수업개설요청*/</when>
+            <otherwise>#{lectStatCd}</otherwise>
+        </choose>
+        <if test="listMbrNo != null and listMbrNo.size() gt 0">
+           AND A.MBR_NO IN <foreach collection="listMbrNo" item="subMbrNo" open="(" separator="," close=")">#{subMbrNo}</foreach>
+           </if>
+        order by REG_DTM
+        ) T1
+      INNER JOIN CNET_CODE T2
+        ON T1.APP_TYPE_CD = T2.CD
+    </select>
+
+    <!-- 탈퇴요청 멘토 승인 -->
+    <update id="updateMbrStatCd" parameterType="kr.or.career.mentor.domain.ApprovalDTO">
+    UPDATE CNET_MBR_INFO SET
+        MBR_STAT_CD = #{mbrStatCd}
+      , LOGIN_PERM_YN = #{loginPermYn, jdbcType=VARCHAR}
+      , CHG_DTM = SYSDATE
+      , CHG_MBR_NO = #{mbrNo}
+      , USE_STOP_DTM = SYSDATE
+      WHERE MBR_NO = #{mbrNo}
+    </update>
+
+    <select id="listALiveLecture" parameterType="String" resultType="kr.or.career.mentor.domain.ApprovalDTO">
+    SELECT B.LECT_SER, B.LECT_TIMS,A.lect_targt_cd
+                FROM CNET_LECT_INFO A
+                INNER JOIN CNET_LECT_TIMS_INFO B
+                ON A.LECT_SER = B.LECT_SER
+               AND A.LECTR_MBR_NO = #{mbrNo}
+              WHERE B.LECT_STAT_CD IN (
+        '101542'    /*수업요청*/
+        ,'101543'  /*수강모집  */
+        ,'101544'  /*모집마감  */
+        ,'101546'  /*모집취소요청*/
+        ,'101548'  /*수업예정  */
+        ,'101549'  /*수업대기  */
+        ,'101552'  /*수업취소요청*/
+              )
+    </select>
+
+    <select id="listMentorApprovalCnt" parameterType="kr.or.career.mentor.domain.ApprovalDTO" resultType="kr.or.career.mentor.domain.ApprovalDTO">
+    SELECT T1.APP_TYPE_CD, T1.CNT
+      FROM (
+        SELECT A.MBR_STAT_CD AS APP_TYPE_CD,COUNT(*) AS CNT
+          FROM CNET_MBR_INFO A
+         WHERE A.MBR_CLASS_CD = '101505' /*멘토*/
+           AND A.MBR_CUALF_CD = '101503' /*개인멘토*/
+           AND A.MBR_STAT_CD IN ( '101506' /*승인요청*/ ,'101572' /*탈퇴요청*/ ,'100863','반려' )
+           <if test="listMbrNo != null and listMbrNo.size() gt 0">
+           AND A.MBR_NO IN <foreach collection="listMbrNo" item="subMbrNo" open="(" separator="," close=")">#{subMbrNo}</foreach>
+           </if>
+           GROUP BY A.MBR_STAT_CD
+     UNION ALL
+       SELECT C.LECT_STAT_CD AS APP_TYPE_CD, COUNT(*) AS CNT
+         FROM CNET_LECT_TIMS_INFO C
+         <if test="listMbrNo != null and listMbrNo.size() gt 0">
+   INNER JOIN CNET_LECT_INFO D
+           ON D.LECT_SER = C.LECT_SER
+         AND D.LECTR_MBR_NO IN <foreach collection="listMbrNo" item="subMbrNo" open="(" separator="," close=")">#{subMbrNo}</foreach>
+         </if>
+        WHERE C.LECT_STAT_CD = '101546' /*모집취소요청*/
+        GROUP BY C.LECT_STAT_CD
+     UNION ALL
+       SELECT D.LECT_STAT_CD AS APP_TYPE_CD, COUNT(*) AS CNT
+         FROM CNET_LECT_INFO D
+        WHERE D.LECT_STAT_CD = '101542' /*수업개설요청*/
+         <if test="listMbrNo != null and listMbrNo.size() gt 0">
+         AND D.LECTR_MBR_NO IN <foreach collection="listMbrNo" item="subMbrNo" open="(" separator="," close=")">#{subMbrNo}</foreach>
+         </if>
+        GROUP BY D.LECT_STAT_CD
+        ) T1
+    </select>
+
+    <select id="allMentorList" parameterType="kr.or.career.mentor.domain.UserSearch" resultType="kr.or.career.mentor.domain.MentorDTO">
+        /* paging */
+        SELECT
+          A.*
+        , (SELECT cd_nm FROM CNET_CODE WHERE CD = A.mbr_cualf_cd) as mbr_cualf_nm
+        , A.nm
+        , B.JOB_NM
+        , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) as RN
+        /* paging */
+        FROM CNET_MBR_INFO A
+        INNER JOIN CNET_MBR_JOB_INFO B ON(A.MBR_NO = B.MBR_NO)
+        <where>
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(mbrCualfCds)">
+                <foreach collection="mbrCualfCds" item="mbrCualfCd" open="AND mbr_cualf_cd IN (" close=")" separator=",">
+                    #{mbrCualfCd}
+                </foreach>
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchKey)">
+                <choose>
+                    <when test="searchType eq 'id'">
+                        AND REGEXP_LIKE(A.id, #{searchKey})
+                    </when>
+                    <when test="searchType eq 'name'">
+                        AND REGEXP_LIKE(A.nm, #{searchKey})
+                    </when>
+                    <otherwise>
+                        AND (
+                        REGEXP_LIKE(A.id, #{searchKey})
+                        OR REGEXP_LIKE(A.nm, #{searchKey})
+                        OR REGEXP_LIKE((SELECT nm FROM cnet_mbr_info WHERE mbr_no = A.reg_mbr_no), #{searchKey})
+                        )
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(loginPermYn)">
+                AND login_perm_yn = #{loginPermYn}
+            </if>
+        </where>
+    </select>
+
+    <!-- 멘토소개 메인 -->
+    <select id="selectMentorIntroduce" parameterType="kr.or.career.mentor.domain.MentorSearch" resultType="kr.or.career.mentor.domain.MentorDTO">
+        /* [MentorMapper.xml#selectMentorIntroduce][멘토소개 메인(멘토목록)] */
+        /* paging */
+            SELECT ROW_NUMBER() OVER(ORDER BY MBR.REG_DTM DESC) AS RN
+                 , MBR.MBR_NO
+                 , MBR.ID
+                 , MBR.NM
+                 , PROF.TITLE AS PROF_TITLE
+                 , MBR_JOB.JOB_NM
+                 , (SELECT MAX(FILE_SER) FROM CNET_MBR_PROF_PIC_INFO WHERE MBR_NO = MBR.MBR_NO) AS PROF_FILE_SER
+                 , (
+                     SELECT
+                            SUBSTR(XMLAGG(XMLELEMENT(a,'/' || FN_CD_NM(JOB_CHRSTC_CD)) ORDER BY REG_DTM).extract('//text()').getStringVal(), 2)
+                       FROM CNET_MBR_JOB_CHRSTC_INFO
+                      WHERE MBR_NO = MBR.MBR_NO
+                   ) AS JOB_CHRSTC_CD_NM
+                 , (
+                     SELECT TRIM(CD_NM)
+                       FROM CNET_JOB_CLSF_CD
+                      WHERE CD_LV = 3
+                     START WITH CD = JOB.JOB_CLSF_CD
+                     CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+                   ) AS JOB_STRUCT3
+        /* paging */
+            FROM CNET_MBR_INFO MBR
+ LEFT OUTER JOIN CNET_MBR_PROF_INFO PROF
+              ON MBR.MBR_NO = PROF.MBR_NO
+ LEFT OUTER JOIN CNET_MBR_JOB_INFO MBR_JOB
+              ON MBR.MBR_NO = MBR_JOB.MBR_NO
+ LEFT OUTER JOIN CNET_JOB_INFO JOB
+              ON MBR_JOB.JOB_NO = JOB.JOB_NO
+          WHERE 1 =1
+            AND MBR.MBR_CLASS_CD = '101505' /* 회원구분 - 멘토 */
+            AND MBR.MBR_STAT_CD IN ('100862','101572') /* 회원상태 - 정상이용, 탈퇴요청 */
+            AND MBR.SCH_SITE_EXPS_YN = 'Y'
+            AND MBR.LOGIN_PERM_YN = 'Y'
+        <!-- 강의 상태 코드 -->
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(lectStatCd)">
+            AND MBR.MBR_NO IN (
+                                SELECT LECT.LECTR_MBR_NO
+                                  FROM CNET_LECT_INFO LECT
+                            INNER JOIN CNET_LECT_SCHD_INFO SCHD
+                                    ON (LECT.LECT_SER = SCHD.LECT_SER)
+                                   AND SCHD.LECT_STAT_CD = #{lectStatCd}
+                              GROUP BY LECT.LECTR_MBR_NO
+                               )
+        </if>
+        <!-- 직업검색 -->
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(jobClsfCd)">
+            AND MBR_JOB.JOB_NO IN (
+                                SELECT JOB_NO
+                                FROM CNET_JOB_INFO
+                                WHERE 1 = 1
+                                AND JOB_CLSF_CD IN (
+                                                    SELECT CD
+                                                      FROM CNET_JOB_CLSF_CD
+                                                     WHERE 1 = 1
+                                                       AND CD_LV = 3
+                                                START WITH CD = #{jobClsfCd}
+                                                CONNECT BY NOCYCLE PRIOR CD = SUP_CD
+                                                   )
+                               )
+        </if>
+        <!-- 직업특성 검색 -->
+        <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(chrstcClsfCds)">
+            AND MBR.MBR_NO IN (
+                                SELECT MBR_NO
+                                  FROM CNET_MBR_JOB_CHRSTC_INFO
+                                 WHERE 1 = 1
+                                   AND MBR_NO = MBR.MBR_NO
+                            <foreach collection="chrstcClsfCds" item="chrstcClsfCd" open="AND JOB_CHRSTC_CD IN (" close=")" separator=",">
+                                #{chrstcClsfCd}
+                            </foreach>
+                               )
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchWord)">
+            <choose>
+                <when test="searchKey eq 'mentor'">
+                    AND REGEXP_LIKE(UPPER(MBR.NM), UPPER(#{searchWord}))
+                </when>
+                <when test="searchKey eq 'jobNm'">
+                    AND REGEXP_LIKE(UPPER(MBR_JOB.JOB_NM), UPPER(#{searchWord}))
+                </when>
+                <otherwise>
+                    AND ( REGEXP_LIKE(UPPER(MBR.NM), UPPER(#{searchWord}))
+                       OR REGEXP_LIKE(UPPER(MBR_JOB.JOB_NM), UPPER(#{searchWord}))
+                        )
+                </otherwise>
+            </choose>
+        </if>
+        <!-- 성별검색 -->
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(genCd)">
+            AND MBR.GEN_CD = #{genCd}
+        </if>
+        <!-- 직업 초성 검색 -->
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(consonantsVal)">
+            AND REGEXP_LIKE(UPPER(MBR_JOB.JOB_NM), UPPER(#{consonantsVal}))
+        </if>
+
+    </select>
+
+    <!-- 관련멘토 조회 -->
+    <select id="selectMentorRelation" resultType="kr.or.career.mentor.domain.MentorDTO">
+        /* [MentorMapper.xml#selectMentorRelation][관련멘토 조회] */
+        /* paging */
+            SELECT ROW_NUMBER() OVER(ORDER BY MBR.REG_DTM DESC) AS RN
+                 , PROF.TITLE AS PROF_TITLE
+                 , MBR.NM
+                 , MBR.MBR_NO
+                 , PROF.INTDC_INFO AS PROF_INTDC_INFO
+                 , (SELECT MAX(FILE_SER) FROM CNET_MBR_PROF_PIC_INFO WHERE MBR_NO = MBR.MBR_NO) AS PROF_FILE_SER
+        /* paging */
+        FROM CNET_MBR_INFO MBR
+   LEFT OUTER JOIN CNET_MBR_PROF_INFO PROF
+                ON MBR.MBR_NO = PROF.MBR_NO
+             WHERE MBR.MBR_NO IN (
+                                    SELECT MBR_NO
+                                      FROM CNET_MBR_JOB_INFO JOB
+                                     WHERE JOB.JOB_NO = (
+                                                            SELECT JOB_NO
+                                                              FROM CNET_MBR_JOB_INFO
+                                                             WHERE MBR_NO = #{mbrNo}
+                                                        )
+                                   )
+               AND MBR.MBR_NO != #{mbrNo} <!-- 본인 제외 -->
+                AND MBR.LOGIN_PERM_YN = 'Y'
+    </select>
+
+</mapper>

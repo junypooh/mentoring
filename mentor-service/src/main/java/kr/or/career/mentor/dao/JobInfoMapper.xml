@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.JobInfoMapper">
+    <!-- <cache /> -->
+    <!-- 직업정보 목록 -->
+    <select id="listJobInfo" resultType="kr.or.career.mentor.domain.JobInfo">
+        SELECT
+            job_no,
+            job_clsf_cd,
+            job_nm,
+            job_def_nm,
+            job_pic_info,
+            job_intdc_info,
+            core_abl_info,
+            asso_sch_dept_info,
+            asso_cualf_info,
+            smlr_job_nm,
+            reg_dtm,
+            reg_mbr_no
+        FROM cnet_job_info
+        WHERE 1 = 1
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(jobClsfCd)">
+                AND job_clsf_cd = #{jobClsfCd}
+            </if>
+        ORDER BY job_no ASC
+    </select>
+
+
+    <!-- 상위 직업코드 목록 -->
+    <select id="listJobClsfCdByJobNo" resultType="kr.or.career.mentor.domain.JobClsfCd">
+        SELECT
+            *
+        FROM cnet_job_clsf_cd
+        WHERE 1 = 1
+            AND cd_lv > 0
+        START WITH cd = (
+            SELECT
+                job_clsf_cd
+            FROM cnet_job_info
+            WHERE 1 = 1
+                AND job_no = #{jobNo}
+        )
+        CONNECT BY NOCYCLE PRIOR sup_cd = cd
+        ORDER BY cd_lv
+    </select>
+
+
+    <!-- 직업정보 추가 -->
+    <insert id="insertJobInfo" parameterType="kr.or.career.mentor.domain.JobInfo">
+        <selectKey keyProperty="jobNo" order="BEFORE" resultType="string">
+            SELECT ('JOB' || TO_CHAR(sq_job_info.nextval, 'FM0000000')) FROM dual
+        </selectKey>
+        INSERT INTO cnet_job_info (
+            job_no,
+            job_clsf_cd,
+            job_nm,
+            job_def_nm,
+            job_pic_info,
+            job_intdc_info,
+            core_abl_info,
+            asso_sch_dept_info,
+            asso_cualf_info,
+            smlr_job_nm,
+            reg_mbr_no
+        )
+        VALUES (
+            #{jobNo, jdbcType=VARCHAR},
+            #{jobClsfCd, jdbcType=VARCHAR},
+            #{jobNm, jdbcType=VARCHAR},
+            #{jobDefNm, jdbcType=VARCHAR},
+            #{jobPicInfo, jdbcType=VARCHAR},
+            #{jobIntdcInfo, jdbcType=VARCHAR},
+            #{coreAblInfo, jdbcType=VARCHAR},
+            #{assoSchDeptInfo, jdbcType=VARCHAR},
+            #{assoCualfInfo, jdbcType=VARCHAR},
+            #{smlrJobNm, jdbcType=VARCHAR},
+            #{regMbrNo, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <select id="selectJobInfo" parameterType="kr.or.career.mentor.domain.JobInfo" resultType="kr.or.career.mentor.domain.JobInfo">
+        <![CDATA[
+            SELECT  A.JOB_NO,
+                    A.JOB_CLSF_CD,
+                    B.CD_NM AS jobClsfNm,
+                    A.JOB_NM,
+                    A.JOB_DEF_NM,
+                    A.JOB_PIC_INFO,
+                    A.JOB_INTDC_INFO,
+                    A.CORE_ABL_INFO,
+                    A.ASSO_SCH_DEPT_INFO,
+                    A.ASSO_CUALF_INFO,
+                    A.SMLR_JOB_NM,
+                    A.REG_DTM,
+                    A.REG_MBR_NO
+                    ,C.CD AS jobClsfCdLv2
+                    ,C.CD_NM AS jobClsfNmLv2
+                    ,D.CD AS jobClsfCdLv1
+                    ,D.CD_NM AS jobClsfNmLv1
+            FROM    CNET_JOB_INFO A
+                        INNER JOIN CNET_JOB_CLSF_CD B
+                            ON A.JOB_CLSF_CD = B.CD
+                        INNER JOIN CNET_JOB_CLSF_CD C
+                            ON B.SUP_CD = C.CD
+                        INNER JOIN CNET_JOB_CLSF_CD D
+                            ON C.SUP_CD = D.CD
+            WHERE   JOB_NM = #{jobNm}
+        ]]>
+    </select>
+
+    <!-- 관리자 > 운영관리 > 직업관리 -->
+    <select id="getJobInfo" parameterType="kr.or.career.mentor.domain.JobInfo" resultType="kr.or.career.mentor.domain.JobInfo">
+        /* [JobInfoMapper.xml#getJobInfo] */
+        /* paging */
+        SELECT
+                <choose>
+                    <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(orderBy)">
+                        ROW_NUMBER() OVER(ORDER BY ${orderBy}) AS RN,
+                    </when>
+                    <otherwise>
+                        ROW_NUMBER() OVER(ORDER BY A.JOB_CLSF_NM_LV1 ASC, A.JOB_CLSF_NM_LV2 ASC, A.JOB_CLSF_NM_LV3 ASC, A.JOB_NM ASC) AS RN,
+                    </otherwise>
+                </choose>
+                A.*
+                /* paging */
+        FROM
+                (
+                SELECT
+                        (
+                            SELECT SUP_CD
+                            FROM CNET_JOB_CLSF_CD
+                            WHERE CD_LV = 1
+                            START WITH CD = JI.JOB_CLSF_CD
+                            CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+                        ) AS SUP_CD,
+                        (
+                            SELECT CD
+                            FROM CNET_JOB_CLSF_CD
+                            WHERE CD_LV = 1
+                            START WITH CD = JI.JOB_CLSF_CD
+                            CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+                        ) AS JOB_CLSF_CD_LV1,
+                        (
+                            SELECT TRIM(CD_NM)
+                            FROM CNET_JOB_CLSF_CD
+                            WHERE CD_LV = 1
+                            START WITH CD = JI.JOB_CLSF_CD
+                            CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+                        ) AS JOB_CLSF_NM_LV1,
+                        (
+                            SELECT CD
+                            FROM CNET_JOB_CLSF_CD
+                            WHERE CD_LV = 2
+                            START WITH CD = JI.JOB_CLSF_CD
+                            CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+                        ) AS JOB_CLSF_CD_LV2,
+                        (
+                            SELECT TRIM(CD_NM)
+                            FROM CNET_JOB_CLSF_CD
+                            WHERE CD_LV = 2
+                            START WITH CD = JI.JOB_CLSF_CD
+                            CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+                        ) AS JOB_CLSF_NM_LV2,
+                        (
+                            SELECT CD
+                            FROM CNET_JOB_CLSF_CD
+                            WHERE CD_LV = 3
+                            START WITH CD = JI.JOB_CLSF_CD
+                            CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+                        ) AS JOB_CLSF_CD_LV3,
+                        (
+                            SELECT TRIM(CD_NM)
+                            FROM CNET_JOB_CLSF_CD
+                            WHERE CD_LV = 3
+                            START WITH CD = JI.JOB_CLSF_CD
+                            CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+                        ) AS JOB_CLSF_NM_LV3,
+                        JI.JOB_NM,
+                        JI.REG_DTM,
+                        JI.JOB_NO,
+                        (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = JI.REG_MBR_NO) AS REG_MBR_NM,
+                        (SELECT ID FROM CNET_MBR_INFO WHERE MBR_NO = JI.REG_MBR_NO) AS REG_MBR_ID,
+                        JI.REG_MBR_NO
+                FROM CNET_JOB_INFO JI
+          INNER JOIN CNET_JOB_CLSF_CD JCC
+                 ON JI.JOB_CLSF_CD = JCC.CD
+                ) A
+        WHERE A.SUP_CD = '100040'
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(jobClsfCdLv1)">
+                AND A.JOB_CLSF_CD_LV1 = #{jobClsfCdLv1}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(jobClsfCdLv2)">
+                AND A.JOB_CLSF_CD_LV2 = #{jobClsfCdLv2}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(jobClsfCdLv3)">
+                AND A.JOB_CLSF_CD_LV3 = #{jobClsfCdLv3}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord)">
+                AND REGEXP_LIKE(A.JOB_NM, #{searchWord})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(jobNo)">
+                AND A.JOB_NO = #{jobNo}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(jobNm)">
+                AND A.JOB_NM = #{jobNm}
+            </if>
+    </select>
+
+    <!-- 관리자 > 운영관리 > 직업관리 > 직업정보 수정 -->
+    <update id="updateJobInfo" parameterType="kr.or.career.mentor.domain.JobInfo">
+        /* [JobInfoMapper.xml#updateJobInfo] */
+        UPDATE CNET_JOB_INFO
+           SET
+               JOB_CLSF_CD = #{jobClsfCd},
+               JOB_NM = #{jobNm}
+         WHERE JOB_NO = #{jobNo}
+    </update>
+
+    <!-- 해당직업을 사용중인 멘토 유무 확인 -->
+    <select id="selectJobUseMentorCnt" parameterType="kr.or.career.mentor.domain.JobInfo" resultType="int">
+        SELECT COUNT(*)
+          FROM CNET_MBR_JOB_INFO MJI
+    INNER JOIN CNET_MBR_INFO MI
+            ON MJI.MBR_NO = MI.MBR_NO
+           WHERE MJI.JOB_NO = #{jobNo}
+        <!-- AND MI.MBR_STAT_CD = '100862' /* 정상이용 */ -->
+    </select>
+
+    <!-- 직업정보 삭제 -->
+    <delete id="deleteJobInfo" parameterType="kr.or.career.mentor.domain.JobInfo">
+        DELETE FROM CNET_JOB_INFO
+        WHERE JOB_NO = #{jobNo}
+    </delete>
+</mapper>

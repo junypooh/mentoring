@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+       http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:properties/globals.properties</value>
+                <!-- value>file:/product/jeus/egovProps/globals.properties</value-->
+            </list>
+        </property>
+    </bean>
+
+    <!-- Oracle -->
+    <bean id="dataSourceSpied" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${Globals.DriverClassName}"/>
+        <property name="url" value="${Globals.Url}" />
+        <property name="username" value="${Globals.UserName}"/>
+        <property name="password" value="${Globals.Password}"/>
+        <property name="maxActive" value="20"/>
+        <property name="minIdle" value="5"/>
+        <property name="maxWait" value="10000"/>
+        <property name="initialSize" value="5"/>
+
+
+
+        <!-- DB Pool이 생성이 되더라고 특정 시간 호출되지 않으면 DBMS 설정에 따라 연결을 끊어질 때
+            이 경우 DBCP를 사용하셨다면.. 다음과 같은 설정을 추가하시면 연결을 유지시켜 줍니다. -->
+
+        <property name="validationQuery" value="select 1 from dual" />
+        <property name="testWhileIdle" value="true" />
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />  <!-- 1분 -->
+
+        <!-- DBCP가 아닌 WAS의 DataSource를 사용하시는 경우도 WAS별로 동일한 설정을 하실 수 있습니다.
+            (WAS별 구체적인 설정은 WAS document 확인) -->
+    </bean>
+
+    <bean id="dataSourceSpiedEMS" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
+        <property name="url" value="jdbc:oracle:thin:@210.105.192.187:1521:CAREER1" />
+        <property name="username" value="ems"/>
+        <property name="password" value="ems"/>
+        <property name="maxActive" value="10"/>
+        <property name="minIdle" value="2"/>
+        <property name="maxWait" value="10000"/>
+        <property name="initialSize" value="5"/>
+
+
+
+        <!-- DB Pool이 생성이 되더라고 특정 시간 호출되지 않으면 DBMS 설정에 따라 연결을 끊어질 때
+            이 경우 DBCP를 사용하셨다면.. 다음과 같은 설정을 추가하시면 연결을 유지시켜 줍니다. -->
+
+        <property name="validationQuery" value="select 1 from dual" />
+        <property name="testWhileIdle" value="true" />
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />  <!-- 1분 -->
+
+        <!-- DBCP가 아닌 WAS의 DataSource를 사용하시는 경우도 WAS별로 동일한 설정을 하실 수 있습니다.
+            (WAS별 구체적인 설정은 WAS document 확인) -->
+    </bean>
+
+    <bean id="dataSourceSpiedTomms" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://112.175.92.241:5432/TOMMS_V4" />
+        <property name="username" value="viewer"/>
+        <property name="password" value="$520d188"/>
+        <property name="maxActive" value="10"/>
+        <property name="minIdle" value="10"/>
+        <property name="maxWait" value="10000"/>
+        <property name="initialSize" value="10"/>
+
+
+
+        <!-- DB Pool이 생성이 되더라고 특정 시간 호출되지 않으면 DBMS 설정에 따라 연결을 끊어질 때
+            이 경우 DBCP를 사용하셨다면.. 다음과 같은 설정을 추가하시면 연결을 유지시켜 줍니다. -->
+
+        <property name="validationQuery" value="select 1 " />
+        <property name="testWhileIdle" value="true" />
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />  <!-- 1분 -->
+
+        <!-- DBCP가 아닌 WAS의 DataSource를 사용하시는 경우도 WAS별로 동일한 설정을 하실 수 있습니다.
+            (WAS별 구체적인 설정은 WAS document 확인) -->
+    </bean>
+
+    <bean id="lobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler" lazy-init="true" />
+
+    <bean id="dataSource" class="net.sf.log4jdbc.sql.jdbcapi.DataSourceSpy">
+        <constructor-arg ref="dataSourceSpied" />
+    </bean>
+
+    <bean id="dataSourceEMS" class="net.sf.log4jdbc.sql.jdbcapi.DataSourceSpy">
+        <constructor-arg ref="dataSourceSpiedEMS" />
+    </bean>
+
+    <bean id="dataSourceTomms" class="net.sf.log4jdbc.sql.jdbcapi.DataSourceSpy">
+        <constructor-arg ref="dataSourceSpiedTomms" />
+    </bean>
+
+    <!-- define the SqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="typeAliasesPackage" value="kr.or.career.mentor" />
+        <property name="configLocation" value="classpath:config/MapperConfig.xml" />
+        <property name="mapperLocations" value="classpath*:kr/or/career/mentor/dao/*Mapper.xml" />
+    </bean>
+
+    <bean id="sqlSessionFactoryEMS" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceEMS" />
+        <property name="typeAliasesPackage" value="kr.or.career.mentor" />
+        <property name="configLocation" value="classpath:config/MapperConfig.xml" />
+        <property name="mapperLocations" value="classpath*:kr/or/career/mentor/transfer/*Mapper.xml" />
+    </bean>
+
+    <bean id="sqlSessionFactoryTomms" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceTomms" />
+        <property name="typeAliasesPackage" value="kr.or.career.mentor" />
+        <property name="configLocation" value="classpath:config/MapperConfig.xml" />
+        <property name="mapperLocations" value="classpath*:kr/or/career/mentor/tomms/*Mapper.xml" />
+    </bean>
+
+    <mybatis:scan base-package="kr.or.career.mentor.dao" factory-ref="sqlSessionFactory"/>
+    <mybatis:scan base-package="kr.or.career.mentor.transfer" factory-ref="sqlSessionFactoryEMS"/>
+    <mybatis:scan base-package="kr.or.career.mentor.tomms" factory-ref="sqlSessionFactoryTomms"/>
+</beans>

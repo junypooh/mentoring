@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.ActivityMentorMapper">
+
+    <select id="selectActivityMentors" parameterType="kr.or.career.mentor.domain.ActivityMentorInfo"  resultType="kr.or.career.mentor.domain.ActivityMentorInfo">
+        WITH LECTR AS (
+            SELECT
+                B.LECT_SER, B.LECT_TIMS, B.SCHD_SEQ, A.LECTR_MBR_NO, B.LECT_TITLE, B.LECT_DAY, B.LECT_START_TIME
+            FROM CNET_LECT_INFO A
+            , CNET_LECT_SCHD_INFO B
+            , (
+                SELECT
+                    LI.LECTR_MBR_NO, MAX(LSI.LECT_DAY||LSI.LECT_START_TIME) AS LECT_DAYTIME
+                FROM CNET_LECT_INFO LI
+                , CNET_LECT_SCHD_INFO LSI
+                WHERE LI.LECT_SER = LSI.LECT_SER
+                AND LSI.LECT_STAT_CD = '101551' /* 강의상태코드 - 수업완료 */
+                GROUP BY LI.LECTR_MBR_NO
+            ) C
+            WHERE A.LECT_SER = B.LECT_SER
+            AND A.LECTR_MBR_NO = C.LECTR_MBR_NO
+            AND B.LECT_DAY||B.LECT_START_TIME = C.LECT_DAYTIME
+            AND B.LECT_STAT_CD = '101551' /* 강의상태코드 - 수업완료 */
+        )
+        /* paging */
+        SELECT
+            MBR.MBR_NO, MBR.NM, MBR_JOB.JOB_NM, LECT.LECT_TITLE, LECT.LECT_DAY, LECT.LECT_START_TIME
+            , LECT.LECT_SER, LECT.LECT_TIMS, LECT.SCHD_SEQ, PROF.INTDC_INFO
+            , (SELECT MAX(FILE_SER) FROM CNET_MBR_PROF_PIC_INFO WHERE MBR_NO = MBR.MBR_NO) AS PROF_FILE_SER
+            , (SELECT
+                    CD_NM
+                FROM CNET_JOB_CLSF_CD
+                WHERE 1 = 1
+                AND CD_LV = 1
+                START WITH CD = JOB.JOB_CLSF_CD
+                CONNECT BY NOCYCLE PRIOR SUP_CD = CD) AS JOB_CLSF_NM
+            <choose>
+                <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(recomTargtCd)">
+                    , ROW_NUMBER() OVER(ORDER BY RECM.SORT_SEQ ASC) AS RN
+                </when>
+                <otherwise>
+                    , ROW_NUMBER() OVER(ORDER BY NVL(LECT.LECT_DAY,'00000000')||NVL(LECT.LECT_START_TIME,'0000') DESC, MBR.MBR_NO DESC) AS RN /* 수업이 없는 건을 하단으로 보내기 위해 NVL 처리 */
+                </otherwise>
+            </choose>
+        /* paging */
+        FROM CNET_JOB_INFO JOB
+        , (
+            SELECT CD FROM CNET_JOB_CLSF_CD SJCC
+            WHERE SJCC.CD_LV = 3
+            START WITH SJCC.CD = #{clsfCd}
+            CONNECT BY NOCYCLE PRIOR SJCC.CD = SJCC.SUP_CD ) CLSF
+        , CNET_MBR_JOB_INFO MBR_JOB
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(recomTargtCd)">
+        , CNET_MNGR_RECOM_INFO RECM
+        </if>
+        , CNET_MBR_INFO MBR
+        , LECTR LECT
+        , CNET_MBR_PROF_INFO PROF
+        WHERE JOB.JOB_CLSF_CD = CLSF.CD
+        AND JOB.JOB_NO = MBR_JOB.JOB_NO
+        AND MBR_JOB.MBR_NO = MBR.MBR_NO
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(recomTargtCd)">
+        AND MBR.MBR_NO = RECM.RECOM_TARGT_NO
+        AND RECM.RECOM_TARGT_CD = #{recomTargtCd}
+        AND RECM.USE_YN = 'Y'
+        </if>
+        AND MBR.MBR_NO = LECT.LECTR_MBR_NO(+)
+        AND MBR.MBR_NO = PROF.MBR_NO(+)
+        AND MBR.MBR_CLASS_CD = '101505' /* 회원구분 - 멘토 */
+        AND MBR.MBR_STAT_CD IN ('100862', '101572') /* 회원상태 - 정상이용, 탈퇴요청 */
+        AND MBR.SCH_SITE_EXPS_YN = 'Y'
+        AND MBR.LOGIN_PERM_YN = 'Y'
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey)">
+            AND ( REGEXP_LIKE(MBR_JOB.JOB_NM, #{searchKey}) OR REGEXP_LIKE(MBR_JOB.JOB_TAG_INFO, #{searchKey}) OR REGEXP_LIKE(MBR.NM, #{searchKey}))
+        </if>
+    </select>
+
+</mapper>

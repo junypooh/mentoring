@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.ClassroomMapper">
+
+    <resultMap type="kr.or.career.mentor.domain.SchInfo" id="schInfoData" autoMapping="true">
+    </resultMap>
+    <resultMap type="kr.or.career.mentor.domain.ClasRoomInfo" id="clasRoomInfoData" autoMapping="true">
+        <id property="clasRoomSer" column="clas_room_ser"/>
+        <id column="sch_no" property="schNo"/>
+        <id column="sch_no" property="schNo"/>
+        <association property="schInfo" columnPrefix="si_" resultMap="schInfoData" autoMapping="true"/>
+    </resultMap>
+    <resultMap type="kr.or.career.mentor.domain.ClasRoomInfo" id="clasRoomInfoData2" autoMapping="true">
+        <id property="clasRoomSer" column="clas_room_ser"/>
+        <id column="sch_no" property="schNo"/>
+        <id column="sch_no" property="schNo"/>
+        <id column="req_mbr_nm" property="reqMbrNm"/>
+        <id column="reg_stat_cd" property="regStatCd"/>
+        <id column="req_ser" property="reqSer"/>
+
+        <association property="schInfo" columnPrefix="si_" resultMap="schInfoData" autoMapping="true"/>
+    </resultMap>
+    <resultMap type="kr.or.career.mentor.domain.ClasRoomRegReqHist" id="clasRoomRegReqHistData" autoMapping="true">
+        <id column="req_ser" property="reqSer"/>
+        <association property="clasRoomInfo" columnPrefix="ci_" resultMap="clasRoomInfoData" autoMapping="true"/>
+    </resultMap>
+
+    <resultMap type="kr.or.career.mentor.domain.BizGrpInfo" id="bizGrpData" autoMapping="true">
+        <id column="grp_no" property="grpNo"/>
+    </resultMap>
+    <resultMap type="kr.or.career.mentor.domain.LectApplCnt" id="lectApplData" autoMapping="true">
+    </resultMap>
+    <resultMap type="kr.or.career.mentor.domain.BizSetInfo" id="bizSetData" autoMapping="true">
+        <id column="set_ser" property="setSer"/>
+        <association property="bizGrpInfo" columnPrefix="bg_" resultMap="bizGrpData" autoMapping="true"/>
+        <association property="lectApplCnt" columnPrefix="la_" resultMap="lectApplData" autoMapping="true"/>
+    </resultMap>
+
+    <sql id="listClassroomForRegist">
+         SELECT A.clas_room_ser, A.sch_no, A.clas_room_nm, A.tchr_mbr_no, A.clas_room_type_cd, (SELECT CD_NM FROM CNET_CODE WHERE CD = A.clas_room_type_cd) AS clas_room_type_nm, A.reg_dtm
+                ,B.NM as tchr_mbr_nm
+                ,C.sch_nm as si_sch_nm, C.sch_class_cd as si_sch_class_cd, C.sido_nm as si_sido_nm, C.sggu_nm as si_sggu_nm
+                ,DECODE(s.clas_room_ser, A.clas_room_ser , 'Y' , 'N') as is_registed_room
+        , (SELECT WM_CONCAT(CASE WHEN MI.MBR_CLASS_CD IN ('100859','101707') THEN MI.NM END) AS REQ_MBR_NO
+        FROM CNET_CLAS_ROOM_REG_REQ_HIST IA, CNET_MBR_INFO MI
+        WHERE IA.REQ_MBR_NO=MI.MBR_NO AND IA.CLAS_ROOM_SER = A.CLAS_ROOM_SER) AS REQ_MBR_NM
+           FROM CNET_CLAS_ROOM_INFO A
+     INNER JOIN CNET_CLAS_ROOM_REG_REQ_HIST R
+             ON A.clas_room_ser = R.CLAS_ROOM_SER
+     INNER JOIN CNET_MBR_INFO B
+             ON R.REQ_MBR_NO = B.MBR_NO
+            AND B.MBR_CUALF_CD IN ('100214','100215')
+            AND R.REG_STAT_CD = '101526'
+     INNER JOIN  CNET_SCH_INFO C
+             ON A.sch_no = C.sch_no
+LEFT OUTER JOIN CNET_CLAS_ROOM_REG_REQ_HIST s
+             ON A.clas_room_ser = S.clas_room_ser
+            AND s.req_mbr_no = #{tchrMbrNo} /* 이미 등록한 교실*/
+            AND s.reg_stat_cd NOT IN ('101706','101527')
+       <where>
+           <![CDATA[
+           AND  (S.REQ_SER IS NULL or s.reg_stat_cd not in('101525','101526'))
+           ]]>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.schClassCd)">AND C.sch_class_cd = #{schInfo.schClassCd} </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.sidoNm)">AND C.sido_nm = #{schInfo.sidoNm} </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.schNm)">AND C.sch_nm like '%'||#{schInfo.schNm}||'%' </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.sgguNm)">AND C.sggu_nm like '%'||#{schInfo.sgguNm}||'%' </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(tchrMbrNm)">AND B.nm like '%'||#{tchrMbrNm}||'%' </if>
+       </where>
+    </sql>
+    <!--학생이 등록, 등록요청, 반려된 교실 목록  -->
+    <select id="listStudentClassroom" parameterType="kr.or.career.mentor.domain.ClasRoomRegReqHist" resultMap="clasRoomRegReqHistData">
+        /* paging */
+        SELECT A.clas_room_ser as ci_clas_room_ser, A.sch_no as ci_sch_no, A.clas_room_nm as ci_clas_room_nm, A.tchr_mbr_no as ci_tchr_mbr_no, A.clas_room_type_cd as ci_clas_room_type_cd
+            ,B.nm as ci_tchr_mbr_nm
+            ,C.sch_nm as ci_si_sch_nm, C.sido_nm as ci_si_sido_nm, C.sggu_nm as ci_si_sggu_nm
+            ,E.req_ser, E.req_dtm ,E.reg_stat_cd,  F.cd_nm as reg_stat_nm
+            , G.cd_nm as ci_clas_room_type_nm
+            , E.clas_room_cualf_cd as ci_clas_room_cualf_cd
+            , H.nm as ci_auth_mbr_nm
+            , E.auth_dtm as ci_auth_dtm
+            , E.rps_yn as ci_rps_yn
+            , A.DEL_YN
+            , (select cd_nm from cnet_code where cd = B.mbr_class_cd) as ci_tchr_mbr_class_nm
+            ,(SELECT COUNT(*) FROM CNET_CLAS_ROOM_REG_REQ_HIST WHERE req_mbr_no = E.req_mbr_no AND CLAS_ROOM_CUALF_CD = '101691' AND reg_stat_cd != '101706' ) AS cualf_cnt
+            , (SELECT COUNT(*)
+                FROM CNET_CLAS_ROOM_REG_REQ_HIST S
+                INNER JOIN CNET_MBR_INFO S2
+                ON S.req_mbr_no = S2.MBR_NO
+                AND S2.mbr_class_cd = '100858' /*일반회원*/
+                WHERE S.clas_room_ser = A.clas_room_ser
+                AND S.reg_stat_cd='101526' /*승인상태*/) AS ci_regist_cnt
+            , (SELECT WM_CONCAT(CASE WHEN MI.MBR_CLASS_CD IN ('100859','101707') THEN MI.NM END) AS REQ_MBR_NO
+                FROM CNET_CLAS_ROOM_REG_REQ_HIST IA, CNET_MBR_INFO MI
+                WHERE IA.REQ_MBR_NO=MI.MBR_NO AND IA.CLAS_ROOM_SER = A.CLAS_ROOM_SER /*AND IA.REG_STAT_CD = '101526'*/) AS REQ_MBR_NM
+            , ROW_NUMBER() OVER(ORDER BY E.rps_yn DESC, E.req_dtm DESC) AS rn
+        /* paging */
+        FROM CNET_CLAS_ROOM_INFO A
+  INNER JOIN CNET_MBR_INFO B
+          ON A.tchr_mbr_no = B.mbr_no
+  INNER JOIN  CNET_SCH_INFO C
+          ON A.sch_no = C.sch_no
+  INNER JOIN CNET_CLAS_ROOM_REG_REQ_HIST E
+          ON A.clas_room_ser   = E.clas_room_ser
+  INNER JOIN CNET_CODE F
+          ON E.reg_stat_cd  = F.cd
+         AND F.sup_cd = '101524'
+  INNER JOIN CNET_CODE G
+          ON A.clas_room_type_cd  = G.cd
+  LEFT JOIN  CNET_MBR_INFO H
+          ON E.AUTH_MBR_NO = H.mbr_no
+       WHERE E.req_mbr_no = #{reqMbrNo}
+        <choose>
+            <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(regStatCd)">
+                AND (E.CLAS_ROOM_CUALF_CD != '101691' OR E.CLAS_ROOM_CUALF_CD IS NULL )
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(regStatCd)">AND E.reg_stat_cd = #{regStatCd} </if>
+    </select>
+
+    <!-- 선생님이 자신이 담당하는 모든 교실 목록 -->
+    <select id="listTeacherClassroom" parameterType="kr.or.career.mentor.domain.ClasRoomRegReqHist" resultMap="clasRoomInfoData">
+    /* paging */
+        SELECT A.clas_room_ser, A.sch_no, A.clas_room_nm, A.tchr_mbr_no, A.clas_room_type_cd, E.req_dtm as reg_dtm, E.rps_yn, E.req_ser
+            , (select cd_nm from cnet_code where cd = A.clas_room_type_cd) as clas_room_type_nm
+            , E.reg_stat_cd, (select cd_nm from cnet_code where cd = E.reg_stat_cd) as reg_stat_nm
+            , B.NM as tchr_mbr_nm
+            , C.sch_nm as si_sch_nm, C.sido_nm||nvl(Regexp_Replace(C.SGGU_NM,'^',' '),'') as si_sido_nm
+            , E.auth_dtm
+            , A.DEL_YN
+            , (select cd_nm from cnet_code where cd = B.mbr_class_cd) as tchr_mbr_class_nm
+            , (SELECT COUNT(*)
+                 FROM CNET_CLAS_ROOM_REG_REQ_HIST S
+           INNER JOIN CNET_MBR_INFO S2
+                   ON S.req_mbr_no = S2.MBR_NO
+                 AND S2.mbr_class_cd = '100858' /*일반회원*/
+                WHERE S.clas_room_ser = A.clas_room_ser
+                  AND reg_stat_cd='101525' /*신청상태*/) AS apply_cnt
+            , (SELECT COUNT(*)
+                 FROM CNET_CLAS_ROOM_REG_REQ_HIST S
+           INNER JOIN CNET_MBR_INFO S2
+                   ON S.req_mbr_no = S2.MBR_NO
+                 AND S2.mbr_class_cd = '100858' /*일반회원*/
+                WHERE S.clas_room_ser = A.clas_room_ser
+                  AND reg_stat_cd='101526' /*승인상태*/) AS regist_cnt
+            , (SELECT WM_CONCAT(CASE WHEN MI.MBR_CLASS_CD IN ('100859','101707') THEN MI.NM END) AS REQ_MBR_NO
+                FROM CNET_CLAS_ROOM_REG_REQ_HIST IA, CNET_MBR_INFO MI
+                WHERE IA.REQ_MBR_NO=MI.MBR_NO AND IA.CLAS_ROOM_SER = A.CLAS_ROOM_SER /*AND IA.REG_STAT_CD = '101526'*/) AS REQ_MBR_NM
+            ,ROW_NUMBER() OVER(ORDER BY E.req_dtm DESC) AS rn
+    /* paging */
+          FROM CNET_CLAS_ROOM_INFO A
+    INNER JOIN  CNET_MBR_INFO B
+            ON A.tchr_mbr_no = B.mbr_no
+    INNER JOIN  CNET_SCH_INFO C
+            ON A.sch_no = C.sch_no
+    INNER JOIN CNET_CLAS_ROOM_REG_REQ_HIST E
+            ON A.clas_room_ser   = E.clas_room_ser
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(regStatCd)">AND E.reg_stat_cd = #{regStatCd} </if>
+        <if test="@org.apache.commons.lang3.StringUtils@equals(type, 'setup')">AND E.REQ_MBR_NO = A.tchr_mbr_no </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(clasRoomCualfCd)">AND E.CLAS_ROOM_CUALF_CD = #{clasRoomCualfCd}</if>
+    INNER JOIN CNET_CODE F
+            ON E.reg_stat_cd  = F.cd
+           AND F.sup_cd = '101524'
+        <where>
+            <choose>
+                <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schNo)">
+                    A.sch_no = #{schNo} /* 학교에 등록된 교실 */ AND E.REG_STAT_CD NOT IN ('101527',101706)
+                </when>
+                <otherwise>
+                    AND E.req_mbr_no = #{reqMbrNo}
+                </otherwise>
+            </choose>
+
+            AND E.REG_STAT_CD != '101706'
+
+        </where>
+    </select>
+
+    <!-- 선생님이 등록할 수 있는 교실 목록 조회 -->
+    <select id="listRequestClassroom" parameterType="kr.or.career.mentor.domain.ClasRoomInfo" resultMap="clasRoomInfoData">
+        SELECT A.clas_room_ser, A.sch_no, A.clas_room_nm, A.tchr_mbr_no, A.clas_room_type_cd, (SELECT CD_NM FROM CNET_CODE WHERE CD = A.clas_room_type_cd) AS si_clas_room_type_nm, A.reg_dtm
+        , (SELECT WM_CONCAT(CASE WHEN MI.MBR_CLASS_CD IN ('100859','101707') THEN MI.NM END) AS REQ_MBR_NO
+        FROM CNET_CLAS_ROOM_REG_REQ_HIST IA, CNET_MBR_INFO MI
+        WHERE IA.REQ_MBR_NO=MI.MBR_NO AND IA.CLAS_ROOM_SER = A.CLAS_ROOM_SER AND IA.REG_STAT_CD NOT IN ('101527','101706')) as tchr_mbr_nm
+        ,C.sch_nm as si_sch_nm, C.sch_class_cd as si_sch_class_cd, C.sido_nm as si_sido_nm, C.sggu_nm as si_sggu_nm
+        ,DECODE(s.clas_room_ser, A.clas_room_ser , 'Y' , 'N') as is_registed_room
+        FROM CNET_CLAS_ROOM_INFO A
+        INNER JOIN CNET_MBR_INFO B
+        ON A.TCHR_MBR_NO = B.MBR_NO
+        AND B.MBR_CUALF_CD IN ('100214','100215')
+        INNER JOIN  CNET_SCH_INFO C
+        ON A.sch_no = C.sch_no
+        LEFT OUTER JOIN CNET_CLAS_ROOM_REG_REQ_HIST s
+        ON A.clas_room_ser = S.clas_room_ser AND REG_STAT_CD NOT IN ('101527','101706')
+        AND s.req_mbr_no = #{tchrMbrNo} /* 이미 등록한 교실*/
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.mbrCualfCd)">
+            <if test="@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(schInfo.mbrCualfCd, '101708')">
+            /* 학교관리자 일때 */
+            INNER JOIN CNET_MBR_SCH_CUALF D
+            ON  A.sch_no = D.sch_no AND D.mbr_no = #{schInfo.mbrNo}
+            </if>
+        </if>
+        <where>
+            A.DEL_YN = 'N'
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.schClassCd)">AND C.sch_class_cd = #{schInfo.schClassCd} </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.sidoNm)">AND C.sido_nm = #{schInfo.sidoNm} </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.schNm)">AND C.sch_nm like '%'||#{schInfo.schNm}||'%' </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.sgguNm)">AND C.sggu_nm like '%'||#{schInfo.sgguNm}||'%' </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(tchrMbrNm)">AND B.nm like '%'||#{tchrMbrNm}||'%' </if>
+        </where>
+
+       UNION ALL
+       SELECT null as clas_room_ser, C.sch_no, null as clas_room_nm, #{tchrMbrNo} as tchr_mbr_no, null as clas_room_type_cd, NULL         AS clas_room_type_nm, SYSDATE
+            ,null as tchr_mbr_nm
+            ,C.sch_nm as si_sch_nm, C.sch_class_cd as si_sch_class_cd, C.sido_nm as si_sido_nm, C.sggu_nm as si_sggu_nm
+            ,'N' AS is_registed_room
+         FROM CNET_SCH_INFO C
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.mbrCualfCd)">
+            <if test="@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(schInfo.mbrCualfCd, '101708')">
+            /* 학교관리자 일때 */
+            INNER JOIN CNET_MBR_SCH_CUALF D
+            ON C.sch_no = D.sch_no AND D.mbr_no = #{schInfo.mbrNo}
+            </if>
+        </if>
+      <where>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.schClassCd)">AND C.sch_class_cd = #{schInfo.schClassCd} </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.sidoNm)">AND C.sido_nm = #{schInfo.sidoNm} </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.schNm)">AND C.sch_nm like '%'||#{schInfo.schNm}||'%' </if>
+          <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.sgguNm)">AND C.sggu_nm like '%'||#{schInfo.sgguNm}||'%' </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(tchrMbrNm)">AND B.nm like '%'||#{tchrMbrNm}||'%' </if>
+       </where>
+    </select>
+
+    <!-- 학생이 등록할 수 있는 교실 목록 조회 -->
+    <select id="listClassroomForStudent" parameterType="kr.or.career.mentor.domain.ClasRoomInfo" resultMap="clasRoomInfoData">
+       <include refid="listClassroomForRegist"></include>
+    </select>
+
+    <!-- 회원이 소속된 교실의 반 대표 목록 조회 -->
+    <select id="listClassroomRepresent" parameterType="kr.or.career.mentor.domain.ClasRoomRegReqHist" resultType="kr.or.career.mentor.domain.ClasRoomRepInfo">
+        /* paging */
+        SELECT
+            ROW_NUMBER() OVER(ORDER BY G.SCH_NM, B.CLAS_ROOM_NM) AS rn
+            , G.SCH_NM, B.CLAS_ROOM_NM, C.NM AS REP_STDNT_NM, E.CD_NM AS REP_STDNT_CLASS_NM
+            , D.NM AS REP_STDNT_REG_MBR_NM, F.CD_NM AS REP_STDNT_REG_MBR_CLASS_NM
+            , A.REP_STDNT_REG_DTM
+        /* paging */
+        FROM CNET_CLAS_ROOM_REG_REQ_HIST A
+        , CNET_CLAS_ROOM_INFO B
+        , CNET_SCH_INFO G
+        , CNET_MBR_INFO C /* 반대표 */
+        , CNET_MBR_INFO D /* 등록자 */
+        , CNET_CODE E
+        , CNET_CODE F
+        WHERE A.CLAS_ROOM_SER = B.CLAS_ROOM_SER
+        AND B.SCH_NO = G.SCH_NO
+        AND A.REQ_MBR_NO = C.MBR_NO
+        AND A.REP_STDNT_REG_MBR_NO = D.MBR_NO
+        AND A.REG_STAT_CD = '101526' /* 수락(승인) */
+        AND A.CLAS_ROOM_CUALF_CD = '101691' /* 반대표 */
+        AND C.MBR_CLASS_CD = E.CD
+        AND D.MBR_CLASS_CD = F.CD
+        AND A.CLAS_ROOM_SER IN (
+            SELECT CLAS_ROOM_SER FROM CNET_CLAS_ROOM_REG_REQ_HIST
+            WHERE REQ_MBR_NO = #{reqMbrNo} AND REG_STAT_CD = '101526' /* 수락(승인) */
+        )
+    </select>
+
+    <!-- 교실 목록 조회 -->
+    <select id="listClassroom" parameterType="kr.or.career.mentor.domain.ClasRoomInfo" resultMap="clasRoomInfoData">
+        /* paging */
+        SELECT A.clas_room_ser, A.sch_no, A.clas_room_nm, A.tchr_mbr_no, A.clas_room_type_cd, A.reg_dtm
+            ,B.NM as tchr_mbr_nm
+            ,C.sch_nm as si_sch_nm, C.sch_class_cd, C.sido_nm||nvl(Regexp_Replace(C.SGGU_NM,'^',' '),'') as si_sido_nm
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = A.clas_room_type_cd) AS si_clas_room_type_nm
+            ,ROW_NUMBER() OVER(ORDER BY A.reg_dtm DESC) AS rn
+        /* paging */
+          FROM CNET_CLAS_ROOM_INFO A
+    INNER JOIN  CNET_MBR_INFO B
+            ON A.tchr_mbr_no = B.mbr_no
+    INNER JOIN  CNET_SCH_INFO C
+            ON A.sch_no = C.sch_no
+       <where>
+            A.DEL_YN = 'N'
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schNo)" >AND A.sch_no = #{schNo} </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(clasRoomNm)" >AND A.clas_room_nm = #{clasRoomNm} </if>
+       </where>
+    </select>
+
+    <insert id="insertClassroomRegReqHist" parameterType="kr.or.career.mentor.domain.ClasRoomRegReqHist">
+        INSERT INTO CNET_CLAS_ROOM_REG_REQ_HIST
+        (REQ_SER, CLAS_ROOM_SER, REQ_MBR_NO, REQ_DTM, REG_STAT_CD, AUTH_DTM, RJCT_RSN_SUST, RPS_YN, CLAS_ROOM_CUALF_CD)
+        VALUES
+        (SQ_CLAS_ROOM_REG_REQ_HIST.NEXTVAL, #{clasRoomSer}, #{reqMbrNo, jdbcType=VARCHAR}, SYSDATE, #{regStatCd, jdbcType=VARCHAR}
+        <choose>
+        <when test="regStatCd eq '101526'">
+        ,SYSDATE
+        </when>
+        <otherwise>
+        , #{authDtm,jdbcType=DATE}
+        </otherwise>
+        </choose>
+        , #{rjctRsnSust, jdbcType=VARCHAR}, #{rpsYn, jdbcType=VARCHAR}, #{clasRoomCualfCd, jdbcType=VARCHAR})
+        <selectKey keyProperty="reqSer" resultType="Integer" order="AFTER">
+            SELECT SQ_CLAS_ROOM_REG_REQ_HIST.currval FROM dual
+        </selectKey>
+    </insert>
+
+    <insert id="insertClasRoomInfo" parameterType="kr.or.career.mentor.domain.ClasRoomInfo">
+            INSERT INTO CNET_CLAS_ROOM_INFO
+        ( CLAS_ROOM_SER, SCH_NO, CLAS_ROOM_NM, TCHR_MBR_NO, CLAS_ROOM_TYPE_CD, REG_DTM, USE_YN, VALID_START_DAY, VALID_END_DAY )
+        VALUES
+        (SQ_CLAS_ROOM_INFO.NEXTVAL, #{schNo}, #{clasRoomNm, jdbcType=VARCHAR}, #{tchrMbrNo, jdbcType=VARCHAR}, #{clasRoomTypeCd, jdbcType=VARCHAR}, SYSDATE, 'N', SYSDATE, TO_DATE('2099-01-01','YYYY-MM-DD') )
+        <selectKey keyProperty="clasRoomSer" resultType="Integer" order="AFTER">
+            SELECT SQ_CLAS_ROOM_INFO.currval FROM dual
+        </selectKey>
+    </insert>
+
+    <select id="listApplyStudent" parameterType="kr.or.career.mentor.domain.ClasRoomRegReqHist" resultMap="clasRoomRegReqHistData">
+    /* paging */
+       SELECT A.req_ser, A.clas_room_ser, A.req_mbr_no, A.req_dtm, A.reg_stat_cd , (SELECT S.cd_nm FROM CNET_CODE S WHERE S.sup_cd = '101524' AND S.cd = A.reg_stat_cd) AS reg_stat_nm
+            , C.sch_no as ci_si_sch_no, C.clas_room_nm as ci_clas_room_nm, C.tchr_mbr_no as ci_tchr_mbr_no, C.clas_room_type_cd as ci_clas_room_type_cd
+            , D.sch_nm as ci_si_sch_nm
+            , E.nm as ci_tchr_mbr_nm
+            , F.nm as req_mbr_nm
+            , A.CLAS_ROOM_CUALF_CD
+            , F.id as username
+            ,ROW_NUMBER() OVER(ORDER BY A.req_ser DESC) AS rn
+            /* paging */
+         FROM CNET_CLAS_ROOM_REG_REQ_HIST A /*학생이 신청한 교실*/
+   INNER JOIN CNET_CLAS_ROOM_REG_REQ_HIST B /*교사가 담당하는 교실*/
+           ON A.CLAS_ROOM_SER = B.CLAS_ROOM_SER
+   INNER JOIN CNET_CLAS_ROOM_INFO  C
+           ON A.clas_room_ser   = C.clas_room_ser
+   INNER JOIN CNET_SCH_INFO D
+          ON C.sch_no = D.sch_no
+  INNER JOIN CNET_MBR_INFO E
+          ON C.tchr_mbr_no = E.mbr_no
+  INNER JOIN CNET_MBR_INFO F
+        ON A.req_mbr_no = F.mbr_no
+       AND F.mbr_class_cd = '100858' /*일반회원*/
+       <where>
+         AND B.req_mbr_no = #{clasRoomInfo.tchrMbrNo}
+         AND A.clas_room_ser = #{clasRoomSer}
+         AND A.REG_STAT_CD NOT IN ('101706','101527')
+       <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schNm)">
+           AND A.REG_STAT_CD != '101525'
+       </if>
+        /*AND B.REG_STAT_CD = '101526' 요청받은 교사가 정식 사용자인지*/
+       <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(regStatCd)">
+         AND A.REG_STAT_CD = #{regStatCd}
+       </if>
+       </where>
+    </select>
+
+    <update id="updateRequestApprove" parameterType="kr.or.career.mentor.domain.ClasRoomRegReqHist">
+        UPDATE CNET_CLAS_ROOM_REG_REQ_HIST SET
+        <choose>
+            <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(regStatCd)">reg_stat_cd = #{regStatCd}</when>
+            <otherwise>reg_stat_cd = '101526'</otherwise>
+        </choose>
+        <choose>
+            <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(rjctRsnSust)">, rjct_rsn_sust = #{rjctRsnSust}</when>
+        </choose>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(rpsYn)">,rps_yn = #{rpsYn}</if>
+        <choose>
+            <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(authMbrNo)">
+                ,auth_mbr_no = #{authMbrNo, jdbcType=VARCHAR}
+                ,auth_dtm = SYSDATE
+            </when>
+            <otherwise>
+                ,auth_mbr_no = #{clasRoomInfo.tchrMbrNo, jdbcType=VARCHAR}
+                ,auth_dtm = SYSDATE
+            </otherwise>
+        </choose>
+         WHERE req_ser = #{reqSer}
+    </update>
+
+    <update id="updateRequestRoomApprove" parameterType="kr.or.career.mentor.domain.ClasRoomRegReqHist">
+        UPDATE CNET_CLAS_ROOM_INFO SET
+        USE_YN = #{useYn}
+        WHERE CLAS_ROOM_SER = #{clasRoomSer}
+    </update>
+
+    <!-- 사용자가 속한 학교 정보 -->
+    <select id="listMySchool" parameterType="kr.or.career.mentor.domain.SchInfo" resultType="kr.or.career.mentor.domain.SchInfo">
+    SELECT req_dtm,  sch_no, sch_nm from
+     (
+     SELECT MAX(A.req_dtm) AS req_dtm,  C.sch_no, C.sch_nm
+       FROM CNET_CLAS_ROOM_REG_REQ_HIST A
+ INNER JOIN CNET_CLAS_ROOM_INFO B
+        ON A.clas_room_ser = B.clas_room_ser AND SYSDATE BETWEEN B.VALID_START_DAY AND B.VALID_END_DAY
+ INNER JOIN CNET_SCH_INFO C
+        ON B.sch_no = C.sch_no AND C.use_yn = 'Y'
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schMbrCualfCd)">
+            INNER JOIN CNET_MBR_SCH_CUALF D
+            ON A.req_mbr_no = D.mbr_no
+        </if>
+      WHERE A.req_mbr_no = #{mbrNo}
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(regStatCd)">
+        AND A.REG_STAT_CD = #{regStatCd}
+        </if>
+      GROUP BY C.sch_no, C.sch_nm
+      )
+      ORDER BY REQ_DTM DESC
+    </select>
+
+    <select id="listMyRecSchool" parameterType="kr.or.career.mentor.domain.SchInfo" resultType="kr.or.career.mentor.domain.SchInfo">
+        SELECT req_dtm, sch_no, sch_nm from
+        (
+        SELECT MAX(A.req_dtm) AS req_dtm, C.sch_no, C.sch_nm
+            FROM CNET_MBR_SCH_CUALF D
+        INNER JOIN CNET_SCH_INFO C
+            ON D.sch_no = C.sch_no AND C.use_yn = 'Y'
+        LEFT OUTER JOIN CNET_CLAS_ROOM_INFO B
+            ON C.Sch_No = B.Sch_No
+            AND SYSDATE BETWEEN B.VALID_START_DAY AND B.VALID_END_DAY
+        LEFT OUTER JOIN CNET_CLAS_ROOM_REG_REQ_HIST A
+            ON B.Clas_Room_Ser = A.Clas_Room_Ser
+        WHERE D.mbr_no = #{mbrNo}  GROUP BY C.sch_no, C.sch_nm
+        )  ORDER BY REQ_DTM DESC
+    </select>
+
+
+
+    <!-- 사용자가 속한 사업정보 -->
+    <select id="listBizGrp" parameterType="kr.or.career.mentor.domain.BizSetInfo" resultMap="bizSetData">
+    SELECT A.set_targt_cd, A.SET_TARGT_NO, A.CLAS_CNT, A.CLAS_START_DAY, A.CLAS_END_DAY, A.SET_SER
+        , B.CD_NM AS set_targt_nm
+        , C.GRP_NO AS BG_GRP_NO, C.GRP_NM AS BG_GRP_NM, C.GRP_DESC AS BG_GRP_DESC
+        , NVL(D.CLAS_PERM_CNT,0) AS LA_CLAS_PERM_CNT
+        , NVL(D.CLAS_APPL_CNT,0) AS LA_CLAS_APPL_CNT
+      FROM CNET_BIZ_SET_INFO A
+INNER JOIN CNET_CODE B
+        ON A.SET_TARGT_CD = B.CD
+       AND SUP_CD = '101599'
+INNER JOIN CNET_BIZ_GRP_INFO C
+        ON C.GRP_NO = A.SET_TARGT_NO
+LEFT OUTER JOIN CNET_LECT_APPL_CNT D
+        ON A.SET_SER = D.SET_SER
+    </select>
+
+    <select id="selectLectApplyInfoByClassRoom" parameterType="kr.or.career.mentor.domain.ClasRoomInfo" resultType="int">
+        <![CDATA[
+        SELECT  count(1) as cnt
+        FROM    CNET_LECT_APPL_INFO A
+        INNER JOIN CNET_LECT_TIMS_INFO B
+        ON A.LECT_SER = B.LECT_SER
+        WHERE   A.CLAS_ROOM_SER = #{clasRoomSer}
+        AND (A.APPL_STAT_CD IN ('101576','101577') OR B.LECT_STAT_CD IN ('101543','101548','101549','101550'))
+        ]]>
+    </select>
+
+    <delete id="removeClassroomRegReqHist" parameterType="kr.or.career.mentor.domain.ClasRoomInfo">
+        update cnet_clas_room_info set
+        del_yn = 'Y'
+        where clas_room_ser = #{clasRoomSer}
+
+    </delete>
+
+    <delete id="removeClassroomRegReq" parameterType="kr.or.career.mentor.domain.ClasRoomInfo">
+       update cnet_clas_room_reg_req_hist set
+        reg_stat_cd = '101706'
+        where req_ser = #{reqSer}
+    </delete>
+
+    <delete id="removeClassRoomInfo" parameterType="int">
+        update cnet_clas_room_info set
+        del_yn = 'Y'
+        where clas_room_ser = #{clasRoomSer}
+    </delete>
+
+    <update id="updateRpsClassroomInitial" parameterType="kr.or.career.mentor.domain.ClasRoomInfo">
+        update cnet_clas_room_reg_req_hist
+        set rps_yn = 'N'
+        where req_mbr_no = #{tchrMbrNo}
+        and rps_yn = 'Y'
+    </update>
+
+    <update id="updateRpsClassroom" parameterType="kr.or.career.mentor.domain.ClasRoomInfo">
+        update cnet_clas_room_reg_req_hist
+        set rps_yn = #{rpsYn}
+        where req_ser = #{reqSer}
+    </update>
+
+    <!-- 지역시에 따른 지역구 조회 -->
+    <select id="selectSgguInfo" parameterType="kr.or.career.mentor.domain.SchInfo" resultType="kr.or.career.mentor.domain.SchInfo">
+        SELECT  DISTINCT(SGGU_NM) AS SGGU_NM
+        FROM    CNET_SCH_INFO
+        WHERE   SIDO_NM = #{sidoNm}
+        AND     SGGU_NM IS NOT NULL
+        ORDER BY SGGU_NM
+    </select>
+
+
+    <update id="updateRpsClassUserInitial" parameterType="kr.or.career.mentor.domain.ClasRoomInfo">
+        update cnet_clas_room_reg_req_hist
+        set clas_room_cualf_cd = '101690'
+        where clas_room_ser = #{clasRoomSer}
+        and clas_room_cualf_cd = '101691'
+
+    </update>
+
+    <update id="updateRpsClassUser" parameterType="kr.or.career.mentor.domain.ClasRoomInfo">
+        update cnet_clas_room_reg_req_hist
+        set clas_room_cualf_cd = #{clasRoomCualfCd}
+        where req_ser = #{reqSer} and clas_room_ser = #{clasRoomSer}
+    </update>
+
+
+    <!-- 교실 승인 목록 조회 -->
+    <select id="listClassroomRecognize" parameterType="kr.or.career.mentor.domain.ClasRoomInfo" resultMap="clasRoomInfoData2">
+        /* paging */
+        SELECT A.clas_room_ser, D.REQ_SER, A.sch_no, A.clas_room_nm, A.tchr_mbr_no, A.clas_room_type_cd, D.REQ_DTM as REG_DTM
+        ,B.NM as tchr_mbr_nm
+        ,C.sch_nm as si_sch_nm, C.sch_class_cd, C.sido_nm||nvl(Regexp_Replace(C.SGGU_NM,'^',' '),'') as si_sido_nm
+        , (SELECT CD_NM FROM CNET_CODE WHERE CD = A.clas_room_type_cd) AS si_clas_room_type_nm
+        , D.REG_STAT_CD
+        , (SELECT CD_NM FROM CNET_CODE WHERE CD = D.REG_STAT_CD) AS si_REG_STAT_NM
+        , D.auth_dtm
+        , (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = D.auth_mbr_no) AS AUTH_MBR_NM
+        , D.rjct_rsn_sust
+        , (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = D.req_mbr_no) AS REQ_MBR_NM
+        ,ROW_NUMBER() OVER(ORDER BY D.REQ_DTM DESC) AS rn
+        /* paging */
+        FROM CNET_CLAS_ROOM_INFO A
+        INNER JOIN  CNET_MBR_INFO B
+        ON A.tchr_mbr_no = B.mbr_no
+        INNER JOIN  CNET_SCH_INFO C
+        ON A.sch_no = C.sch_no
+        INNER JOIN CNET_CLAS_ROOM_REG_REQ_HIST D
+        ON A.clas_room_ser = D.clas_room_ser
+        /*AND A.TCHR_MBR_NO = D.REQ_MBR_NO 개설한교사 */
+        <where>
+            D.REG_STAT_CD != '101706'
+            AND A.sch_no = #{schNo}
+        </where>
+        ORDER BY D.REQ_DTM DESC
+    </select>
+    <select id="listRpsClassroomCnt" parameterType="kr.or.career.mentor.domain.ClasRoomRegReqHist" resultType="int">
+        SELECT COUNT(*) FROM CNET_CLAS_ROOM_REG_REQ_HIST WHERE REQ_MBR_NO = #{reqMbrNo} AND RPS_YN = 'Y' AND REG_STAT_CD = '101526'
+    </select>
+    <select id="listUpdateRpsClassroomCnt" parameterType="kr.or.career.mentor.domain.ClasRoomRegReqHist" resultType="int">
+        SELECT COUNT(*) FROM CNET_CLAS_ROOM_REG_REQ_HIST A,  (SELECT REQ_MBR_NO FROM CNET_CLAS_ROOM_REG_REQ_HIST WHERE req_ser = #{reqSer}) B WHERE A.REQ_MBR_NO = B.REQ_MBR_NO AND RPS_YN = 'Y' AND A.REG_STAT_CD = '101526'
+    </select>
+
+    <select id="listClassroomHistTchr" parameterType="kr.or.career.mentor.domain.ClasRoomRegReqHist" resultMap="clasRoomRegReqHistData">
+        SELECT A.REQ_MBR_NO, B.EMAIL_ADDR, D.Sch_Nm as ci_Sch_Nm, C.Clas_Room_Nm as ci_Clas_Room_Nm, C.Clas_Room_Ser as ci_Clas_Room_Ser
+        FROM CNET_CLAS_ROOM_REG_REQ_HIST A
+        INNER JOIN CNET_MBR_INFO B
+        ON  A.REQ_MBR_NO = B.MBR_NO
+        INNER JOIN Cnet_Clas_Room_Info C
+        ON C.Clas_Room_Ser = A.Clas_Room_Ser
+        INNER JOIN Cnet_Sch_Info D
+        ON C.Sch_No = D.Sch_No
+        WHERE 1=1 AND A.REQ_SER =  #{reqSer}
+    </select>
+
+    <select id="listApplyStudentSchInfo" parameterType="kr.or.career.mentor.domain.ClasRoomRegReqHist" resultMap="clasRoomRegReqHistData">
+        /* paging */
+        SELECT A.req_ser, A.clas_room_ser, A.req_mbr_no, A.req_dtm, A.reg_stat_cd , (SELECT S.cd_nm FROM CNET_CODE S WHERE S.sup_cd = '101524' AND S.cd = A.reg_stat_cd) AS reg_stat_nm
+        , C.sch_no as ci_si_sch_no, C.clas_room_nm as ci_clas_room_nm, C.tchr_mbr_no as ci_tchr_mbr_no, C.clas_room_type_cd as ci_clas_room_type_cd
+        , D.sch_nm as ci_si_sch_nm
+        , E.nm as ci_tchr_mbr_nm
+        , F.nm as req_mbr_nm
+        , A.CLAS_ROOM_CUALF_CD
+        , F.id as username
+        ,ROW_NUMBER() OVER(ORDER BY A.req_ser DESC) AS rn
+        /* paging */
+        FROM CNET_CLAS_ROOM_REG_REQ_HIST A /*학생이 신청한 교실*/
+        INNER JOIN CNET_CLAS_ROOM_INFO  C
+        ON A.clas_room_ser   = C.clas_room_ser
+        INNER JOIN CNET_SCH_INFO D
+        ON C.sch_no = D.sch_no
+        INNER JOIN CNET_MBR_INFO E
+        ON C.tchr_mbr_no = E.mbr_no
+        INNER JOIN CNET_MBR_INFO F
+        ON A.req_mbr_no = F.mbr_no
+        AND F.mbr_class_cd = '100858' /*일반회원*/
+        <where>
+            AND A.clas_room_ser = #{clasRoomSer}
+            /*AND B.REG_STAT_CD = '101526' 요청받은 교사가 정식 사용자인지*/
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(regStatCd)">
+                AND A.REG_STAT_CD = #{regStatCd}
+            </if>
+        </where>
+    </select>
+
+    <select id="listSchRpsTchrInfo" parameterType="kr.or.career.mentor.domain.ClasRoomInfo" resultMap="schInfoData">
+        /* paging */
+        SELECT
+        B.SCH_MBR_ROLL_SER
+        , A.SCH_NO
+        , A.SCH_NM
+        , C.NM AS username
+        , C.ID AS userId
+        , (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = B.REG_MBR_NO) AS REG_MBR_NM
+        , TO_CHAR(B.REG_DTM, 'YYYY-MM-DD') AS REG_DTM
+        , D.CD_NM as sch_mbr_cualf_nm
+        ,ROW_NUMBER() OVER(ORDER BY B.REG_DTM DESC) AS rn
+        /* paging */
+        FROM CNET_SCH_INFO A
+        INNER JOIN CNET_MBR_SCH_CUALF B
+        ON A.SCH_NO = B.SCH_NO AND B.SCH_MBR_CUALF_CD = '101698' AND B.CUALF_REG_STAT_CD = '101702'
+        INNER JOIN CNET_MBR_INFO C ON B.MBR_NO = C.MBR_NO
+        INNER JOIN CNET_CODE D ON D.CD = B.SCH_MBR_CUALF_CD
+        WHERE A.sch_no = #{schNo}
+        AND B.USE_YN = 'Y'
+        ORDER BY B.REG_DTM DESC
+    </select>
+
+    <select id="listTchrInfo" parameterType="kr.or.career.mentor.domain.ClasRoomInfo" resultMap="schInfoData">
+        /* paging */
+        SELECT A.MBR_NO AS mbr_no
+        , A.ID AS userId
+        , A.NM AS username
+        , (SELECT CD_NM FROM CNET_CODE WHERE CD = A.GEN_CD) AS gen_nm
+        /* paging */
+        FROM CNET_MBR_INFO A
+        WHERE A.MBR_NO NOT IN (select MBR_NO from CNET_MBR_SCH_CUALF WHERE sch_no = #{schInfo.schNo} ) AND A.MBR_CLASS_CD = 100859
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.username)">
+            AND A.NM like '%' || #{schInfo.username} || '%'
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schInfo.userId)">
+            AND A.ID like '%' || #{schInfo.userId} || '%'
+        </if>
+        ORDER BY A.NM ASC
+    </select>
+
+    <select id="clasRoomUserCnt" parameterType="kr.or.career.mentor.domain.ClasRoomInfo" resultType="int">
+        SELECT COUNT(B.REQ_SER) AS CNT
+        FROM CNET_CLAS_ROOM_INFO A
+        LEFT OUTER JOIN CNET_CLAS_ROOM_REG_REQ_HIST B
+        ON A.CLAS_ROOM_SER = B.CLAS_ROOM_SER
+        WHERE B.CLAS_ROOM_CUALF_CD = '101689' AND REG_STAT_CD = '101526' AND A.CLAS_ROOM_SER = #{clasRoomSer}
+    </select>
+
+    <select id="clasRoomSchInfo" parameterType="kr.or.career.mentor.domain.ClasRoomInfo" resultMap="clasRoomInfoData">
+        SELECT B.SCH_NM as si_sch_nm, B.SIDO_NM as si_sido_nm, B.SGGU_NM as si_sggu_nm, A.CLAS_ROOM_NM
+        FROM CNET_CLAS_ROOM_INFO A
+        INNER JOIN CNET_SCH_INFO B ON A.SCH_NO = B.SCH_NO
+        WHERE A.CLAS_ROOM_SER = #{clasRoomSer}
+    </select>
+
+
+</mapper>

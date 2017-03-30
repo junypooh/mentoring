@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.career.mentor.dao.MbrRelMappMapper">
+
+    <insert id="insertMbrRelMapp" parameterType="kr.or.career.mentor.domain.MbrRelMapp">
+        INSERT INTO cnet_mbr_rel_mapp (
+            mapp_ser,
+            reg_mbr_no,
+            targt_mbr_no,
+            rel_class_cd,
+            auth_stat_cd,
+            auth_dtm
+        )
+        VALUES (
+            SQ_MBR_REL_MAPP.NEXTVAL,
+            #{regMbrNo},
+            #{targtMbrNo},
+            #{relClassCd},
+            #{authStatCd, jdbcType=VARCHAR},
+            #{authDtm, jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+
+    <select id="getMbrRelMappByTargt" resultType="kr.or.career.mentor.domain.MbrRelMapp">
+        SELECT
+            mapp_ser,
+            reg_mbr_no,
+            targt_mbr_no,
+            rel_class_cd,
+            auth_stat_cd,
+            auth_dtm
+        FROM cnet_mbr_rel_mapp
+        WHERE targt_mbr_no = #{targtMbrNo}
+    </select>
+
+
+    <delete id="deleteMbrRelMappByTargt">
+        DELETE
+        FROM cnet_mbr_rel_mapp
+        WHERE 1 = 1
+            AND targt_mbr_no = #{targtMbrNo}
+    </delete>
+</mapper>

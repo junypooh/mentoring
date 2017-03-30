@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.BannerMapper">
+
+    <select id="listBanner" parameterType="kr.or.career.mentor.domain.BnrInfo" resultType="kr.or.career.mentor.domain.BnrInfo">
+        /* paging */
+        SELECT A.bnr_ser, A.bnr_nm, A.bnr_img_url, A.bnr_link_url, A.bnr_desc, A.disp_seq, A.bnr_zone_cd, A.bnr_type_cd
+              ,b.cd_nm as bnr_zone_nm, c.cd_nm as bnr_type_nm, A.use_yn, A.reg_dtm
+              ,D.nm as reg_mbr_nm
+              ,ROW_NUMBER() OVER(ORDER BY A.disp_seq) AS rn
+        /* paging */
+          FROM  CNET_BNR_INFO A
+                INNER JOIN CNET_CODE B
+                        ON A.bnr_zone_cd = B.cd
+                       AND B.sup_cd ='101633'
+                INNER JOIN CNET_CODE C
+                        ON A.bnr_type_cd = C.cd
+                       AND C.sup_cd ='101637'
+                INNER JOIN CNET_MBR_INFO D
+                        ON A.reg_mbr_no = D.mbr_no
+        <where>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(useYn)">
+                AND A.USE_YN = #{useYn}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(bnrTypeCd)">
+                AND A.BNR_TYPE_CD = #{bnrTypeCd}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(bnrZoneCd)">
+                <choose>
+                    <when test="'101635' eq bnrZoneCd">
+                        AND A.BNR_ZONE_CD IN ('101634',#{bnrZoneCd})
+                    </when>
+                    <when test="'101636' eq bnrZoneCd">
+                        AND A.BNR_ZONE_CD IN ('101634',#{bnrZoneCd})
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
+
+    <select id="retrieveBanner" parameterType="string" resultType="kr.or.career.mentor.domain.BnrInfo">
+        /* paging */
+        SELECT *
+        /* paging */
+        FROM (
+        SELECT A.bnr_ser, A.bnr_nm, A.bnr_img_url, A.bnr_link_url, A.bnr_desc, A.disp_seq, A.bnr_zone_cd, A.bnr_type_cd
+              ,b.cd_nm as bnr_zone_nm, c.cd_nm as bnr_type_nm
+               ,ROW_NUMBER() OVER(ORDER BY A.reg_dtm DESC) AS rn
+          FROM CNET_BNR_INFO A
+    INNER JOIN CNET_CODE B
+            ON A.bnr_zone_cd = B.cd
+           AND B.sup_cd ='101633'
+    INNER JOIN CNET_CODE C
+            ON A.bnr_type_cd = C.cd
+           AND C.sup_cd ='101637'
+         WHERE A.use_yn = 'Y'
+         AND A.BNR_TYPE_CD = '101638' /* 상단 띠배너 */
+         <choose>
+            <when test="'SCHOOL' eq _parameter">
+            AND bnr_zone_cd IN ('101634','101635')
+            </when>
+            <when test="'MENTOR' eq _parameter">
+            AND bnr_zone_cd IN ('101634','101636')
+            </when>
+         </choose>
+         ) WHERE rn = 1
+    </select>
+
+    <select id="retrieveBannerInfo" parameterType="kr.or.career.mentor.domain.BnrInfo" resultType="kr.or.career.mentor.domain.BnrInfo">
+        SELECT A.bnr_ser, A.bnr_nm, A.bnr_img_url, A.bnr_link_url, A.bnr_desc, A.disp_seq, A.bnr_zone_cd, A.bnr_type_cd
+              ,b.cd_nm as bnr_zone_nm, c.cd_nm as bnr_type_nm, A.use_yn, A.reg_dtm
+              ,D.nm as reg_mbr_nm
+          FROM CNET_BNR_INFO A
+    INNER JOIN CNET_CODE B
+            ON A.bnr_zone_cd = B.cd
+           AND B.sup_cd ='101633'
+    INNER JOIN CNET_CODE C
+            ON A.bnr_type_cd = C.cd
+           AND C.sup_cd ='101637'
+    INNER JOIN CNET_MBR_INFO D
+            ON A.reg_mbr_no = D.mbr_no
+         WHERE A.bnr_ser = #{bnrSer}
+    </select>
+
+    <select id="retrieveBannerCnt" parameterType="kr.or.career.mentor.domain.BnrInfo" resultType="integer">
+        SELECT COUNT(*)
+          FROM CNET_BNR_INFO
+         WHERE use_yn = 'Y'
+    </select>
+
+    <insert id="insertBanner" parameterType="kr.or.career.mentor.domain.BnrInfo">
+        <selectKey keyProperty="bnrSer" resultType="int" order="BEFORE">
+            SELECT  SQ_BNR_INFO.nextval from dual
+        </selectKey>
+    INSERT INTO CNET_BNR_INFO
+            (bnr_ser, bnr_nm, bnr_img_url, bnr_link_url, bnr_desc, disp_seq, use_yn, reg_dtm, reg_mbr_no, bnr_zone_cd, bnr_type_cd)
+    SELECT
+        #{bnrSer, jdbcType=NUMERIC}
+        , #{bnrNm, jdbcType=VARCHAR}
+        , #{bnrImgUrl, jdbcType=VARCHAR}
+        , #{bnrLinkUrl, jdbcType=VARCHAR}
+        , #{bnrDesc, jdbcType=VARCHAR}
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(dispSeq)">
+            , #{dispSeq, jdbcType=INTEGER}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isEmpty(dispSeq)">
+            ,NVL(MAX(disp_seq) + 1,1)
+        </if>
+        , #{useYn, jdbcType=CHAR}
+        , SYSDATE
+        , #{regMbrNo, jdbcType=VARCHAR}
+        , #{bnrZoneCd, jdbcType=VARCHAR}
+        , #{bnrTypeCd, jdbcType=VARCHAR}
+        FROM    CNET_BNR_INFO
+        WHERE   bnr_type_cd = #{bnrTypeCd, jdbcType=VARCHAR}
+        AND     USE_YN = 'Y'
+    </insert>
+
+    <update id="updateBanner" parameterType="kr.or.career.mentor.domain.BnrInfo">
+    UPDATE CNET_BNR_INFO SET
+           bnr_nm = #{bnrNm, jdbcType=VARCHAR}
+           , bnr_img_url = #{bnrImgUrl, jdbcType=VARCHAR}
+           , bnr_link_url = #{bnrLinkUrl, jdbcType=VARCHAR}
+           , bnr_desc = #{bnrDesc, jdbcType=VARCHAR}
+           , bnr_zone_cd = #{bnrZoneCd, jdbcType=VARCHAR}
+           , bnr_type_cd = #{bnrTypeCd, jdbcType=VARCHAR}
+           , reg_mbr_no = #{regMbrNo, jdbcType=VARCHAR}
+           , use_yn = #{useYn, jdbcType=VARCHAR}
+           , reg_dtm = SYSDATE
+     WHERE bnr_ser = #{bnrSer}
+    </update>
+
+
+    <delete id="deleteManagedMentorInfo" parameterType="string">
+    DELETE FROM CNET_MNGR_RECOM_INFO
+          WHERE recom_targt_cd = #{_parameter}
+    </delete>
+
+    <insert id="insertManagedMentorInfo" parameterType="List">
+    INSERT ALL
+        <foreach collection="list" item="item" index="index">
+            INTO CNET_MNGR_RECOM_INFO(
+            recom_ser, recom_targt_cd, recom_targt_no, sort_seq, use_yn, reg_dtm, reg_mbr_no
+            )VALUES
+            (
+            #{item.recomSer}
+            , #{item.recomTargtCd}
+            , #{item.recomTargtNo}
+            , #{item.sortSeq}
+            , #{item.useYn}
+            , SYSDATE
+            , #{item.regMbrNo}
+            )
+        </foreach>
+        SELECT 1 FROM DUAL
+    </insert>
+
+    <update id="updateChangeOrder" parameterType="kr.or.career.mentor.domain.OrderChanger">
+        <![CDATA[
+            UPDATE  CNET_BNR_INFO
+        ]]>
+        <if test="fromIndex gt toIndex">
+            SET     DISP_SEQ = DISP_SEQ + 1
+        </if>
+        <if test="fromIndex lt toIndex">
+            SET     DISP_SEQ = DISP_SEQ - 1
+        </if>
+        <![CDATA[
+            WHERE   BNR_TYPE_CD = #{targtCd}
+            AND     USE_YN = 'Y'
+        ]]>
+        <if test="fromIndex gt toIndex">
+            <![CDATA[
+            AND     DISP_SEQ >= ${toIndex}
+            AND     DISP_SEQ < ${fromIndex}
+        ]]>
+        </if>
+        <if test="fromIndex lt toIndex">
+            <![CDATA[
+            AND     DISP_SEQ > ${fromIndex}
+            AND     DISP_SEQ <= ${toIndex}
+        ]]>
+        </if>
+    </update>
+
+    <update id="updateMoved" parameterType="kr.or.career.mentor.domain.OrderChanger">
+        <![CDATA[
+            update  CNET_BNR_INFO
+            set     DISP_SEQ = #{toIndex}
+            where   BNR_TYPE_CD = #{targtCd}
+            and     BNR_SER = #{id}
+        ]]>
+    </update>
+
+    <update id="removeBanner" parameterType="java.util.List">
+        <![CDATA[
+            update CNET_BNR_INFO
+            set use_yn = 'N'
+            where BNR_SER in
+        ]]>
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <delete id="deleteBanner" parameterType="java.util.List">
+        <![CDATA[
+            delete cnet_bnr_info
+            where bnr_ser in
+        ]]>
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </delete>
+
+    <update id="updateBannerInfo" parameterType="string">
+        <![CDATA[
+            MERGE INTO CNET_BNR_INFO T
+            USING
+            (
+                SELECT  A.*,ROW_NUMBER() OVER(ORDER BY a.DISP_SEQ) AS rn
+                FROM    CNET_BNR_INFO A
+                where   a.BNR_TYPE_CD = #{targtCd}
+                and     a.USE_YN = 'Y'
+                order by a.DISP_SEQ
+            ) DT ON (T.BNR_SER = dt.BNR_SER)
+            WHEN MATCHED THEN UPDATE
+            SET T.DISP_SEQ = DT.rn
+        ]]>
+    </update>
+
+</mapper>

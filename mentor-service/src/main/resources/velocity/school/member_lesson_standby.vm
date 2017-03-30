@@ -1,0 +1,137 @@
+<html lang="en">
+<head>
+<title>산들바람 진로멘토링</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<table border="0" cellspacing="0" cellpadding="0" width="700" align="center">
+<!-- header -->
+<tr>
+	<td width="700">
+		<table border="0" cellspacing="0" cellpadding="0" width="700">
+		<tr>
+			<td>
+				<table border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td valign="bottom" style="font-size:0;"><a target="_blank" title="산들바람 원격진로멘토링" href="${url}"><img border="0" src="${imgUrl}images/ems/img_bl_bgs.gif" alt="산들바람bl" /></a></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<!-- //header -->
+<!-- point -->
+<tr>
+	<td>
+		<table border="0" cellspacing="0" cellpadding="0" width="700">
+		<tr>
+			<td style="font-size:0;"> 
+				<img src="${imgUrl}images/ems/img_email_h29.gif" alt="수업 대기 접수가 완료되었습니다." />
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<!-- //point -->
+<!-- content -->
+<tr>
+    <td>
+		<table border="0" cellspacing="0" cellpadding="0" width="700">
+			<tr>
+				<td colspan="3" style="font-size:0;">
+					<img src="${imgUrl}images/ems/img_email_info10-1.gif" alt="수업 대기 접수가 완료되었습니다. 결원이 발생할 경우, 대기 접수 순으로 수업 신청이 완료 됩니다." />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table border="0" cellspacing="0" cellpadding="0" width="700">
+						<tr>
+							<td width="297" style="font-size:0;">
+								<img src="${imgUrl}images/ems/img_email_lessonname.gif" alt="수업명" />
+							</td>
+							<td width="337">
+								<span style="display:inline-block;padding:5px 0 0 1px;font-size:14px;font-weight:bold;color:#4764c0;">${lecture.name}</span>
+							</td>
+							<td width="66" style="font-size:0;">
+								<img src="${imgUrl}images/ems/img_email_id1.gif" alt="수업명" />
+							</td>
+						</tr>
+						<tr>
+							<td width="297" style="font-size:0;">
+								<img src="${imgUrl}images/ems/img_email_lessondate.gif" alt="수업일" />
+							</td>
+							<td width="337">
+								<span style="display:inline-block;padding:5px 0 0 1px;font-size:18px;font-weight:bold;color:#4764c0;">${lecture.startDate} ~ ${lecture.endTime}</span>
+							</td>
+							<td width="66" style="font-size:0;">
+								<img src="${imgUrl}images/ems/img_email_id1.gif" alt="수업일" />
+							</td>
+						</tr>
+						<tr>
+							<td width="297" style="font-size:0;">
+								<img src="${imgUrl}images/ems/img_email_mentorname.gif" alt="멘토명" />
+							</td>
+							<td width="337">
+								<span style="display:inline-block;padding:5px 0 0 1px;font-size:14px;font-weight:bold;">${lecture.mentor}</span>
+							</td>
+							<td width="66" style="font-size:0;">
+								<img src="${imgUrl}images/ems/img_email_name1.gif" alt="멘토명" />
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td height="43" align="center" valign="bottom" style="font-size:0;">
+	<table border="0" cellspacing="0" cellpadding="0" width="700">
+		<tr>
+			<td colspan="3" style="font-size:0;">
+				<img src="${imgUrl}images/ems/img_email_info8-2.gif" alt="자세한 수업 신청 및 취소 관련 내용은 서비스 로그인 후, ‘마이페이지 > 나의 수업’에서 확인 가능합니다." />
+			</td>
+		</tr>
+		<tr>
+			<td style="font-size:0;">
+				<img src="${imgUrl}images/ems/btn_member_empty1.gif" alt="" />
+			</td>
+			<td align="center" valign="bottom" style="font-size:0;">
+				<a href="${url}" target="_blank"><img src="${imgUrl}images/ems/img_member_complete.gif" alt="산들바람 바로가기"></a>
+			</td>
+			<td style="font-size:0;">
+				<img src="${imgUrl}images/ems/btn_member_empty2.gif" alt="" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" style="font-size:0;">
+				<img src="${imgUrl}images/ems/btn_member_empty3.gif" alt="" />
+			</td>
+		</tr>
+	</table>
+	</td>
+</tr>
+<!-- // content -->
+<!-- footer -->
+<tr>
+	<td>
+		<table border="0" cellspacing="0" cellpadding="0" style="border:1px solid #dfdfdf;font:normal 12px/16px '돋움', dotum, sans-serif;background:#fafafa;">
+		<tr>
+			<td style="padding:19px 0 21px 19px;color:#999;">
+				본 메일은 발신전용 메일입니다. 이용관련 문의는 홈페이지의 <a href="${url}community/qna/qnaList.do" style="color:#4764c0;" target="_blank">[문의하기]</a>를 이용해주세요.
+			</td>
+		</tr>
+		<tr>
+			<td width="698">
+				<img src="${imgUrl}images/ems/img_footer_bg.gif" alt="주소:세종특별자치시 시청대로 370 세종국책연구단지 사회정책동 한국직업능력개발원 커리어넷 운영:한국직업능력개발원 진로교육센터 지원:교육부 COPYRIGHTS KRIVET ALL RIGHTS RESERVED." />
+         	</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<!-- //footer -->
+</table>
+</body>
+</html>

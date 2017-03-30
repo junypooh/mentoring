@@ -1,0 +1,1601 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.StatisticsMapper">
+    <!--관리자 메인 화면의 각 교육청별 배정그룹 생성 횟수-->
+    <select id="allocateGroupCnt" resultType="kr.or.career.mentor.domain.CoInfoDTO">
+         SELECT  C.co_no, C.co_nm, NVL(T.cnt,0) AS cnt
+           FROM  CNET_CO_INFO C  /*담당자의 소속 회사 정보*/
+LEFT OUTER JOIN      (SELECT B.pos_co_no, COUNT(*) AS cnt
+                        FROM CNET_BIZ_GRP_INFO A /*배정그룹정보*/
+                  INNER JOIN CNET_MBR_INFO B /*사업그룹 담당자*/
+                          ON A.inst_mbr_no = B.mbr_no
+                  INNER JOIN CNET_BIZ_SET_INFO C
+                          ON A.GRP_NO = C.SET_TARGT_NO
+                         AND C.SET_TARGT_CD = '101601' /*101599 : 사업그룹*/
+                    GROUP BY B.pos_co_no) T
+              ON T.pos_co_no = C.co_no
+            WHERE CO_NO BETWEEN '0000000001' AND '0000000017'
+            ORDER BY CO_NO
+    </select>
+
+    <!-- 관리자 메인화면의 수업현황 -->
+    <select id="lectureStatusCnt" parameterType="kr.or.career.mentor.domain.User" resultType="map">
+     SELECT  NVL(SUM(DECODE(A.LECT_STAT_CD,'101542',1,0)),0) AS ST101542 /*수업요청*/
+            ,NVL(SUM(DECODE(A.LECT_STAT_CD,'101543',1,0)),0) AS ST101543 /*수강모집*/
+            ,NVL(SUM(DECODE(A.LECT_STAT_CD,'101544',1,0)),0) AS ST101544 /*모집마감*/
+            ,NVL(SUM(DECODE(A.LECT_STAT_CD,'101545',1,0)),0) AS ST101545 /*모집실패*/
+            ,NVL(SUM(DECODE(A.LECT_STAT_CD,'101546',1,0)),0) AS ST101546 /*모집취소요청*/
+            ,NVL(SUM(DECODE(A.LECT_STAT_CD,'101547',1,0)),0) AS ST101547 /*모집취소*/
+            ,NVL(SUM(DECODE(A.LECT_STAT_CD,'101548',1,0)),0) AS ST101548 /*수업예정*/
+            ,NVL(SUM(DECODE(A.LECT_STAT_CD,'101549',1,0)),0) AS ST101549 /*수업대기*/
+            ,NVL(SUM(DECODE(A.LECT_STAT_CD,'101550',1,0)),0) AS ST101550 /*수업중*/
+            ,NVL(SUM(DECODE(A.LECT_STAT_CD,'101551',1,0)),0) AS ST101551 /*수업완료*/
+            ,NVL(SUM(DECODE(A.LECT_STAT_CD,'101552',1,0)),0) AS ST101552 /*수업취소요청*/
+            ,NVL(SUM(DECODE(A.LECT_STAT_CD,'101553',1,0)),0) AS ST101553 /*수업취소*/
+            ,NVL(SUM(DECODE(A.LECT_STAT_CD,'101662',1,0)),0) AS ST101662 /*승인반려*/
+            ,COUNT(*) AS STTOTAL /*총합 카운트*/
+               FROM CNET_LECT_SCHD_INFO A
+        <if test="@org.apache.commons.lang3.StringUtils@equals(mbrCualfCd, '101500')"> <!-- 그룹관리자일 경우 -->
+            INNER JOIN CNET_LECT_INFO B ON (B.LECT_SER = A.LECT_SER)
+            WHERE 1 = 1
+              AND B.LECTR_MBR_NO IN (
+                                     SELECT TARGT_MBR_NO
+                                       FROM CNET_MBR_REL_MAPP
+                                      WHERE REG_MBR_NO IN (SELECT TARGT_MBR_NO
+                                                             FROM CNET_MBR_REL_MAPP
+                                                            WHERE REG_MBR_NO IN (SELECT MBR_NO
+                                                                                   FROM CNET_MBR_INFO
+                                                                                  WHERE POS_CO_NO = (SELECT POS_CO_NO
+                                                                                                       FROM CNET_MBR_INFO
+                                                                                                      WHERE MBR_NO = #{mbrNo})))
+                                     )
+        </if>
+    </select>
+
+    <!-- 관리자 Main 화면의 승인요청 현황 -->
+    <select id="approvalRequestCnt" resultType="map">
+    SELECT SUM(ST1) AS ST1, SUM(ST2) AS ST2, SUM(ST3) AS ST3, SUM(ST4) AS ST4
+        FROM(
+        SELECT
+                SUM(DECODE(MBR_STAT_CD,'101506',1,0)) AS ST1 /*회원가입 승인요청건수*/
+                , 0 AS ST2
+                , 0 AS ST3
+                , SUM(DECODE(MBR_STAT_CD,'101572',1,0)) AS ST4  /*탈퇴승인요청*/
+        FROM CNET_MBR_INFO A
+       WHERE A.MBR_CLASS_CD = '101505' /*멘토*/
+         AND A.MBR_CUALF_CD = '101503' /*개인멘토*/
+         AND A.MBR_STAT_CD IN ( '101506' , '101572')
+        UNION ALL
+        SELECT
+        0 AS ST1
+        ,0 AS ST2 /*수업요청*/
+        ,SUM(DECODE(LECT_STAT_CD,'101546',1,0)) AS ST3 /*모집취소요청*/
+        ,0 AS ST4
+        FROM CNET_LECT_TIMS_INFO A
+        WHERE LECT_STAT_CD = '101546'
+        UNION ALL
+        SELECT
+        0 AS ST1
+        ,SUM(DECODE(LECT_STAT_CD,'101542',1,0)) AS ST2 /*수업요청*/
+        ,0 AS ST3 /*모집취소요청*/
+        ,0 AS ST4
+        FROM CNET_LECT_INFO A
+        WHERE LECT_STAT_CD ='101542'
+        )
+    </select>
+
+    <!-- 커뮤니터 현황 -->
+    <select id="articleCnt" resultType="map">
+    <![CDATA[
+        SELECT
+                SUM( CASE WHEN A.BOARD_ID = 'lecFile' AND A.USE_YN = 'Y' then 1 else 0 end) AS ST1
+                ,SUM( CASE WHEN A.BOARD_ID = 'lecQnA' then 1 else 0 end) AS ST2
+                ,SUM( CASE WHEN A.BOARD_ID = 'lecQnA' AND A.ANS_REG_DTM IS NOT NULL THEN 1 ELSE 0 END ) AS ST2A
+                ,SUM( DECODE(A.BOARD_ID,'lecFreeBoard',1,0)) AS ST3
+                ,SUM( CASE WHEN A.BOARD_ID = 'lecAppr' AND B.CMT_SER IS NOT NULL THEN 1 ELSE 0 END ) AS ST4
+        FROM 	CNET_ARCL_INFO A
+                    LEFT OUTER JOIN
+                        (
+                            SELECT 	IA.ARCL_SER,IA.BOARD_ID,IB.CMT_SER
+                            FROM 	CNET_ARCL_INFO IA
+                                    LEFT OUTER JOIN CNET_ARCL_CMT_INFO IB
+                                        ON IA.ARCL_SER = IB.ARCL_SER
+                                        AND IA.BOARD_ID = IB.BOARD_ID
+                            WHERE 	IA.BOARD_ID = 'lecAppr'
+                            AND 	IB.SUP_CMT_SER IS NULL
+                        ) B
+                     ON A.BOARD_ID = B.BOARD_ID
+                    AND A.ARCL_SER = B.ARCL_SER
+        WHERE 	A.BOARD_ID IN ('lecFile'/*자료실*/,'lecQnA' /*문의하기*/,'lecFreeBoard'/*자유게시판*/,'lecAppr' /*강의평가*/)
+    ]]>
+    </select>
+
+    <!-- 회원현황 -->
+    <select id="memberCnt" resultType="map">
+        SELECT   NVL(SUM(DECODE (A.MBR_CUALF_CD ,'101501' ,1,0)),0) AS ST1
+                ,NVL(SUM(DECODE (A.MBR_CUALF_CD ,'101502' ,1,0)),0) AS ST2
+                ,NVL(SUM(DECODE (A.MBR_CUALF_CD ,'101503' ,1,0)),0) AS ST3
+                ,NVL(SUM( CASE WHEN A.MBR_CUALF_CD IN ('100205' /*초등학생*/ ,'100206' /*중학생*/ ,'100207' /*고등학생*/ ,'100208' /*대학생*/) THEN 1 ELSE 0 END ),0) AS ST4
+                ,NVL(SUM( CASE WHEN A.MBR_CUALF_CD IN ('100209' /*일반*/ ,'100210' /*일반(학부모)*/) THEN 1 ELSE 0 END ),0) AS ST5
+                ,NVL(SUM( CASE WHEN A.MBR_CUALF_CD IN ('100214' /*교사*/ ,'100215' /*교사(진로상담)*/) THEN 1 ELSE 0 END ),0) ST6
+          FROM CNET_MBR_INFO A
+         WHERE   A.MBR_CUALF_CD IN (   '101501' /*업체담당자*/,'101502' /*기업멘토*/,'101503' /*개인멘토*/
+                                      ,'100205' /*초등학생*/ ,'100206' /*중학생*/ ,'100207' /*고등학생*/ ,'100208' /*대학생*/
+                                      ,'100209' /*일반*/ ,'100210' /*일반(학부모)*/
+                                      ,'100214' /*교사*/ ,'100215' /*교사(진로상담)*/ )
+           AND MBR_STAT_CD = '100862'
+    </select>
+
+    <select id="schoolCnt" resultType="map">
+         SELECT   COUNT(*) AS TOTAL
+                , SUM(DECODE(SCH_CLASS_CD,'100495',1,0)) AS ST1
+                , SUM(DECODE(SCH_CLASS_CD,'100496',1,0)) AS ST2
+                , SUM(DECODE(SCH_CLASS_CD,'100497',1,0)) AS ST3
+           FROM CNET_SCH_INFO A
+          WHERE USE_YN ='Y'
+    </select>
+
+    <select id="listMentorStatistics" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.MentorStatisticsDTO">
+        SELECT
+                CO_NO
+                ,CASE
+                WHEN CO_NO IS NULL THEN '총계'
+                ELSE MAX(CO_NM)
+                END AS CO_NM
+                ,NVL(SUM(COMPANYCNT),0) AS COMPANY_CNT
+                ,NVL(SUM(MENTORCNT),0) AS MENTOR_CNT
+                ,NVL(SUM(LECTURECNT),0) AS LECTURE_CNT
+        FROM
+                (
+                    SELECT  COMPANY.CO_NO
+                            ,COMPANY.CO_NM
+                            ,COMPANY.CNT AS COMPANYCNT
+                            ,MENTOR.CNT AS MENTORCNT
+                            ,LECTURE.CNT AS LECTURECNT
+                    FROM
+                            (
+                            SELECT  *
+                            FROM
+                                    (
+                                    SELECT
+                                            CO_NO
+                                            ,CO_NM
+                                            ,CO_CLASS_CD
+                                    FROM
+                                            CNET_CO_INFO
+                                    WHERE
+                                            CO_CLASS_CD = '101660'
+                                    UNION ALL
+                                    SELECT
+                                            'PRIVATE' AS CO_NO
+                                            ,'개인' AS CO_NM
+                                            ,'PRIVATE' AS CO_CLASS_CD
+                                    FROM
+                                            DUAL
+                                    ) IX
+                                    LEFT OUTER JOIN (
+                                            SELECT
+                                                    DECODE(A.MBR_CUALF_CD, '101503','PRIVATE',NVL(B.POS_CO_NO,'-')) AS POS_CO_NO
+                                                    ,COUNT(DISTINCT A.POS_CO_NO) AS CNT
+                                            FROM    CNET_MBR_INFO A
+                                                        INNER JOIN (
+                                                            SELECT  IB.MAPP_SER,IA.MBR_NO,IA.ID,IA.NM,IA.POS_CO_NO,IC.CO_NM,IB.TARGT_MBR_NO,IB.REG_MBR_NO
+                                                            FROM    CNET_MBR_INFO IA
+                                                                        INNER JOIN CNET_MBR_REL_MAPP IB
+                                                                            ON  IA.MBR_NO = IB.REG_MBR_NO
+                                                                        INNER JOIN CNET_CO_INFO IC
+                                                                            ON  IA.POS_CO_NO = IC.CO_NO
+                                                                                AND IC.CO_CLASS_CD = '101660'
+                                                            WHERE   IB.REL_CLASS_CD = '101507'
+                                                            AND     IA.MBR_CUALF_CD = '101500'
+                                                            ) B
+                                                            ON A.MBR_NO = B.TARGT_MBR_NO
+                                            GROUP BY DECODE(A.MBR_CUALF_CD, '101503','PRIVATE',NVL(B.POS_CO_NO,'-'))
+                                    ) IY
+                                        ON IX.CO_NO = IY.POS_CO_NO
+                            )   COMPANY
+                                    INNER JOIN
+                                            (
+                                                SELECT  *
+                                                FROM    (
+                                                        SELECT
+                                                                CO_NO
+                                                                ,CO_NM
+                                                                ,CO_CLASS_CD
+                                                        FROM
+                                                                CNET_CO_INFO
+                                                        WHERE
+                                                                CO_CLASS_CD = '101660'
+                                                        UNION
+                                                        SELECT
+                                                                'PRIVATE' AS CO_NO
+                                                                ,'개인' AS CO_NM
+                                                                ,'PRIVATE' AS CO_CLASS_CD
+                                                        FROM
+                                                                DUAL
+                                                        ) IX
+                                                            LEFT OUTER JOIN (
+                                                                        SELECT  DECODE(A.MBR_CUALF_CD, '101503','PRIVATE',NVL(C.POS_CO_NO,'-')) AS POS_CO_NO
+                                                                                ,COUNT(DISTINCT(A.MBR_NO)) AS CNT
+                                                                        FROM    CNET_MBR_INFO A
+                                                                                    LEFT OUTER JOIN  (
+                                                                                            SELECT  IB.MAPP_SER,IA.MBR_NO,IA.ID,IA.NM,IA.POS_CO_NO
+                                                                                                    ,IC.CO_NM,IB.TARGT_MBR_NO,IB.REG_MBR_NO
+                                                                                            FROM    CNET_MBR_INFO IA
+                                                                                                        INNER JOIN CNET_MBR_REL_MAPP IB
+                                                                                                            ON  IA.MBR_NO = IB.REG_MBR_NO
+                                                                                                        INNER JOIN CNET_CO_INFO IC
+                                                                                                            ON  IA.POS_CO_NO = IC.CO_NO
+                                                                                                                AND IC.CO_CLASS_CD = '101661'
+                                                                                            WHERE   IB.REL_CLASS_CD = '101508'
+                                                                                        ) B
+                                                                                        ON A.MBR_NO = B.TARGT_MBR_NO
+                                                                                    LEFT OUTER JOIN (
+                                                                                            SELECT  IB.MAPP_SER,IA.MBR_NO,IA.ID,IA.NM,IA.POS_CO_NO
+                                                                                                    ,IC.CO_NM,IB.TARGT_MBR_NO,IB.REG_MBR_NO
+                                                                                            FROM    CNET_MBR_INFO IA
+                                                                                                        INNER JOIN CNET_MBR_REL_MAPP IB
+                                                                                                            ON  IA.MBR_NO = IB.REG_MBR_NO
+                                                                                                        INNER JOIN CNET_CO_INFO IC
+                                                                                                            ON  IA.POS_CO_NO = IC.CO_NO
+                                                                                                                AND IC.CO_CLASS_CD = '101660'
+                                                                                            WHERE   IB.REL_CLASS_CD = '101507'
+                                                                                        ) C
+                                                                                        ON B.REG_MBR_NO = C.TARGT_MBR_NO
+                                                                        WHERE   A.MBR_CLASS_CD = '101505'
+                                                        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+                                                            <![CDATA[
+                                                                         AND A.REG_DTM >= TO_DATE (#{searchStDate}, 'YYYYMMDD')
+                                                            ]]>
+                                                        </if>
+                                                        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+                                                            <![CDATA[
+                                                                        AND A.REG_DTM <= TO_DATE (#{searchEndDate}, 'YYYYMMDD')
+                                                            ]]>
+                                                        </if>
+                                                                        GROUP BY DECODE(A.MBR_CUALF_CD, '101503','PRIVATE',NVL(C.POS_CO_NO,'-'))
+                                                            )   IY
+                                                                ON IX.CO_NO = IY.POS_CO_NO
+                                                ) MENTOR
+                                                    ON COMPANY.CO_NO = MENTOR.CO_NO
+                                    INNER JOIN
+                                            (
+                                                SELECT  ZY.CO_NO AS CO_NO,COUNT(DISTINCT ZZ.LECT_SER||ZZ.LECT_TIMS) AS CNT
+                                                FROM    (
+                                                            SELECT
+                                                                    CO_NO
+                                                                    ,CO_NM
+                                                                    ,CO_CLASS_CD
+                                                            FROM
+                                                                    CNET_CO_INFO
+                                                            WHERE
+                                                                    CO_CLASS_CD = '101660'
+                                                            UNION
+                                                            SELECT
+                                                                    'PRIVATE' AS CO_NO
+                                                                    ,'개인' AS CO_NM
+                                                                    ,'PRIVATE' AS CO_CLASS_CD
+                                                            FROM
+                                                                    DUAL
+                                                ) ZY
+                                                    LEFT OUTER JOIN (
+                                                                SELECT  IX.LECT_SER, IY.MBR_NO,IY.POS_CO_NO,IZ.LECT_TIMS
+                                                                FROM    CNET_LECT_INFO IX
+                                                                            INNER JOIN (
+                                                                                    SELECT  A.MBR_NO
+                                                                                            ,DECODE(A.MBR_CUALF_CD, '101503','PRIVATE',NVL(C.POS_CO_NO,'-')) AS POS_CO_NO
+                                                                                    FROM    CNET_MBR_INFO A
+                                                                                                LEFT OUTER JOIN  (
+                                                                                                        SELECT  IB.MAPP_SER,IA.MBR_NO,IA.ID,IA.NM,IA.POS_CO_NO
+                                                                                                                ,IC.CO_NM,IB.TARGT_MBR_NO,IB.REG_MBR_NO
+                                                                                                        FROM    CNET_MBR_INFO IA
+                                                                                                                    INNER JOIN CNET_MBR_REL_MAPP IB
+                                                                                                                        ON  IA.MBR_NO = IB.REG_MBR_NO
+                                                                                                                    INNER JOIN CNET_CO_INFO IC
+                                                                                                                        ON  IA.POS_CO_NO = IC.CO_NO
+                                                                                                                            AND IC.CO_CLASS_CD = '101661'
+                                                                                                        WHERE   IB.REL_CLASS_CD = '101508'
+                                                                                                    ) B
+                                                                                                        ON A.MBR_NO = B.TARGT_MBR_NO
+                                                                                                LEFT OUTER JOIN (
+                                                                                                        SELECT  IB.MAPP_SER,IA.MBR_NO,IA.ID,IA.NM,IA.POS_CO_NO
+                                                                                                                ,IC.CO_NM,IB.TARGT_MBR_NO,IB.REG_MBR_NO
+                                                                                                        FROM    CNET_MBR_INFO IA
+                                                                                                                    INNER JOIN CNET_MBR_REL_MAPP IB
+                                                                                                                        ON  IA.MBR_NO = IB.REG_MBR_NO
+                                                                                                                    INNER JOIN CNET_CO_INFO IC
+                                                                                                                        ON  IA.POS_CO_NO = IC.CO_NO
+                                                                                                                            AND IC.CO_CLASS_CD = '101660'
+                                                                                                        WHERE   IB.REL_CLASS_CD = '101507'
+                                                                                                    ) C
+                                                                                                        ON B.REG_MBR_NO = C.TARGT_MBR_NO
+                                                                                    WHERE   A.MBR_CLASS_CD = '101505'
+                                                                            ) IY
+                                                                                ON IX.LECTR_MBR_NO = IY.MBR_NO
+                                                                INNER JOIN CNET_LECT_TIMS_INFO IZ
+                                                                        ON IX.LECT_SER = IZ.LECT_SER
+                                                                INNER JOIN CNET_LECT_SCHD_INFO IU
+                                                                        ON IZ.LECT_SER = IU.LECT_SER
+                                                                            AND IZ.LECT_TIMS = IU.LECT_TIMS
+                                                                            AND IU.SCHD_SEQ = 1
+                                                                WHERE IX.LECT_STAT_CD IN (101543,101546,101548,101549,101550,101551,101552)
+                                        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+                                            <![CDATA[
+                                                                AND IU.LECT_DAY >= #{searchStDate}
+                                            ]]>
+                                        </if>
+                                        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+                                            <![CDATA[
+                                                                AND IU.LECT_DAY <= #{searchEndDate}
+                                            ]]>
+                                        </if>
+                                                ) ZZ
+                                                    ON  ZY.CO_NO = ZZ.POS_CO_NO
+                                                GROUP BY ZY.CO_NO
+                            ) LECTURE
+                    ON COMPANY.CO_NO = LECTURE.CO_NO
+                )
+        GROUP BY ROLLUP(CO_NO)
+    </select>
+
+    <select id="excelDownListMentorStatistics" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.MentorStatisticsDTO">
+			WITH TEMP
+			     AS (SELECT B.CO_NO
+			              , A.ELEMENTARY_LECT_DAY
+			              , A.MIDDLE_LECT_DAY
+			              , A.HIGH_LECT_DAY
+			           FROM (SELECT A.LECTR_MBR_NO
+			                      , CASE WHEN A.LECT_TARGT_CD = '101534' OR A.LECT_TARGT_CD = '101537' OR A.LECT_TARGT_CD = '101539' OR A.LECT_TARGT_CD = '101540' THEN C.LECT_DAY END ELEMENTARY_LECT_DAY                           
+			                      , CASE WHEN A.LECT_TARGT_CD = '101535' OR A.LECT_TARGT_CD = '101537' OR A.LECT_TARGT_CD = '101538' OR A.LECT_TARGT_CD = '101540' THEN C.LECT_DAY END MIDDLE_LECT_DAY                                                        
+			                      , CASE WHEN A.LECT_TARGT_CD = '101536' OR A.LECT_TARGT_CD = '101538' OR A.LECT_TARGT_CD = '101539' OR A.LECT_TARGT_CD = '101540' THEN C.LECT_DAY END HIGH_LECT_DAY                           
+			                   FROM CNET_LECT_INFO A
+			                        INNER JOIN CNET_LECT_TIMS_INFO B ON (B.LECT_SER = A.LECT_SER)
+			                        INNER JOIN CNET_LECT_SCHD_INFO C
+			                           ON (C.LECT_SER = B.LECT_SER
+			                           AND C.LECT_TIMS = B.LECT_TIMS)
+			                  WHERE 1 = 1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+			                    AND C.LECT_DAY >= #{searchStDate}
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+			                    AND C.LECT_DAY <= #{searchEndDate}
+            ]]>
+        </if>
+			                    AND C.LECT_STAT_CD NOT IN ('101553')) A
+			                INNER JOIN (  SELECT A.LECTR_MBR_NO
+			                                   , MAX (B.MBR_CUALF_CD) AS MBR_CUALF_CD
+			                                   , MAX (F.CO_NO) AS CO_NO
+			                                FROM CNET_LECT_INFO A
+			                                     INNER JOIN CNET_MBR_INFO B ON (B.MBR_NO = A.LECTR_MBR_NO)
+			                                     INNER JOIN CNET_MBR_REL_MAPP C ON (C.TARGT_MBR_NO = A.LECTR_MBR_NO)
+			                                     INNER JOIN CNET_MBR_REL_MAPP D ON (D.TARGT_MBR_NO = C.REG_MBR_NO)
+			                                     INNER JOIN CNET_MBR_INFO E ON (E.MBR_NO = D.REG_MBR_NO)
+			                                     INNER JOIN CNET_CO_INFO F ON (F.CO_NO = E.POS_CO_NO)
+			                               WHERE B.MBR_CUALF_CD = '101502'
+			                            GROUP BY A.LECTR_MBR_NO
+			                            UNION ALL
+			                              SELECT A.LECTR_MBR_NO
+			                                   , MAX (B.MBR_CUALF_CD) AS MBR_CUALF_CD
+			                                   , NULL AS CO_NO
+			                                FROM CNET_LECT_INFO A INNER JOIN CNET_MBR_INFO B ON (B.MBR_NO = A.LECTR_MBR_NO)
+			                               WHERE B.MBR_CUALF_CD = '101503'
+			                            GROUP BY A.LECTR_MBR_NO) B
+			                   ON (B.LECTR_MBR_NO = A.LECTR_MBR_NO))
+			  SELECT CASE WHEN CO_NO = '-' THEN '' ELSE CO_NO END AS CO_NO
+				   , CASE WHEN CO_NO IS NULL THEN '총계' ELSE MAX (CO_NM) END AS CO_NM
+				   , CASE WHEN CO_NO = '-' THEN '-' ELSE TO_CHAR (SUM (COMPANY_CNT)) END AS COMPANY_CNT
+				   , SUM (MENTOR_CNT) AS MENTOR_CNT
+				   , SUM (ELEMENTARY_LECT_DAY) AS ELEMENTARY_LECT_DAY_CNT
+				   , SUM (MIDDLE_LECT_DAY) AS MIDDLE_LECT_DAY_CNT
+				   , SUM (HIGH_LECT_DAY) AS HIGH_LECT_DAY_CNT
+				   , SUM (ELEMENTARY_LECT_OFFER_CNT) AS ELEMENTARY_LECT_OFFER_CNT
+				   , SUM (MIDDLE_LECT_OFFER_CNT) AS MIDDLE_LECT_OFFER_CNT
+				   , SUM (HIGH_LECT_OFFER_CNT) AS HIGH_LECT_OFFER_CNT
+                   , ROW_NUMBER() OVER(ORDER BY MAX (RN)) AS RN
+				FROM (	SELECT A.CO_NO
+							 , NVL (MAX (A.CO_NM), '개인') AS CO_NM
+							 , COUNT (B.COMPANY_CO_NO) AS COMPANY_CNT
+							 , NVL (MAX (C.MENTOR_CNT), 0) AS MENTOR_CNT
+							 , NVL (SUM (D.ELEMENTARY_LECT_DAY), 0) AS ELEMENTARY_LECT_DAY
+							 , NVL (SUM (D.MIDDLE_LECT_DAY), 0) AS MIDDLE_LECT_DAY
+							 , NVL (SUM (D.HIGH_LECT_DAY), 0) AS HIGH_LECT_DAY
+							 , NVL (SUM (E.ELEMENTARY_LECT_OFFER_CNT), 0) AS ELEMENTARY_LECT_OFFER_CNT
+							 , NVL (SUM (E.MIDDLE_LECT_OFFER_CNT), 0) AS MIDDLE_LECT_OFFER_CNT
+							 , NVL (SUM (E.HIGH_LECT_OFFER_CNT), 0) AS HIGH_LECT_OFFER_CNT
+							 , MAX (A.RN) AS RN
+						  FROM (SELECT CO_NO
+									 , CO_NM
+									 , ROW_NUMBER () OVER (ORDER BY CO_NO) RN
+								  FROM CNET_CO_INFO
+								 WHERE CO_CLASS_CD = '101660'
+								UNION
+								SELECT '-'
+									 , '개인'
+									 , 99
+								  FROM DUAL) A
+							   LEFT OUTER JOIN (  SELECT SUB_B.POS_CO_NO AS EDUCATION_CO_NO
+													   , SUB_D.POS_CO_NO AS COMPANY_CO_NO
+													FROM CNET_MBR_INFO SUB_B
+														 INNER JOIN CNET_MBR_REL_MAPP SUB_C ON (SUB_C.REG_MBR_NO = SUB_B.MBR_NO)
+														 INNER JOIN CNET_MBR_INFO SUB_D ON (SUB_D.MBR_NO = SUB_C.TARGT_MBR_NO)
+												   WHERE SUB_B.MBR_CUALF_CD = '101500'
+												GROUP BY SUB_B.POS_CO_NO
+													   , SUB_D.POS_CO_NO) B
+								  ON (B.EDUCATION_CO_NO = A.CO_NO)
+							   LEFT OUTER JOIN (  SELECT SUB_B.POS_CO_NO AS EDUCATION_CO_NO
+													   , COUNT (SUB_E.TARGT_MBR_NO) AS MENTOR_CNT
+													FROM CNET_MBR_INFO SUB_B
+														 INNER JOIN CNET_MBR_REL_MAPP SUB_C ON (SUB_C.REG_MBR_NO = SUB_B.MBR_NO)
+														 INNER JOIN CNET_MBR_INFO SUB_D ON (SUB_D.MBR_NO = SUB_C.TARGT_MBR_NO)
+														 INNER JOIN CNET_MBR_REL_MAPP SUB_E ON (SUB_E.REG_MBR_NO = SUB_C.TARGT_MBR_NO)
+												   WHERE 1 = 1
+													 AND SUB_B.MBR_CUALF_CD = '101500'
+												GROUP BY SUB_B.POS_CO_NO
+												UNION
+												SELECT '-'
+													 , COUNT (MBR_NO)
+												  FROM CNET_MBR_INFO
+												 WHERE MBR_CUALF_CD = '101503') C
+								  ON (C.EDUCATION_CO_NO = A.CO_NO)
+							   LEFT OUTER JOIN (  SELECT NVL (CO_NO, '-') AS CO_NO
+													   , SUM (ELEMENTARY_LECT_DAY) AS ELEMENTARY_LECT_DAY
+													   , SUM (MIDDLE_LECT_DAY) AS MIDDLE_LECT_DAY
+													   , SUM (HIGH_LECT_DAY) AS HIGH_LECT_DAY
+													FROM (	SELECT CO_NO
+																 , COUNT (ELEMENTARY_LECT_DAY) AS ELEMENTARY_LECT_DAY
+																 , 0 AS MIDDLE_LECT_DAY
+																 , 0 AS HIGH_LECT_DAY
+															  FROM (  SELECT A.CO_NO
+																		   , A.ELEMENTARY_LECT_DAY
+																		FROM TEMP A
+																	   WHERE 1 = 1
+																		 AND A.ELEMENTARY_LECT_DAY IS NOT NULL
+																	GROUP BY A.CO_NO
+																		   , A.ELEMENTARY_LECT_DAY)
+														  GROUP BY CO_NO
+														  UNION ALL
+															SELECT NVL (CO_NO, '-') AS CO_NO
+																 , 0 AS ELEMENTARY_LECT_DAY
+																 , COUNT (MIDDLE_LECT_DAY) AS MIDDLE_LECT_DAY
+																 , 0 AS HIGH_LECT_DAY
+															  FROM (  SELECT A.CO_NO
+																		   , A.MIDDLE_LECT_DAY
+																		FROM TEMP A
+																	   WHERE 1 = 1
+																		 AND A.MIDDLE_LECT_DAY IS NOT NULL
+																	GROUP BY A.CO_NO
+																		   , A.MIDDLE_LECT_DAY)
+														  GROUP BY CO_NO
+														  UNION ALL
+															SELECT NVL (CO_NO, '-') AS CO_NO
+																 , 0 AS ELEMENTARY_LECT_DAY
+																 , 0 AS MIDDLE_LECT_DAY
+																 , COUNT (HIGH_LECT_DAY) AS HIGH_LECT_DAY
+															  FROM (  SELECT A.CO_NO
+																		   , A.HIGH_LECT_DAY
+																		FROM TEMP A
+																	   WHERE 1 = 1
+																		 AND A.HIGH_LECT_DAY IS NOT NULL
+																	GROUP BY A.CO_NO
+																		   , A.HIGH_LECT_DAY)
+														  GROUP BY CO_NO)
+												GROUP BY CO_NO) D
+								  ON (D.CO_NO = A.CO_NO)
+							   LEFT OUTER JOIN (  SELECT B.CO_NO
+													   , SUM (A.ELEMENTARY_LECT_OFFER_CNT) AS ELEMENTARY_LECT_OFFER_CNT
+													   , SUM (A.MIDDLE_LECT_OFFER_CNT) AS MIDDLE_LECT_OFFER_CNT
+													   , SUM (A.HIGH_LECT_OFFER_CNT) AS HIGH_LECT_OFFER_CNT
+													FROM (	SELECT LECTR_MBR_NO
+																 , SUM (ELEMENTARY_LECT_OFFER_CNT) AS ELEMENTARY_LECT_OFFER_CNT
+																 , SUM (MIDDLE_LECT_OFFER_CNT) AS MIDDLE_LECT_OFFER_CNT
+																 , SUM (HIGH_LECT_OFFER_CNT) AS HIGH_LECT_OFFER_CNT
+															  FROM (SELECT A.LECTR_MBR_NO
+																		 , CASE WHEN A.LECT_TARGT_CD = '101534' OR A.LECT_TARGT_CD = '101537' OR A.LECT_TARGT_CD = '101539' OR A.LECT_TARGT_CD = '101540' THEN 1 ELSE 0 END ELEMENTARY_LECT_OFFER_CNT																  
+																		 , CASE WHEN A.LECT_TARGT_CD = '101535' OR A.LECT_TARGT_CD = '101537' OR A.LECT_TARGT_CD = '101538' OR A.LECT_TARGT_CD = '101540' THEN 1 ELSE 0 END MIDDLE_LECT_OFFER_CNT																  
+																		 , CASE WHEN A.LECT_TARGT_CD = '101536' OR A.LECT_TARGT_CD = '101538' OR A.LECT_TARGT_CD = '101539' OR A.LECT_TARGT_CD = '101540' THEN 1 ELSE 0 END HIGH_LECT_OFFER_CNT																  
+																	  FROM CNET_LECT_INFO A INNER JOIN CNET_LECT_TIMS_INFO B ON (B.LECT_SER = A.LECT_SER)
+																	 WHERE 1 = 1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+																	   AND B.REG_DTM >= TO_DATE (#{searchStDate}, 'YYYYMMDD')
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+																	   AND B.REG_DTM <= TO_DATE (#{searchEndDate}, 'YYYYMMDD')
+           ]]>
+        </if>
+																	   AND B.LECT_STAT_CD NOT IN ('101553'))
+														  GROUP BY LECTR_MBR_NO) A
+														 INNER JOIN (  SELECT A.LECTR_MBR_NO
+																			, MAX (B.MBR_CUALF_CD) AS MBR_CUALF_CD
+																			, MAX (F.CO_NO) AS CO_NO
+																		 FROM CNET_LECT_INFO A
+																			  INNER JOIN CNET_MBR_INFO B ON (B.MBR_NO = A.LECTR_MBR_NO)
+																			  INNER JOIN CNET_MBR_REL_MAPP C ON (C.TARGT_MBR_NO = A.LECTR_MBR_NO)
+																			  INNER JOIN CNET_MBR_REL_MAPP D ON (D.TARGT_MBR_NO = C.REG_MBR_NO)
+																			  INNER JOIN CNET_MBR_INFO E ON (E.MBR_NO = D.REG_MBR_NO)
+																			  INNER JOIN CNET_CO_INFO F ON (F.CO_NO = E.POS_CO_NO)
+																		WHERE B.MBR_CUALF_CD = '101502'
+																	 GROUP BY A.LECTR_MBR_NO
+																	 UNION ALL
+																	   SELECT A.LECTR_MBR_NO
+																			, MAX (B.MBR_CUALF_CD) AS MBR_CUALF_CD
+																			, NULL AS CO_NO
+																		 FROM CNET_LECT_INFO A INNER JOIN CNET_MBR_INFO B ON (B.MBR_NO = A.LECTR_MBR_NO)
+																		WHERE B.MBR_CUALF_CD = '101503'
+																	 GROUP BY A.LECTR_MBR_NO) B
+															ON (B.LECTR_MBR_NO = A.LECTR_MBR_NO)
+												GROUP BY B.CO_NO) E
+								  ON (E.CO_NO = A.CO_NO)
+						 WHERE 1 = 1
+					  GROUP BY A.CO_NO
+					  ORDER BY MAX (A.RN))
+			GROUP BY ROLLUP (CO_NO)
+    </select>
+
+    <select id="listMentorStatisticsByEdu" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.MentorStatisticsDTO">
+    <![CDATA[
+        SELECT  NVL(DAY,'총계') AS DAY
+                ,NVL(SUM(COMPANYCNT),0) AS COMPANY_CNT
+                ,NVL(SUM(MENTORCNT),0) AS MENTOR_CNT
+                ,NVL(SUM(LECTURECNT),0) AS LECTURE_CNT
+        FROM    (
+                    SELECT  IIIA.DAY
+                            ,IIIA.CNT AS COMPANYCNT
+                            ,IIIB.CNT AS MENTORCNT
+                            ,IIIC.CNT AS LECTURECNT
+                    FROM    (
+                                SELECT  DATEDIMENSION.DAY
+                                        ,COUNT(DISTINCT COMPANY.MBR_NO) AS CNT
+                                FROM
+                                        (
+                                            SELECT TO_CHAR(TO_DATE(#{searchStDate},'YYYY-MM-DD') + NUMTODSINTERVAL(LEVEL-1,'DAY'),'YYYY-MM-DD') DAY
+                                            FROM DUAL
+                                            CONNECT BY LEVEL <= (TO_DATE (#{searchEndDate}, 'YYYY-MM-DD') - TO_DATE (#{searchStDate}, 'YYYY-MM-DD') + 1)
+                                        ) DATEDIMENSION
+                                        LEFT OUTER JOIN
+                                        (
+                                        SELECT
+                                                A.MBR_NO
+                                                ,A.ID
+                                                ,A.NM
+                                                ,TO_CHAR(A.REG_DTM,'YYYY-MM-DD') AS REG_DTM
+                                        FROM    CNET_MBR_INFO A
+                                                    INNER JOIN (
+                                                        SELECT  IB.MAPP_SER,IA.MBR_NO,IA.ID,IA.NM,IA.POS_CO_NO,IC.CO_NM,IB.TARGT_MBR_NO,IB.REG_MBR_NO,IC.CO_NO
+                                                        FROM    CNET_MBR_INFO IA
+                                                                    INNER JOIN CNET_MBR_REL_MAPP IB
+                                                                        ON  IA.MBR_NO = IB.REG_MBR_NO
+                                                                    INNER JOIN CNET_CO_INFO IC
+                                                                        ON  IA.POS_CO_NO = IC.CO_NO
+                                                                            AND IC.CO_CLASS_CD = '101660'
+                                                        WHERE   IB.REL_CLASS_CD = '101507'
+                                                        AND     IA.MBR_CUALF_CD = '101500'  /* 교육청 */
+                                                    ) B
+                                                        ON A.MBR_NO = B.TARGT_MBR_NO
+                                        WHERE   A.REG_DTM  >=  TO_DATE (#{searchStDate}, 'YYYY-MM-DD')
+                                        AND     A.REG_DTM  <=  TO_DATE (#{searchEndDate}, 'YYYY-MM-DD')
+                                        AND     B.CO_NO = #{coNo}  /* 교육청 코드 */
+                                        ) COMPANY
+                                            ON DATEDIMENSION.DAY = COMPANY.REG_DTM
+                                GROUP BY DATEDIMENSION.DAY
+                            ) IIIA,
+                            (
+                                SELECT  DATEDIMENSION.DAY
+                                        ,COUNT(DISTINCT MENTOR.MBR_NO) AS CNT
+                                FROM
+                                        (
+                                            SELECT TO_CHAR(TO_DATE(#{searchStDate},'YYYY-MM-DD') + NUMTODSINTERVAL(LEVEL-1,'DAY'),'YYYY-MM-DD') DAY
+                                            FROM DUAL
+                                            CONNECT BY LEVEL <= (TO_DATE (#{searchEndDate}, 'YYYY-MM-DD') - TO_DATE (#{searchStDate}, 'YYYY-MM-DD') + 1)
+                                        ) DATEDIMENSION
+                                        LEFT OUTER JOIN (
+                                                SELECT
+                                                        A.MBR_NO
+                                                        ,A.ID
+                                                        ,A.NM
+                                                        ,TO_CHAR(A.REG_DTM,'YYYY-MM-DD') AS REG_DTM
+                                                        ,NVL(B.POS_CO_NO,'-') AS COM_CO_NO
+                                                FROM    CNET_MBR_INFO A
+                                                            LEFT OUTER JOIN  (
+                                                                        SELECT  IB.MAPP_SER,IA.MBR_NO,IA.ID,IA.NM,IA.POS_CO_NO,IC.CO_NM,IB.TARGT_MBR_NO,IB.REG_MBR_NO
+                                                                        FROM    CNET_MBR_INFO IA
+                                                                                    INNER JOIN CNET_MBR_REL_MAPP IB
+                                                                                        ON  IA.MBR_NO = IB.REG_MBR_NO
+                                                                                    INNER JOIN CNET_CO_INFO IC
+                                                                                        ON  IA.POS_CO_NO = IC.CO_NO
+                                                                                            AND IC.CO_CLASS_CD = '101661'
+                                                                        WHERE   IB.REL_CLASS_CD = '101508'
+                                                                        ) B
+                                                                ON A.MBR_NO = B.TARGT_MBR_NO
+                                                            LEFT OUTER JOIN (
+                                                                            SELECT  IB.MAPP_SER,IA.MBR_NO,IA.ID,IA.NM,IA.POS_CO_NO,IC.CO_NM,IB.TARGT_MBR_NO,IB.REG_MBR_NO
+                                                                            FROM    CNET_MBR_INFO IA
+                                                                                        INNER JOIN CNET_MBR_REL_MAPP IB
+                                                                                            ON  IA.MBR_NO = IB.REG_MBR_NO
+                                                                                        INNER JOIN CNET_CO_INFO IC
+                                                                                            ON  IA.POS_CO_NO = IC.CO_NO
+                                                                                                AND IC.CO_CLASS_CD = '101660'
+                                                                            WHERE   IB.REL_CLASS_CD = '101507'
+                                                                            ) C
+                                                                ON B.REG_MBR_NO = C.TARGT_MBR_NO
+                                                WHERE   A.MBR_CLASS_CD = '101505'   /* 멘토 */
+                                                AND     A.MBR_CUALF_CD = '101502'   /* 소속멘토 */
+                                                AND     C.POS_CO_NO = #{coNo}
+                                        )   MENTOR
+                                            ON DATEDIMENSION.DAY = MENTOR.REG_DTM
+                                GROUP BY DATEDIMENSION.DAY
+                            ) IIIB,
+                            (
+                                SELECT  DATEDIMENSION.DAY
+                                        ,COUNT(DISTINCT LECTURE.LECT_SER||LECTURE.LECT_TIMS) AS CNT
+                                FROM
+                                        (
+                                            SELECT TO_CHAR(TO_DATE(#{searchStDate},'YYYY-MM-DD') + NUMTODSINTERVAL(LEVEL-1,'DAY'),'YYYY-MM-DD') DAY
+                                            FROM DUAL
+                                            CONNECT BY LEVEL <= (TO_DATE (#{searchEndDate}, 'YYYY-MM-DD') - TO_DATE (#{searchStDate}, 'YYYY-MM-DD') + 1)
+                                        ) DATEDIMENSION
+                                        LEFT OUTER JOIN (
+                                            SELECT  IX.LECT_SER, IY.MBR_NO,IY.POS_CO_NO,IZ.LECT_TIMS,TO_CHAR(TO_DATE(IU.LECT_DAY,'YYYY-MM-DD'),'YYYY-MM-DD') AS LECT_DAY
+                                            FROM    CNET_LECT_INFO IX
+                                                        INNER JOIN (
+                                                            SELECT  A.MBR_NO
+                                                                    ,DECODE(A.MBR_CUALF_CD, '101503','PRIVATE',NVL(C.POS_CO_NO,'-')) AS POS_CO_NO
+                                                            FROM    CNET_MBR_INFO A
+                                                                        LEFT OUTER JOIN  (
+                                                                                    SELECT  IB.MAPP_SER,IA.MBR_NO,IA.ID,IA.NM,IA.POS_CO_NO,IC.CO_NM,IB.TARGT_MBR_NO,IB.REG_MBR_NO
+                                                                                    FROM    CNET_MBR_INFO IA
+                                                                                                INNER JOIN CNET_MBR_REL_MAPP IB
+                                                                                                    ON  IA.MBR_NO = IB.REG_MBR_NO
+                                                                                                INNER JOIN CNET_CO_INFO IC
+                                                                                                    ON  IA.POS_CO_NO = IC.CO_NO
+                                                                                                        AND IC.CO_CLASS_CD = '101661'
+                                                                                    WHERE   IB.REL_CLASS_CD = '101508'
+                                                                                    ) B
+                                                                            ON A.MBR_NO = B.TARGT_MBR_NO
+                                                                        LEFT OUTER JOIN (
+                                                                                        SELECT  IB.MAPP_SER,IA.MBR_NO,IA.ID,IA.NM,IA.POS_CO_NO,IC.CO_NM,IB.TARGT_MBR_NO,IB.REG_MBR_NO
+                                                                                        FROM    CNET_MBR_INFO IA
+                                                                                                    INNER JOIN CNET_MBR_REL_MAPP IB
+                                                                                                        ON  IA.MBR_NO = IB.REG_MBR_NO
+                                                                                                    INNER JOIN CNET_CO_INFO IC
+                                                                                                        ON  IA.POS_CO_NO = IC.CO_NO
+                                                                                                            AND IC.CO_CLASS_CD = '101660'
+                                                                                        WHERE   IB.REL_CLASS_CD = '101507'
+                                                                                        ) C
+                                                                            ON B.REG_MBR_NO = C.TARGT_MBR_NO
+                                                            WHERE   A.MBR_CLASS_CD = '101505'   /* 멘토 */
+                                                            AND     A.MBR_CUALF_CD = '101502'   /* 소속멘토 */
+                                                        ) IY
+                                                            ON IX.LECTR_MBR_NO = IY.MBR_NO
+                                                        INNER JOIN CNET_LECT_TIMS_INFO IZ
+                                                            ON IX.LECT_SER = IZ.LECT_SER
+                                                        INNER JOIN CNET_LECT_SCHD_INFO IU
+                                                            ON IZ.LECT_SER = IU.LECT_SER
+                                                                AND IZ.LECT_TIMS = IU.LECT_TIMS
+                                                                AND IU.SCHD_SEQ = 1
+                                            WHERE   IX.LECT_STAT_CD IN (101543,101546,101548,101549,101550,101551,101552)
+                                            AND     IY.POS_CO_NO = #{coNo}
+                                            )   LECTURE
+                                            ON DATEDIMENSION.DAY = LECTURE.LECT_DAY
+                                GROUP BY DATEDIMENSION.DAY
+                            ) IIIC
+                    WHERE   IIIA.DAY = IIIB.DAY
+                    AND     IIIA.DAY = IIIC.DAY
+        )
+        GROUP BY ROLLUP (DAY)
+    ]]>
+    </select>
+
+    <select id="listLoginStatistics" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.LoginSummaryDTO">
+        <![CDATA[
+
+        SELECT
+            CAL.SOLAR_DAY AS DAY
+            , NVL(DATA.ELEMENT,0) AS ELEMENT
+            , NVL(DATA.MIDDLE,0) AS MIDDLE
+            , NVL(DATA.HIGH,0) AS HIGH
+            , NVL(DATA.UNIV,0) AS UNIV
+            , NVL(DATA.NORMAL,0) AS NORMAL
+            , NVL(DATA.PARENT,0) AS PARENT
+            , NVL(DATA.TEACHER,0) AS TEACHER
+            , NVL(DATA.MENTOR,0) AS MENTOR
+            , NVL(DATA.ORG,0) AS ORG
+            , NVL(DATA.CORP,0) AS CORP
+        FROM CNET_CAL_INFO CAL
+        , (
+            SELECT
+                TO_CHAR(A.LOGIN_DTM, 'YYYY-MM-DD') AS DTM
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100205' THEN 1 ELSE 0 END), 0) AS ELEMENT
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100206' THEN 1 ELSE 0 END), 0) AS MIDDLE
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100207' THEN 1 ELSE 0 END), 0) AS HIGH
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100208' THEN 1 ELSE 0 END), 0) AS UNIV
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100209' THEN 1 ELSE 0 END), 0) AS NORMAL
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100210' THEN 1 ELSE 0 END), 0) AS PARENT
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD IN ('100214','100215') THEN 1 ELSE 0 END), 0) AS TEACHER
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD IN ('101502','101503') THEN 1 ELSE 0 END), 0) AS MENTOR
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '101500' THEN 1 ELSE 0 END), 0) AS ORG
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '101501' THEN 1 ELSE 0 END), 0) AS CORP
+            FROM CNET_MBR_LOGIN_HIST A
+            , CNET_MBR_INFO B
+            WHERE A.MBR_NO = B.MBR_NO
+        ]]>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+            AND TO_CHAR(A.LOGIN_DTM, 'YYYY-MM-DD') >= #{searchStDate}
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+            AND TO_CHAR(A.LOGIN_DTM, 'YYYY-MM-DD') <= #{searchEndDate}
+            ]]>
+        </if>
+        GROUP BY TO_CHAR(A.LOGIN_DTM, 'YYYY-MM-DD')
+        ) DATA
+        WHERE CAL.SOLAR_DAY = DATA.DTM(+)
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+        AND CAL.SOLAR_DAY >= #{searchStDate}
+        ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+        AND CAL.SOLAR_DAY <= #{searchEndDate}
+        ]]>
+        </if>
+        ORDER BY SOLAR_DAY DESC
+    </select>
+
+    <select id="listLoginStatisticsExcel" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.LoginSummaryDTO">
+        <![CDATA[
+
+        SELECT
+            NVL(CAL.SOLAR_DAY,'합계') AS DAY
+            , SUM(NVL(DATA.ELEMENT,0)) AS ELEMENT
+            , SUM(NVL(DATA.MIDDLE,0)) AS MIDDLE
+            , SUM(NVL(DATA.HIGH,0)) AS HIGH
+            , SUM(NVL(DATA.UNIV,0)) AS UNIV
+            , SUM(NVL(DATA.NORMAL,0)) AS NORMAL
+            , SUM(NVL(DATA.PARENT,0)) AS PARENT
+            , SUM(NVL(DATA.TEACHER,0)) AS TEACHER
+            , SUM(NVL(DATA.MENTOR,0)) AS MENTOR
+            , SUM(NVL(DATA.ORG,0)) AS ORG
+            , SUM(NVL(DATA.CORP,0)) AS CORP
+        FROM CNET_CAL_INFO CAL
+        , (
+            SELECT
+                TO_CHAR(A.LOGIN_DTM, 'YYYY-MM-DD') AS DTM
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100205' THEN 1 ELSE 0 END), 0) AS ELEMENT
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100206' THEN 1 ELSE 0 END), 0) AS MIDDLE
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100207' THEN 1 ELSE 0 END), 0) AS HIGH
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100208' THEN 1 ELSE 0 END), 0) AS UNIV
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100209' THEN 1 ELSE 0 END), 0) AS NORMAL
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100210' THEN 1 ELSE 0 END), 0) AS PARENT
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD IN ('100214','100215') THEN 1 ELSE 0 END), 0) AS TEACHER
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD IN ('101502','101503') THEN 1 ELSE 0 END), 0) AS MENTOR
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '101500' THEN 1 ELSE 0 END), 0) AS ORG
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '101501' THEN 1 ELSE 0 END), 0) AS CORP
+            FROM CNET_MBR_LOGIN_HIST A
+            , CNET_MBR_INFO B
+            WHERE A.MBR_NO = B.MBR_NO
+        ]]>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+            AND TO_CHAR(A.LOGIN_DTM, 'YYYY-MM-DD') >= #{searchStDate}
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+            AND TO_CHAR(A.LOGIN_DTM, 'YYYY-MM-DD') <= #{searchEndDate}
+            ]]>
+        </if>
+        GROUP BY TO_CHAR(A.LOGIN_DTM, 'YYYY-MM-DD')
+        ) DATA
+        WHERE CAL.SOLAR_DAY = DATA.DTM(+)
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+        AND CAL.SOLAR_DAY >= #{searchStDate}
+        ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+        AND CAL.SOLAR_DAY <= #{searchEndDate}
+        ]]>
+        </if>
+        GROUP BY ROLLUP(SOLAR_DAY)
+        ORDER BY CASE WHEN  CAL.SOLAR_DAY IS NULL THEN -1 ELSE 0 END DESC, DAY DESC
+    </select>
+
+    <select id="listJoinStatistics" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.JoinSummaryDTO">
+        <![CDATA[
+
+        SELECT
+            CAL.SOLAR_DAY AS DAY
+            , NVL(DATA.ELEMENT,0) AS ELEMENT
+            , NVL(DATA.MIDDLE,0) AS MIDDLE
+            , NVL(DATA.HIGH,0) AS HIGH
+            , NVL(DATA.UNIV,0) AS UNIV
+            , NVL(DATA.NORMAL,0) AS NORMAL
+            , NVL(DATA.PARENT,0) AS PARENT
+            , NVL(DATA.TEACHER,0) AS TEACHER
+            , NVL(DATA.MENTOR,0) AS MENTOR
+            , NVL(DATA.TOTCNT,0) AS TOTCNT
+        FROM CNET_CAL_INFO CAL
+        , (
+            SELECT
+                TO_CHAR(A.REG_DTM, 'YYYY-MM-DD') AS DTM
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100205' THEN 1 ELSE 0 END), 0) AS ELEMENT
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100206' THEN 1 ELSE 0 END), 0) AS MIDDLE
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100207' THEN 1 ELSE 0 END), 0) AS HIGH
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100208' THEN 1 ELSE 0 END), 0) AS UNIV
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100209' THEN 1 ELSE 0 END), 0) AS NORMAL
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100210' THEN 1 ELSE 0 END), 0) AS PARENT
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD IN ('100214','100215') THEN 1 ELSE 0 END), 0) AS TEACHER
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD IN ('101502','101503') THEN 1 ELSE 0 END), 0) AS MENTOR
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD IN ('100205','100206','100207','100208','100209','100210','100214','100215','101502','101503') THEN 1 ELSE 0 END), 0) AS TOTCNT
+            FROM CNET_MBR_INFO A
+            WHERE 1 = 1
+        ]]>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+            AND TO_CHAR(A.REG_DTM, 'YYYY-MM-DD') >= #{searchStDate}
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+            AND TO_CHAR(A.REG_DTM, 'YYYY-MM-DD') <= #{searchEndDate}
+            ]]>
+        </if>
+        GROUP BY TO_CHAR(A.REG_DTM, 'YYYY-MM-DD')
+        ) DATA
+        WHERE CAL.SOLAR_DAY = DATA.DTM(+)
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+        AND CAL.SOLAR_DAY >= #{searchStDate}
+        ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+        AND CAL.SOLAR_DAY <= #{searchEndDate}
+        ]]>
+        </if>
+        ORDER BY SOLAR_DAY DESC
+    </select>
+
+    <select id="listJoinStatisticsExcel" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.JoinSummaryDTO">
+        <![CDATA[
+
+        SELECT
+            NVL(CAL.SOLAR_DAY,'합계') AS DAY
+            , SUM(NVL(DATA.ELEMENT,0)) AS ELEMENT
+            , SUM(NVL(DATA.MIDDLE,0)) AS MIDDLE
+            , SUM(NVL(DATA.HIGH,0)) AS HIGH
+            , SUM(NVL(DATA.UNIV,0)) AS UNIV
+            , SUM(NVL(DATA.NORMAL,0)) AS NORMAL
+            , SUM(NVL(DATA.PARENT,0)) AS PARENT
+            , SUM(NVL(DATA.TEACHER,0)) AS TEACHER
+            , SUM(NVL(DATA.MENTOR,0)) AS MENTOR
+            , SUM(NVL(DATA.TOTCNT,0)) AS TOTCNT
+        FROM CNET_CAL_INFO CAL
+        , (
+            SELECT
+                TO_CHAR(A.REG_DTM, 'YYYY-MM-DD') AS DTM
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100205' THEN 1 ELSE 0 END), 0) AS ELEMENT
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100206' THEN 1 ELSE 0 END), 0) AS MIDDLE
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100207' THEN 1 ELSE 0 END), 0) AS HIGH
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100208' THEN 1 ELSE 0 END), 0) AS UNIV
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100209' THEN 1 ELSE 0 END), 0) AS NORMAL
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD = '100210' THEN 1 ELSE 0 END), 0) AS PARENT
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD IN ('100214','100215') THEN 1 ELSE 0 END), 0) AS TEACHER
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD IN ('101502','101503') THEN 1 ELSE 0 END), 0) AS MENTOR
+                , NVL(SUM(CASE WHEN MBR_CUALF_CD IN ('100205','100206','100207','100208','100209','100210','100214','100215','101502','101503') THEN 1 ELSE 0 END), 0) AS TOTCNT
+            FROM CNET_MBR_INFO A
+            WHERE 1 = 1
+        ]]>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+            AND TO_CHAR(A.REG_DTM, 'YYYY-MM-DD') >= #{searchStDate}
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+            AND TO_CHAR(A.REG_DTM, 'YYYY-MM-DD') <= #{searchEndDate}
+            ]]>
+        </if>
+        GROUP BY TO_CHAR(A.REG_DTM, 'YYYY-MM-DD')
+        ) DATA
+        WHERE CAL.SOLAR_DAY = DATA.DTM(+)
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+        AND CAL.SOLAR_DAY >= #{searchStDate}
+        ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+        AND CAL.SOLAR_DAY <= #{searchEndDate}
+        ]]>
+        </if>
+        GROUP BY ROLLUP(SOLAR_DAY)
+        ORDER BY CASE WHEN  CAL.SOLAR_DAY IS NULL THEN -1 ELSE 0 END DESC, DAY DESC
+    </select>
+
+    <select id="listLectureStatistics" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.LectureSummaryDTO">
+    <![CDATA[
+        select  *
+        from    (
+                    select
+                            nvl(DATEDIMENSION.day,' ') as day
+                            ,count(actLect.lect_targt_cd) as totalCnt
+                            ,nvl(sum(regLect.ele),0) as eleCnt
+                            ,nvl(sum(regLect.mid),0) as midCnt
+                            ,nvl(sum(regLect.high),0) as highCnt
+                            ,nvl(sum(regLect.subtotal),0) as subTotalCnt
+                    from
+                            (
+                                SELECT TO_CHAR(TO_DATE(#{searchStDate},'YYYY-MM-DD') + NUMTODSINTERVAL(LEVEL-1,'DAY'),'YYYY-MM-DD') DAY
+                                FROM DUAL
+                                CONNECT BY LEVEL <= (TO_DATE (#{searchEndDate}, 'YYYY-MM-DD') - TO_DATE (#{searchStDate}, 'YYYY-MM-DD') + 1)
+                            ) DATEDIMENSION,
+                            /* 활성 강의 목록 */
+                            (
+                                select  to_char(to_date(a.lect_day,'YYYY-MM-DD'),'YYYY-MM-DD') as day
+                                        , c.lect_targt_cd
+                                from    CNET_LECT_SCHD_INFO a
+                                            inner join CNET_LECT_TIMS_INFO b
+                                                on (a.lect_ser = b.lect_ser
+                                                    and a.lect_tims = b.lect_tims)
+                                            inner join CNET_LECT_INFO c
+                                                on a.lect_ser = c.lect_ser
+                                where   a.lect_stat_cd in ('101544','101548','101549','101550','101551')
+]]>
+                                <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+                                <![CDATA[
+                                    AND TO_DATE(A.lect_day,'YYYY-MM-DD') >= TO_DATE (#{searchStDate}, 'YYYY-MM-DD')
+                                ]]>
+                                </if>
+                                <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+                                <![CDATA[
+                                    AND TO_DATE(A.lect_day,'YYYY-MM-DD') <= TO_DATE (#{searchEndDate}, 'YYYY-MM-DD')
+                                 ]]>
+                                </if>
+<![CDATA[
+                            ) actLect,
+                            /* 등록 강의 목록 */
+                            (
+                            select  to_char(b.reg_dtm,'yyyy-MM-dd') as day
+                                    ,c.LECT_TARGT_CD
+                                    ,CASE   WHEN c.LECT_TARGT_CD = '101534' THEN 1
+                                            WHEN c.LECT_TARGT_CD = '101537' THEN 1
+                                            WHEN c.LECT_TARGT_CD = '101539' THEN 1
+                                            WHEN c.LECT_TARGT_CD = '101540' THEN 1
+                                            ELSE 0
+                                    END    as ele
+                                    ,CASE   WHEN c.LECT_TARGT_CD = '101535' THEN 1
+                                            WHEN c.LECT_TARGT_CD = '101537' THEN 1
+                                            WHEN c.LECT_TARGT_CD = '101538' THEN 1
+                                            WHEN c.LECT_TARGT_CD = '101540' THEN 1
+                                            ELSE 0
+                                    END    as mid
+                                    ,CASE   WHEN c.LECT_TARGT_CD = '101536' THEN 1
+                                            WHEN c.LECT_TARGT_CD = '101538' THEN 1
+                                            WHEN c.LECT_TARGT_CD = '101539' THEN 1
+                                            WHEN c.LECT_TARGT_CD = '101540' THEN 1
+                                            ELSE 0
+                                    END    as high
+                                    ,decode(c.LECT_TARGT_CD,NULL,0,1) as subtotal
+                            from    CNET_LECT_SCHD_INFO a
+                                        inner join CNET_LECT_TIMS_INFO b
+                                            on (a.lect_ser = b.lect_ser
+                                                and a.lect_tims = b.lect_tims
+                                                and a.schd_seq = 1)
+                                        inner join CNET_LECT_INFO c
+                                            on a.lect_ser = c.lect_ser
+                            where   a.lect_stat_cd in ('101543','101544','101545','101547','101548','101549','101550','101551','101552','101553')
+]]>
+                        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+                        <![CDATA[
+                            AND b.reg_dtm >= TO_DATE (#{searchStDate}, 'YYYY-MM-DD')
+                        ]]>
+                        </if>
+                        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+                        <![CDATA[
+                            AND b.reg_dtm <= TO_DATE (#{searchEndDate}, 'YYYY-MM-DD')
+                        ]]>
+                        </if>
+<![CDATA[
+                            ) regLect
+                    where   DATEDIMENSION.day = actLect.day(+)
+                    and     DATEDIMENSION.day = regLect.day(+)
+                    group by rollup(DATEDIMENSION.day)
+                ) A
+        order by A.day desc
+]]>
+
+    </select>
+
+    <select id="excelClassList" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.ClassStatisticsExcelDto">
+        /* paging */
+        SELECT
+            ROW_NUMBER() OVER(ORDER BY H.SIDO_NM ASC, H.SGGU_NM ASC, G.CLAS_ROOM_SER ASC) AS RN
+            , ROW_NUMBER() OVER(ORDER BY H.SIDO_NM ASC, H.SGGU_NM ASC, G.CLAS_ROOM_SER ASC) AS NO
+            , G.CLAS_ROOM_SER
+            , G.CLAS_ROOM_NM
+            , H.SIDO_NM
+            , H.SGGU_NM
+            , (SELECT CD_NM FROM CNET_CODE Z WHERE Z.CD = H.SCH_CLASS_CD) AS SCH_CLASS_NM
+            , H.SCH_NO
+            , H.SCH_NM
+            , FN_SCH_PRSN_INFO(H.SCH_NO, 'NM') AS NM
+            , FN_SCH_PRSN_INFO(H.SCH_NO, 'MOBILE') AS MOBILE
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = H.JOIN_CLASS)||NVL2(H.DEVICE_TYPE, '('||(SELECT CD_NM FROM CNET_CODE WHERE CD = H.DEVICE_TYPE)||')', NULL) AS JOIN_CLASS_CD_NM
+            <!--, (SELECT COUNT(1) FROM CNET_LECT_APPL_INFO WHERE CLAS_ROOM_SER = G.CLAS_ROOM_SER AND APPL_STAT_CD IN ('101576', '101577')) AS LECT_CNT-->
+            , (SELECT COUNT(1) FROM CNET_LECT_APPL_INFO LAI, CNET_LECT_SCHD_INFO LSI
+            WHERE LAI.LECT_SER = LSI.LECT_SER AND LAI.LECT_TIMS = LSI.LECT_TIMS AND LSI.LECT_STAT_CD = '101551'
+            AND LAI.CLAS_ROOM_SER = G.CLAS_ROOM_SER AND LAI.APPL_STAT_CD IN ('101576', '101577')
+            ) AS LECT_CNT
+        /* paging */
+        FROM CNET_CLAS_ROOM_INFO G
+        INNER JOIN CNET_SCH_INFO H ON (H.SCH_NO = G.SCH_NO)
+        WHERE H.USE_YN = 'Y'
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schoolGrd)">
+          AND H.SCH_CLASS_CD = #{schoolGrd}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sidoNm)">
+          AND REGEXP_LIKE(H.SIDO_NM, #{sidoNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sgguNm)">
+          AND REGEXP_LIKE(H.SGGU_NM, #{sgguNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(keyword)">
+            <if test="searchKey eq 'all'">
+                AND (
+                        REGEXP_LIKE(G.CLAS_ROOM_NM, #{keyword})
+                        OR REGEXP_LIKE(H.SCH_NM, #{keyword})
+                    )
+            </if>
+            <if test="searchKey eq 'schNm'">
+                AND REGEXP_LIKE(H.SCH_NM, #{keyword})
+            </if>
+            <if test="searchKey eq 'classNm'">
+                AND REGEXP_LIKE(G.CLAS_ROOM_NM, #{keyword})
+            </if>
+        </if>
+    </select>
+
+    <select id="excelSchoolList" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.ClassStatisticsExcelDto">
+        /* paging */
+        SELECT
+            *
+        /* paging */
+        FROM (
+            SELECT
+                ROW_NUMBER() OVER(ORDER BY H.SIDO_NM ASC, H.SGGU_NM ASC, H.SCH_NO ASC) AS RN
+                , ROW_NUMBER() OVER(ORDER BY H.SIDO_NM ASC, H.SGGU_NM ASC, H.SCH_NO ASC) AS NO
+                , H.SCH_NO
+                , H.SIDO_NM
+                , H.SGGU_NM
+                , (SELECT CD_NM FROM CNET_CODE Z WHERE Z.CD = H.SCH_CLASS_CD) AS SCH_CLASS_NM
+                , H.SCH_NM
+                , FN_SCH_PRSN_INFO(H.SCH_NO, 'NM') AS NM
+                , FN_SCH_PRSN_INFO(H.SCH_NO, 'MOBILE') AS MOBILE
+                , (SELECT CD_NM FROM CNET_CODE WHERE CD = H.JOIN_CLASS)||NVL2(H.DEVICE_TYPE, '('||(SELECT CD_NM FROM CNET_CODE WHERE CD = H.DEVICE_TYPE)||')', NULL) AS JOIN_CLASS_CD_NM
+                , COUNT(DISTINCT C.CLAS_ROOM_SER) AS CLS_CNT
+                , COUNT(DISTINCT LSC.LECT_SER) AS LECT_CNT
+                <!--, SUM(CASE WHEN C.CLAS_ROOM_SER IS NOT NULL THEN 1 ELSE 0 END) AS CLS_CNT
+                , SUM(CASE WHEN L.LECT_SER IS NOT NULL AND L.LECT_TIMS IS NOT NULL THEN 1 ELSE 0 END) AS LECT_CNT-->
+            FROM CNET_SCH_INFO H
+            LEFT OUTER JOIN CNET_CLAS_ROOM_INFO C ON (H.SCH_NO = C.SCH_NO)
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+                <![CDATA[
+                        AND TO_CHAR(c.REG_DTM, 'YYYY-MM-DD') >=  #{searchStDate}
+                        ]]>
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+                <![CDATA[
+                        AND TO_CHAR(c.REG_DTM, 'YYYY-MM-DD') <= #{searchEndDate}
+                        ]]>
+            </if>
+            <!--LEFT OUTER JOIN CNET_LECT_APPL_INFO L ON (C.CLAS_ROOM_SER = L.CLAS_ROOM_SER AND L.APPL_STAT_CD IN ('101576', '101577'))-->
+            LEFT OUTER JOIN (
+                SELECT CLS.SCH_NO, LA.LECT_SER||LA.LECT_TIMS AS LECT_SER
+                FROM CNET_CLAS_ROOM_INFO CLS
+                INNER JOIN CNET_LECT_APPL_INFO LA ON (CLS.CLAS_ROOM_SER = LA.CLAS_ROOM_SER AND LA.APPL_STAT_CD IN ('101576', '101577'))
+                <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+                    <![CDATA[
+                    AND TO_CHAR(CLS.REG_DTM, 'YYYY-MM-DD') >= #{searchStDate}
+                    ]]>
+                </if>
+                <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+                    <![CDATA[
+                    AND TO_CHAR(CLS.REG_DTM, 'YYYY-MM-DD') <= #{searchEndDate}
+                    ]]>
+                </if>
+                INNER JOIN CNET_LECT_SCHD_INFO LS ON (LS.LECT_SER = LA.LECT_SER AND LS.LECT_TIMS = LA.LECT_TIMS AND LS.LECT_STAT_CD = '101551')
+            ) LSC ON (LSC.SCH_NO = H.SCH_NO)
+            WHERE H.USE_YN = 'Y'
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schoolGrd)">
+                AND H.SCH_CLASS_CD = #{schoolGrd}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sidoNm)">
+                AND REGEXP_LIKE(H.SIDO_NM, #{sidoNm})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sgguNm)">
+                AND REGEXP_LIKE(H.SGGU_NM, #{sgguNm})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(keyword)">
+                <!--<if test="searchKey eq 'all'">
+                    AND (
+                    REGEXP_LIKE(G.CLAS_ROOM_NM, #{keyword})
+                    OR REGEXP_LIKE(H.SCH_NM, #{keyword})
+                    )
+                </if>
+                <if test="searchKey eq 'schNm'">-->
+                    AND REGEXP_LIKE(H.SCH_NM, #{keyword})
+                <!--</if>
+                <if test="searchKey eq 'classNm'">
+                    AND REGEXP_LIKE(G.CLAS_ROOM_NM, #{keyword})
+                </if>-->
+            </if>
+            GROUP BY H.SCH_NO, H.SIDO_NM, H.SGGU_NM, H.SCH_NM, H.DEVICE_TYPE, H.SCH_CLASS_CD, H.JOIN_CLASS
+        )
+    </select>
+
+    <select id="excelClassLectureList" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.ClassStatisticsExcelDto">
+        /* paging */
+        SELECT
+            ROW_NUMBER() OVER(ORDER BY H.SIDO_NM ASC, H.SGGU_NM ASC, G.CLAS_ROOM_SER ASC, LS.LECT_DAY DESC, LS.LECT_START_TIME ASC) AS RN
+            , ROW_NUMBER() OVER(ORDER BY H.SIDO_NM ASC, H.SGGU_NM ASC, G.CLAS_ROOM_SER ASC, LS.LECT_DAY DESC, LS.LECT_START_TIME ASC) AS NO
+            , G.CLAS_ROOM_SER
+            , G.CLAS_ROOM_NM
+            , H.SIDO_NM
+            , H.SGGU_NM
+            , (SELECT CD_NM FROM CNET_CODE Z WHERE Z.CD = H.SCH_CLASS_CD) AS SCH_CLASS_NM
+            , H.SCH_NO
+            , H.SCH_NM
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = H.JOIN_CLASS)||NVL2(H.DEVICE_TYPE, '('||(SELECT CD_NM FROM CNET_CODE WHERE CD = H.DEVICE_TYPE)||')', NULL) AS JOIN_CLASS_CD_NM
+            , LS.LECT_TIMS
+            , LS.SCHD_SEQ
+            , LS.LECT_SER||'-'||LS.LECT_TIMS AS LECT_ID
+            , (SELECT CD_NM FROM CNET_CODE Z WHERE Z.SUP_CD = '101541' AND Z.CD = LS.LECT_STAT_CD) AS lect_stat_cd_nm
+            , TO_CHAR(TO_DATE(LS.LECT_DAY, 'YYYYMMDD'), 'YYYY-MM-DD') AS LECT_DAY
+            , TO_CHAR(TO_DATE(LS.LECT_START_TIME, 'HH24:MI'), 'HH24:MI')||'~'||TO_CHAR(TO_DATE(LS.LECT_END_TIME, 'HH24:MI'), 'HH24:MI') AS lect_time
+            , (SELECT
+                    CD_NM
+                FROM CNET_JOB_CLSF_CD
+                WHERE 1 = 1
+                AND CD_LV = 1
+                START WITH CD = J.JOB_CLSF_CD
+                CONNECT BY NOCYCLE PRIOR SUP_CD = CD) AS LECT_JOB_CLSF_NM
+            , NVL((SELECT Z.JOB_NM FROM CNET_JOB_INFO Z WHERE Z.JOB_NO = LI.LECTR_JOB_NO), F.JOB_NM) AS JOB_NM
+            , LI.LECTR_NM
+            , LI.LECT_TITLE
+            , (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = La.Appl_Mbr_No) AS APPL_MBR_NM
+            , (SELECT MOBILE FROM CNET_MBR_INFO WHERE MBR_NO = La.Appl_Mbr_No) AS APPL_MOBILE
+            , (SELECT CD_NM FROM CNET_CODE Z WHERE Z.SUP_CD = '101528' AND Z.CD = LI.LECT_TYPE_CD) AS LECT_TYPE_CD_NM
+        /* paging */
+        FROM CNET_CLAS_ROOM_INFO G
+        INNER JOIN CNET_SCH_INFO H ON (H.SCH_NO = G.SCH_NO)
+        INNER JOIN CNET_LECT_APPL_INFO LA ON (LA.CLAS_ROOM_SER = G.CLAS_ROOM_SER AND LA.APPL_STAT_CD IN ('101576', '101577'))
+        INNER JOIN CNET_LECT_SCHD_INFO LS ON (LS.LECT_SER = LA.LECT_SER AND LS.LECT_TIMS = LA.LECT_TIMS AND LS.LECT_STAT_CD = '101551')
+        INNER JOIN CNET_LECT_TIMS_INFO LT ON (LT.LECT_SER = LS.LECT_SER AND LT.LECT_TIMS = LS.LECT_TIMS)
+        INNER JOIN CNET_LECT_INFO LI ON (LI.LECT_SER = LT.LECT_SER)
+        LEFT OUTER JOIN CNET_MBR_JOB_INFO F ON (F.MBR_NO = LI.LECTR_MBR_NO)
+        LEFT OUTER JOIN CNET_JOB_INFO J ON (J.JOB_NO = F.JOB_NO)
+        WHERE H.USE_YN = 'Y'
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schoolGrd)">
+            AND H.SCH_CLASS_CD = #{schoolGrd}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sidoNm)">
+            AND REGEXP_LIKE(H.SIDO_NM, #{sidoNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sgguNm)">
+            AND REGEXP_LIKE(H.SGGU_NM, #{sgguNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(keyword)">
+            <if test="searchKey eq 'all'">
+                AND (
+                REGEXP_LIKE(G.CLAS_ROOM_NM, #{keyword})
+                OR REGEXP_LIKE(H.SCH_NM, #{keyword})
+                )
+            </if>
+            <if test="searchKey eq 'schNm'">
+                AND REGEXP_LIKE(H.SCH_NM, #{keyword})
+            </if>
+            <if test="searchKey eq 'classNm'">
+                AND REGEXP_LIKE(G.CLAS_ROOM_NM, #{keyword})
+            </if>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            <![CDATA[
+        AND TO_CHAR(TO_DATE(LS.LECT_DAY, 'YYYYMMDD'), 'YYYY-MM-DD') >= #{searchStDate}
+        ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+        AND TO_CHAR(TO_DATE(LS.LECT_DAY, 'YYYYMMDD'), 'YYYY-MM-DD') <= #{searchEndDate}
+        ]]>
+        </if>
+    </select>
+
+    <select id="selectBizSetSchoolCnt" parameterType="string" resultType="int">
+        <![CDATA[
+        select
+                (  select count(1) as cnt
+                    from    cnet_sch_grp_mapp z
+                    where   b.grp_no = z.grp_no
+                ) as biz_sch_cnt /* 배정그룹에 속한 학교수 */
+        from    CNET_BIZ_SET_INFO a
+                join CNET_BIZ_GRP_INFO b
+                    on a.set_targt_no = b.grp_no
+        where   a.set_ser = #{setSer}
+        ]]>
+    </select>
+
+    <select id="selectAppliedSchool" parameterType="string" resultType="map">
+        <![CDATA[
+            select  count(distinct a.sch_no) as sch_app_cnt  /* 1회이상 참여학교수 */
+                    , nvl(sum(clas_deduction_cnt),0) as sch_app_tot /* 학교참여수누적(연강:연강수,블록: 2,나머지: 1) */
+            from    (
+                            select
+                                    id.lect_ser
+                                    , id.lect_tims
+                                    , case    when ic.LECT_TYPE_CD = '101530' and ia.APPL_CLASS_CD = 101715 then 1 /* 연강 */
+                                              when ic.LECT_TYPE_CD = '101530' and ia.APPL_CLASS_CD = 101716 then 0.5 /* 연강 */
+                                            when ic.LECT_TYPE_CD = '101532' and ia.APPL_CLASS_CD = 101715 then 2  /* 블록 */
+                                            when ic.LECT_TYPE_CD = '101532' and ia.APPL_CLASS_CD = 101716 then 1  /* 블록 */
+                                            else
+                                              case when ia.appl_class_cd = 101715 then 1
+                                                    when ia.appl_class_cd = 101716 then 0.5
+                                              end
+                                      end as clas_deduction_cnt /* 수업차감기준 */
+                                    , ia.clas_room_ser
+                                    , ic.max_appl_cnt
+                            from    CNET_LECT_APPL_INFO ia
+                                    join CNET_LECT_INFO ic
+                                        on ia.lect_ser = ic.lect_ser
+                                    join CNET_LECT_TIMS_INFO ie
+                                        on ie.lect_ser = ia.lect_ser
+                                            and ie.lect_tims = ia.lect_tims
+                                    join CNET_LECT_SCHD_INFO id
+                                        on ia.lect_ser = id.lect_ser
+                                            and ia.lect_tims = id.lect_tims
+                            where   ia.appl_stat_cd in ('101576','101577','101728','101729')
+                            and     ia.set_ser = #{setSer}         /* 배정그룹 */
+                            and     ie.lect_stat_cd = '101551'  /* 수업완료됨 */
+                        ) b
+                    left outer join CNET_CLAS_ROOM_INFO a
+                        on a.clas_room_ser = b.clas_room_ser
+        ]]>
+    </select>
+
+    <select id="selectAppliedLecture" parameterType="string" resultType="map">
+        <![CDATA[
+            select
+                    sum(lect_deduction_cnt) as lect_appl_cnt /* 수업제공횟수 */
+                    ,sum(avg_sch_app)/count(1) as avg_sch_app   /* 수업당 참여학교수 평균 */
+            from (
+            select  a.lect_ser
+                    ,a.lect_tims
+                    ,a.max_appl_cnt
+                    ,a.lect_deduction_cnt
+                    ,nvl(b.sch_appl_cnt,0) as sch_appl_cnt
+                    ,nvl(b.sch_appl_cnt,0)/a.max_appl_cnt as avg_sch_app
+            from
+                    (
+                        select
+                                ie.lect_ser
+                                , ie.lect_tims
+                                , max(ic.max_appl_cnt) as max_appl_cnt
+                                , sum(case    when ic.LECT_TYPE_CD = '101530' then 1 /* 연강 */
+                                        when ic.LECT_TYPE_CD = '101532' then 2  /* 블록 */
+                                        else 1
+                                    end) as lect_deduction_cnt /* 수업차감기준 */
+                        from    CNET_LECT_INFO ic
+                                join CNET_LECT_TIMS_INFO ie
+                                    on ie.lect_ser = ic.lect_ser
+                                join CNET_LECT_SCHD_INFO id
+                                    on ie.lect_ser = id.lect_ser
+                                        and ie.lect_tims = id.lect_tims
+                        where  ie.lect_stat_cd = '101551'
+                        group by ie.lect_ser,ie.lect_tims
+                    ) a
+                    left outer join
+                    (
+                    select  ia.lect_ser
+                            ,ia.lect_tims
+                            ,count(distinct ib.sch_no) as sch_appl_cnt
+                    from    CNET_LECT_APPL_INFO ia
+                                join CNET_CLAS_ROOM_INFO ib
+                                    on ia.clas_room_ser = ib.clas_room_ser
+                                join CNET_BIZ_SET_INFO ic
+                                    on ia.set_ser = ic.set_ser
+                    where   ia.appl_stat_cd in ('101576','101577')
+                    and     ic.set_ser = #{setSer}
+                    group by ia.lect_ser, ia.lect_tims
+                    ) b
+                    on a.lect_ser = b.lect_ser
+                        and a.lect_tims = b.lect_tims
+                )
+        ]]>
+    </select>
+
+    <select id="selectMentorSummary" parameterType="string" resultType="map">
+        <![CDATA[
+            select  count(distinct job_no) as job_tot_cnt
+                    ,count(mbr_no) as mentor_tot_cnt
+                    ,count(distinct case when appl_cnt > 0 then mbr_no end) as appl_mbr_cnt
+                    ,count(distinct case when appl_cnt > 0 then job_no end) as appl_job_cnt
+            from    (
+                        select
+                                a.mbr_no
+                                ,b.job_no
+                                ,case when c.lectr_mbr_no is null then 0
+                                    else 1
+                                end as appl_cnt
+                        from    cnet_mbr_info a
+                                join CNET_MBR_JOB_INFO b
+                                    on a.mbr_no = b.mbr_no
+                                left outer join (
+                                                    select  distinct lectr_mbr_no
+                                                    from    cnet_lect_info a
+                                                            join CNET_LECT_TIMS_INFO b
+                                                                on a.lect_ser = b.lect_ser
+                                                    where   b.lect_stat_cd = '101551'
+                                                ) c
+                                    on a.mbr_no = c.lectr_mbr_no
+                        where   a.mbr_class_cd = '101505'
+                    )
+        ]]>
+    </select>
+
+
+    <select id="selectLectureSummaryByJob" parameterType="string" resultType="kr.or.career.mentor.domain.LectureSummaryByJobDto">
+        <![CDATA[
+            select  a.job_no
+                    ,a.job_nm
+                    ,a.cd_nm as job_clsf_nm
+                    ,nvl(mentor_cnt,0) as mentor_cnt
+                    ,nvl(lect_cnt,0) as lect_cnt
+            from    (
+                    select
+                            ia.job_no
+                            ,ia.job_nm
+                            ,id.cd_nm
+                    from    CNET_JOB_INFO ia
+                            join CNET_JOB_CLSF_CD ib
+                                on ia.job_clsf_cd = ib.cd
+                            join CNET_JOB_CLSF_CD ic
+                                on ib.sup_cd = ic.cd
+                            join CNET_JOB_CLSF_CD id
+                                on ic.sup_cd = id.cd
+                    where   id.cd_lv > 0
+                    and     id.sup_cd = '100040'
+                    ) a
+                    left outer join (
+                                    select  job_no
+                                            , max(mentor_cnt) as mentor_cnt
+                                            , sum(lect_cnt) as lect_cnt
+                                    from    (
+                                                select  ia.mbr_no
+                                                        , ib.job_no
+                                                        , ic.lect
+                                                        , ic.lectr_mbr_no
+                                                        , ib.mentor_cnt
+                                                        , sum(ic.cnt) over (partition by ic.lect) as lect_cnt
+                                                from    cnet_mbr_info ia
+                                                            left outer join (select mbr_no,job_no,count(job_no) over (partition by job_no) as mentor_cnt from CNET_MBR_JOB_INFO) ib
+                                                                on ia.mbr_no = ib.mbr_no
+                                                            left outer join (
+                                                                            select  xb.lect_ser || xb.lect_tims as lect
+                                                                                    ,xa.lectr_mbr_no
+                                                                                    ,case when xa.lect_type_cd = 101530 then xc.cnt
+                                                                                          when xa.lect_type_cd = 101532 then 2
+                                                                                          else 1
+                                                                                    end cnt
+                                                                            from    CNET_LECT_INFO xa
+                                                                                        join CNET_LECT_TIMS_INFO xb
+                                                                                            on xa.lect_ser = xb.lect_ser
+                                                                                        join (select lect_ser,lect_tims, count(1) as cnt from CNET_LECT_SCHD_INFO group by lect_ser,lect_tims) xc
+                                                                                            on xb.lect_ser = xc.lect_ser
+                                                                                                and xb.lect_tims = xc.lect_tims
+                                                                                        join (select distinct lect_ser,lect_tims,set_ser from CNET_LECT_APPL_INFO) xd
+                                                                                            on xb.lect_ser = xd.lect_ser
+                                                                                                and xb.lect_tims = xd.lect_tims
+                                                                            where   xb.lect_stat_cd = '101551'
+                                                                            and     xd.set_ser = #{setSer}
+                                                                            ) ic
+                                                                on ia.mbr_no = ic.lectr_mbr_no
+                                                WHERE   ia.mbr_class_cd = '101505'
+                                                and     ia.mbr_stat_cd <> '100864'
+                                            )
+                                    group by job_no
+                                    ) b
+                        on a.job_no = b.job_no
+            order by a.cd_nm
+        ]]>
+    </select>
+
+    <select id="selectMentorSummaryByJobCslf" parameterType="string" resultType="kr.or.career.mentor.domain.MentorSummaryByJobClsfDto">
+        <![CDATA[
+           select
+                    SUBSTR(a.cd,INSTR(a.cd,'|',1,1)+1) as job_clsf_nm
+                    ,sum(a.job_cnt) as job_cnt
+                    ,sum(nvl(b.mentor_cnt,0)) as mentor_cnt
+                    ,sum(nvl(b.lect_cnt,0)) as lecture_cnt
+            from    (
+                    select
+                            ia.job_no
+                            ,ia.job_nm
+                            ,id.cd_nm
+                            ,id.cd||'|'||id.cd_nm as cd
+                            ,1 as job_cnt
+                    from    CNET_JOB_INFO ia
+                            join CNET_JOB_CLSF_CD ib
+                                on ia.job_clsf_cd = ib.cd
+                            join CNET_JOB_CLSF_CD ic
+                                on ib.sup_cd = ic.cd
+                            join CNET_JOB_CLSF_CD id
+                                on ic.sup_cd = id.cd
+                    where   id.cd_lv > 0
+                    and     id.sup_cd = '100040'
+                    ) a
+                    left outer join (
+                                    select  job_no
+                                            , max(mentor_cnt) as mentor_cnt
+                                            , sum(lect_cnt) as lect_cnt
+                                    from    (
+                                                select  ia.mbr_no
+                                                        , ib.job_no
+                                                        , ic.lect
+                                                        , ic.lectr_mbr_no
+                                                        , ib.mentor_cnt
+                                                        , sum(ic.cnt) over (partition by ic.lect) as lect_cnt
+                                                from    cnet_mbr_info ia
+                                                            left outer join (select mbr_no,job_no,count(job_no) over (partition by job_no) as mentor_cnt from CNET_MBR_JOB_INFO) ib
+                                                                on ia.mbr_no = ib.mbr_no
+                                                            left outer join (
+                                                                            select  xb.lect_ser || xb.lect_tims as lect
+                                                                                    ,xa.lectr_mbr_no
+                                                                                    ,case when xa.lect_type_cd = 101530 then xc.cnt
+                                                                                          when xa.lect_type_cd = 101532 then 2
+                                                                                          else 1
+                                                                                    end cnt
+                                                                            from    CNET_LECT_INFO xa
+                                                                                        join CNET_LECT_TIMS_INFO xb
+                                                                                            on xa.lect_ser = xb.lect_ser
+                                                                                        join (select lect_ser,lect_tims, count(1) as cnt from CNET_LECT_SCHD_INFO group by lect_ser,lect_tims) xc
+                                                                                            on xb.lect_ser = xc.lect_ser
+                                                                                                and xb.lect_tims = xc.lect_tims
+                                                                                        join (select distinct lect_ser,lect_tims,set_ser from CNET_LECT_APPL_INFO) xd
+                                                                                            on xb.lect_ser = xd.lect_ser
+                                                                                                and xb.lect_tims = xd.lect_tims
+                                                                            where   xb.lect_stat_cd = '101551'
+                                                                            and     xd.set_ser = #{setSer}
+                                                                            ) ic
+                                                                on ia.mbr_no = ic.lectr_mbr_no
+                                                WHERE   ia.mbr_class_cd = '101505'
+                                                and     ia.mbr_stat_cd <> '100864'
+                                            )
+                                    group by job_no
+                                    ) b
+                        on a.job_no = b.job_no
+            group by rollup(a.cd)
+        ]]>
+    </select>
+
+    <select id="listAreaStatistics" parameterType="string" resultType="kr.or.career.mentor.domain.StatusAreaDto">
+        <![CDATA[
+             select  case when iia.sido_nm is null then '계' else iia.sido_nm end as sido_nm
+            ,sum(iia.e_targt_cnt) as e_targt_cnt
+            ,sum(iia.m_targt_cnt) as m_targt_cnt
+            ,sum(iia.h_targt_cnt) as h_targt_cnt
+            ,sum(iia.e_targt_cnt + iia.m_targt_cnt + iia.h_targt_cnt) as t_targt_cnt
+            ,sum(iia.e_appl_cnt) as e_sch_cnt
+            ,sum(iia.m_appl_cnt) as m_sch_cnt
+            ,sum(iia.h_appl_cnt) as h_sch_cnt
+            ,sum(iia.e_appl_cnt + iia.m_appl_cnt + iia.h_appl_cnt) as t_sch_cnt
+            ,to_char(To_Number(to_char(sum(iia.e_clas_cnt), 'fm9999999999999.00'))) as e_clas_cnt
+            ,to_char(To_Number(to_char(sum(iia.m_clas_cnt), 'fm9999999999999.00'))) as m_clas_cnt
+            ,to_char(To_Number(to_char(sum(iia.h_clas_cnt), 'fm9999999999999.00'))) as h_clas_cnt
+            ,to_char(To_Number(to_char(sum(iia.e_clas_cnt + iia.m_clas_cnt + iia.h_clas_cnt), 'fm9999999999999.00'))) as t_clas_cnt
+            ,to_char(To_Number(to_char(case when sum(iia.e_targt_cnt) = 0 then 0 else sum(iia.e_clas_cnt)/sum(iia.e_targt_cnt) end , 'fm9999999999999.00'))) as e_ratio
+            ,to_char(To_Number(to_char(case when sum(iia.m_targt_cnt) = 0 then 0 else sum(iia.m_clas_cnt)/sum(iia.m_targt_cnt) end , 'fm9999999999999.00'))) as m_ratio
+            ,to_char(To_Number(to_char(case when sum(iia.h_targt_cnt) = 0 then 0 else sum(iia.h_clas_cnt)/sum(iia.h_targt_cnt) end , 'fm9999999999999.00'))) as h_ratio
+            ,to_char(To_Number(to_char(case when sum(iia.e_targt_cnt + iia.m_targt_cnt + iia.h_targt_cnt) = 0 then 0 else sum(iia.e_clas_cnt + iia.m_clas_cnt + iia.h_clas_cnt)/sum(iia.e_targt_cnt + iia.m_targt_cnt + iia.h_targt_cnt) end , 'fm9999999999999.00'))) as t_ratio
+    from    (
+            select  d.sido_nm
+                    ,case when d.sch_class_cd = '100495' then 1 else 0 end as e_targt_cnt
+                    ,case when d.sch_class_cd = '100496' then 1 else 0 end as m_targt_cnt
+                    ,case when d.sch_class_cd = '100497' then 1 else 0 end as h_targt_cnt
+                    ,case when e.sch_no is null then 0
+                          else
+                                case when d.sch_class_cd = '100495' then 1 else 0 end
+                     end  as e_appl_cnt
+                    ,case when e.sch_no is null then 0
+                          else
+                                case when d.sch_class_cd = '100496' then 1 else 0 end
+                     end  as m_appl_cnt
+                    ,case when e.sch_no is null then 0
+                          else
+                                case when d.sch_class_cd = '100497' then 1 else 0 end
+                     end  as h_appl_cnt
+                    ,case when f.sch_no is null then 0
+                          else
+                                case when d.sch_class_cd = '100495' then f.clas_cnt else 0 end
+                     end  as e_clas_cnt
+                    ,case when f.sch_no is null then 0
+                          else
+                                case when d.sch_class_cd = '100496' then f.clas_cnt else 0 end
+                     end  as m_clas_cnt
+                    ,case when f.sch_no is null then 0
+                          else
+                                case when d.sch_class_cd = '100497' then f.clas_cnt else 0 end
+                     end  as h_clas_cnt
+            from    CNET_BIZ_SET_INFO a
+                    join CNET_BIZ_GRP_INFO b
+                        on a.set_targt_no = b.grp_no
+                    join CNET_SCH_GRP_MAPP c
+                        on b.grp_no = c.grp_no
+                    join CNET_SCH_INFO d
+                        on c.SCH_NO = d.SCH_NO
+                    left outer join (
+                                    select  distinct ic.sch_no
+                                    from    CNET_LECT_APPL_INFO ia
+                                            join CNET_CLAS_ROOM_INFO ib
+                                                on ia.clas_room_ser = ib.clas_room_ser
+                                            join CNET_SCH_INFO ic
+                                                on ib.SCH_NO = ic.SCH_NO
+                                    where   ia.appl_stat_cd in ('101576','101577')
+                                    ) e
+                        on d.sch_no = e.sch_no
+                    left outer join (
+                                    select  ic.sch_no
+                                            ,sum(
+                                                 case when ib.clas_room_ser is not null then
+                                                          case when ia.appl_stat_cd = 101728 or ia.appl_stat_cd = 101729 then id.cnt * 0.5
+                                                               else id.cnt
+                                                          end
+                                                 else 0
+                                                 end
+                                            ) as clas_cnt
+                                    from    CNET_LECT_APPL_INFO ia
+                                            join CNET_CLAS_ROOM_INFO ib
+                                                on ia.clas_room_ser = ib.clas_room_ser
+                                            join CNET_SCH_INFO ic
+                                                on ib.SCH_NO = ic.SCH_NO
+                                            join    (
+                                                        select  xb.lect_ser
+                                                                ,xb.lect_tims
+                                                                ,case when xa.lect_type_cd = 101530 then xc.cnt
+                                                                      when xa.lect_type_cd = 101532 then 2
+                                                                      else 1
+                                                                end cnt
+                                                        from    CNET_LECT_INFO xa
+                                                                    join CNET_LECT_TIMS_INFO xb
+                                                                        on xa.lect_ser = xb.lect_ser
+                                                                    join (select lect_ser,lect_tims, count(1) as cnt from CNET_LECT_SCHD_INFO group by lect_ser,lect_tims) xc
+                                                                        on xb.lect_ser = xc.lect_ser
+                                                                            and xb.lect_tims = xc.lect_tims
+                                                        where   xb.lect_stat_cd = '101551'
+                                                    ) id
+                                                on ia.lect_ser = id.lect_ser
+                                                    and ia.lect_tims = id.lect_tims
+                                    where   ia.appl_stat_cd in ('101576','101577','101728','101729')
+                                    group by ic.SCH_NO
+                                    ) f
+                        on d.sch_no = f.sch_no
+            where   a.set_ser = #{setSer}
+            ) iia
+    group by rollup(iia.sido_nm)
+    order by iia.sido_nm
+        ]]>
+    </select>
+
+</mapper>

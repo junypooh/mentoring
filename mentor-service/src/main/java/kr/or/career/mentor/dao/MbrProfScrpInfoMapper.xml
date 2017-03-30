@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MbrProfScrpInfoMapper">
+
+    <select id="listMbrProfScrpInfoBy" resultType="kr.or.career.mentor.domain.MbrProfScrpInfo">
+        SELECT
+             scrp_ser,
+             mbr_no,
+             scrp_class_cd,
+             (SELECT cd_nm FROM cnet_code WHERE cd = Mpsi.scrp_class_cd) AS scrp_class_cd_nm,
+             scrp_title,
+             scrp_url,
+             reg_dtm,
+             ROW_NUMBER() OVER(ORDER BY scrp_class_cd, reg_dtm DESC) AS rn
+        FROM cnet_mbr_prof_scrp_info Mpsi
+        WHERE 1 = 1
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mbrNo)">
+                AND mbr_no = #{mbrNo}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(scrpClassCd)">
+                AND scrp_class_cd = #{scrpClassCd}
+            </if>
+    </select>
+
+
+    <insert id="insertMbrProfScrpInfo" parameterType="kr.or.career.mentor.domain.MbrProfScrpInfo">
+        <selectKey keyProperty="scrpSer" resultType="long" order="BEFORE">
+            SELECT sq_mbr_prof_scrp_info.NEXTVAL FROM dual
+        </selectKey>
+        INSERT INTO cnet_mbr_prof_scrp_info (
+            scrp_ser,
+            mbr_no,
+            scrp_class_cd,
+            scrp_title,
+            scrp_url
+        )
+        VALUES (
+            #{scrpSer},
+            #{mbrNo},
+            #{scrpClassCd},
+            #{scrpTitle},
+            #{scrpURL}
+        )
+    </insert>
+
+
+    <update id="updateMbrProfScrpInfo" parameterType="kr.or.career.mentor.domain.MbrProfScrpInfo">
+        UPDATE cnet_mbr_prof_scrp_info
+        <set>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(scrpClassCd)">scrp_class_cd = #{scrpClassCd},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(scrpTitle)">scrp_title = #{scrpTitle},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(scrpURL)">scrp_url = #{scrpURL},</if>
+        </set>
+        WHERE scrp_ser = #{scrpSer}
+    </update>
+
+
+    <delete id="deleteMbrProfScrpInfoBy">
+        DELETE
+        FROM cnet_mbr_prof_scrp_info
+        WHERE 1 = 1
+            AND mbr_no = #{mbrNo}
+    </delete>
+</mapper>

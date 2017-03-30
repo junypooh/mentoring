@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.ArclCmtInfoMapper">
+
+  <resultMap id="arclCmtInfoResult" type="kr.or.career.mentor.domain.ArclCmtInfo" autoMapping="true">
+    <id property="cmtSer" column="CMT_SER" javaType="int" />
+    <result property="boardId" column="BOARD_ID" javaType="java.lang.String" />
+    <result property="arclSer" column="ARCL_SER" javaType="int" />
+    <result property="supCmtSer" column="SUP_CMT_SER" javaType="int" />
+    <result property="cmtTitle" column="CMT_TITLE" javaType="java.lang.String" />
+    <result property="cmtSust" column="CMT_SUST" javaType="java.lang.String" />
+    <result property="asmPnt" column="ASM_PNT" javaType="float" />
+    <result property="vcnt" column="VCNT" javaType="int" />
+    <result property="rcnt" column="RCNT" javaType="int" />
+    <result property="recomYn" column="RECOM_YN" javaType="java.lang.String" />
+    <result property="useYn" column="USE_YN" javaType="java.lang.String" />
+    <result property="regIpAddr" column="REG_IP_ADDR" javaType="java.lang.String" />
+    <result property="regDtm" column="REG_DTM" javaType="java.util.Date" />
+    <result property="regMbrNo" column="REG_MBR_NO" javaType="java.lang.String" />
+    <result property="chgDtm" column="CHG_DTM" javaType="java.util.Date" />
+    <result property="chgMbrNo" column="CHG_MBR_NO" javaType="java.lang.String" />
+    <result property="delDtm" column="DEL_DTM" javaType="java.util.Date" />
+    <result property="delMbrNo" column="DEL_MBR_NO" javaType="java.lang.String" />
+    <result property="regMbrId" column="ID" javaType="java.lang.String" />
+    <result property="regMbrNm" column="NM" javaType="java.lang.String" />
+  </resultMap>
+
+  <resultMap id="cmtResult" extends="arclCmtInfoResult" type="arclCmtInfo" autoMapping="true">
+    <collection property="listSubCmtInfo" column="{supCmtSer=CMT_SER}" notNullColumn="supCmtSer" select="kr.or.career.mentor.dao.ArclCmtInfoMapper.getSubCmtInfoList" autoMapping="true"></collection>
+  </resultMap>
+
+    <select id="getSimpleCmtInfoList" parameterType="arclCmtInfo"  resultType="arclCmtInfo">
+      /* paging */
+      SELECT
+        A.CMT_SER
+        , A.BOARD_ID
+        , A.ARCL_SER
+        , A.SUP_CMT_SER
+        , A.CMT_TITLE
+        , A.CMT_SUST
+        , A.ASM_PNT
+        , A.VCNT
+        , A.RCNT
+        , A.RECOM_YN
+        , A.USE_YN
+        , A.REG_IP_ADDR
+        , A.REG_DTM
+        , A.REG_MBR_NO
+        , A.CHG_DTM
+        , A.CHG_MBR_NO
+        , A.DEL_DTM
+        , A.DEL_MBR_NO
+        , B.ID AS REG_MBR_ID
+        , B.NM AS REG_MBR_NM
+        , B.MBR_CLASS_CD
+        , CASE
+            WHEN B.MBR_CLASS_CD = '101505' THEN 'mentor'
+            WHEN B.MBR_CLASS_CD = '100858' THEN 'student'
+            WHEN B.MBR_CLASS_CD = '100859' THEN 'teacher'
+            ELSE ' ' END AS MBR_CLASS_NM
+        , C.FILE_SER
+        , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS rn
+      /* paging */
+      FROM CNET_ARCL_CMT_INFO A
+      INNER JOIN CNET_MBR_INFO B
+      ON A.REG_MBR_NO = B.MBR_NO
+      LEFT OUTER JOIN CNET_PRF_FILE_INFO C
+      ON B.MBR_NO = C.MBR_NO
+      <where>
+        AND A.ARCL_SER = #{arclSer}
+        AND A.SUP_CMT_SER IS NULL
+      </where>
+  </select>
+
+  <select id="getCmtInfoList" parameterType="arclCmtInfo"  resultMap="cmtResult">
+    /* paging */
+    SELECT
+      A.CMT_SER
+      , A.BOARD_ID
+      , A.ARCL_SER
+      , A.SUP_CMT_SER
+      , A.CMT_TITLE
+      , A.CMT_SUST
+      , A.ASM_PNT
+      , A.VCNT
+      , A.RCNT
+      , A.RECOM_YN
+      , A.USE_YN
+      , A.REG_IP_ADDR
+      , A.REG_DTM
+      , A.REG_MBR_NO
+      , A.CHG_DTM
+      , A.CHG_MBR_NO
+      , A.DEL_DTM
+      , A.DEL_MBR_NO
+      , B.ID AS REG_MBR_ID
+      , B.NM AS REG_MBR_NM
+      , B.MBR_CLASS_CD
+      , CASE
+          WHEN B.MBR_CLASS_CD = '101505' THEN 'mentor'
+          WHEN B.MBR_CLASS_CD = '100858' THEN 'student'
+          WHEN B.MBR_CLASS_CD = '100859' THEN 'teacher'
+          ELSE ' ' END AS MBR_CLASS_NM
+      , (SELECT MAX(Z.file_ser) FROM CNET_MBR_PROF_PIC_INFO Z WHERE B.MBR_NO=Z.MBR_NO) AS FILE_SER
+    , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS rn
+    /* paging */
+    FROM CNET_ARCL_CMT_INFO A
+    INNER JOIN CNET_MBR_INFO B
+    ON A.REG_MBR_NO = B.MBR_NO
+    <where>
+      AND A.ARCL_SER = #{arclSer}
+      AND A.SUP_CMT_SER IS NULL
+      AND A.USE_YN = 'Y'
+    </where>
+  </select>
+
+  <select id="getSubCmtInfoList" parameterType="kr.or.career.mentor.domain.ArclCmtInfo"  resultMap="arclCmtInfoResult">
+    SELECT
+      A.CMT_SER
+      , A.BOARD_ID
+      , A.ARCL_SER
+      , A.SUP_CMT_SER
+      , A.CMT_TITLE
+      , A.CMT_SUST
+      , A.ASM_PNT
+      , A.VCNT
+      , A.RCNT
+      , A.RECOM_YN
+      , A.USE_YN
+      , A.REG_IP_ADDR
+      , A.REG_DTM
+      , A.REG_MBR_NO
+      , A.CHG_DTM
+      , A.CHG_MBR_NO
+      , A.DEL_DTM
+      , A.DEL_MBR_NO
+      , B.MBR_CLASS_CD
+      , B.ID AS REG_MBR_ID
+      , B.NM AS REG_MBR_NM
+    FROM
+      CNET_ARCL_CMT_INFO A,
+      CNET_MBR_INFO B
+    WHERE A.SUP_CMT_SER = #{supCmtSer}
+    AND USE_YN = 'Y'
+    AND A.REG_MBR_NO = B.MBR_NO
+    ORDER BY A.REG_DTM DESC
+  </select>
+
+  <select id="getSubCmtInfoAllList" parameterType="kr.or.career.mentor.domain.ArclCmtInfo"  resultMap="arclCmtInfoResult">
+    SELECT
+      A.CMT_SER
+      , A.BOARD_ID
+      , A.ARCL_SER
+      , A.SUP_CMT_SER
+      , A.CMT_TITLE
+      , A.CMT_SUST
+      , A.ASM_PNT
+      , A.VCNT
+      , A.RCNT
+      , A.RECOM_YN
+      , A.USE_YN
+      , A.REG_IP_ADDR
+      , A.REG_DTM
+      , A.REG_MBR_NO
+      , A.CHG_DTM
+      , A.CHG_MBR_NO
+      , A.DEL_DTM
+      , A.DEL_MBR_NO
+      , B.ID AS REG_MBR_ID
+      , B.NM AS REG_MBR_NM
+    FROM
+      CNET_ARCL_CMT_INFO A,
+      CNET_MBR_INFO B
+    WHERE A.SUP_CMT_SER = #{supCmtSer}
+    AND A.REG_MBR_NO = B.MBR_NO
+    ORDER BY A.REG_DTM DESC
+  </select>
+
+  <select id="isGradeYn" parameterType="kr.or.career.mentor.domain.ArclCmtInfo" resultType="int">
+    SELECT COUNT(1)
+    FROM CNET_ARCL_CMT_INFO
+    WHERE ARCL_SER = #{arclSer}
+    AND REG_MBR_NO = #{sMbrNo}
+    AND SUP_CMT_SER IS NULL
+    AND USE_YN = 'Y'
+  </select>
+
+  <insert id="insertRecomHist" parameterType="kr.or.career.mentor.domain.ArclRecomHist">
+    <selectKey resultType="int" keyProperty="cmtSer" order="BEFORE">
+      SELECT SQ_ARCL_CMT_INFO.nextval AS CMT_SER FROM DUAL
+    </selectKey>
+    INSERT INTO CNET_ARCL_RECOM_HIST
+      (
+        ARCL_SER
+      , CMT_SER
+      , RECOM_MBR_NO
+      , RECOM_DTM
+      )
+    VALUES
+      (
+        #{arclSer}
+      , #{cmtSer}
+      , #{recomMbrNo}
+      , SYSDATE
+      )
+  </insert>
+
+  <insert id="registCmt" parameterType="kr.or.career.mentor.domain.ArclCmtInfo">
+    INSERT INTO CNET_ARCL_CMT_INFO
+      ( CMT_SER
+      , BOARD_ID
+      , ARCL_SER
+      , SUP_CMT_SER
+      <if test='cmtTitle != null and cmtTitle != ""'>
+      , CMT_TITLE
+      </if>
+      , CMT_SUST
+      <if test='asmPnt != null and asmPnt != ""'>
+      , ASM_PNT
+      </if>
+      , VCNT
+      , RCNT
+      <if test='recomYn != null and recomYn != ""'>
+      , RECOM_YN
+      </if>
+      , USE_YN
+      <if test='regIpAddr != null and regIpAddr != ""'>
+      , REG_IP_ADDR
+      </if>
+      , REG_DTM
+      , REG_MBR_NO
+      <if test='lectSer != null and lectSer != ""'>
+      , CLAS_ROOM_SER
+      </if>
+    )
+    VALUES
+      ( SQ_ARCL_CMT_INFO.nextval
+      , #{boardId}
+      , #{arclSer}
+      <choose>
+        <when test='supCmtSer != null and supCmtSer != ""'>
+        , #{supCmtSer}
+        </when>
+        <otherwise>
+         , null
+        </otherwise>
+      </choose>
+      <if test='cmtTitle != null and cmtTitle != ""'>
+      , #{cmtTitle}
+      </if>
+      , #{cmtSust}
+      <if test='asmPnt != null and asmPnt != ""'>
+      , #{asmPnt}
+      </if>
+      , 0
+      , 0
+      <if test='recomYn != null and recomYn != ""'>
+      , #{recomYn}
+      </if>
+      , 'Y'
+      <if test='regIpAddr != null and regIpAddr != ""'>
+      , #{regIpAddr}
+      </if>
+      , SYSDATE
+      , #{regMbrNo}
+      <if test='lectSer != null and lectSer != ""'>
+      , (SELECT CLAS_ROOM_SER FROM CNET_LECT_APPL_INFO WHERE LECT_SER= #{lectSer} AND ROWNUM=1 AND CLAS_ROOM_SER IN
+          (SELECT CLAS_ROOM_SER FROM CNET_CLAS_ROOM_REG_REQ_HIST WHERE REQ_MBR_NO = #{regMbrNo} AND REG_STAT_CD= '101526')
+        )
+      </if>
+    )
+  </insert>
+
+  <update id="updateCmt" parameterType="kr.or.career.mentor.domain.ArclCmtInfo">
+      UPDATE CNET_ARCL_CMT_INFO
+      <set>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(cmtSust)">
+            CMT_SUST = #{cmtSust},
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(useYn)">
+            USE_YN = #{useYn},
+        </if>
+        <if test="asmPnt != null">
+            ASM_PNT = #{asmPnt},
+        </if>
+        CHG_DTM = SYSDATE,
+        CHG_MBR_NO = #{chgMbrNo},
+      </set>
+      <where>
+        CMT_SER = #{cmtSer}
+      </where>
+  </update>
+
+  <update id="deleteCmt" parameterType="kr.or.career.mentor.domain.ArclCmtInfo">
+    UPDATE CNET_ARCL_CMT_INFO
+    SET
+      USE_YN = 'N',
+      CHG_DTM = SYSDATE,
+      CHG_MBR_NO = #{chgMbrNo},
+      DEL_DTM = SYSDATE,
+      DEL_MBR_NO = #{delMbrNo}
+    WHERE
+      CMT_SER = #{cmtSer}
+  </update>
+
+  <select id="isApplyedLecture" parameterType="kr.or.career.mentor.domain.ArclCmtInfo" resultType="int">
+      SELECT COUNT(*) as cnt
+        FROM CNET_LECT_APPL_INFO A
+       WHERE A.lect_ser = (SELECT cntnts_targt_no FROM CNET_ARCL_INFO I WHERE I.arcl_ser = #{arclSer})
+         AND A.clas_room_ser IN ( SELECT clas_room_ser
+                                    FROM CNET_CLAS_ROOM_REG_REQ_HIST S
+                                   WHERE S.reg_stat_cd = '101526' /*101524 : 수락(승인)*/
+                                      AND REQ_MBR_NO = #{sMbrNo} )
+         <if test="mbrClassCd eq '100859'">
+         AND A.appl_mbr_no = #{sMbrNo}
+         </if>
+         AND A.appl_stat_cd NOT IN ('101578', '101575')
+  </select>
+
+
+</mapper>

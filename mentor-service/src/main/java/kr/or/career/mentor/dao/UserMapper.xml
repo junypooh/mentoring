@@ -1,0 +1,1210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.UserMapper">
+
+    <resultMap type="kr.or.career.mentor.domain.MbrAgrInfo" id="agreesData" autoMapping="true">
+       <id column="mbr_no" property="mbrNo"/>
+       <id column="agr_class_cd" property="agrClassCd"/>
+    </resultMap>
+    <resultMap type="kr.or.career.mentor.domain.MbrProfPicInfo" id="mbrpropicData" autoMapping="true">
+        <id column="pic_ser" property="picSer"/>
+        <id column="file_ser" property="fileSer"/>
+    </resultMap>
+    <resultMap type="kr.or.career.mentor.domain.User" id="userData" autoMapping="true">
+        <id column="mbr_no" property="mbrNo"/>
+        <!--<association property="mbrpropicInfo" columnPrefix="ppi_" resultMap="mbrpropicData" autoMapping="true"/>-->
+        <collection property="agrees" column="{mbrNo=mbr_no}" javaType="java.util.ArrayList" resultMap="agreesData" columnPrefix="agrees_"/>
+        <collection property="mbrpropicInfos" column="{mbrNo=mbr_no}" javaType="java.util.ArrayList" resultMap="mbrpropicData" columnPrefix="ppi_"/>
+    </resultMap>
+
+    <resultMap type="kr.or.career.mentor.domain.MbrJobInfo" id="mbrJobData" autoMapping="true">
+       <id column="mbr_no" property="mbrNo"/>
+    </resultMap>
+
+    <resultMap type="kr.or.career.mentor.domain.User" id="userJobData" autoMapping="true">
+        <id column="mbr_no" property="mbrNo"/>
+        <association property="mbrJobInfo" resultMap="mbrJobData" autoMapping="true"/>
+        <association property="statChgHistInfo" resultMap="statChgHistData" autoMapping="true"/>
+    </resultMap>
+
+    <resultMap type="kr.or.career.mentor.domain.StatChgHistInfo" id="statChgHistData" autoMapping="true">
+        <id column="STAT_CHG_SER" property="statChgSer"/>
+    </resultMap>
+
+    <resultMap type="kr.or.career.mentor.domain.User" id="userListData" autoMapping="true">
+        <id column="mbr_no" property="mbrNo"/>
+        <association property="statChgHistInfo" resultMap="statChgHistData" autoMapping="true"/>
+    </resultMap>
+
+    <sql id="userAuthCd">
+    SELECT AUTH_CD FROM CNET_MBR_INFO A
+INNER JOIN CNET_USER_AUTH_MAPP B
+        ON A.MBR_CLASS_CD  = B.MBR_CLASS_CD
+       AND A.MBR_CUALF_CD = B.MBR_CUALF_CD
+     WHERE A.MBR_NO = #{mbrNo}
+    </sql>
+
+    <sql id="fullUserAuthCd">
+    SELECT sup_roll_cd as authority
+          FROM CNET_ROLL_REL_MAPP
+    <!--START WITH sub_roll_cd IN ( <include refid="kr.or.career.mentor.dao.UserMapper.userAuthCd"></include> )-->
+    START WITH sub_roll_cd IN ( FN_GET_MBR_AUTH_CD(#{mbrNo}) )
+        CONNECT BY sub_roll_cd = PRIOR sup_roll_cd
+    UNION ALL
+    SELECT
+        FN_GET_MBR_AUTH_CD(#{mbrNo})
+    FROM DUAL
+        <!--include refid="kr.or.career.mentor.dao.UserMapper.userAuthCd"></include-->
+        <!-- 대표교사 권한 획득을 CNET_MBR_INFO 테이블로만 판단 하면 안되므로 FN_GET_MBR_AUTH_CD 를 사용해야만 함 -->
+    </sql>
+
+    <select id="retrieveUser" parameterType="map" resultMap="userData">
+        SELECT A.mbr_no
+               , A.id
+               , A.nm as username
+               , A.pwd as password
+               , A.mbr_class_cd
+               , A.pwd_quest_cd
+               , (SELECT cd_nm FROM CNET_CODE WHERE sup_cd = '100857' and cd = A.mbr_class_cd) as mbr_class_nm
+               , (SELECT cd_nm FROM CNET_CODE WHERE sup_cd = '100204' and cd = A.mbr_cualf_cd) as mbr_cualf_nm
+               , (SELECT cd_nm FROM CNET_CODE WHERE sup_cd = '100221' and cd = A.pwd_quest_cd) as pwd_quest_nm
+               , A.pwd_ans_sust
+               , A.gen_cd
+               , A.birthday
+               , A.lunar_yn
+               , A.email_addr
+               , A.mobile
+               , A.reg_dtm
+               , A.chg_dtm
+               , A.last_login_dtm
+               , A.MBR_CUALF_CD
+               , A.MBR_GRADE_CD
+               , A.LOGIN_PERM_YN
+               , A.MBR_STAT_CD
+               , A.PRTCTR_EMAIL_ADDR
+               , A.PWD_CHG_DTM
+               , B.agr_class_cd as agrees_agr_class_cd
+               , B.agr_dtm as agrees_agr_dtm
+               , FN_SPLIT_STR(FN_MBR_SCH_NM(A.MBR_NO), 1, '||') AS sch_nm
+               , FN_SPLIT_STR(FN_MBR_SCH_NM(A.MBR_NO), 2, '||') AS clasNm
+               , (SELECT /*+ INDEX_DESC (AA PK_CNET_CLAS_ROOM_REG_REQ_HIST) */ AA.CLAS_ROOM_SER
+                    FROM CNET_CLAS_ROOM_REG_REQ_HIST AA
+                    INNER JOIN CNET_CLAS_ROOM_INFO BB
+                    ON AA.CLAS_ROOM_SER = BB.CLAS_ROOM_SER
+                    AND AA.REG_STAT_CD = '101526'
+                    INNER JOIN CNET_SCH_INFO CC
+                    ON BB.SCH_NO = CC.SCH_NO
+                    WHERE AA.REQ_MBR_NO = A.MBR_NO
+                    AND AA.RPS_YN = 'Y'
+                    AND ROWNUM = 1) AS CLAS_ROOM_SER
+        <!--
+               , (SELECT /*+ INDEX_DESC (AA PK_CNET_CLAS_ROOM_REG_REQ_HIST) */ CC.SCH_NM
+                  FROM CNET_CLAS_ROOM_REG_REQ_HIST AA
+            INNER JOIN CNET_CLAS_ROOM_INFO BB
+                    ON AA.CLAS_ROOM_SER = BB.CLAS_ROOM_SER
+                   AND AA.REG_STAT_CD = '101526'
+            INNER JOIN CNET_SCH_INFO CC
+                    ON BB.SCH_NO = CC.SCH_NO
+                 WHERE AA.REQ_MBR_NO = A.MBR_NO
+                   AND ROWNUM = 1) AS sch_nm
+                , (SELECT /*+ INDEX_DESC (AA PK_CNET_CLAS_ROOM_REG_REQ_HIST) */ BB.CLAS_ROOM_NM
+                  FROM CNET_CLAS_ROOM_REG_REQ_HIST AA
+            INNER JOIN CNET_CLAS_ROOM_INFO BB
+                    ON AA.CLAS_ROOM_SER = BB.CLAS_ROOM_SER
+                   AND AA.REG_STAT_CD = '101526'
+            INNER JOIN CNET_SCH_INFO CC
+                    ON BB.SCH_NO = CC.SCH_NO
+                 WHERE AA.REQ_MBR_NO = A.MBR_NO
+                   AND ROWNUM = 1) AS clasNm
+        -->
+                 , C.FILE_SER as ppi_file_ser
+                 , C.PIC_SER as ppi_pic_ser
+                 , A.pos_co_no
+                 , D.co_nm as pos_co_nm
+                 , A.tmp_pwd_yn
+                 , FN_GET_MBR_AUTH_CD(A.MBR_NO) AS AUTH_CD
+                 , FN_GET_MBR_AUTH_NM(A.MBR_NO) AS AUTH_NM
+                 , FN_GET_MBR_AUTH_TYPE(A.MBR_NO) AS AUTH_TYPE
+                 , (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = A.REG_MBR_NO) AS REG_MBR_NM
+                 , (SELECT MAX(FILE_SER) FROM CNET_MBR_PROF_PIC_INFO WHERE MBR_NO = A.MBR_NO) AS PROF_FILE_SER
+                 , A.AUTH_TARGT_ID
+          FROM CNET_MBR_INFO A
+        LEFT OUTER JOIN CNET_MBR_AGR_INFO B
+            ON A.mbr_no = B.mbr_no
+        LEFT OUTER JOIN CNET_MBR_PROF_PIC_INFO C
+            ON A.MBR_NO = C.MBR_NO
+        LEFT OUTER JOIN CNET_CO_INFO D
+            ON D.co_no = A.pos_co_no
+        <where>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mbrNo)">AND A.mbr_no = #{mbrNo}</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(id)">AND A.id = #{id}</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(pwd)">AND A.pwd = #{pwd}</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(username)">AND A.nm = #{username}</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(birthday)">AND A.birthday = #{birthday}</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mobile)">AND A.mobile = #{mobile}</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(genCd)">AND A.gen_cd = #{genCd}</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(emailAddr)">AND A.email_addr = #{emailAddr}</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(pwdAnsSust)">AND A.pwd_quest_cd = #{pwdQuestCd} AND pwd_ans_sust = #{pwdAnsSust}</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mbrCualfCd)">AND A.mbr_cualf_cd = #{mbrCualfCd}</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mbrClassCd)">AND A.mbr_class_cd = #{mbrClassCd}</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(coNm)">AND D.co_nm = #{coNm}</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(userType)">
+                <choose>
+                    <when test="userType.equals('MANAGER')">
+                    <!--AND ( A.MBR_CLASS_CD IN ('100860') OR A.MBR_CUALF_CD = '101500' )-->
+                    AND A.MBR_CLASS_CD = '100860'
+                    </when>
+                    <when test="userType.equals('MENTOR')">
+                    AND A.MBR_CLASS_CD IN ('101504','101505')
+                    AND A.MBR_CUALF_CD IN ('101501','101502','101503') /* 기업체 담당자, 기업체 소속멘토, 개인멘토 */
+                    </when>
+                    <when test="userType.equals('SCHOOL')">
+                    <!--AND A.MBR_CLASS_CD IN ('100858','100859') /* 일반, 교사, 학교관리자 */-->
+                    AND A.MBR_CLASS_CD IN ('100858','100859','101707') /* 일반, 교사, 학교관리자 */
+                    </when>
+                </choose>
+            </if>
+            <choose>
+                <when test="@org.apache.commons.lang3.StringUtils@isEmpty(mbrStatCd)">
+                AND A.MBR_STAT_CD IN ('100862','101506')
+                </when>
+                <otherwise>
+                AND A.MBR_STAT_CD = #{mbrStatCd}
+                </otherwise>
+            </choose>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(loginPermYn)">
+            AND A.LOGIN_PERM_YN = #{loginPermYn}
+            </if>
+        </where>
+    </select>
+
+    <select id="listUserBy" resultMap="userListData" parameterType="kr.or.career.mentor.domain.UserSearch">
+        /* UserMapper.xml 설명 : 신규 구축 관리자 포털 회원정보 가져오기, ID : listUserBy, 작성자 : 박경준, 작성일 : 2016.06.14 */
+        /* paging */
+        SELECT
+            A.MBR_NO
+            , A.MBR_CLASS_CD
+            , A.MBR_CUALF_CD
+            , A.MBR_GRADE_CD
+            , A.ID
+            , A.PWD
+            , A.NM AS USERNAME
+            , A.GEN_CD
+            , A.BIRTHDAY
+            , A.LUNAR_YN
+            , A.EMAIL_ADDR
+            , A.JOB_CD
+            , A.TEL
+            , A.MOBILE
+            , A.PRTCTR_NM
+            , A.PRTCTR_TEL
+            , A.PRTCTR_EMAIL_ADDR
+            , A.PWD_QUEST_CD
+            , A.PWD_ANS_SUST
+            , A.MNGR_PIC_PATH
+            , A.MNGR_POS_NM
+            , A.MNGR_POS_BIZNO
+            , A.MBR_STAT_CD
+            , A.MARRY_YN
+            , A.NAT_CD
+            , A.DOM_RSDC_YN
+            , A.RSDC_AREA_CD
+            , A.SCH_CAR_CD
+            , A.SCH_CLASS_CD
+            , A.SCH_SER
+            , A.SCH_NM
+            , A.SCH_GRD_NM
+            , A.CLAS_NM
+            , A.CHRG_TCHR_NO
+            , A.GPIN_IDNTF_NO
+            , A.GPIN_DUP_VERF_INFO
+            , A.STDNT_CLASS_CD
+            , A.CHRG_STDNT_CLASS_CD
+            , A.MNGR_POS_CD
+            , A.MNGR_CAREER_INFO
+            , A.MNGR_RMK_SUST
+            , A.MNGR_FLD_INFO
+            , A.LOGIN_PERM_YN
+            , A.SESS_ID
+            , A.SCRB_PATH_CD
+            , A.USE_STOP_DTM
+            , A.PWD_CHG_DTM
+            , A.CNSL_START_DAY
+            , A.CONN_IP
+            , A.LOGIN_CNT
+            , A.LAST_LOGIN_DTM
+            , A.REG_DTM
+            , A.REG_MBR_NO
+            , A.CHG_DTM
+            , A.CHG_MBR_NO
+            , A.DEL_DTM
+            , A.DEL_MBR_NO
+            , A.FAX
+            , A.POS_CO_NO
+            , A.AUTH_PROC_SUST
+            , A.SCH_SITE_EXPS_YN
+            , A.TMP_PWD_YN
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = A.MBR_CUALF_CD) AS MBR_CUALF_NM
+            , (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = A.REG_MBR_NO) AS REG_MBR_NM
+            , (SELECT CO_NM FROM CNET_CO_INFO WHERE CO_NO = A.POS_CO_NO) AS POS_CO_NM
+            , (SELECT BIZNO FROM CNET_CO_INFO WHERE CO_NO = A.POS_CO_NO) AS POS_BIZNO
+            , MJI.JOB_NM
+            , MJI.JOB_NO
+            , MJI.JOB_TAG_INFO
+            , (
+                SELECT TRIM(CD_NM)
+                FROM CNET_JOB_CLSF_CD
+                WHERE CD_LV = 1
+                START WITH CD = JI.JOB_CLSF_CD
+                CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+            ) AS JOB_STRUCT1
+            , CLAS.ROOM_DATA
+            , SCH.SCH_DATA
+            , CASE WHEN (SELECT COUNT(1) FROM CNET_MBR_SCH_CUALF WHERE MBR_NO = A.MBR_NO AND SCH_MBR_CUALF_CD = '101698' AND CUALF_REG_STAT_CD = '101702' AND USE_YN = 'Y') > 0 THEN 'O' ELSE 'X' END AS RPS_TEACHER
+            , CASE WHEN (SELECT COUNT(1) FROM CNET_MBR_SCH_CUALF WHERE MBR_NO = A.MBR_NO AND SCH_MBR_CUALF_CD = '101699' AND CUALF_REG_STAT_CD = '101702' AND USE_YN = 'Y') > 0 THEN 'O' ELSE 'X' END AS SCH_MANAGER
+            , FN_GET_MBR_AUTH_CD(A.MBR_NO) AS AUTH_CD
+            , FN_GET_MBR_AUTH_NM(A.MBR_NO) AS AUTH_NM
+            , FN_GET_MBR_AUTH_TYPE(A.MBR_NO) AS AUTH_TYPE
+            , A.MBR_WITHDRAWN_TYPE
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = A.MBR_WITHDRAWN_TYPE) AS MBR_WITHDRAWN_TYPE_NM
+            <choose>
+            <when test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(statChgClassCds)">
+                , ROW_NUMBER() OVER(ORDER BY CHG.REG_DTM DESC, CHG.STAT_CHG_CLASS_CD DESC, CHG.STAT_CHG_TARGT_NO DESC, CHG.STAT_CHG_TARGT_MBR_NO DESC ) AS RN
+                , CHG.STAT_CHG_SER
+                , CHG.STAT_CHG_CLASS_CD
+                , (SELECT CD_NM FROM CNET_CODE WHERE CD = CHG.STAT_CHG_CLASS_CD) AS STAT_CHG_CLASS_NM
+                , CHG.STAT_CHG_TARGT_NO
+                , CHG.STAT_CHG_TARGT_MBR_NO
+                , CHG.STAT_CHG_RSLT_CD
+                , (SELECT CD_NM FROM CNET_CODE WHERE CD = CHG.STAT_CHG_RSLT_CD) AS STAT_CHG_RSLT_NM
+                , CHG.REG_DTM AS CHG_REG_DTM
+            </when>
+            <otherwise>
+                , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS RN
+            </otherwise>
+            </choose>
+        /* paging */
+        FROM CNET_MBR_INFO A
+        LEFT JOIN CNET_MBR_JOB_INFO MJI ON (A.MBR_NO = MJI.MBR_NO)
+        <choose>
+        <when test="@org.apache.commons.lang3.StringUtils@isNotBlank(jobClsfCd)">
+            INNER JOIN CNET_JOB_INFO JI ON (
+                MJI.JOB_NO = JI.JOB_NO
+                AND JI.JOB_CLSF_CD IN (
+                        SELECT CD FROM CNET_JOB_CLSF_CD
+                        WHERE USE_YN = 'Y'
+                        START WITH CD = #{jobClsfCd}
+                        CONNECT BY PRIOR CD = SUP_CD
+                )
+            )
+        </when>
+        <otherwise>
+            LEFT JOIN CNET_JOB_INFO JI ON (MJI.JOB_NO = JI.JOB_NO)
+        </otherwise>
+        </choose>
+        LEFT JOIN (
+            SELECT
+                REQ.REQ_MBR_NO
+                , LISTAGG(CLAS.CLAS_ROOM_NM, '],[') WITHIN GROUP (ORDER BY REQ.RPS_YN DESC, CLAS.CLAS_ROOM_NM)  AS ROOM_DATA
+            FROM CNET_CLAS_ROOM_REG_REQ_HIST REQ
+            INNER JOIN CNET_CLAS_ROOM_INFO CLAS ON CLAS.CLAS_ROOM_SER = REQ.CLAS_ROOM_SER
+            WHERE REQ.REG_STAT_CD = '101526'
+            GROUP BY REQ.REQ_MBR_NO
+        ) CLAS ON (CLAS.REQ_MBR_NO = A.MBR_NO)
+        LEFT JOIN (
+            SELECT
+                REQ.REQ_MBR_NO
+                , LISTAGG(SCH.SCH_NM, '],[') WITHIN GROUP (ORDER BY REQ.RPS_YN DESC, SCH.SCH_NM)  AS SCH_DATA
+            FROM CNET_CLAS_ROOM_REG_REQ_HIST REQ
+            INNER JOIN CNET_CLAS_ROOM_INFO CLAS ON CLAS.CLAS_ROOM_SER = REQ.CLAS_ROOM_SER
+            INNER JOIN CNET_SCH_INFO SCH ON (SCH.SCH_NO = CLAS.SCH_NO AND SCH.USE_YN = 'Y')
+            WHERE REQ.REG_STAT_CD = '101526'
+            GROUP BY REQ.REQ_MBR_NO
+        ) SCH ON (SCH.REQ_MBR_NO = A.MBR_NO)
+        <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(statChgClassCds)">
+        LEFT JOIN CNET_STAT_CHG_HIST CHG ON (CHG.STAT_CHG_TARGT_MBR_NO = A.MBR_NO AND CHG.LAST_STAT_YN = 'Y')
+        </if>
+        <where>
+            <if test="regDtmBegin neq null">
+                AND A.REG_DTM &gt; TRUNC(#{regDtmBegin})
+            </if>
+            <if test="regDtmEnd neq null">
+                AND A.REG_DTM &lt; TRUNC(#{regDtmEnd}) + 1
+            </if>
+            <if test="delDtmBegin neq null">
+                AND A.DEL_DTM &gt; TRUNC(#{delDtmBegin})
+            </if>
+            <if test="delDtmEnd neq null">
+                AND A.DEL_DTM &lt; TRUNC(#{delDtmEnd}) + 1
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(loginPermYn)">
+                AND A.LOGIN_PERM_YN = #{loginPermYn}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mbrWithDrawnType)">
+                AND A.MBR_WITHDRAWN_TYPE = #{mbrWithDrawnType}
+            </if>
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(mbrClassCds)">
+                <foreach collection="mbrClassCds" item="mbrClassCd" open="AND A.MBR_CLASS_CD IN (" close=")" separator=",">
+                    #{mbrClassCd}
+                </foreach>
+            </if>
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(mbrCualfCds)">
+                <foreach collection="mbrCualfCds" item="mbrCualfCd" open="AND A.MBR_CUALF_CD IN (" close=")" separator=",">
+                    #{mbrCualfCd}
+                </foreach>
+            </if>
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(mbrStatCds)">
+                <foreach collection="mbrStatCds" item="mbrStatCd" open="AND A.MBR_STAT_CD IN (" close=")" separator=",">
+                    #{mbrStatCd}
+                </foreach>
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(id)">
+                AND REGEXP_LIKE(A.ID, #{id})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(name)">
+                AND REGEXP_LIKE(A.NM, #{name})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(idName)">
+                AND ( REGEXP_LIKE(A.ID, #{idName}) OR REGEXP_LIKE(A.NM, #{idName}) )
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(school)">
+                AND REGEXP_LIKE(SCH.SCH_DATA, #{school})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(clas)">
+                AND REGEXP_LIKE(CLAS.ROOM_DATA, #{clas})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mobile)">
+                AND REGEXP_LIKE(REGEXP_REPLACE(A.MOBILE, '[[:punct:]]', ''), REGEXP_REPLACE(#{mobile}, '[[:punct:]]', ''))
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(job)">
+                AND REGEXP_LIKE(MJI.JOB_NM, #{job})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(jobTag)">
+                AND REGEXP_LIKE(MJI.JOB_TAG_INFO, #{jobTag})
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mbrNo)">
+                AND A.MBR_NO = #{mbrNo}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(authCd)">
+                AND FN_GET_MBR_AUTH_CD(A.MBR_NO) = #{authCd}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(approveYn)">
+                <if test='(approveYn eq "Y")'>
+                    AND A.MBR_STAT_CD = '100862' /* 정상이용 */
+                    AND EXISTS (SELECT 1 FROM CNET_MBR_AGR_INFO WHERE AGR_CLASS_CD = '100971' AND MBR_NO = A.MBR_NO)
+                </if>
+                <if test='(approveYn eq "N")'>
+                    AND A.MBR_STAT_CD != '100862' /* 정상이용 */
+                    AND EXISTS (SELECT 1 FROM CNET_MBR_AGR_INFO WHERE AGR_CLASS_CD = '100971' AND MBR_NO = A.MBR_NO)
+                </if>
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(rpsTeacher)">
+                <if test='(rpsTeacher eq "Y")'>
+                    AND EXISTS (SELECT 1 FROM CNET_MBR_SCH_CUALF WHERE MBR_NO = A.MBR_NO AND SCH_MBR_CUALF_CD = '101698' AND CUALF_REG_STAT_CD = '101702' AND USE_YN = 'Y')
+                </if>
+                <if test='(rpsTeacher eq "N")'>
+                    AND NOT EXISTS (SELECT 1 FROM CNET_MBR_SCH_CUALF WHERE MBR_NO = A.MBR_NO AND SCH_MBR_CUALF_CD = '101698' AND CUALF_REG_STAT_CD = '101702' AND USE_YN = 'Y')
+                </if>
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(rpsStudent)">
+                <if test='(rpsStudent eq "Y")'>
+                    AND EXISTS (SELECT 1 FROM CNET_CLAS_ROOM_REG_REQ_HIST WHERE REQ_MBR_NO = A.MBR_NO AND CLAS_ROOM_CUALF_CD = '101691' AND REG_STAT_CD = '101526')
+                </if>
+                <if test='(rpsStudent eq "N")'>
+                    AND NOT EXISTS (SELECT 1 FROM CNET_CLAS_ROOM_REG_REQ_HIST WHERE REQ_MBR_NO = A.MBR_NO AND CLAS_ROOM_CUALF_CD = '101691' AND REG_STAT_CD = '101526')
+                </if>
+            </if>
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(statChgClassCds)">
+                <foreach collection="statChgClassCds" item="statChgClassCd" open="AND CHG.STAT_CHG_CLASS_CD IN (" close=")" separator=",">
+                    #{statChgClassCd}
+                </foreach>
+                <if test="statChgHistRegDtmBegin neq null">
+                    AND CHG.REG_DTM &gt; TRUNC(#{statChgHistRegDtmBegin})
+                </if>
+                <if test="statChgHistRegDtmEnd neq null">
+                    AND CHG.REG_DTM &lt; TRUNC(#{statChgHistRegDtmEnd}) + 1
+                </if>
+                <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(statChgRsltCd)">
+                    <choose>
+                        <when test="statChgRsltCd.equals('REQ')">
+                            AND (
+                                CHG.STAT_CHG_CLASS_CD = '101719' /*회원가입요청상태*/ AND CHG.STAT_CHG_RSLT_CD = '101506' /*승인요청*/
+                                OR
+                                CHG.STAT_CHG_CLASS_CD = '101751' /*회원탈퇴요청상태*/ AND CHG.STAT_CHG_RSLT_CD = '101572' /*탈퇴요청*/
+                            )
+                        </when>
+                        <when test="statChgRsltCd.equals('OK')">
+                            AND (
+                                CHG.STAT_CHG_CLASS_CD = '101719' /*회원가입요청상태*/ AND CHG.STAT_CHG_RSLT_CD = '100862' /*정상이용*/
+                                OR
+                                CHG.STAT_CHG_CLASS_CD = '101751' /*회원탈퇴요청상태*/ AND CHG.STAT_CHG_RSLT_CD = '100864' /*탈퇴*/
+                            )
+                        </when>
+                        <when test="statChgRsltCd.equals('NOK')">
+                            AND (
+                                CHG.STAT_CHG_CLASS_CD = '101719' /*회원가입요청상태*/ AND CHG.STAT_CHG_RSLT_CD = '100863' /*이용중지*/
+                                OR
+                                CHG.STAT_CHG_CLASS_CD = '101751' /*회원탈퇴요청상태*/ AND CHG.STAT_CHG_RSLT_CD = '100862' /*정상이용*/
+                            )
+                        </when>
+                    </choose>
+                </if>
+                <!--if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(statChgRsltCds)">
+                    <foreach collection="statChgRsltCds" item="statChgRsltCd" open="AND CHG.STAT_CHG_RSLT_CD IN (" close=")" separator=",">
+                        #{statChgRsltCd}
+                    </foreach>
+                </if-->
+            </if>
+        </where>
+    </select>
+
+    <!-- TODO : 수업 package 로 이동 -->
+    <select id="listLectureByMember" resultType="kr.or.career.mentor.domain.MemberLectureInfo" parameterType="kr.or.career.mentor.domain.LectureSearch">
+        /* UserMapper.xml 설명 : 신규 구축 관리자 포털 회원정보 > 수업현황 가져오기, ID : listLectureByMember, 작성자 : 박경준, 작성일 : 2016.06.21 */
+        /* paging */
+        SELECT
+            ROW_NUMBER() OVER(ORDER BY LAI.REG_DTM DESC) AS rn
+            , LAI.LECT_SER
+            , LAI.LECT_TIMS
+            , LSI.SCHD_SEQ
+            , LI.LECT_TYPE_CD
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = LI.LECT_TYPE_CD) AS LECT_TYPE_NM
+            , LSI.LECT_TITLE
+            , LI.LECTR_NM
+            , JOB.JOB_NM
+            , LSI.LECT_DAY
+            , LSI.LECT_START_TIME
+            , ROUND((TO_DATE(LSI.LECT_DAY||LSI.LECT_END_TIME,'YYYYMMDDHH24MI') - TO_DATE(LSI.LECT_DAY||LSI.LECT_START_TIME,'YYYYMMDDHH24MI') ) * 24 * 60) AS LECT_RUN_TIME
+            , LSI.LECT_STAT_CD
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = LSI.LECT_STAT_CD) AS LECT_STAT_NM
+            , LAI.APPL_STAT_CD
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = LAI.APPL_STAT_CD) AS APPL_STAT_NM
+            , LAI.APPL_CLASS_CD
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = LAI.APPL_CLASS_CD) AS APPL_CLASS_NM
+            , SCH.SCH_NM
+            , CLAS.CLAS_ROOM_NM
+            , NVL(LAI.CHG_DTM, LAI.REG_DTM) AS REG_DTM
+        /* paging */
+        FROM CNET_CLAS_ROOM_REG_REQ_HIST CLAS_REQ
+        , CNET_CLAS_ROOM_INFO CLAS
+        , CNET_SCH_INFO SCH
+        , CNET_LECT_APPL_INFO LAI
+        , CNET_LECT_TIMS_INFO LTI
+        , CNET_LECT_SCHD_INFO LSI
+        , CNET_LECT_INFO LI
+        , CNET_JOB_INFO JOB
+        WHERE CLAS_REQ.CLAS_ROOM_SER = CLAS.CLAS_ROOM_SER
+        AND CLAS.SCH_NO = SCH.SCH_NO
+        AND CLAS_REQ.CLAS_ROOM_SER = LAI.CLAS_ROOM_SER
+        AND LAI.LECT_SER = LTI.LECT_SER
+        AND LAI.LECT_TIMS = LTI.LECT_TIMS
+        AND LTI.LECT_SER = LSI.LECT_SER
+        AND LTI.LECT_TIMS = LSI.LECT_TIMS
+        AND LAI.LECT_SER = LI.LECT_SER
+        AND LI.LECTR_JOB_NO = JOB.JOB_NO(+)
+        AND CLAS_REQ.REG_STAT_CD = '101526' /* 수락(승인) */
+        AND CLAS_REQ.REQ_MBR_NO = #{mbrNo}
+        AND LAI.APPL_STAT_CD IN ('101576', '101577') /* 신청 */
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchStDate)">
+            AND LSI.LECT_DAY <![CDATA[ >= ]]> REGEXP_REPLACE(#{searchStDate}, '[[:punct:]]', '')
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchEndDate)">
+            AND LSI.LECT_DAY <![CDATA[ <= ]]> REGEXP_REPLACE(#{searchEndDate}, '[[:punct:]]', '')
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(lectStatCd)">
+            AND LSI.LECT_STAT_CD = #{lectStatCd}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(lectTitle)">
+            AND REGEXP_LIKE(LSI.LECT_TITLE, #{lectTitle})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(lectrNm)">
+            AND REGEXP_LIKE(LI.LECTR_NM, #{lectrNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(schNm)">
+            AND REGEXP_LIKE(SCH.SCH_NM, #{schNm})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(clasRoomNm)">
+            AND REGEXP_LIKE(CLAS.CLAS_ROOM_NM, #{clasRoomNm})
+        </if>
+    </select>
+
+    <select id="listUserForNotification" resultType="kr.or.career.mentor.domain.User" parameterType="kr.or.career.mentor.domain.UserSearch">
+        <![CDATA[
+        /* [UserMapper.xml#listUserForNotification][조건별 회원 목록] */
+        /* paging */
+        SELECT
+                Distinct A.mbr_no
+                , A.mbr_class_cd
+                , A.mbr_cualf_cd
+                , A.mbr_grade_cd
+                , A.id
+                , A.nm
+                , A.gen_cd
+                , A.birthday
+                , A.lunar_yn
+                , A.email_addr
+                , A.job_cd
+                , A.tel
+                , A.mobile
+                , A.prtctr_nm
+                , A.prtctr_tel
+                , A.prtctr_email_addr
+                , A.mngr_pic_path
+                , A.mngr_pos_nm
+                , A.mngr_pos_bizno
+                , A.mbr_stat_cd
+                , A.marry_yn
+                , A.sch_car_cd
+                , A.sch_class_cd
+                , A.sch_ser
+                , A.sch_nm
+                , A.sch_grd_nm
+                , A.clas_nm
+                , A.chrg_tchr_no
+                , A.stdnt_class_cd
+                , A.chrg_stdnt_class_cd
+                , A.mngr_pos_cd
+                , A.mngr_career_info
+                , A.mngr_rmk_sust
+                , A.mngr_fld_info
+                , A.login_perm_yn
+                , A.use_stop_dtm
+                , A.pwd_chg_dtm
+                , A.login_cnt
+                , A.last_login_dtm
+                , A.reg_dtm
+                , A.reg_mbr_no
+                , A.chg_dtm
+                , A.chg_mbr_no
+                , A.del_dtm
+                , A.del_mbr_no
+                , A.fax
+                , A.pos_co_no
+                , A.auth_proc_sust
+                , A.nm as username
+                , (SELECT cd_nm FROM CNET_CODE WHERE CD = A.mbr_cualf_cd) as mbr_cualf_nm
+                , (SELECT nm FROM CNET_MBR_INFO WHERE mbr_no = A.reg_mbr_no) as reg_mbr_nm
+                /*, (SELECT co_nm FROM CNET_CO_INFO WHERE co_no = A.pos_co_no) as pos_co_nm*/
+                , (SELECT bizno FROM CNET_CO_INFO WHERE co_no = A.pos_co_no) as pos_bizno
+
+                , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) as RN
+                , CASE    WHEN A.MBR_CLASS_CD = '100858' /* 일반회원 */ THEN C.SCH_NM
+                        WHEN A.MBR_CLASS_CD = '100859' /* 교사 */ THEN B.SCH_NM
+                        WHEN A.MBR_CLASS_CD = '100860' /* 관리자 */ THEN D.CO_NM
+                        WHEN A.MBR_CLASS_CD = '101504' /* 기관/업체 */ THEN D.CO_NM
+                        WHEN A.MBR_CLASS_CD = '101505' /* 멘토 */ THEN D.CO_NM
+                END AS posCoNm
+                , CASE    WHEN A.MBR_CLASS_CD = '100858' /* 일반회원 */ THEN C.SIDO_NM
+                        WHEN A.MBR_CLASS_CD = '100859' /* 교사 */ THEN B.SIDO_NM
+                END AS SIDO_NM
+
+                /* paging */
+        FROM CNET_MBR_INFO A
+                    /* 학교정보를 가져옴.(교사일시) */
+                    LEFT OUTER JOIN (
+                                    SELECT MAX(IA.SCH_NO) AS SCH_NO, IA.TCHR_MBR_NO, MAX(IB.SCH_NM) AS SCH_NM, MAX(IB.SIDO_NM) AS SIDO_NM, MAX(IB.SGGU_NM) AS SGGU_NM
+                                    FROM   CNET_CLAS_ROOM_INFO IA
+                                                INNER JOIN CNET_SCH_INFO IB
+                                                    ON IA.SCH_NO = IB.SCH_NO
+                                                    GROUP BY IA.TCHR_MBR_NO
+                                    ) B
+                        ON A.MBR_NO = B.TCHR_MBR_NO
+                    /* 학교정보를 가져옴.(학생일시) */
+                    LEFT OUTER JOIN (
+                                    SELECT IA.REQ_MBR_NO,MAX(IC.SCH_NO) AS SCH_NO,MAX(IC.SCH_NM) AS SCH_NM, MAX(IC.SIDO_NM) AS SIDO_NM
+                                    FROM   CNET_CLAS_ROOM_REG_REQ_HIST IA
+                                                INNER JOIN CNET_CLAS_ROOM_INFO IB
+                                                    ON IA.CLAS_ROOM_SER = IB.CLAS_ROOM_SER
+                                                INNER JOIN CNET_SCH_INFO IC
+                                                    ON IB.SCH_NO = IC.SCH_NO
+                                                INNER JOIN CNET_MBR_INFO ID
+                                                    ON IA.REQ_MBR_NO = ID.MBR_NO
+                                                        AND ID.MBR_CLASS_CD <> '100859'
+                                                        GROUP BY IA.REQ_MBR_NO
+                                    ) C
+                        ON A.MBR_NO = C.REQ_MBR_NO
+                    LEFT OUTER JOIN CNET_CO_INFO D
+                        ON A.POS_CO_NO = D.CO_NO
+        ]]>
+        <where>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(name)">
+                <choose>
+                    <when test="selType eq 2">
+                        AND
+                        (
+                        REGEXP_LIKE(C.SIDO_NM, #{name}) OR
+                        REGEXP_LIKE(B.SIDO_NM, #{name})
+                        )
+                    </when>
+                    <when test="selType eq 3">
+                        AND
+                        (
+                            REGEXP_LIKE(C.SCH_NM, #{name}) OR
+                            REGEXP_LIKE(B.SCH_NM, #{name}) OR
+                            REGEXP_LIKE(D.CO_NM, #{name})
+                        )
+                    </when>
+                    <when test="selType eq 4">
+                        AND REGEXP_LIKE(A.nm, #{name})
+                    </when>
+                    <otherwise>
+                        AND
+                        (
+                            (
+                            REGEXP_LIKE(C.SIDO_NM, #{name}) OR
+                            REGEXP_LIKE(B.SIDO_NM, #{name})
+                            ) OR
+                            (
+                            REGEXP_LIKE(C.SCH_NM, #{name}) OR
+                            REGEXP_LIKE(B.SCH_NM, #{name}) OR
+                            REGEXP_LIKE(D.CO_NM, #{name})
+                            ) OR
+                            REGEXP_LIKE(A.nm, #{name})
+                        )
+                    </otherwise>
+                </choose>
+
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(name)">
+
+            </if>
+            <if test="regDtmBegin neq null">
+                AND A.reg_dtm > TRUNC(#{regDtmBegin})
+            </if>
+            <if test="regDtmEnd neq null">
+                AND A.reg_dtm &lt; TRUNC(#{regDtmEnd}) + 1
+            </if>
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(mbrClassCds)">
+                <foreach collection="mbrClassCds" item="mbrClassCd" open="AND A.mbr_class_cd IN (" close=")" separator=",">
+                    #{mbrClassCd}
+                </foreach>
+            </if>
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(mbrCualfCds)">
+                <foreach collection="mbrCualfCds" item="mbrCualfCd" open="AND A.mbr_cualf_cd IN (" close=")" separator=",">
+                    #{mbrCualfCd}
+                </foreach>
+            </if>
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(mbrStatCds)">
+                <foreach collection="mbrStatCds" item="mbrStatCd" open="AND A.mbr_stat_cd IN (" close=")" separator=",">
+                    #{mbrStatCd}
+                </foreach>
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(approveYn)">
+                <if test='(approveYn eq "Y")'>
+                    AND A.mbr_stat_cd = '100862' /* 정상이용 */
+                </if>
+                <if test='(approveYn eq "N")'>
+                    AND A.mbr_stat_cd != '100862' /* 정상이용 */
+                </if>
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schClassCd)">
+                AND A.sch_class_cd = #{schClassCd}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(corpoMbrNo)">
+                AND A.mbr_no IN ( /* 소속업체 - 소속멘토*/
+                SELECT
+                targt_mbr_no
+                FROM cnet_mbr_rel_mapp
+                WHERE 1 = 1
+                AND reg_mbr_no IN (
+                SELECT
+                targt_mbr_no
+                FROM cnet_mbr_rel_mapp
+                WHERE 1 = 1
+                AND reg_mbr_no = #{corpoMbrNo}
+                )
+                )
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(grpMbrNo)">
+                AND A.mbr_no IN ( /* 소속업체 */
+                SELECT
+                targt_mbr_no
+                FROM cnet_mbr_rel_mapp
+                WHERE 1 = 1
+                AND reg_mbr_no IN (
+                SELECT
+                mbr_no
+                FROM cnet_mbr_info
+                WHERE 1 = 1
+                AND pos_co_no = (SELECT pos_co_no FROM cnet_mbr_info WHERE mbr_no = #{grpMbrNo})
+                )
+                )
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(loginPermYn)">
+                AND A.login_perm_yn = #{loginPermYn}
+            </if>
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(mbrNos)">
+                <foreach collection="mbrNos" item="mbrNo" open="AND A.mbr_no IN (" close=")" separator=",">
+                    #{mbrNo}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getUserWithStatChgByNo" parameterType="kr.or.career.mentor.domain.UserSearch" resultMap="userJobData">
+        SELECT
+            R.*
+            , R.NM AS username
+            , R.PWD AS password
+            , (SELECT nm FROM CNET_MBR_INFO WHERE mbr_no = R.reg_mbr_no) AS reg_mbr_nm
+            , (SELECT cd_nm FROM CNET_CODE WHERE CD = R.mbr_cualf_cd) as mbr_cualf_nm
+            , NVL((SELECT co_nm FROM CNET_CO_INFO WHERE co_no = R.pos_co_no), R.mngr_pos_nm) AS pos_co_nm
+            , NVL((SELECT bizno FROM CNET_CO_INFO WHERE co_no = R.pos_co_no), R.mngr_pos_bizno) AS pos_bizno
+            , J.*
+            , CHG.STAT_CHG_SER
+            , CHG.STAT_CHG_CLASS_CD
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = CHG.STAT_CHG_CLASS_CD) AS STAT_CHG_CLASS_NM
+            , CHG.STAT_CHG_TARGT_NO
+            , CHG.STAT_CHG_TARGT_MBR_NO
+            , CHG.STAT_CHG_RSLT_CD
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = CHG.STAT_CHG_RSLT_CD) AS STAT_CHG_RSLT_NM
+        FROM CNET_MBR_INFO R
+        LEFT OUTER JOIN CNET_MBR_JOB_INFO J
+            ON R.MBR_NO = J.MBR_NO
+        LEFT JOIN CNET_STAT_CHG_HIST CHG
+            ON CHG.STAT_CHG_TARGT_MBR_NO = R.MBR_NO
+        WHERE R.MBR_NO = #{mbrNo}
+        AND CHG.STAT_CHG_SER = #{statChgSer}
+    </select>
+
+    <select id="getUserByNo" parameterType="string" resultMap="userJobData">
+        SELECT
+                  R.*
+                , R.NM AS username
+                , R.PWD AS password
+                , (SELECT nm FROM CNET_MBR_INFO WHERE mbr_no = R.reg_mbr_no) AS reg_mbr_nm
+                , (SELECT cd_nm FROM CNET_CODE WHERE CD = R.mbr_cualf_cd) as mbr_cualf_nm
+                , NVL((SELECT co_nm FROM CNET_CO_INFO WHERE co_no = R.pos_co_no), R.mngr_pos_nm) AS pos_co_nm
+                , NVL((SELECT bizno FROM CNET_CO_INFO WHERE co_no = R.pos_co_no), R.mngr_pos_bizno) AS pos_bizno
+                , J.*
+           FROM CNET_MBR_INFO R
+        LEFT OUTER JOIN CNET_MBR_JOB_INFO J
+             ON R.MBR_NO = J.MBR_NO
+          WHERE R.MBR_NO = #{mbrNo}
+    </select>
+
+    <select id="getSupUserByNo" parameterType="string" resultType="kr.or.career.mentor.domain.User">
+        SELECT
+              R.*
+            , R.NM AS username
+            , R.PWD AS password
+            , (SELECT co_nm FROM CNET_CO_INFO WHERE co_no = R.pos_co_no) AS pos_co_nm
+        FROM CNET_MBR_INFO R
+       WHERE MBR_NO = (
+                SELECT REG_MBR_NO
+                  FROM CNET_MBR_REL_MAPP
+                 WHERE TARGT_MBR_NO = #{mbrNo}
+            )
+    </select>
+
+    <select id="findAuthoritiesByUserId" parameterType="string" resultType="authority">
+         <include refid="fullUserAuthCd"></include>
+    </select>
+
+    <update id="updatePwd" parameterType="user">
+    UPDATE CNET_MBR_INFO SET pwd = #{password},
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(tmpPwdYn)">tmp_pwd_yn = #{tmpPwdYn},</if>
+        pwd_chg_dtm = SYSDATE
+     WHERE mbr_no = #{mbrNo}
+    </update>
+
+    <update id="updateUser" parameterType="user">
+        UPDATE CNET_MBR_INFO
+        <set>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(password)">pwd = #{password},pwd_chg_dtm = SYSDATE,</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(pwdQuestCd)">pwd_quest_cd = #{pwdQuestCd},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(pwdAnsSust)">pwd_ans_sust = #{pwdAnsSust},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(genCd)">gen_cd = #{genCd},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(birthday)">birthday = #{birthday},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(lunarYn)">lunar_yn = #{lunarYn},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(emailAddr)">email_addr = #{emailAddr},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mobile)">mobile = #{mobile},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mbrStatCd)">mbr_stat_cd =  #{mbrStatCd},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(loginPermYn)">login_perm_yn =  #{loginPermYn},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(posCoNo)">pos_co_no =  #{posCoNo},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mngrPosNm)">mngr_pos_nm =  #{mngrPosNm},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mngrPosBizno)">mngr_pos_bizno =  #{mngrPosBizno},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mbrCualfCd)">mbr_cualf_cd =  #{mbrCualfCd},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mbrClassCd)">mbr_class_cd =  #{mbrClassCd},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mbrGradeCd)">mbr_grade_cd =  #{mbrGradeCd},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(tel)">tel =  #{tel},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(fax)">fax =  #{fax},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(username)">nm =  #{username},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(schSiteExpsYn)">sch_site_exps_yn =  #{schSiteExpsYn},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(tmpPwdYn)">tmp_pwd_yn =  #{tmpPwdYn},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(id)">id =  #{id},</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(authTargtId)">auth_targt_id =  #{authTargtId},</if>
+            chg_dtm = SYSDATE,
+            chg_mbr_no = #{chgMbrNo}
+        </set>
+        WHERE MBR_NO = #{mbrNo}
+    </update>
+
+    <update id="updateStat" parameterType="user">
+        UPDATE CNET_MBR_INFO
+        <set>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mbrStatCd)">mbr_stat_cd =  #{mbrStatCd},</if>
+            login_perm_yn = #{loginPermYn},
+            chg_dtm = SYSDATE,
+            chg_mbr_no = #{chgMbrNo}
+        </set>
+        WHERE MBR_NO = #{mbrNo}
+    </update>
+
+    <update id="updateSecession" parameterType="user">
+    </update>
+
+    <insert id="insertUser" parameterType="user">
+    INSERT INTO CNET_MBR_INFO
+    (MBR_NO, MBR_CLASS_CD, MBR_CUALF_CD, MBR_GRADE_CD, ID, PWD, NM, GEN_CD, BIRTHDAY, LUNAR_YN, EMAIL_ADDR, JOB_CD, TEL, MOBILE, PRTCTR_NM, PRTCTR_TEL, PRTCTR_EMAIL_ADDR, PWD_QUEST_CD, PWD_ANS_SUST, MNGR_PIC_PATH, MNGR_POS_NM, MNGR_POS_BIZNO, MBR_STAT_CD, MARRY_YN, NAT_CD, DOM_RSDC_YN, RSDC_AREA_CD, SCH_CAR_CD, SCH_CLASS_CD, SCH_SER, SCH_NM, SCH_GRD_NM, CLAS_NM, CHRG_TCHR_NO, GPIN_IDNTF_NO, GPIN_DUP_VERF_INFO, STDNT_CLASS_CD, CHRG_STDNT_CLASS_CD, MNGR_POS_CD, MNGR_CAREER_INFO, MNGR_RMK_SUST, MNGR_FLD_INFO, LOGIN_PERM_YN, SESS_ID, SCRB_PATH_CD, USE_STOP_DTM, PWD_CHG_DTM, CNSL_START_DAY, CONN_IP, LOGIN_CNT, LAST_LOGIN_DTM, REG_DTM, REG_MBR_NO, CHG_DTM, CHG_MBR_NO, DEL_DTM, DEL_MBR_NO, FAX,POS_CO_NO, AUTH_TARGT_ID)
+    VALUES
+    (
+        SQ_MBR_INFO.NEXTVAL
+        ,#{mbrClassCd, jdbcType=VARCHAR}
+        ,#{mbrCualfCd, jdbcType=VARCHAR}
+        ,#{mbrGradeCd, jdbcType=VARCHAR}
+        ,#{id, jdbcType=VARCHAR}
+        ,#{password, jdbcType=VARCHAR}
+        ,#{username, jdbcType=VARCHAR}
+        ,#{genCd, jdbcType=VARCHAR}
+        ,#{birthday, jdbcType=VARCHAR}
+        ,#{lunarYn, jdbcType=VARCHAR}
+        ,#{emailAddr, jdbcType=VARCHAR}
+        ,#{jobCd, jdbcType=VARCHAR}
+        ,#{tel, jdbcType=VARCHAR}
+        ,#{mobile, jdbcType=VARCHAR}
+        ,#{prtctrNm, jdbcType=VARCHAR}
+        ,#{prtctrTel, jdbcType=VARCHAR}
+        ,#{prtctrEmailAddr, jdbcType=VARCHAR}
+        ,#{pwdQuestCd, jdbcType=VARCHAR}
+        ,#{pwdAnsSust, jdbcType=VARCHAR}
+        ,#{mngrPicPath, jdbcType=VARCHAR}
+        ,#{mngrPosNm, jdbcType=VARCHAR}
+        ,#{mngrPosBizno, jdbcType=VARCHAR}
+        ,#{mbrStatCd, jdbcType=VARCHAR}
+        ,#{marryYn, jdbcType=VARCHAR}
+        ,#{natCd, jdbcType=VARCHAR}
+        ,#{domRsdcYn, jdbcType=VARCHAR}
+        ,#{rsdcAreaCd, jdbcType=VARCHAR}
+        ,#{schCarCd, jdbcType=VARCHAR}
+        ,#{schClassCd, jdbcType=VARCHAR}
+        ,#{schSer, jdbcType=INTEGER}
+        ,#{schNm, jdbcType=VARCHAR}
+        ,#{schGrdNm, jdbcType=VARCHAR}
+        ,#{clasNm, jdbcType=VARCHAR}
+        ,#{chrgTchrNo, jdbcType=VARCHAR}
+        ,#{gpinIdntfNo, jdbcType=VARCHAR}
+        ,#{gpinDupVerfInfo, jdbcType=VARCHAR}
+        ,#{stdntClassCd, jdbcType=VARCHAR}
+        ,#{chrgStdntClassCd, jdbcType=VARCHAR}
+        ,#{mngrPosCd, jdbcType=VARCHAR}
+        ,#{mngrCareerInfo, jdbcType=VARCHAR}
+        ,#{mngrRmkSust, jdbcType=VARCHAR}
+        ,#{mngrFldInfo, jdbcType=VARCHAR}
+        ,DECODE(#{loginPermYn, jdbcType=VARCHAR}, NULL, 'Y', #{loginPermYn, jdbcType=VARCHAR})
+        ,#{sessId, jdbcType=VARCHAR}
+        ,#{scrbPathCd, jdbcType=VARCHAR}
+        ,#{useStopDtm, jdbcType=DATE}
+        ,#{pwdChgDtm, jdbcType=DATE}
+        ,#{cnslStartDay, jdbcType=DATE}
+        ,#{connIp, jdbcType=VARCHAR}
+        ,#{loginCnt, jdbcType=INTEGER}
+        ,#{lastLoginDtm, jdbcType=VARCHAR}
+        ,SYSDATE
+        ,#{regMbrNo, jdbcType=VARCHAR}
+        ,#{chgDtm, jdbcType=DATE}
+        ,#{chgMbrNo, jdbcType=VARCHAR}
+        ,#{delDtm, jdbcType=DATE}
+        ,#{delMbrNo, jdbcType=VARCHAR}
+        ,#{fax, jdbcType=VARCHAR}
+        ,#{posCoNo, jdbcType=VARCHAR}
+        ,#{authTargtId, jdbcType=VARCHAR}
+    )
+    <selectKey keyProperty="mbrNo" resultType="String" order="AFTER">
+        SELECT SQ_MBR_INFO.currval FROM dual
+    </selectKey>
+    </insert>
+
+    <insert id="insertMbrAgrInfo" parameterType="kr.or.career.mentor.domain.MbrAgrInfo">
+    INSERT INTO CNET_MBR_AGR_INFO
+    (MBR_NO, AGR_CLASS_CD, AGR_DTM)
+    VALUES
+    (#{mbrNo}, #{agrClassCd}, SYSDATE)
+    </insert>
+
+    <update id="saveProfPicInfo" parameterType="kr.or.career.mentor.domain.MbrProfPicInfo">
+    MERGE INTO CNET_MBR_PROF_PIC_INFO
+    USING DUAL
+            ON (MBR_NO = #{mbrNo} AND PIC_SER = #{picSer})
+            WHEN MATCHED THEN
+                    UPDATE SET
+                    FILE_SER = #{fileSer}
+                    , REG_DTM = SYSDATE
+            WHEN NOT MATCHED THEN
+                    INSERT (PIC_SER, FILE_SER, MBR_NO, REG_DTM)
+                    VALUES (#{picSer}, #{fileSer}, #{mbrNo}, SYSDATE)
+    <selectKey keyProperty="picSer" resultType="int" order="BEFORE">
+     SELECT SQ_MBR_PROF_PIC_INFO.NEXTVAL FROM DUAL
+    </selectKey>
+    </update>
+
+    <delete id="deleteProfPicInfo" parameterType="kr.or.career.mentor.domain.MbrProfPicInfo">
+    DELETE FROM CNET_MBR_PROF_PIC_INFO
+    WHERE MBR_NO = #{mbrNo}
+    </delete>
+
+    <insert id="insertMbrMapp" parameterType="kr.or.career.mentor.domain.MbrMapp">
+        <![CDATA[
+            INSERT  INTO    CNET_CNET_MBR_MAPP
+            (
+                MBR_NO
+                ,CNET_MBR_NO
+                ,REG_DTM
+            )
+            VALUES
+            (
+                #{mbrNo}
+                ,#{cnetMbrNo}
+                ,sysdate
+            )
+        ]]>
+    </insert>
+
+    <!-- 특정 회사 소속의 멘토를 조회함. -->
+    <select id="belongingMentor" parameterType="String" resultType="String">
+        SELECT A.TARGT_MBR_NO
+          FROM CNET_MBR_REL_MAPP A
+         WHERE REG_MBR_NO IN (SELECT MBR_NO FROM CNET_MBR_INFO WHERE POS_CO_NO = #{posCoNo})
+           AND A.AUTH_STAT_CD = '101027'
+    </select>
+
+    <insert id="insertLoginHist" parameterType="MbrLoginHist">
+    INSERT INTO CNET_MBR_LOGIN_HIST
+    (MBR_NO, LOGIN_DTM, LOGIN_CLASS_CD, CONN_IP)
+    VALUES
+    (#{mbrNo}, SYSDATE, #{loginClassCd, jdbcType=VARCHAR}, #{connIp, jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updateUserLoginDtm" parameterType="User">
+    UPDATE CNET_MBR_INFO SET
+    last_login_dtm = SYSDATE
+    WHERE mbr_no = #{mbrNo}
+    </update>
+
+    <select id="isValidateId" resultType="boolean">
+        SELECT DECODE(COUNT(*), 0, 1, 0)
+          FROM CNET_MBR_INFO
+         WHERE ID = #{id}
+    </select>
+
+    <select id="isValidateEmail" resultType="boolean">
+        SELECT DECODE(COUNT(*), 0, 1, 0)
+        FROM CNET_MBR_INFO
+        WHERE EMAIL_ADDR = #{email}
+        AND MBR_STAT_CD != '100863' <!-- 이용중지 대상은 사용 가능 -->
+    </select>
+
+    <update id="upsertDeviceInfo" parameterType="kr.or.career.mentor.domain.MbrDvcInfo">
+        MERGE INTO CNET_MBR_DVC_INFO
+        USING DUAL
+        ON (MBR_NO = #{mbrNo, jdbcType=VARCHAR})
+        WHEN MATCHED THEN
+        UPDATE SET
+        DVC_TKN_VAL = #{deviceToken, jdbcType=VARCHAR}
+        , DVC_OS_INFO = #{osInfo, jdbcType=VARCHAR}
+        WHEN NOT MATCHED THEN
+        INSERT (MBR_NO, DVC_TKN_VAL, DVC_OS_INFO)
+        VALUES (#{mbrNo, jdbcType=VARCHAR}, #{deviceToken, jdbcType=VARCHAR}, #{osInfo, jdbcType=VARCHAR})
+    </update>
+
+    <delete id="deleteDeviceInfo" parameterType="kr.or.career.mentor.domain.MbrDvcInfo">
+        DELETE  CNET_MBR_DVC_INFO
+        WHERE   DVC_TKN_VAL = #{deviceToken, jdbcType=VARCHAR}
+        AND     DVC_OS_INFO = #{osInfo, jdbcType=VARCHAR}
+    </delete>
+
+    <update id="updateCnslStartDay" parameterType="String">
+        UPDATE CNET_MBR_INFO SET
+            cnsl_start_day = SYSDATE
+         WHERE mbr_no = #{mbrNo}
+    </update>
+
+    <update id="withDrawalUser" parameterType="kr.or.career.mentor.domain.User">
+        UPDATE CNET_MBR_INFO
+        SET PWD = NULL
+        , NM = NULL
+        , GEN_CD = NULL
+        , BIRTHDAY = NULL
+        , LUNAR_YN = NULL
+        , EMAIL_ADDR = NULL
+        , TEL = NULL
+        , MOBILE = NULL
+        , PRTCTR_NM = NULL
+        , PRTCTR_TEL = NULL
+        , PRTCTR_EMAIL_ADDR = NULL
+        , PWD_QUEST_CD = NULL
+        , PWD_ANS_SUST = NULL
+        , MNGR_PIC_PATH = NULL
+        , MNGR_POS_NM = NULL
+        , MNGR_POS_BIZNO = NULL
+        , MARRY_YN = NULL
+        , NAT_CD = NULL
+        , DOM_RSDC_YN = NULL
+        , RSDC_AREA_CD = NULL
+        , SCH_CAR_CD = NULL
+        , SCH_CLASS_CD = NULL
+        , SCH_SER = NULL
+        , SCH_NM = NULL
+        , SCH_GRD_NM = NULL
+        , CLAS_NM = NULL
+        , CHRG_TCHR_NO = NULL
+        , GPIN_IDNTF_NO = NULL
+        , GPIN_DUP_VERF_INFO = NULL
+        , STDNT_CLASS_CD = NULL
+        , CHRG_STDNT_CLASS_CD = NULL
+        , MNGR_POS_CD = NULL
+        , MNGR_CAREER_INFO = NULL
+        , MNGR_RMK_SUST = NULL
+        , MNGR_FLD_INFO = NULL
+        , CONN_IP = NULL
+        , LOGIN_CNT = NULL
+        , FAX = NULL
+        , POS_CO_NO = NULL
+        , AUTH_PROC_SUST = #{authProcSust, jdbcType=VARCHAR}
+        , USE_STOP_DTM = SYSDATE
+        , CHG_DTM = SYSDATE
+        , CHG_MBR_NO = #{chgMbrNo}
+        , DEL_DTM = SYSDATE
+        , DEL_MBR_NO = #{chgMbrNo}
+        , MBR_WITHDRAWN_TYPE = #{mbrWithdrawnType}
+        WHERE MBR_NO = #{mbrNo}
+    </update>
+
+
+
+    <select id="listUserForNotificationHistory" resultType="kr.or.career.mentor.domain.User" parameterType="kr.or.career.mentor.domain.UserSearch">
+        <![CDATA[
+        /* [UserMapper.xml#listUserForNotificationHistory][조건별 회원 목록] */
+        /* paging */
+        SELECT
+                Distinct A.mbr_no
+                , A.mbr_class_cd
+                , A.mbr_cualf_cd
+                , A.mbr_grade_cd
+                , A.id
+                , A.nm
+                , A.gen_cd
+                , A.birthday
+                , A.lunar_yn
+                , A.email_addr
+                , A.job_cd
+                , A.tel
+                , A.mobile
+                , A.prtctr_nm
+                , A.prtctr_tel
+                , A.prtctr_email_addr
+                , A.mngr_pic_path
+                , A.mngr_pos_nm
+                , A.mngr_pos_bizno
+                , A.mbr_stat_cd
+                , A.marry_yn
+                , A.sch_car_cd
+                , A.sch_class_cd
+                , A.sch_ser
+                , A.sch_nm
+                , A.sch_grd_nm
+                , A.clas_nm
+                , A.chrg_tchr_no
+                , A.stdnt_class_cd
+                , A.chrg_stdnt_class_cd
+                , A.mngr_pos_cd
+                , A.mngr_career_info
+                , A.mngr_rmk_sust
+                , A.mngr_fld_info
+                , A.login_perm_yn
+                , A.use_stop_dtm
+                , A.pwd_chg_dtm
+                , A.login_cnt
+                , A.last_login_dtm
+                , A.reg_dtm
+                , A.reg_mbr_no
+                , A.chg_dtm
+                , A.chg_mbr_no
+                , A.del_dtm
+                , A.del_mbr_no
+                , A.fax
+                , A.pos_co_no
+                , A.auth_proc_sust
+                , A.nm as username
+                , (SELECT cd_nm FROM CNET_CODE WHERE CD = A.mbr_cualf_cd) as mbr_cualf_nm
+                , (SELECT nm FROM CNET_MBR_INFO WHERE mbr_no = A.reg_mbr_no) as reg_mbr_nm
+                /*, (SELECT co_nm FROM CNET_CO_INFO WHERE co_no = A.pos_co_no) as pos_co_nm*/
+                , (SELECT bizno FROM CNET_CO_INFO WHERE co_no = A.pos_co_no) as pos_bizno
+
+                , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) as RN
+                , CASE    WHEN A.MBR_CLASS_CD = '100858' /* 일반회원 */ THEN C.SCH_NM
+                        WHEN A.MBR_CLASS_CD = '100859' /* 교사 */ THEN B.SCH_NM
+                        WHEN A.MBR_CLASS_CD = '100860' /* 관리자 */ THEN D.CO_NM
+                        WHEN A.MBR_CLASS_CD = '101504' /* 기관/업체 */ THEN D.CO_NM
+                        WHEN A.MBR_CLASS_CD = '101505' /* 멘토 */ THEN D.CO_NM
+                END AS posCoNm
+                , CASE    WHEN A.MBR_CLASS_CD = '100858' /* 일반회원 */ THEN C.SIDO_NM
+                        WHEN A.MBR_CLASS_CD = '100859' /* 교사 */ THEN B.SIDO_NM
+                END AS SIDO_NM
+                , F.MSG_SER
+                , F.SEND_TARGT_SER
+                , F.SEND_TARGT_MBR_NO
+                , F.SEND_TARGT_INFO
+                /* paging */
+        FROM cnet_msg_send_targt_info F
+                    LEFT OUTER JOIN CNET_MBR_INFO A ON F.SEND_TARGT_MBR_NO = A.MBR_NO
+                    /* 학교정보를 가져옴.(교사일시) */
+                    LEFT OUTER JOIN (
+                                    SELECT MAX(IA.SCH_NO) AS SCH_NO, IA.TCHR_MBR_NO, MAX(IB.SCH_NM) AS SCH_NM, MAX(IB.SIDO_NM) AS SIDO_NM, MAX(IB.SGGU_NM) AS SGGU_NM
+                                    FROM   CNET_CLAS_ROOM_INFO IA
+                                                INNER JOIN CNET_SCH_INFO IB
+                                                    ON IA.SCH_NO = IB.SCH_NO
+                                                    GROUP BY IA.TCHR_MBR_NO
+                                    ) B
+                        ON A.MBR_NO = B.TCHR_MBR_NO
+                    /* 학교정보를 가져옴.(학생일시) */
+                    LEFT OUTER JOIN (
+                                    SELECT IA.REQ_MBR_NO,MAX(IC.SCH_NO) AS SCH_NO,MAX(IC.SCH_NM) AS SCH_NM, MAX(IC.SIDO_NM) AS SIDO_NM
+                                    FROM   CNET_CLAS_ROOM_REG_REQ_HIST IA
+                                                INNER JOIN CNET_CLAS_ROOM_INFO IB
+                                                    ON IA.CLAS_ROOM_SER = IB.CLAS_ROOM_SER
+                                                INNER JOIN CNET_SCH_INFO IC
+                                                    ON IB.SCH_NO = IC.SCH_NO
+                                                INNER JOIN CNET_MBR_INFO ID
+                                                    ON IA.REQ_MBR_NO = ID.MBR_NO
+                                                        AND ID.MBR_CLASS_CD <> '100859'
+                                                        GROUP BY IA.REQ_MBR_NO
+                                    ) C
+                        ON A.MBR_NO = C.REQ_MBR_NO
+                    LEFT OUTER JOIN CNET_CO_INFO D
+                        ON A.POS_CO_NO = D.CO_NO
+        ]]>
+        <where>
+            AND F.MSG_SER = #{msgSer}
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(mbrNos)">
+                <foreach collection="mbrNos" item="mbrNo" open="AND F.SEND_TARGT_MBR_NO IN (" close=")" separator=",">
+                    #{mbrNo}
+                </foreach>
+            </if>
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(sendTargtSers)">
+                <foreach collection="sendTargtSers" item="sendTargtSer" open="AND F.SEND_TARGT_SER IN (" close=")" separator=",">
+                    #{sendTargtSer}
+                </foreach>
+            </if>
+
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(sendTargtCd)">
+                AND F.SEND_TARGT_CD = #{sendTargtCd}
+            </if>
+        </where>
+    </select>
+
+</mapper>

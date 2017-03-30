@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.BbsMapper">
+
+     <!--  검색 where -->
+    <sql id="searchDynamic">
+        <trim>                  
+              <if test="arclSer != null and arclSer !='' " >
+               AND  a.arcl_ser =  #{arclSer}  
+             </if>
+              <if test="searchWrd != null and searchWrd !='' " >
+                <choose>
+                    <when test="searchCnd=='1'">
+                      AND  (	a.title  LIKE '%' || #{searchWrd} || '%'  OR a.sust LIKE '%' || #{searchWrd} || '%' )
+                    </when>
+                    <when test="searchCnd=='2'">
+                      AND  (	a.sust LIKE '%' || #{searchWrd} || '%' )   
+                    </when>
+                    <when test="searchCnd=='3'">
+                      AND  (	b.nm LIKE '%' || #{searchWrd} || '%' )  
+                    </when>
+                    <otherwise></otherwise>
+                </choose>              
+             </if>         
+             <if test="searchEndDate != null and searchEndDate !='' and searchBgnDate != null and searchBgnDate !='' " >                
+                  AND  TO_CHAR(a.reg_dtm ,'YYYYMMDD') BETWEEN   #{searchBgnDate} AND #{searchEndDate}
+             </if>  
+        </trim>
+    </sql>        
+        
+    
+    <!-- 기본  where절  -->
+     <sql id="simpleStatic">
+        <trim>
+             WHERE board_id = #{boardId}
+             AND  arcl_ser = #{arclSer, jdbcType = NUMERIC}      
+        </trim>
+    </sql>
+    
+     <!-- 기본  select절  -->
+     <sql id="simpleSubstance">
+        <trim>
+          /* paging */
+           SELECT ROW_NUMBER() OVER(ORDER BY  a.noti_yn  ASC , a.reg_dtm ASC, a.arcl_ser DESC ) AS rn
+            , a.board_id
+            , a.arcl_ser
+            , a.pref_no
+            , a.title 
+            , a.sust 
+            , a.cntnts_targt_cd
+            , a.cntnts_targt_id
+            , a.cntnts_type_cd 
+            , a.vcnt
+            , a.rcnt 
+            , a.scrt_arcl_yn
+            , a.noti_yn            
+            , a.use_yn
+            , TO_CHAR(a.reg_dtm, 'YYYY.MM.DD') AS reg_dtm
+            , a.reg_mbr_no 
+            , b.id   
+            , b.nm AS regNm
+            /* paging */
+          FROM cnet_arcl_info a
+              , cnet_mbr_info b 
+           WHERE  a.reg_mbr_no=b.mbr_no   
+           AND a.board_id = #{boardId}        
+        </trim>
+    </sql>
+    
+
+    <select id="listBbs" parameterType="kr.or.career.mentor.domain.ArclInfo" resultType="kr.or.career.mentor.domain.ArclInfo">
+       /** id:listBbs  게시판 리스트 */       
+          <include refid="kr.or.career.mentor.dao.BbsMapper.simpleSubstance" /> 
+          <include refid="kr.or.career.mentor.dao.BbsMapper.searchDynamic" /> 
+         ORDER BY a.noti_yn DESC, a.reg_dtm DESC, a.arcl_ser ASC
+    </select>
+ 
+
+    
+    <select id="listCntBbs" parameterType="kr.or.career.mentor.domain.ArclInfo" resultType="java.lang.Integer" >
+       /** id:listCntBbs  게시판 레코드수 */
+    	 SELECT
+			COUNT(a.arcl_ser) AS recodeNum		
+		 FROM cnet_arcl_info a
+                , cnet_mbr_info b 
+            WHERE  a.reg_mbr_no=b.mbr_no   
+            AND a.board_id = #{boardId}
+		 <include refid="kr.or.career.mentor.dao.BbsMapper.searchDynamic"/>  
+    </select>
+    
+       
+     <select id="retrieveBbs" parameterType="kr.or.career.mentor.domain.ArclInfo"  resultType="kr.or.career.mentor.domain.ArclInfo" >
+          /** id:retrieveBbs  게시판 상세내용보기 */
+          <include refid="kr.or.career.mentor.dao.BbsMapper.simpleSubstance" /> 
+          <include refid="kr.or.career.mentor.dao.BbsMapper.searchDynamic" /> 
+         
+     </select>
+     
+     <select id="listCommentBbs" parameterType="kr.or.career.mentor.domain.ArclInfo"  resultType="kr.or.career.mentor.domain.ArclInfo" >
+            /** id:listCommentBbs  게시판 댓글리스트  */
+         SELECT board_id 
+            , arcl_ser
+            , cmt_ser
+            , cmt_sust 
+            , use_yn
+            , reg_dtm 
+            , reg_mbr_no      
+          FROM cnet_arcl_cmt_info
+          <include refid="kr.or.career.mentor.dao.BbsMapper.simpleStatic" /> 
+     </select>
+     
+     
+         
+    
+    <insert id="saveBbs" parameterType="kr.or.career.mentor.domain.ArclInfo">
+        <selectKey order="BEFORE" keyProperty="arclSer" resultType="int">
+            SELECT sq_arcl_info.nextval FROM dual
+        </selectKey>
+        /** id:insertBbs  게시판 글 등록 */
+	 	INSERT INTO cnet_arcl_info
+	        (   board_id
+	            , arcl_ser
+	            , pref_no
+	            , title
+	            , SUST
+	            , cntnts_targt_cd
+	            , cntnts_targt_id
+	            , cntnts_type_cd
+	            , scrt_arcl_yn
+	            , noti_yn 
+	            , reg_mbr_no        
+	       ) VALUES (
+	           #{boardId}
+	           , #{arclSer}
+	           , #{prefNo}
+	           , #{title}
+	           , #{sust}
+	           , #{cntntsTargtCd}
+	           , #{cntntsTargtId}
+	           , #{cntntsTypeCd}
+	           , #{scrtArclYn}
+	           , #{notiYn}  
+	           , #{regMbrNo}     
+	       )
+	     
+     </insert>
+     
+     
+     <insert id="saveCommentBbs" parameterType="kr.or.career.mentor.domain.ArclInfo">
+       
+        <selectKey order="BEFORE" keyProperty="cmtSer" resultType="int">
+            SELECT sq_arcl_cmt_info.nextval FROM dual
+        </selectKey>
+        
+        /** id:saveCommentBbs  게시판 댓글 등록   */     
+	 	INSERT INTO cnet_arcl_cmt_info
+	        (   board_id
+	            , arcl_ser
+	            , sup_cmt_ser
+	            , cmt_ser	         
+	            , cmt_sust
+	            , reg_mbr_no        
+	       ) VALUES (
+	            #{boardId}
+	           , #{arclSer}
+	           , NULL
+	           , #{cmtSer}
+	           , #{cmtSust}
+	           , #{regMbrNo} 
+	       )
+	     
+     </insert>
+    
+    
+    
+     <update id="updateBbs" parameterType="kr.or.career.mentor.domain.ArclInfo">
+         /** id:updateBbs  게시판 글수정 */
+	 	 UPDATE cnet_arcl_info SET 
+	             pref_no = #{prefNo}
+	            , title = #{title}
+	            , sust = #{sust}
+	            , cntnts_targt_cd = #{cntntsTargtCd}
+	            , cntnts_targt_id = #{cntntsTargtId}
+	            , cntnts_type_cd = #{cntntsTypeCd}
+	            , scrt_arcl_yn = #{scrtArclYn}
+	            , noti_yn = #{notiYn}
+	            , use_yn = #{useYn}           
+	            , chg_mbr_no =  #{chgMbrNo}      
+	           <include refid="kr.or.career.mentor.dao.BbsMapper.simpleStatic"/>     
+     </update>
+     
+     <update id="updateReplyBbs" parameterType="kr.or.career.mentor.domain.ArclInfo">
+        /** id:updateReplyBbs  게시판 답변글 수정 */
+	 	 UPDATE cnet_arcl_info SET             
+	             cntnts_sust = #{cntntsSust}
+	            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ansRegDtm)" >
+	             , ans_reg_dtm =  SYSDATE             
+	             , ans_reg_mbr_no =  #{regMbrNo}
+	            </if>
+	            <if test="@org.apache.commons.lang3.StringUtils@isEmpty(ansRegDtm)" >
+	             , ans_chg_dtm =  SYSDATE          
+	             , ans_chg_mbr_no =  #{regMbrNo}
+	             </if>
+	           <include refid="kr.or.career.mentor.dao.BbsMapper.simpleStatic"/>  
+     </update>
+     
+     <update id="updateRetrieveCountBbs" parameterType="kr.or.career.mentor.domain.ArclInfo">
+         /** id:updateBbs  게시판 조회수 증가 */
+	 	 UPDATE cnet_arcl_info SET 
+	             vcnt = vcnt + 1      
+	           <include refid="simpleStatic"/>     
+     </update>
+ 
+    
+      <delete id="deleteBbs" parameterType="kr.or.career.mentor.domain.ArclInfo" > 
+           /** id:deleteBbs  게시판 레코드 삭제  */
+          delete from cnet_arcl_info 
+          <include refid="kr.or.career.mentor.dao.BbsMapper.simpleStatic" /> 
+      </delete>
+      
+       <delete id="deleteCommentBbs" parameterType="kr.or.career.mentor.domain.ArclInfo" > 
+           /** id:deleteCommentBbs  게시판 댓글 레코드 삭제  */
+          delete from cnet_arcl_cmt_info 
+          <include refid="kr.or.career.mentor.dao.BbsMapper.simpleStatic" /> 
+           ANd cmt_ser =  #{cmtSer}
+      </delete>
+      
+      
+  
+    
+    
+</mapper>

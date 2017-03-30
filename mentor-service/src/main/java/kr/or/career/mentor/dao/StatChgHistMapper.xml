@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.StatChgHistMapper">
+
+    <insert id="insertStatChgHistInfo" parameterType="kr.or.career.mentor.domain.StatChgHistInfo">
+        INSERT INTO CNET_STAT_CHG_HIST
+        (
+            STAT_CHG_SER, STAT_CHG_CLASS_CD, STAT_CHG_TARGT_NO, STAT_CHG_TARGT_MBR_NO
+            , STAT_CHG_RSLT_CD, STAT_CHG_RSN, REG_MBR_NO, REG_DTM, LAST_STAT_YN
+        )
+        VALUES
+        (
+            SQ_STAT_CHG_HIST.NEXTVAL, #{statChgClassCd}, #{statChgTargtNo, jdbcType=VARCHAR}, #{statChgTargtMbrNo, jdbcType=VARCHAR}
+            , #{statChgRsltCd, jdbcType=VARCHAR}, #{statChgRsn, jdbcType=VARCHAR}, #{regMbrNo}, SYSDATE, 'Y'
+        )
+        <selectKey keyProperty="statChgSer" resultType="Integer" order="AFTER">
+            SELECT SQ_STAT_CHG_HIST.CURRVAL FROM dual
+        </selectKey>
+    </insert>
+
+    <select id="getStatChgHistByMbrNo" parameterType="kr.or.career.mentor.domain.UserSearch" resultType="kr.or.career.mentor.domain.StatChgHistInfo">
+        SELECT
+            CHG.STAT_CHG_SER
+            , CHG.STAT_CHG_CLASS_CD
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = CHG.STAT_CHG_CLASS_CD) AS STAT_CHG_CLASS_NM
+            , CHG.STAT_CHG_TARGT_NO
+            , CHG.STAT_CHG_TARGT_MBR_NO
+            , CHG.STAT_CHG_RSLT_CD
+            , (SELECT CD_NM FROM CNET_CODE WHERE CD = CHG.STAT_CHG_RSLT_CD) AS STAT_CHG_RSLT_NM
+            , CHG.STAT_CHG_RSN
+            , NM AS REG_MBR_NM
+            , CO.CO_NM
+            , CHG.REG_DTM
+            , CHG.LAST_STAT_YN
+        FROM CNET_STAT_CHG_HIST CHG
+        , CNET_MBR_INFO MBR
+        , CNET_CO_INFO CO
+        WHERE CHG.REG_MBR_NO = MBR.MBR_NO
+        <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(statChgClassCds)">
+            <foreach collection="statChgClassCds" item="statChgClassCdItem" open="AND CHG.STAT_CHG_CLASS_CD IN (" close=")" separator=",">
+                #{statChgClassCdItem}
+            </foreach>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(lastStatYn)">
+            AND CHG.LAST_STAT_YN = #{lastStatYn}
+        </if>
+        AND MBR.POS_CO_NO = CO.CO_NO(+)
+        AND CHG.STAT_CHG_TARGT_MBR_NO = #{mbrNo}
+        ORDER BY CHG.STAT_CHG_SER
+    </select>
+
+    <update id="updateStatChgHistLastStat" parameterType="kr.or.career.mentor.domain.StatChgHistInfo">
+        UPDATE CNET_STAT_CHG_HIST
+        SET LAST_STAT_YN = 'N'
+        WHERE LAST_STAT_YN = 'Y'
+        <choose>
+        <when test="@org.apache.commons.lang3.StringUtils@isNotBlank(statChgClassCd)">
+            AND STAT_CHG_CLASS_CD = #{statChgClassCd}
+        </when>
+        <when test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(statChgClassCds)">
+            <foreach collection="statChgClassCds" item="statChgClassCdItem" open="AND STAT_CHG_CLASS_CD IN (" close=")" separator=",">
+                #{statChgClassCdItem}
+            </foreach>
+        </when>
+        <otherwise>
+            AND 1 = 2
+        </otherwise>
+        </choose>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(statChgTargtNo)">
+        AND STAT_CHG_TARGT_NO = #{statChgTargtNo}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(statChgTargtMbrNo)">
+        AND STAT_CHG_TARGT_MBR_NO = #{statChgTargtMbrNo}
+        </if>
+    </update>
+
+    <insert id="insertStatChgHistSubmit" parameterType="kr.or.career.mentor.domain.StatChgHistInfo">
+        INSERT INTO CNET_STAT_CHG_HIST
+        (
+            STAT_CHG_SER, STAT_CHG_CLASS_CD, STAT_CHG_TARGT_NO, STAT_CHG_TARGT_MBR_NO
+            , STAT_CHG_RSLT_CD, STAT_CHG_RSN, REG_MBR_NO, REG_DTM, LAST_STAT_YN
+        )
+        SELECT
+            SQ_STAT_CHG_HIST.NEXTVAL, STAT_CHG_CLASS_CD, STAT_CHG_TARGT_NO, STAT_CHG_TARGT_MBR_NO
+            , #{statChgRsltCd}, #{statChgRsn, jdbcType=VARCHAR}, #{regMbrNo}, SYSDATE, 'Y'
+        FROM CNET_STAT_CHG_HIST
+        WHERE STAT_CHG_SER = #{statChgSer}
+        <selectKey keyProperty="statChgSer" resultType="Integer" order="AFTER">
+            SELECT SQ_STAT_CHG_HIST.CURRVAL FROM dual
+        </selectKey>
+    </insert>
+
+</mapper>

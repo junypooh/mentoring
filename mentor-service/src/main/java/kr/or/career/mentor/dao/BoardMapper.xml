@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.BoardMapper">
+
+    <select id="listArticle" parameterType="kr.or.career.mentor.domain.Article" resultType="kr.or.career.mentor.domain.Article">
+            /* paging */
+        select
+                ROW_NUMBER() OVER(ORDER BY REG_DTM DESC) AS rn,
+                ANS_CHG_DTM,
+                ANS_CHG_MBR_NO,
+                ANS_REG_DTM,
+                ANS_REG_MBR_NO,
+                ARCL_SER,
+                BOARD_ID,
+                CHG_DTM,
+                CHG_MBR_NO,
+                CNTNTS_API_PATH,
+                CNTNTS_DAY,
+                CNTNTS_ID,
+                CNTNTS_SMRY_INFO,
+                CNTNTS_SUST,
+                CNTNTS_TARGT_CD,
+                CNTNTS_TARGT_ID,
+                CNTNTS_TARGT_NM,
+                CNTNTS_TARGT_NO,
+                CNTNTS_TYPE_CD,
+                EXPS_TARGT_CD,
+                MR_ARCL_YN,
+                NOTI_YN,
+                PREF_NO,
+                RCNT,
+                RECOM_YN,
+                REG_DTM,
+                REG_MBR_NO,
+                RSS_PUB_YN,
+                SCRT_ARCL_YN,
+                SUB_TITLE,
+                SUP_ARCL_SER,
+                SUST,
+                TITLE,
+                USE_YN,
+                VCNT
+            /* paging */
+        from
+        CNET_ARCL_INFO
+        where BOARD_ID = #{boardId}
+    </select>
+
+
+
+</mapper>

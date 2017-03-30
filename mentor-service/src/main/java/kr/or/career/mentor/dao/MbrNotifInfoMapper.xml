@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MbrNotifInfoMapper">
+
+    <!-- 알림내역 조회-->
+    <select id="selectMbrNotifInfo" parameterType="kr.or.career.mentor.domain.MbrNotiInfo" resultType="kr.or.career.mentor.domain.MbrNotiInfo">
+        /* [MbrNotifInfoMapper.xml#selectMbrNotifInfo] */
+        /* paging */
+            SELECT ROW_NUMBER() OVER(ORDER BY NOTIF.REG_DTM DESC) AS rn
+                 , NOTIF.MBR_NO
+                 , NOTIF.NOTIF_SER
+                 , NOTIF.NOTIF_VERF_YN
+                 , (CASE WHEN NOTIF.NOTIF_VERF_YN = 'N' THEN '미확인'
+                         ELSE '확인' END
+                   ) AS NOTIF_VERF_NM
+                 , NOTIF.NOTIF_TYPE_CD
+                 , FN_CD_NM(NOTIF.NOTIF_TYPE_CD) AS NOTIF_TYPE_NM
+                 , NOTIF.NOTIF_MSG
+                 , NOTIF.REG_DTM
+                 , NOTIF.REG_MBR_NO
+                 , NOTIF.NOTIF_CLSF_CD
+                 , FN_CD_NM(NOTIF.NOTIF_CLSF_CD) AS NOTIF_CLSF_NM
+                 , NOTIF.NOTIF_TITLE
+                 , NOTIF.LECT_SER
+                 , NOTIF.NOTIF_VERF_DTM
+                 , LECT.LECT_RJCT_RSN_SUST
+        /* paging */
+            FROM CNET_MBR_NOTIF_INFO NOTIF
+ LEFT OUTER JOIN CNET_LECT_INFO LECT
+              ON NOTIF.LECT_SER = LECT.LECT_SER
+           WHERE 1 = 1
+             AND NOTIF.MBR_NO = #{mbrNo}
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(notifVerfYn)">
+             AND NOTIF_VERF_YN = #{notifVerfYn}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(notifTypeCd)">
+             AND NOTIF_TYPE_CD = #{notifTypeCd}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate) and @org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+             AND TO_CHAR(NOTIF.REG_DTM, 'YYYYMMDD') BETWEEN REGEXP_REPLACE(#{searchStDate}, '[[:punct:]]', '') AND REGEXP_REPLACE(#{searchEndDate}, '[[:punct:]]', '')
+        </if>
+        <if test="notifSer != null">
+             AND NOTIF.NOTIF_SER = #{notifSer}
+        </if>
+    </select>
+
+    <!-- 알림 확인 UPDATE -->
+    <update id="updateNotifVerf" parameterType="kr.or.career.mentor.domain.MbrNotiInfo" >
+        UPDATE CNET_MBR_NOTIF_INFO
+           SET NOTIF_VERF_YN = 'Y'
+             , NOTIF_VERF_DTM = SYSDATE
+         WHERE NOTIF_SER = #{notifSer}
+    </update>
+
+    <!-- 알림내역 삭제 -->
+    <delete id="deleteMbrNotifInfo" parameterType="kr.or.career.mentor.domain.MbrNotiInfo" >
+        DELETE CNET_MBR_NOTIF_INFO
+         WHERE NOTIF_SER = #{notifSer}
+    </delete>
+
+    <!-- 아림내역 등록 -->
+    <insert id="insertNotifVerf" parameterType="kr.or.career.mentor.domain.MbrNotiInfo" >
+        INSERT INTO CNET_MBR_NOTIF_INFO
+        (MBR_NO,
+        NOTIF_SER,
+        NOTIF_TYPE_CD,
+        NOTIF_MSG,
+        REG_DTM,
+        REG_MBR_NO,
+        NOTIF_CLSF_CD,
+        NOTIF_TITLE,
+        LECT_SER)
+        VALUES
+        (#{mbrNo},
+        #{notifSer},
+        #{notifTypeCd},
+        #{notifMsg},
+        SYSDATE,
+        #{regMbrNo},
+        #{notifClsfCd},
+        #{notifTitle},
+        #{lectSer}
+        )
+    </insert>
+
+</mapper>

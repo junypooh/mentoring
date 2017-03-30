@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.LectureDataMapper">
+    <resultMap id="dataFileInfoResult" type="kr.or.career.mentor.domain.DataFileInfo" autoMapping="true">
+        <id property="dataSer" column="DATA_SER" javaType="int" />
+        <id property="fileSer" column="FILE_SER" javaType="int" />
+    </resultMap>
+
+    <resultMap type="kr.or.career.mentor.domain.DataFileInfo" id="fileInfoResult" extends="dataFileInfoResult">
+        <association property="comFileInfo" column="{fileSer=FILE_SER}" select="kr.or.career.mentor.dao.ComFileInfoMapper.getComFileList" autoMapping="true" />
+    </resultMap>
+
+
+    <resultMap type="kr.or.career.mentor.domain.LectDataInfo" id="lectDataInfoResult" autoMapping="true">
+        <id column="LECT_SER" property="lectSer" />
+        <id column="DATA_SER" property="dataSer" />
+        <collection property="comFileInfo" resultMap="comFileInfoResult" autoMapping="true"/>
+    </resultMap>
+
+    <resultMap id="comFileInfoResult" type="kr.or.career.mentor.domain.ComFileInfo" autoMapping="true">
+        <id column="FILE_SER" property="fileSer"/>
+    </resultMap>
+
+    <!-- 회원자료정보 등록 -->
+    <insert id="insertMbrDataInfo" parameterType="kr.or.career.mentor.domain.LectDataInfo">
+        /* [LectureDataMapper.xml#insertMbrDataInfo] */
+        INSERT INTO CNET_MBR_DATA_INFO
+            (
+                DATA_SER
+              , DATA_NM
+              , OWNER_MBR_NO
+              , DATA_TARGT_CLASS
+              , DATA_TYPE_CD
+              , FILE_SER
+              , ARCL_SER
+              , BOARD_ID
+              , DATA_URL
+              , USE_YN
+              , INTDC_DATA_YN
+              , REG_DTM
+              , REG_MBR_NO
+              , LINK_TITLE
+              , DATA_SUST
+              , FILE_TITLE
+            )VALUES
+            (
+                SQ_MBR_DATA_INFO.NEXTVAL
+              , #{dataNm, jdbcType=VARCHAR}
+              , #{ownerMbrNo, jdbcType=INTEGER}
+              , #{dataTargtClass, jdbcType=INTEGER}
+              , #{dataTypeCd, jdbcType=INTEGER}
+              , #{fileSer, jdbcType=INTEGER}
+              , #{arclSer, jdbcType=INTEGER}
+              , #{boardId, jdbcType=VARCHAR}
+              , #{dataUrl, jdbcType=VARCHAR}
+              , #{useYn, jdbcType=VARCHAR}
+              , #{intdcDataYn, jdbcType=VARCHAR}
+              , SYSDATE
+              , #{regMbrNo, jdbcType=VARCHAR}
+              , #{linkTitle, jdbcType=VARCHAR}
+              , #{dataSust, jdbcType=VARCHAR}
+              , #{fileTitle, jdbcType=VARCHAR}
+            )
+        <selectKey keyProperty="dataSer" resultType="Integer" order="AFTER">
+            SELECT SQ_MBR_DATA_INFO.CURRVAL FROM DUAL
+        </selectKey>
+    </insert>
+
+    <!-- 자료정보와 파일 매핑정보 등록 -->
+    <insert id="insertDataFile" parameterType="kr.or.career.mentor.domain.LectDataInfo">
+        /* [LectureDataMapper.xml#insertDataFile] */
+        INSERT INTO CNET_DATA_FILE_INFO
+            (
+                DATA_SER
+              , FILE_SER
+              , REG_DTM
+              , REG_MBR_NO
+            )VALUES
+            (
+                #{dataSer}
+              , #{fileSer}
+              , SYSDATE
+              , #{regMbrNo}
+            )
+    </insert>
+
+    <!-- 자료정보 리스트 조회 -->
+    <select id="selectMbrDataInfo" parameterType="kr.or.career.mentor.domain.LectDataInfo" resultType="kr.or.career.mentor.domain.LectDataInfo">
+        /* [LectureDataMapper.xml#selectMbrDataInfo] */
+        /* paging */
+            SELECT ROW_NUMBER () OVER (ORDER BY DATA.REG_DTM DESC) AS RN
+                 , DATA.DATA_SER
+                 , DECODE(DATA.INTDC_DATA_YN, 'Y', '멘토자료', 'N', '수업자료') AS INTDC_DATA_NM
+                 , DATA.INTDC_DATA_YN
+                 , DATA.DATA_NM
+                 , MBR.MBR_NO AS OWNER_MBR_NO
+                 , MBR.NM AS OWNER_MBR_NM
+                 , DATA.FILE_SER
+                 , JOB.JOB_NM
+                 , DATA.DATA_TARGT_CLASS
+                 , REGEXP_REPLACE(FN_CD_NM(DATA.DATA_TARGT_CLASS), '[[:punct:]]', '') AS DATA_TARGT_CLASS_NM
+                 , DATA.DATA_TYPE_CD
+                 , (SELECT CD_NM FROM CNET_CODE WHERE CD=DATA.DATA_TYPE_CD) AS DATA_TYPE_CD_NM
+                 , (CASE WHEN DATA.DATA_TYPE_CD = '101759' THEN '문서'
+                         WHEN DATA.DATA_TYPE_CD = '101760' THEN '동영상'
+                         ELSE '링크' END
+                   ) AS DATA_TYPE_NM
+                 , TO_CHAR(DATA.REG_DTM, 'YYYY.MM.DD') AS REG_DTM
+                 , (SELECT COUNT(*)
+                      FROM CNET_LECT_DATA_INFO
+                     WHERE DATA.DATA_SER = DATA_SER
+                   ) AS CONNECT_LECT
+                 , (CASE WHEN DATA.CHG_DTM IS NULL THEN TO_CHAR(DATA.REG_DTM, 'YYYY.MM.DD')
+                         ELSE TO_CHAR(DATA.CHG_DTM, 'YYYY.MM.DD') END
+                   ) AS CHG_DTM
+                 , DATA.DATA_URL
+                 , DATA.LINK_TITLE
+                 , (SELECT NM FROM CNET_MBR_INFO WHERE DATA.REG_MBR_NO = MBR_NO) AS REG_MBR_NM
+                 , ARCL.ARCL_SER
+                 , ARCL.CNTNTS_ID
+                 , CFILE.FILE_SIZE
+                 , CFILE.ORI_FILE_NM
+                 , DATA.DATA_SUST
+                 , DATA.FILE_TITLE
+                 , (CASE WHEN DATA.CHG_MBR_NO IS NULL THEN (CASE WHEN (SELECT MBR_CLASS_CD FROM CNET_MBR_INFO WHERE DATA.REG_MBR_NO = MBR_NO) = '100860' THEN '관리자'
+                                                                 ELSE (SELECT NM FROM CNET_MBR_INFO WHERE DATA.REG_MBR_NO = MBR_NO) END)
+                         ELSE (CASE WHEN (SELECT MBR_CLASS_CD FROM CNET_MBR_INFO WHERE DATA.CHG_MBR_NO = MBR_NO) = '100860' THEN '관리자'
+                                    ELSE (SELECT NM FROM CNET_MBR_INFO WHERE DATA.CHG_MBR_NO = MBR_NO) END ) END
+                   ) AS CHG_MBR_NM
+        /* paging */
+            FROM CNET_MBR_DATA_INFO DATA
+ LEFT OUTER JOIN CNET_MBR_JOB_INFO MJOB
+              ON DATA.OWNER_MBR_NO = MJOB.MBR_NO
+ LEFT OUTER JOIN CNET_JOB_INFO JOB
+              ON MJOB.JOB_NO = JOB.JOB_NO
+ LEFT OUTER JOIN CNET_MBR_INFO MBR
+              ON DATA.OWNER_MBR_NO = MBR.MBR_NO
+ LEFT OUTER JOIN CNET_ARCL_INFO ARCL
+              ON DATA.ARCL_SER = ARCL.ARCL_SER
+             AND ARCL.USE_YN = 'Y'
+ LEFT OUTER JOIN CNET_COM_FILE_INFO CFILE
+              ON DATA.FILE_SER = CFILE.FILE_SER
+           WHERE DATA.USE_YN = 'Y'
+        <choose>
+            <when test='mbrCualfCd eq "101501"'>
+                AND DATA.REG_MBR_NO IN (
+                                            SELECT MBR_NO
+                                              FROM CNET_MBR_INFO
+                                             WHERE MBR_CUALF_CD = '101501'
+                                               AND POS_CO_NO = #{posCoNo}
+                                       )
+            </when>
+            <otherwise>
+                <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ownerMbrNo)">
+                AND DATA.OWNER_MBR_NO = #{ownerMbrNo}
+                </if>
+            </otherwise>
+        </choose>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord)">
+            <choose>
+                <when test='searchKey eq "ownerMbrNm"'>
+                    AND REGEXP_LIKE(MBR.NM, #{searchWord})
+                </when>
+                <when test='searchKey eq "jobNm"'>
+                    AND REGEXP_LIKE(JOB.JOB_NM, #{searchWord})
+                </when>
+                <when test='searchKey eq "dataNm"'>
+                    AND REGEXP_LIKE(DATA.DATA_NM, #{searchWord})
+                </when>
+                <when test='searchKey eq "dataSust"'>
+                    AND REGEXP_LIKE(DATA.DATA_SUST, #{searchWord})
+                </when>
+                <when test='searchKey eq "connectLectNm"'>
+                    AND EXISTS (
+                                SELECT 1
+                                  FROM CNET_LECT_SCHD_INFO A, CNET_LECT_DATA_INFO B
+                                 WHERE A.LECT_SER = B.LECT_SER
+                                   AND B.DATA_SER = DATA.DATA_SER
+                                   AND REGEXP_LIKE (A.LECT_TITLE, #{searchWord})
+                                )
+                </when>
+                <when test='searchKey eq "fileNm"'>
+                    AND REGEXP_LIKE(CFILE.ORI_FILE_NM, #{searchWord})
+                </when>
+                <when test='searchKey eq "dataSust"'>
+                    <![CDATA[
+                    AND REGEXP_LIKE(REGEXP_REPLACE(DATA.DATA_SUST, '<[^>]*>|\&([^;])*;', ''), #{searchWord})
+                    ]]>
+                </when>
+                <otherwise>
+                    AND (
+                    <choose>
+                        <!-- 기타자료일때 -->
+                        <when test='dataType eq "etcData"'>
+                            <![CDATA[
+                                REGEXP_LIKE(DATA.DATA_NM, #{searchWord})
+                             OR REGEXP_LIKE(REGEXP_REPLACE(DATA.DATA_SUST, '<[^>]*>|\&([^;])*;', ''), #{searchWord})
+                            ]]>
+                        </when>
+                        <!-- 멘토자료일때 -->
+                        <otherwise>
+                            <choose>
+                                <!-- 관리자포탈 -->
+                                <when test='adminYn eq "Y"'>
+                                    REGEXP_LIKE(MBR.NM, #{searchWord})
+                                 OR REGEXP_LIKE(DATA.DATA_NM, #{searchWord})
+                                 OR REGEXP_LIKE(CFILE.ORI_FILE_NM, #{searchWord})
+                                 OR EXISTS (
+                                            SELECT 1
+                                              FROM CNET_LECT_INFO A, CNET_LECT_DATA_INFO B
+                                             WHERE A.LECT_SER = B.LECT_SER
+                                               AND B.DATA_SER = DATA.DATA_SER
+                                               AND REGEXP_LIKE (A.LECT_TITLE, #{searchWord})
+                                            )
+                                </when>
+                                <!-- 멘토,학교포탈 -->
+                                <otherwise>
+                                    REGEXP_LIKE(MBR.NM, #{searchWord})
+                                 OR REGEXP_LIKE(JOB.JOB_NM, #{searchWord})
+                                 OR REGEXP_LIKE(DATA.DATA_NM, #{searchWord})
+                                </otherwise>
+                            </choose>
+                        </otherwise>
+                    </choose>
+                        )
+                </otherwise>
+            </choose>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(intdcDataYn)">
+            AND INTDC_DATA_YN = #{intdcDataYn}
+        </if>
+        <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(schoolGrdExList)" >
+            AND DATA.DATA_TARGT_CLASS NOT IN
+            <foreach collection="schoolGrdExList" item="schoolGrdExList"   open="(" close=")" separator=",">
+                #{schoolGrdExList}
+            </foreach>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(schoolEtcGrd)">
+            AND DATA.DATA_TARGT_CLASS = #{schoolEtcGrd}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(dataTypeCd)">
+            AND DATA.DATA_TYPE_CD = #{dataTypeCd}
+        </if>
+        <if test="dataSer != null">
+            AND DATA.DATA_SER = #{dataSer}
+        </if>
+        <if test="lectSer != null">
+            AND NOT EXISTS(SELECT 1 FROM CNET_LECT_DATA_INFO Z WHERE Z.DATA_SER = DATA.DATA_SER AND Z.LECT_SER=#{lectSer})
+        </if>
+        <!-- 기타자료 구분 -->
+        <choose>
+            <when test='dataType eq "etcData"'>
+                AND DATA.INTDC_DATA_YN = 'E'
+            </when>
+            <otherwise>
+                AND DATA.INTDC_DATA_YN IN ('Y', 'N')
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 연결수업 조회 -->
+    <select id="selectConnectLectList" parameterType="kr.or.career.mentor.domain.LectDataInfo" resultType="kr.or.career.mentor.domain.LectDataInfo">
+        /* [LectureDataMapper.xml#selectConnectLectList] */
+        SELECT LECT_SER
+             , LECT_DAY
+             , LECT_START_TIME
+             , LECT_END_TIME
+             , LECT_TITLE
+          FROM CNET_LECT_SCHD_INFO
+         WHERE LECT_SER IN (
+                                SELECT LECT_SER
+                                  FROM CNET_LECT_DATA_INFO
+                                 WHERE DATA_SER = #{dataSer}
+                            )
+        AND LECT_TIMS = 1
+        AND SCHD_SEQ = 1
+    </select>
+
+    <!-- 파일조회 -->
+    <select id="selectDataFileList" parameterType="kr.or.career.mentor.domain.LectDataInfo" resultMap="fileInfoResult" >
+        SELECT DATA_SER
+             , FILE_SER
+             , REG_DTM
+             , REG_MBR_NO
+          FROM CNET_DATA_FILE_INFO
+         WHERE DATA_SER = #{dataSer}
+    </select>
+
+    <!-- 자료파일 삭제 -->
+    <delete id="deleteDataFile" parameterType="kr.or.career.mentor.domain.DataFileInfo">
+        DELETE FROM CNET_DATA_FILE_INFO
+        WHERE DATA_SER = #{dataSer}
+    </delete>
+
+    <!-- 자료정보 수정 -->
+    <update id="updateMbrDataInfo" parameterType="kr.or.career.mentor.domain.LectDataInfo">
+        UPDATE CNET_MBR_DATA_INFO
+           SET
+               DATA_NM = #{dataNm, jdbcType=INTEGER}
+             , OWNER_MBR_NO = #{ownerMbrNo, jdbcType=INTEGER}
+             , DATA_TARGT_CLASS = #{dataTargtClass, jdbcType=INTEGER}
+             , DATA_TYPE_CD = #{dataTypeCd, jdbcType=INTEGER}
+             , FILE_SER = #{fileSer, jdbcType=INTEGER}
+             , ARCL_SER = #{arclSer, jdbcType=INTEGER}
+             , BOARD_ID = #{boardId, jdbcType=VARCHAR}
+             , DATA_URL = #{dataUrl, jdbcType=VARCHAR}
+             , LINK_TITLE = #{linkTitle, jdbcType=VARCHAR}
+             , USE_YN = #{useYn, jdbcType=VARCHAR}
+             , INTDC_DATA_YN = #{intdcDataYn, jdbcType=VARCHAR}
+             , CHG_DTM = SYSDATE
+             , CHG_MBR_NO = #{chgMbrNo, jdbcType=VARCHAR}
+             , DATA_SUST = #{dataSust, jdbcType=VARCHAR}
+             , FILE_TITLE = #{fileTitle, jdbcType=VARCHAR}
+         WHERE DATA_SER = #{dataSer}
+    </update>
+
+    <!-- 자료등록 삭제 USE_YN = N으로 변경 -->
+    <update id="updateMbrDataInfoDel" parameterType="kr.or.career.mentor.domain.LectDataInfo">
+        UPDATE CNET_MBR_DATA_INFO
+           SET USE_YN = #{useYn, jdbcType=VARCHAR}
+             , CHG_DTM = SYSDATE
+             , CHG_MBR_NO = #{chgMbrNo, jdbcType=VARCHAR}
+        WHERE DATA_SER = #{dataSer}
+    </update>
+
+    <!--
+        Query Name : kr.or.career.mentor.service.impl.LectureDataServiceImpl.LectureDataMapper.insertLectDataInfo
+        Description : 자료정보와 수업 매핑정보 등록
+        author jhseo
+        since 2016. 7. 26.
+        Modification Information
+           since          author              description
+        ===========    =============    ===========================
+        2016. 7. 26.    jhseo                최초 생성
+    -->
+    <insert id="insertLectDataInfo" parameterType="kr.or.career.mentor.domain.LectDataInfo">
+        INSERT  /* ProgramID=kr.or.career.mentor.service.impl.LectureDataServiceImpl.LectureDataMapper.insertLectDataInfo */
+        INTO    CNET_LECT_DATA_INFO
+                (
+                      LECT_SER
+                    , DATA_SER
+                    , REG_DTM
+                    , REG_MBR_NO
+                )
+        VALUES
+                (
+                      #{lectSer}
+                    , #{dataSer}
+                    , SYSDATE
+                    , #{regMbrNo}
+                )
+    </insert>
+
+
+
+    <!--
+        Query Name : kr.or.career.mentor.service.impl.LectureDataServiceImpl.LectureDataMapper.selectLectDataInfo
+        Description : 수업 자료 리스트
+        author jhseo
+        since 2016. 7. 26.
+        Modification Information
+           since          author              description
+        ===========    =============    ===========================
+        2016. 7. 26.    jhseo                최초 생성
+    -->
+    <select id="selectLectDataInfo" parameterType="kr.or.career.mentor.domain.LectDataInfo" resultMap="lectDataInfoResult">
+        /* paging */
+        SELECT  /* ProgramID=kr.or.career.mentor.service.impl.LectureDataServiceImpl.LectureDataMapper.selectLectDataInfo */
+                      MBR.DATA_SER
+                    , MBR.DATA_NM
+                    , MBR.DATA_TYPE_CD
+                    , MBR.DATA_TARGT_CLASS
+                    , MBR.LINK_TITLE
+                    , MBR.DATA_URL
+                    , COM.ORI_FILE_NM
+                    , COM.FILE_SIZE
+                    , COM.FILE_SER
+                    , COM.FILE_EXT
+                    , ARCL.CNTNTS_ID
+                    , ARCL.CNTNTS_API_PATH
+                    , ARCL.CNTNTS_PLAY_TIME
+                    , (SELECT CD_NM FROM CNET_CODE WHERE CD=MBR.DATA_TYPE_CD) AS DATA_TYPE_CD_NM
+                    , ROW_NUMBER () OVER (ORDER BY MBR.REG_DTM DESC) AS RN
+        /* paging */
+        FROM
+                   CNET_MBR_DATA_INFO MBR
+        <if test="lectSer != null and lectSer != 0">
+        INNER JOIN CNET_LECT_DATA_INFO LECT ON LECT.DATA_SER = MBR.DATA_SER AND LECT.LECT_SER=#{lectSer}
+        </if>
+        LEFT  JOIN CNET_DATA_FILE_INFO DATA ON DATA.DATA_SER = MBR.DATA_SER
+        LEFT  JOIN CNET_COM_FILE_INFO COM   ON COM.FILE_SER = DATA.FILE_SER AND COM.USE_YN = 'Y'
+        LEFT  JOIN CNET_ARCL_INFO ARCL      ON MBR.ARCL_SER = ARCL.ARCL_SER AND ARCL.USE_YN = 'Y'
+        WHERE
+                   MBR.OWNER_MBR_NO =  #{ownerMbrNo}
+        AND        MBR.USE_YN = 'Y'
+        <if test="lectSer == null or lectSer == 0">
+        AND        MBR.INTDC_DATA_YN = 'Y'
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord)">
+        AND REGEXP_LIKE(MBR.DATA_NM, #{searchWord})
+        </if>
+    </select>
+
+    <!-- 멘토 자료와 수업자료맵핑 해제 -->
+    <delete id="deleteLectDataFile" parameterType="kr.or.career.mentor.domain.DataFileInfo">
+        DELETE
+        FROM
+                CNET_LECT_DATA_INFO
+        WHERE
+                LECT_SER = #{lectSer}
+        AND     DATA_SER = #{dataSer}
+    </delete>
+
+    <!-- 학교포탈 > 나의커뮤니티 > 수업자료 -->
+    <select id="selectCommunityLectData" parameterType="kr.or.career.mentor.domain.LectDataInfo" resultType="kr.or.career.mentor.domain.LectDataInfo">
+        /* [LectureDataMapper.xml#selectCommunityLectData] */
+        /* paging */
+            SELECT
+                   ROW_NUMBER () OVER (ORDER BY APPL.REG_DTM DESC) AS RN
+                 , MDATA.DATA_NM
+                 , (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = MDATA.REG_MBR_NO) AS REG_MBR_NM
+                 , LDATA.LECT_SER
+                 , LECT.LECT_TITLE
+                 , (SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = LECT.LECTR_MBR_NO) AS LECTR_NM
+                 , JOB.JOB_NM
+                 , CFILE.ORI_FILE_NM
+                 , CFILE.FILE_SIZE
+                 , MDATA.LINK_TITLE
+                 , MDATA.DATA_URL
+                 , ARCL.CNTNTS_ID
+                 , MDATA.DATA_TYPE_CD
+                 , CFILE.FILE_EXT
+                 , CFILE.FILE_SER
+                 , MDATA.FILE_TITLE
+        /* paging */
+              FROM CNET_LECT_DATA_INFO LDATA
+        INNER JOIN CNET_MBR_DATA_INFO MDATA
+                ON MDATA.DATA_SER = LDATA.DATA_SER
+               AND MDATA.USE_YN = 'Y'
+        INNER JOIN CNET_LECT_INFO LECT
+                ON LDATA.LECT_SER = LECT.LECT_SER
+   LEFT OUTER JOIN CNET_MBR_JOB_INFO MJOB
+                ON LECT.LECTR_MBR_NO = MJOB.MBR_NO
+   LEFT OUTER JOIN CNET_JOB_INFO JOB
+                ON MJOB.JOB_NO = JOB.JOB_NO
+   LEFT OUTER JOIN CNET_ARCL_INFO ARCL
+                ON MDATA.ARCL_SER = ARCL.ARCL_SER
+               AND ARCL.USE_YN = 'Y'
+   LEFT OUTER JOIN CNET_COM_FILE_INFO CFILE
+                ON MDATA.FILE_SER = CFILE.FILE_SER
+        INNER JOIN CNET_LECT_APPL_INFO APPL
+                ON LDATA.LECT_SER = APPL.LECT_SER
+               AND APPL.APPL_STAT_CD IN ('101576', '101577')
+   LEFT OUTER JOIN CNET_CLAS_ROOM_REG_REQ_HIST HIST
+                ON APPL.CLAS_ROOM_SER = HIST.CLAS_ROOM_SER
+               AND HIST.REG_STAT_CD = '101526'
+             WHERE 1 = 1
+               AND HIST.REQ_MBR_NO = #{mbrNo}
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord)">
+            <choose>
+                <when test='searchKey eq "title"'>
+                    AND REGEXP_LIKE(MDATA.DATA_NM, #{searchWord})
+                </when>
+                <when test='searchKey eq "regMbrNm"'>
+                    AND REGEXP_LIKE((SELECT NM FROM CNET_MBR_INFO WHERE MBR_NO = MDATA.REG_MBR_NO), #{searchWord})
+                </when>
+                <otherwise>
+                    AND REGEXP_LIKE(MDATA.DATA_NM, #{searchWord})
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
+</mapper>

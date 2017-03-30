@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MbrJobInfoMapper">
+
+    <!-- 회원아이로 회원 직업정보 GET -->
+    <select id="getMbrJobInfoByMbrNo" resultType="kr.or.career.mentor.domain.MbrJobInfo">
+        SELECT
+            R.*,
+            (SELECT cd_nm FROM cnet_job_clsf_cd WHERE cd = R.job_clsf_lv1_cd) job_clsf_lv1_nm,
+            (SELECT cd_nm FROM cnet_job_clsf_cd WHERE cd = R.job_clsf_lv2_cd) job_clsf_lv2_nm,
+            (SELECT cd_nm FROM cnet_job_clsf_cd WHERE cd = R.job_clsf_lv3_cd) job_clsf_lv3_nm
+        FROM (
+            SELECT
+                mbr_no,
+                job_no,
+                job_nm,
+                job_desc,
+                job_tag_info,
+                reg_dtm,
+                (
+                    SELECT
+                        cd
+                    FROM cnet_job_clsf_cd
+                    WHERE cd_lv = 1
+                    START WITH cd = (SELECT job_clsf_cd FROM cnet_job_info WHERE job_no = Mji.job_no)
+                    CONNECT BY NOCYCLE PRIOR sup_cd = cd
+                ) job_clsf_lv1_cd,
+                (
+                    SELECT
+                        cd
+                    FROM cnet_job_clsf_cd
+                    WHERE cd_lv = 2
+                    START WITH cd = (SELECT job_clsf_cd FROM cnet_job_info WHERE job_no = Mji.job_no)
+                    CONNECT BY NOCYCLE PRIOR sup_cd = cd
+                ) job_clsf_lv2_cd,
+                (
+                    SELECT
+                        cd
+                    FROM cnet_job_clsf_cd
+                    WHERE cd_lv = 3
+                    START WITH cd = (SELECT job_clsf_cd FROM cnet_job_info WHERE job_no = Mji.job_no)
+                    CONNECT BY NOCYCLE PRIOR sup_cd = cd
+                ) job_clsf_lv3_cd
+            FROM cnet_mbr_job_info Mji
+            WHERE 1 = 1
+                AND mbr_no = #{mbrNo}
+        ) R
+    </select>
+
+
+    <!-- 회원 직업 정보 등록 -->
+    <insert id="insertMbrJobInfo" parameterType="kr.or.career.mentor.domain.MbrJobInfo">
+        INSERT INTO cnet_mbr_job_info (
+            mbr_no,
+            job_no,
+            job_nm,
+            job_desc,
+            job_tag_info
+        )
+        VALUES (
+            #{mbrNo},
+            #{jobNo},
+            #{jobNm, jdbcType=VARCHAR},
+            #{jobDesc, jdbcType=VARCHAR},
+            #{jobTagInfo, jdbcType=VARCHAR}
+        )
+    </insert>
+
+
+    <!-- 회원 직업정보 수정 및 등록 -->
+    <update id="mergeMbrJobInfo" parameterType="kr.or.career.mentor.domain.MbrJobInfo">
+        MERGE INTO cnet_mbr_job_info
+        USING dual ON (mbr_no = #{mbrNo})
+            WHEN MATCHED THEN
+                UPDATE
+                <set>
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(jobNo)">job_no = #{jobNo},</if>
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(jobNm)">job_nm = #{jobNm},</if>
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(jobDesc)">job_desc = #{jobDesc},</if>
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(jobTagInfo)">job_tag_info = #{jobTagInfo},</if>
+                </set>
+            WHEN NOT MATCHED THEN
+                INSERT (
+                    mbr_no,
+                    job_no,
+                    job_nm,
+                    job_desc,
+                    job_tag_info
+                )
+                VALUES (
+                    #{mbrNo},
+                    #{jobNo, jdbcType=VARCHAR},
+                    #{jobNm, jdbcType=VARCHAR},
+                    #{jobDesc, jdbcType=VARCHAR},
+                    #{jobTagInfo, jdbcType=VARCHAR}
+                )
+    </update>
+</mapper>

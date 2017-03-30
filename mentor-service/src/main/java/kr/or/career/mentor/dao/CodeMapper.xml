@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.CodeMapper">
+    <!-- <cache /> -->
+
+    <sql id="listCode">
+        /* paging */
+        SELECT cd, sup_cd, cd_nm, cd_desc
+               ,ROW_NUMBER() OVER(ORDER BY disp_seq) AS rn
+        /* paging */
+          FROM CNET_CODE
+        <where>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(useYn)">
+            AND use_yn = #{useYn}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(supCd)">
+            AND sup_cd = #{supCd}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(cd)">
+            AND sup_cd = #{cd}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(cdClsfInfo)">
+            AND cd_clsf_info = #{cdClsfInfo}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(cdNm)">
+            AND cd_nm like '%'||#{cdNm}||'%'
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(cdDesc)">
+            AND cd_desc like '%'||#{cdDesc}||'%'
+            </if>
+        </where>
+    </sql>
+
+    <update id="saveCode" parameterType="code" >
+        MERGE INTO CNET_CODE
+            USING DUAL
+            ON (cd = #{cd} AND sup_cd = #{supCd})
+            WHEN MATCHED THEN
+                    UPDATE SET
+                    cd_nm = #{cdNm, jdbcType=VARCHAR}
+                    , cd_desc = #{cdDesc, jdbcType=VARCHAR}
+                    , disp_seq = #{dispSeq}
+            WHEN NOT MATCHED THEN
+                    INSERT (cd, sup_cd, cd_nm, cd_desc, disp_seq)
+                    VALUES (#{cd}, #{supCd}, #{cdNm, jdbcType=VARCHAR}, #{cdDesc, jdbcType=VARCHAR}, #{dispSeq})
+    </update>
+
+    <insert id="insertCode" parameterType="code" >
+        INSERT INTO CNET_CODE
+        (cd, sup_cd, cd_nm, cd_desc)
+        VALUES
+        (#{cd}, #{supCd}, #{cdNm}, #{cdDesc})
+    </insert>
+
+    <update id="updateCode" parameterType="code" >
+        UPDATE CNET_CODE SET
+               cd_nm = #{cdNm}
+               , cd_desc = #{cdDesc}
+         WHERE sup_cd = #{supCd}
+           AND cd = #{cd}
+    </update>
+
+    <select id="listCode" parameterType="code" resultType="code">
+        <include refid="listCode"></include>
+        ORDER BY DISP_SEQ
+    </select>
+
+    <select id="retrieveCode" parameterType="String" resultType="code">
+        SELECT CD_NM, CD_DESC, CD_CLSF_INFO, DISP_SEQ, RMK, USER_DEF1_INFO, USER_DEF2_INFO, USER_DEF3_INFO, USE_YN, REG_DTM, REG_MBR_NO, CHG_DTM, CHG_MBR_NO
+          FROM CNET_CODE
+         WHERE CD = #{cd}
+    </select>
+
+    <select id="listCodeWithPaging" parameterType="code" resultType="code">
+        SELECT * FROM (
+        <include refid="listCode"></include>
+        ) WHERE rn BETWEEN (#{currentPageNo}-1) * #{recordCountPerPage} AND #{currentPageNo} * #{recordCountPerPage}
+    </select>
+
+    <select id="listCodeHierarchy" resultType="code">
+        SELECT cd, sup_cd, cd_nm, cd_desc, disp_seq, level
+         FROM CNET_CODE
+   START WITH sup_cd = '0'
+   CONNECT BY PRIOR cd = sup_cd
+        ORDER SIBLINGS BY sup_cd
+    </select>
+
+    <select id="retrieveClasSetHist" resultType="kr.or.career.mentor.domain.ClasSetHist">
+    SELECT /*+ INDEX_DESC( CNET_CLAS_SET_HIST PLAIN    PK_CNET_CLAS_SET_HIST)*/HIST_SER, MAX_APPL_CNT, MAX_OBSV_CNT, SET_DESC_SUST, REG_DTM, REG_MBR_NO
+      FROM CNET_CLAS_SET_HIST
+     WHERE ROWNUM = 1
+    </select>
+
+    <insert id="insertClasSetHist" parameterType="kr.or.career.mentor.domain.ClasSetHist">
+    INSERT INTO CNET_CLAS_SET_HIST
+    (HIST_SER, MAX_APPL_CNT, MAX_OBSV_CNT, SET_DESC_SUST, REG_DTM, REG_MBR_NO)
+    VALUES
+    (
+        #{histSer}, #{maxApplCnt}, #{maxObsvCnt}, #{setDescSust, jdbcType=VARCHAR}, SYSDATE, #{regMbrNo}
+    )
+    <selectKey resultType="int" keyProperty="histSer" order="BEFORE">
+        SELECT SQ_CLAS_SET_HIST.NEXTVAL FROM DUAL
+    </selectKey>
+    </insert>
+
+    <select id="listSchSgguNm" resultType="kr.or.career.mentor.domain.Code">
+        SELECT DISTINCT SGGU_NM AS CD, SGGU_NM AS CD_NM
+          FROM CNET_SCH_INFO
+          WHERE SGGU_NM is not null
+    </select>
+
+    <delete id="deleteCode" parameterType="code" >
+        DELETE FROM CNET_CODE WHERE CD = #{cd} AND SUP_CD #{supCd}
+    </delete>
+
+</mapper>

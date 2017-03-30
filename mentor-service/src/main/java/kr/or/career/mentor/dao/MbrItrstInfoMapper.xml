@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MbrItrstInfoMapper">
+
+    <select id="getMbrItrstInfo" resultType="kr.or.career.mentor.domain.MbrItrstInfo">
+        SELECT
+            mbr_no,
+            itrst_targt_cd,
+            itrst_targt_no,
+            reg_dtm
+        FROM cnet_mbr_itrst_info
+        WHERE 1 = 1
+            AND mbr_no = #{mbrNo}
+            AND itrst_targt_cd = #{itrstTargtCd}
+            AND itrst_targt_no = #{itrstTargtNo}
+    </select>
+
+    <select id="listMyInterestLecture" parameterType="kr.or.career.mentor.domain.MbrItrstInfo" resultType="kr.or.career.mentor.domain.MyInterestDTO">
+        /* paging */
+        SELECT
+            C.LECT_SER, C.LECT_TIMS, C.SCHD_SEQ, B.LECT_TITLE
+            , (SELECT S1.FILE_SER FROM CNET_LECT_PIC_INFO S1 WHERE S1.LECT_SER = B.LECT_SER AND ROWNUM = 1) AS FILE_SER
+            , A.ITRST_TARGT_CD, A.ITRST_TARGT_NO, A.REG_DTM, D.JOB_NM, E.NM
+            , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS RN
+        /* paging */
+        FROM
+        (
+            SELECT
+                A.LECT_SER, B.ITRST_TARGT_CD, B.ITRST_TARGT_NO, B.REG_DTM
+                , MAX(A.LECT_TIMS) KEEP(DENSE_RANK FIRST ORDER BY
+                                            CASE WHEN TO_DATE(LECT_DAY||LECT_START_TIME,'YYYYMMDDHH24MI') - SYSDATE > 0 THEN TO_DATE(LECT_DAY||LECT_START_TIME,'YYYYMMDDHH24MI') - SYSDATE
+                                            ELSE ((TO_DATE(LECT_DAY||LECT_START_TIME,'YYYYMMDDHH24MI') - SYSDATE)-1000)*-1
+                                            END) AS LECT_TIMS
+                , MAX(A.SCHD_SEQ) KEEP(DENSE_RANK FIRST ORDER BY
+                                            CASE WHEN TO_DATE(LECT_DAY||LECT_START_TIME,'YYYYMMDDHH24MI') - SYSDATE > 0 THEN  TO_DATE(LECT_DAY||LECT_START_TIME,'YYYYMMDDHH24MI') - SYSDATE
+                                            ELSE ((TO_DATE(LECT_DAY||LECT_START_TIME,'YYYYMMDDHH24MI') - SYSDATE)-1000)*-1
+                                            END) AS SCHD_SEQ
+            FROM CNET_LECT_SCHD_INFO A
+            INNER JOIN CNET_MBR_ITRST_INFO B
+                ON B.ITRST_TARGT_CD = '101515' /*관심수업*/
+                AND B.ITRST_TARGT_NO = A.LECT_SER
+            WHERE B.MBR_NO = #{mbrNo}
+            GROUP BY A.LECT_SER, B.ITRST_TARGT_CD, B.ITRST_TARGT_NO, B.REG_DTM
+        ) A
+        INNER JOIN CNET_LECT_INFO  B
+            ON A.LECT_SER = B.LECT_SER
+        INNER JOIN CNET_LECT_SCHD_INFO C
+            ON A.LECT_SER = C.LECT_SER
+            AND A.LECT_TIMS = C.LECT_TIMS
+            AND A.SCHD_SEQ = C.SCHD_SEQ
+        LEFT JOIN CNET_MBR_JOB_INFO D
+            ON B.LECTR_MBR_NO = D.MBR_NO
+        LEFT JOIN CNET_MBR_INFO E
+            ON B.LECTR_MBR_NO = E.MBR_NO
+    </select>
+
+    <select id="listMyInterestMentor" parameterType="kr.or.career.mentor.domain.MbrItrstInfo" resultType="kr.or.career.mentor.domain.MyInterestDTO">
+        /* paging */
+        SELECT
+            B.MBR_NO, B.NM, MPI.INTDC_INFO
+            , TO_CHAR((SELECT S1.FILE_SER FROM CNET_MBR_PROF_PIC_INFO S1 WHERE S1.MBR_NO  = B.MBR_NO AND ROWNUM = 1)) AS FILE_SER
+            , A.ITRST_TARGT_CD, A.ITRST_TARGT_NO, A.REG_DTM, D.JOB_NM
+            , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS RN
+        /* paging */
+        FROM CNET_MBR_ITRST_INFO A
+        INNER JOIN CNET_MBR_INFO  B
+            ON A.ITRST_TARGT_NO = B.MBR_NO
+            AND A.ITRST_TARGT_CD = '101516' /*관심멘토*/
+        LEFT OUTER JOIN CNET_MBR_PROF_INFO MPI
+            ON A.MBR_NO = MPI.MBR_NO
+        LEFT JOIN CNET_MBR_JOB_INFO D
+            ON B.MBR_NO = D.MBR_NO
+        WHERE  A.MBR_NO = #{mbrNo}
+    </select>
+
+
+    <!-- 관심대상 등록 -->
+    <insert id="insertMbrItrstInfo" parameterType="kr.or.career.mentor.domain.MbrItrstInfo">
+        /* [MbrItrstInfoMapper.xml#insertMbrItrstInfo][관심대상 등록] */
+        INSERT INTO cnet_mbr_itrst_info (
+            mbr_no,
+            itrst_targt_cd,
+            itrst_targt_no
+        )
+        VALUES (
+            #{mbrNo},
+            #{itrstTargtCd},
+            #{itrstTargtNo}
+        )
+    </insert>
+
+    <!-- 관심대상 해제 -->
+    <delete id="deleteMyInterest" parameterType="kr.or.career.mentor.domain.MbrItrstInfo">
+        /* [MbrItrstInfoMapper.xml#deleteMyInterest][관심대상 해제] */
+        DELETE FROM cnet_mbr_itrst_info
+         WHERE mbr_no = #{mbrNo}
+           AND itrst_targt_cd = #{itrstTargtCd}
+           AND itrst_targt_no = #{itrstTargtNo}
+    </delete>
+</mapper>

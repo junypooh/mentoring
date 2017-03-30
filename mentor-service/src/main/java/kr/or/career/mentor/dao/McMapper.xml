@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.McMapper">
+    <!-- 수업일정정보 -->
+    <resultMap type="kr.or.career.mentor.domain.LectSchdInfo" id="resultLectSchdInfo" autoMapping="true"/>
+
+    <!-- 스튜디오정보 -->
+    <resultMap type="kr.or.career.mentor.domain.StdoInfo" id="resultStdoInfo" autoMapping="true"/>
+
+    <!-- 회원정보 -->
+    <resultMap type="kr.or.career.mentor.domain.User" id="resultUser" autoMapping="true"/>
+
+    <!-- MC정보 -->
+    <resultMap type="kr.or.career.mentor.domain.McInfo" id="mcInfo" autoMapping="true">
+        <id column="MC_NO" property="mcNo"/>
+        <association property="stdoInfoDomain" resultMap="resultStdoInfo" autoMapping="true"/>
+        <association property="userDomain" resultMap="resultUser" autoMapping="true"/>
+        <association property="lectSchdInfoDomain" resultMap="resultLectSchdInfo" autoMapping="true"/>
+    </resultMap>
+
+    <!-- MC 중복 스케줄 존재하는지 건수 조회 -->
+    <select id="retrieveMcScheduleDuplicationCnt" parameterType="kr.or.career.mentor.domain.LectSchdInfo" resultType="Integer">
+        /* McMapper.xml 설명 : MC 중복 스케줄 존재하는지 건수 조회, ID : retrieveMcScheduleDuplicationCnt, 작성자 : 유지상, 작성일 : 2015.09.18 */
+        SELECT COUNT(*)
+        FROM CNET_LECT_SCHD_INFO
+        WHERE 1 = 1
+        AND MC_NO = #{mcNo}
+        AND LECT_DAY = #{lectDay}
+        AND LECT_START_TIME BETWEEN #{lectStartTime} AND #{lectEndTime}
+        AND LECT_END_TIME BETWEEN #{lectStartTime} AND #{lectEndTime}
+    </select>
+
+    <!-- MC정보 SELECT문 -->
+    <sql id="selectMc">
+        SELECT
+        A.MC_NO
+        , A.MC_NM
+        , A.POS_CO_NO
+        , (SELECT Z.NM FROM CNET_MBR_INFO Z WHERE Z.MBR_NO = A.POS_CO_NO) AS USERNAME /*기업멘토명*/
+        , (SELECT S.CO_NM
+        FROM CNET_CO_INFO S
+        WHERE S.CO_NO = A.POS_CO_NO) AS MNGR_POS_NM /*업체명*/
+        , A.STDO_NO
+        , (SELECT Z.STDO_NM FROM CNET_STDO_INFO Z WHERE Z.STDO_NO = A.STDO_NO) AS STDO_NM /*스튜디오명*/
+        , A.CONT_TEL
+        , A.REG_DTM
+        , A.REG_MBR_NO
+        , A.USE_YN
+        , A.GEN_CD
+        , (SELECT T.NM FROM CNET_MBR_INFO T WHERE T.MBR_NO = A.REG_MBR_NO) AS REG_MBR_NM /*등록자*/
+        , (SELECT BB.CO_NM FROM CNET_MBR_INFO AA, CNET_CO_INFO BB WHERE MBR_NO = A.REG_MBR_NO AND AA.POS_CO_NO = BB.CO_NO) AS REG_MBR_CO_NM  /* 등록자(소속업체) */
+    </sql>
+
+    <!-- MC정보 목록조회 -->
+    <select id="listMc" parameterType="kr.or.career.mentor.domain.McInfo" resultMap="mcInfo">
+        /* McMapper.xml 설명 : MC정보 목록조회, ID : listMc, 작성자 : 유지상, 작성일 : 2015.09.18 */
+        <include refid="selectMc"/>
+        FROM CNET_MC_INFO A
+        LEFT OUTER JOIN (
+        SELECT
+        DISTINCT MC_NO
+        FROM
+        CNET_LECT_SCHD_INFO
+        WHERE
+        LECT_DAY = #{lectSchdInfoDomain.lectDay}
+        AND     LECT_STAT_CD IN (101543,101548,101549,101550)
+        AND     (
+        LECT_START_TIME BETWEEN #{lectSchdInfoDomain.lectStartTime} and #{lectSchdInfoDomain.lectEndTime}
+        OR LECT_END_TIME BETWEEN #{lectSchdInfoDomain.lectStartTime} and #{lectSchdInfoDomain.lectEndTime}
+        )
+        ) B
+        ON A.MC_NO = B.MC_NO
+        LEFT OUTER  JOIN CNET_MBR_INFO C
+        ON A.POS_CO_NO = C.MBR_NO
+        WHERE  1 = 1
+        and    B.MC_NO IS NULL
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(stdoNo)">
+            and    (A.STDO_NO IS NULL OR A.STDO_NO = #{stdoNo})
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mcNm)">
+            AND A.MC_NM LIKE '%' || #{mcNm} || '%'
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(posCoNo)">
+            AND (C.POS_CO_NO = #{posCoNo} or C.POS_CO_NO is NULL)
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(useYn)">
+            AND A.USE_YN = #{useYn}
+        </if>
+        ORDER BY A.REG_DTM DESC
+    </select>
+
+    <!-- MC정보 목록조회(페이징) -->
+    <select id="listMcPaging" parameterType="kr.or.career.mentor.domain.LectureSearch" resultMap="mcInfo">
+        /* McMapper.xml 설명 : MC정보 목록조회(페이징), ID : listMcPanging, 작성자 : 유지상, 작성일 : 2015.09.18 */
+        /* paging */
+        <include refid="selectMc"/>
+        , ROW_NUMBER() OVER(ORDER BY A.REG_DTM DESC) AS RN
+        /* paging */
+        FROM CNET_MC_INFO A
+        WHERE 1 = 1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(category)">
+            <if test="@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(category, 'studio')">
+                /* 스튜디오명 */
+                AND A.STDO_NO IN (SELECT Z.STDO_NO FROM CNET_STDO_INFO Z WHERE Z.STDO_NM LIKE '%' || #{keyword} || '%')
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(category, 'mentor')">
+                /* 기업멘토명 */
+                AND A.POS_CO_NO IN (SELECT Z.MBR_NO FROM CNET_MBR_INFO Z
+                WHERE Z.MBR_GRADE_CD = '2' /* 회원등급코드 2 : 업체*/
+                AND Z.MBR_CUALF_CD = '101502' /* 회원자격코드 : 기업멘토(회원등급코드 조건이 없으면 소속멘토까지 포함) */
+                AND Z.NM LIKE '%' || #{keyword} || '%')
+            </if>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isEmpty(category)">
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(keyword)">
+                /* MC명, 스튜디오명, 기업멘토명 */
+                AND (   A.MC_NM LIKE '%' || #{keyword} || '%'
+                OR A.STDO_NO IN (SELECT Z.STDO_NO FROM CNET_STDO_INFO Z WHERE Z.STDO_NM LIKE '%' || #{keyword} || '%')
+                OR A.POS_CO_NO IN (SELECT Z.MBR_NO FROM CNET_MBR_INFO Z
+                WHERE Z.MBR_GRADE_CD = '2' /* 회원등급코드 2 : 업체*/
+                AND Z.MBR_CUALF_CD = '101502' /* 회원자격코드 : 기업멘토(회원등급코드 조건이 없으면 소속멘토까지 포함) */
+                AND Z.NM LIKE '%' || #{keyword} || '%')
+                )
+            </if>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mcNm)">
+            AND A.MC_NM like '%' || #{mcNm} || '%'
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(contTel)">
+            AND A.CONT_TEL like '%' || #{contTel} || '%'
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(useYn)">AND A.use_yn = #{useYn}</if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(posCoNo)">AND A.POS_CO_NO = #{posCoNo}</if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(mngrPosNm)">
+            AND (SELECT S.CO_NM
+            FROM CNET_CO_INFO S
+            WHERE S.CO_NO = A.POS_CO_NO) like '%' || #{mngrPosNm} || '%'
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(genCd)">AND A.GEN_CD = #{genCd}</if>
+
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate) and @org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+                AND To_Char(A.REG_DTM, 'YYYYMMDD') between Regexp_Replace(#{searchStDate}, '[[:punct:]]', '') and Regexp_Replace(#{searchEndDate}, '[[:punct:]]', '')
+            ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate) and @org.apache.commons.lang3.StringUtils@isEmpty(searchEndDate)">
+            <![CDATA[
+            AND To_Char(A.REG_DTM, 'YYYYMMDD') >= Regexp_Replace(#{searchStDate}, '[[:punct:]]', '')
+        ]]>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isEmpty(searchStDate) and @org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            <![CDATA[
+                AND To_Char(A.REG_DTM, 'YYYYMMDD') <= Regexp_Replace(#{searchEndDate}, '[[:punct:]]', '')
+            ]]>
+        </if>
+    </select>
+
+    <!-- MC정보 등록-->
+    <insert id="insertMcInfo" parameterType="kr.or.career.mentor.domain.McInfo">
+        <selectKey keyProperty="mcNo" resultType="String" order="BEFORE">
+            SELECT LPAD(SQ_MC_INFO.NEXTVAL,10 ,'0') FROM DUAL
+        </selectKey>
+        /* McMapper.xml 설명 : MC정보 등록, ID : insertMcInfo, 작성자 : 유지상, 작성일 : 2015.09.23 */
+        INSERT INTO CNET_MC_INFO (
+        MC_NO , MC_NM , POS_CO_NO
+        , STDO_NO , CONT_TEL , USE_YN
+        , REG_DTM , REG_MBR_NO, GEN_CD
+        )  VALUES (
+        #{mcNo, jdbcType=VARCHAR} , #{mcNm, jdbcType=VARCHAR} , #{posCoNo, jdbcType=VARCHAR}
+        , #{stdoNo, jdbcType=VARCHAR} , #{contTel, jdbcType=VARCHAR} , #{useYn, jdbcType=VARCHAR}
+        , SYSDATE , #{regMbrNo, jdbcType=VARCHAR}, #{genCd, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <!-- MC정보 수정-->
+    <update id="updateMcInfo" parameterType="kr.or.career.mentor.domain.McInfo">
+        /* McMapper.xml 설명 : MC정보 등록, ID : updateMcInfo, 작성자 : 유지상, 작성일 : 2015.09.23 */
+        UPDATE CNET_MC_INFO
+        SET
+        MC_NM     = #{mcNm, jdbcType=VARCHAR}
+        , POS_CO_NO = #{posCoNo, jdbcType=VARCHAR}
+        , STDO_NO   = #{stdoNo, jdbcType=VARCHAR}
+        , CONT_TEL  = #{contTel, jdbcType=VARCHAR}
+        , USE_YN    = #{useYn, jdbcType=VARCHAR}
+        , GEN_CD    = #{genCd, jdbcType=VARCHAR}
+        WHERE MC_NO = #{mcNo}
+    </update>
+
+    <!-- MC정보 상세조회-->
+    <select id="retrieveMcInfo" parameterType="kr.or.career.mentor.domain.McInfo" resultMap="mcInfo">
+        /* McMapper.xml 설명 : MC정보 상세조회, ID : retrieveMcInfo, 작성자 : 유지상, 작성일 : 2015.09.23 */
+        <include refid="selectMc"/>
+        FROM CNET_MC_INFO A
+        WHERE 1 = 1
+        AND A.MC_NO = #{mcNo}
+    </select>
+
+
+
+
+</mapper>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MentorReportMapper">
+
+    <!-- 통계 > 멘토리포트 > 멘토목록 -->
+    <select id="selectMentorList" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.MentorReportDTO">
+        /* [MentorReportMapper.xml#selectMentorList][멘토 목록] */
+        SELECT  A.*
+              , ROW_NUMBER() OVER(ORDER BY A.MAX_LECT_DAY DESC) AS rn
+        FROM    (
+                    SELECT  MI.MBR_NO
+                          , MI.ID
+                          , MI.NM
+                          , TO_CHAR(MI.REG_DTM, 'YYYY-MM-DD') AS REG_DTM
+                          , JI.JOB_NM
+                          , JI.JOB_CLSF_CD
+                          , (
+                                SELECT CD_NM
+                                  FROM CNET_JOB_CLSF_CD
+                                 WHERE 1 = 1
+                                   AND CD_LV = 1
+                                START WITH CD = JI.JOB_CLSF_CD
+                                CONNECT BY NOCYCLE PRIOR SUP_CD = CD
+                            )AS CD_NM
+                          , CI.CO_NM
+                          , NVL(TO_CHAR(TO_DATE(LSI.MIN_LECT_DAY, 'YYYYMMDD'), 'YYYY-MM-DD'), '-') AS MIN_LECT_DAY
+                          , NVL(TO_CHAR(TO_DATE(LSI.MAX_LECT_DAY, 'YYYYMMDD'), 'YYYY-MM-DD'), '-') AS MAX_LECT_DAY
+                          , LSI.LECT_DAY_CNT
+                          , LSI.LECT_DAY_TOT_CNT
+                    FROM    CNET_MBR_INFO MI
+            LEFT OUTER JOIN CNET_MBR_JOB_INFO  MJI
+                        ON (MI.MBR_NO = MJI.MBR_NO)
+            LEFT OUTER JOIN CNET_JOB_INFO  JI
+                        ON (MJI.JOB_NO = JI.JOB_NO)
+            LEFT OUTER JOIN CNET_JOB_CLSF_CD  JCC
+                    ON (JI.JOB_CLSF_CD = JCC.CD)
+            LEFT OUTER JOIN CNET_CO_INFO CI
+                    ON (MI.POS_CO_NO = CI.CO_NO)
+            LEFT OUTER JOIN
+                            (
+                                SELECT MIN(LECT_DAY) AS MIN_LECT_DAY
+                                     , MAX(LECT_DAY) AS MAX_LECT_DAY
+                                     , COUNT(DISTINCT LECT_DAY) AS LECT_DAY_CNT
+                                     , COUNT(*) AS LECT_DAY_TOT_CNT
+                                     , LI.LECTR_MBR_NO
+                                  FROM CNET_LECT_INFO LI
+                            INNER JOIN CNET_LECT_SCHD_INFO LSI
+                                   ON (LI.LECT_SER = LSI.LECT_SER)
+                                 WHERE LSI.LECT_STAT_CD = '101551' /*수업완료*/
+                                GROUP BY LI.LECTR_MBR_NO
+                            ) LSI
+                    ON (MI.MBR_NO = LSI.LECTR_MBR_NO)
+                    WHERE   MI.MBR_STAT_CD = '100862'     /* 정상이용 */
+                      AND   MI.MBR_CLASS_CD = '101505'    /* 회원구분(그룹) - 멘토 */
+        ) A
+        WHERE  1 = 1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate) and @org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            AND A.MAX_LECT_DAY BETWEEN TO_CHAR(TO_DATE(#{searchStDate}, 'YYYYMMDD'), 'YYYY-MM-DD') AND TO_CHAR(TO_DATE(#{searchEndDate}, 'YYYYMMDD'), 'YYYY-MM-DD')
+        </if>
+    </select>
+
+    <!-- 통계 > 멘토리포트 > 멘토별 수업목록 -->
+    <select id="selectMentorClassList" parameterType="kr.or.career.mentor.domain.LectureSearch" resultType="kr.or.career.mentor.domain.MentorClassReportDTO">
+        /* [MentorReportMapper.xml#selectMentorList][멘토별 수업목록] */
+        SELECT  MI.MBR_NO
+              , MI.ID
+              , MI.NM
+              , MJI.JOB_NM
+              , LSI.LECT_TIMS
+              , LSI.SCHD_SEQ
+              , LSI.LECT_SER||'-'||LSI.LECT_TIMS AS LECT_ID
+              , CASE WHEN LSI.LECT_STAT_CD = '101551' THEN '수업완료' END AS LECT_STAT_DESC
+              , TO_CHAR(TO_DATE(LSI.LECT_DAY, 'YYYYMMDD'), 'YYYY-MM-DD') AS LECT_DAY
+              , TO_CHAR(TO_DATE(LSI.LECT_START_TIME, 'HH24:MI'), 'HH24:MI')||'~'||TO_CHAR(TO_DATE(LSI.LECT_END_TIME, 'HH24:MI'), 'HH24:MI') AS LECT_TIME
+              , (
+                  SELECT  COUNT(*)
+                    FROM  CNET_LECT_APPL_INFO LAI
+                   WHERE  LAI.LECT_SER = LI.LECT_SER
+                     AND  LAI.LECT_TIMS = LSI.LECT_TIMS
+                     AND  LAI.APPL_STAT_CD IN ('101576', '101577')
+              )AS APPL_CNT
+              , (
+                  SELECT CD_NM FROM CNET_CODE WHERE CD = LI.LECT_TARGT_CD
+                ) AS LECT_TARGT_NM
+              , CI.CO_NM
+              , ROW_NUMBER() OVER(ORDER BY LSI.LECT_DAY DESC) AS rn
+        FROM    CNET_MBR_INFO MI
+LEFT OUTER JOIN CNET_MBR_JOB_INFO MJI
+            ON(MI.MBR_NO = MJI.MBR_NO)
+LEFT OUTER JOIN CNET_LECT_INFO LI
+            ON(MI.MBR_NO = LI.LECTR_MBR_NO)
+LEFT OUTER JOIN CNET_LECT_SCHD_INFO LSI
+            ON(LI.LECT_SER = LSI.LECT_SER)
+LEFT OUTER JOIN CNET_CO_INFO CI
+            ON (MI.POS_CO_NO = CI.CO_NO)
+        WHERE   1 = 1
+          AND   MI.MBR_CLASS_CD = '101505'  /* 멘토(소속멘토,개인멘토) */
+          AND   MI.MBR_STAT_CD = '100862'   /* 정상이용 */
+          AND   LSI.LECT_STAT_CD = '101551' /* 수업완료 */
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate) and @org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+          AND     LSI.LECT_DAY BETWEEN TO_CHAR(TO_DATE(#{searchStDate}, 'YYYYMMDD'), 'YYYYMMDD')  AND TO_CHAR(TO_DATE(#{searchEndDate}, 'YYYYMMDD'), 'YYYYMMDD')
+        </if>
+
+    </select>
+
+</mapper>

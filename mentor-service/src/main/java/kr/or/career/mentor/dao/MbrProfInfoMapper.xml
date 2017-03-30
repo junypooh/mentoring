@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.MbrProfInfoMapper">
+
+    <!-- 회원 프로필 정보 -->
+    <select id="getMbrProfInfoBy" resultType="kr.or.career.mentor.domain.MbrProfInfo">
+        SELECT
+            mbr_no,
+            title,
+            intdc_info,
+            sch_car_info,
+            career_info,
+            award_info,
+            book_info,
+            chg_dtm
+        FROM cnet_mbr_prof_info
+        WHERE 1 = 1
+            AND mbr_no = #{mbrNo}
+    </select>
+
+
+    <!-- 회원 프로필 정보 등록 -->
+    <insert id="insertMbrProfInfo" parameterType="kr.or.career.mentor.domain.MbrProfInfo">
+        INSERT INTO cnet_mbr_prof_info (
+            mbr_no,
+            title,
+            intdc_info,
+            sch_car_info,
+            career_info,
+            award_info,
+            book_info
+        )
+        VALUES (
+            #{mbrNo},
+            #{title, jdbcType=VARCHAR},
+            #{intdcInfo, jdbcType=VARCHAR},
+            #{schCarInfo, jdbcType=VARCHAR},
+            #{careerInfo, jdbcType=VARCHAR},
+            #{awardInfo, jdbcType=VARCHAR},
+            #{bookInfo, jdbcType=VARCHAR}
+        )
+    </insert>
+
+
+    <!-- 회원 프로필 정보 수정 -->
+    <update id="mergeMbrProfInfo" parameterType="kr.or.career.mentor.domain.MbrProfInfo">
+        MERGE INTO cnet_mbr_prof_info
+        USING dual ON (mbr_no = #{mbrNo})
+            WHEN MATCHED THEN
+                UPDATE
+                <set>
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(title)">title = #{title},</if>
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(intdcInfo)">intdc_info = #{intdcInfo},</if>
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(schCarInfo)">sch_car_info = #{schCarInfo},</if>
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(careerInfo)">career_info = #{careerInfo},</if>
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(awardInfo)">award_info = #{awardInfo},</if>
+                    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(bookInfo)">book_info = #{bookInfo},</if>
+                    chg_dtm = SYSDATE,
+                </set>
+            WHEN NOT MATCHED THEN
+                INSERT (
+                    mbr_no,
+                    title,
+                    intdc_info,
+                    sch_car_info,
+                    career_info,
+                    award_info,
+                    book_info
+                )
+                VALUES (
+                    #{mbrNo},
+                    #{title, jdbcType=VARCHAR},
+                    #{intdcInfo, jdbcType=VARCHAR},
+                    #{schCarInfo, jdbcType=VARCHAR},
+                    #{careerInfo, jdbcType=VARCHAR},
+                    #{awardInfo, jdbcType=VARCHAR},
+                    #{bookInfo, jdbcType=VARCHAR}
+                )
+    </update>
+</mapper>

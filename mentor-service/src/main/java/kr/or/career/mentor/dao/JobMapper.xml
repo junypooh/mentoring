@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.JobMapper">
+
+    <!-- 직업소개 (직업 위주의 목록) -->
+    <select id="listJobInfoWithMento" resultType="kr.or.career.mentor.domain.JobInfo">
+        /* [JobMapper.xml#listJobInfoWithMento][<!-- 직업소개 (직업 위주의 목록) -->] */
+        /* paging */
+        SELECT
+            R.*,
+            rownum rn
+        /* paging */
+        FROM (
+
+            SELECT
+                Ji.job_no,
+                Ji.job_clsf_cd,
+                Ji.job_nm,
+                Ji.job_def_nm,
+                Ji.job_pic_info,
+                /* Ji.job_intdc_info, */
+                Ji.core_abl_info,
+                Ji.asso_sch_dept_info,
+                Ji.asso_cualf_info,
+                Ji.smlr_job_nm,
+                Ji.reg_dtm,
+                Ji.reg_mbr_no,
+                (
+                    SELECT
+                        NVL(COUNT(*), 0)
+                    FROM cnet_mbr_info sMi LEFT JOIN cnet_mbr_job_info sMji ON (sMi.mbr_no = sMji.mbr_no)
+                    WHERE 1 = 1
+                        AND sMi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                        AND sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                        AND sMji.job_no = Ji.job_no
+                ) AS mentor_cnt,
+                (
+                    SELECT
+                        LISTAGG(sMppi.file_ser, ',') WITHIN GROUP(ORDER BY DBMS_RANDOM.VALUE)
+                    FROM cnet_mbr_info sMi
+                        LEFT JOIN cnet_mbr_job_info sMji ON (sMi.mbr_no = sMji.mbr_no)
+                        LEFT JOIN cnet_mbr_prof_pic_info sMppi ON (sMi.mbr_no = sMppi.mbr_no)
+                    WHERE 1 = 1
+                        AND sMi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                        AND sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                        AND sMji.job_no = Ji.job_no
+                ) AS mentor_prof_pic_info
+            FROM cnet_job_info Ji
+                LEFT JOIN cnet_job_clsf_cd Jcc ON (Ji.job_clsf_cd = jcc.cd)
+            WHERE 1 = 1
+            ORDER BY mentor_cnt DESC, reg_dtm DESC, job_nm
+
+        ) R
+    </select>
+
+
+    <!-- 직업소개 (멘토 위주의 목록) -->
+    <select id="listJobInfoFromMentor" resultType="kr.or.career.mentor.domain.JobInfo">
+        /* [JobMapper.xml#listJobInfoFromMentor][직업소개 (멘토 위주의 목록)] */
+        /* paging */
+        SELECT
+            R.*,
+            rownum rn
+        /* paging */
+        FROM (
+
+            SELECT
+                Ji.job_no,
+                Ji.job_clsf_cd,
+                Ji.job_nm,
+                Ji.job_def_nm,
+                Ji.job_pic_info,
+                /* Ji.job_intdc_info, */
+                Ji.core_abl_info,
+                Ji.asso_sch_dept_info,
+                Ji.asso_cualf_info,
+                Ji.smlr_job_nm,
+                Ji.reg_dtm,
+                Ji.reg_mbr_no,
+                (
+                    SELECT
+                        NVL(COUNT(*), 0)
+                    FROM cnet_mbr_info sMi LEFT JOIN cnet_mbr_job_info sMji ON (sMi.mbr_no = sMji.mbr_no)
+                    WHERE 1 = 1
+                        AND sMi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                        AND sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                        AND sMji.job_no = Ji.job_no
+                ) AS mentor_cnt,
+                (
+                    SELECT
+                        LISTAGG(sMppi.file_ser, ',') WITHIN GROUP(ORDER BY DBMS_RANDOM.VALUE)
+                    FROM cnet_mbr_info sMi
+                        LEFT JOIN cnet_mbr_job_info sMji ON (sMi.mbr_no = sMji.mbr_no)
+                        LEFT JOIN cnet_mbr_prof_pic_info sMppi ON (sMi.mbr_no = sMppi.mbr_no)
+                    WHERE 1 = 1
+                        AND sMi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                        AND sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                        AND sMji.job_no = Ji.job_no
+                ) AS mentor_prof_pic_info
+            FROM cnet_job_info Ji
+                LEFT JOIN cnet_job_clsf_cd Jcc ON (Ji.job_clsf_cd = jcc.cd)
+            WHERE 1 = 1
+                AND Ji.job_no IN (
+                    SELECT
+                        sMji.job_no
+                    FROM cnet_mbr_info sMi
+                        LEFT JOIN cnet_lect_info sLi ON (sMi.mbr_no = sLi.lectr_mbr_no)
+                        LEFT JOIN cnet_mbr_job_info sMji ON (sMi.mbr_no = sMji.mbr_no)
+                        LEFT JOIN cnet_mbr_job_chrstc_info sMjci ON (sMi.mbr_no = sMjci.mbr_no)
+                    WHERE 1 = 1
+                        AND sMi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                        AND sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchKey)">
+                            <choose>
+                                <when test="searchType eq 'class'">
+                                    AND REGEXP_LIKE(sLi.lect_title, #{searchKey})
+                                </when>
+                                <when test="searchType eq 'mentor'">
+                                    AND REGEXP_LIKE(sMi.nm, #{searchKey})
+                                </when>
+                                <when test="searchType eq 'tag'">
+                                    AND REGEXP_LIKE(sMji.job_tag_info, #{searchKey})
+                                </when>
+                                <when test="searchType eq 'job'">
+                                    AND REGEXP_LIKE(sMji.job_nm, #{searchKey})
+                                </when>
+                                <otherwise>
+                                    AND (
+                                        REGEXP_LIKE(sLi.lect_title, #{searchKey})
+                                        OR REGEXP_LIKE(sMi.nm, #{searchKey})
+                                        OR REGEXP_LIKE(sMji.job_tag_info, #{searchKey})
+                                        OR REGEXP_LIKE(sMji.job_nm, #{searchKey})
+                                    )
+                                </otherwise>
+                            </choose>
+                        </if>
+                        <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(chrstcClsfCds)">
+                            <foreach collection="chrstcClsfCds" item="chrstcClsfCd" open="AND sMjci.mbr_no IN (" close=")" separator="INTERSECT">
+                                SELECT mbr_no FROM cnet_mbr_job_chrstc_info WHERE job_chrstc_cd =  #{chrstcClsfCd}
+                            </foreach>
+                        </if>
+                        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(jobClsfCd)">
+                            AND sMji.job_no IN (
+                                SELECT
+                                    job_no
+                                FROM cnet_job_info
+                                WHERE 1 = 1
+                                    AND job_clsf_cd IN (
+                                        SELECT
+                                            cd
+                                        FROM cnet_job_clsf_cd
+                                        WHERE 1 = 1
+                                            AND cd_lv = 3
+                                        START WITH cd = #{jobClsfCd}
+                                        CONNECT BY NOCYCLE PRIOR cd = sup_cd
+                                    )
+                            )
+                        </if>
+                    GROUP BY sMji.job_no
+                )
+            ORDER BY mentor_cnt DESC, reg_dtm DESC, job_nm
+        ) R
+        WHERE 1 = 1
+            AND mentor_cnt != 0
+    </select>
+
+
+    <select id="listRecomJobInfo" resultType="kr.or.career.mentor.domain.JobInfo">
+        SELECT
+            *
+        FROM (
+            /* paging */
+            SELECT
+                R.*,
+                rownum rn
+            /* paging */
+            FROM (
+
+                SELECT
+                    Ji.job_no,
+                    Ji.job_clsf_cd,
+                    Ji.job_nm,
+                    Ji.job_def_nm,
+                    Ji.job_pic_info,
+                    Ji.core_abl_info,
+                    Ji.asso_sch_dept_info,
+                    Ji.asso_cualf_info,
+                    Ji.smlr_job_nm,
+                    Ji.reg_dtm,
+                    Ji.reg_mbr_no,
+                    (
+                        SELECT
+                            NVL(COUNT(*), 0)
+                        FROM cnet_mbr_info sMi LEFT JOIN cnet_mbr_job_info sMji ON(sMi.mbr_no = sMji.mbr_no)
+                        WHERE 1 = 1
+                            AND sMi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                            AND sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                            AND sMji.job_no = Ji.job_no
+                    ) AS mentor_cnt,
+                    (
+                        SELECT
+                            LISTAGG(sMppi.file_ser, ',') WITHIN GROUP(ORDER BY DBMS_RANDOM.VALUE)
+                        FROM cnet_mbr_info sMi
+                            LEFT JOIN cnet_mbr_job_info sMji ON (sMi.mbr_no = sMji.mbr_no)
+                            LEFT JOIN cnet_mbr_prof_pic_info sMppi ON (sMi.mbr_no = sMppi.mbr_no)
+                        WHERE 1 = 1
+                            AND sMi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                            AND sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                            AND sMji.job_no = Ji.job_no
+                    ) AS mentor_prof_pic_info,
+                    (
+                        SELECT
+                            COUNT(*)
+                        FROM cnet_lect_info a
+                        left join cnet_lect_tims_info b on a.lect_ser = b.lect_ser
+                        left join cnet_lect_schd_info c on (a.lect_ser = c.lect_ser and b.lect_tims = c.lect_tims)
+                          WHERE 1 = 1
+                            and c.lect_stat_cd = '101543'
+                            AND a.lectr_mbr_no IN (
+                            SELECT
+                                sMi.mbr_no
+                            FROM cnet_mbr_info sMi
+                                LEFT JOIN cnet_mbr_job_info sMji ON (sMi.mbr_no = sMji.mbr_no)
+                            WHERE 1 = 1
+                                AND sMi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                                AND sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                                AND sMji.job_no = Ji.job_no
+                            )
+                    ) AS lect_cnt
+                FROM cnet_job_info Ji
+                    LEFT JOIN cnet_job_clsf_cd Jcc ON (Ji.job_clsf_cd = jcc.cd)
+                WHERE 1 = 1
+                ORDER BY lect_cnt DESC
+
+            ) R
+        )
+        WHERE 1 = 1
+            AND rn BETWEEN 1 AND 3
+    </select>
+
+
+    <!-- 직업정보 상세 -->
+    <select id="getJobInfo" resultType="kr.or.career.mentor.domain.JobInfo">
+        SELECT
+            job_no,
+            job_clsf_cd,
+            (SELECT cd_nm FROM cnet_job_clsf_cd WHERE cd = Ji.job_clsf_cd) AS job_clsf_nm,
+            job_nm,
+            job_def_nm,
+            job_pic_info,
+            job_intdc_info,
+            core_abl_info,
+            asso_sch_dept_info,
+            asso_cualf_info,
+            smlr_job_nm,
+            reg_dtm,
+            reg_mbr_no,
+            (
+                SELECT
+                    LISTAGG(sMppi.file_ser, ',') WITHIN GROUP(ORDER BY DBMS_RANDOM.VALUE)
+                FROM cnet_mbr_info sMi
+                    LEFT JOIN cnet_mbr_job_info sMji ON (sMi.mbr_no = sMji.mbr_no)
+                    LEFT JOIN cnet_mbr_prof_pic_info sMppi ON (sMi.mbr_no = sMppi.mbr_no)
+                WHERE 1 = 1
+                    AND sMi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                    AND sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                    AND sMji.job_no = Ji.job_no
+            ) AS mentor_prof_pic_info
+        FROM cnet_job_info Ji
+        WHERE job_no = #{jobNo}
+    </select>
+
+
+    <!-- 직업에 해당하는 멘트의 스크렙정보 -->
+    <select id="listScrpInfoByJob" resultType="kr.or.career.mentor.domain.MbrProfScrpInfo">
+        /* [JobMapper.xml#listScrpInfoByJob][동영상 정보] */
+        SELECT
+            R.*
+        FROM (
+
+            SELECT
+                Mpsi.*,
+                ROW_NUMBER() OVER(ORDER BY reg_dtm DESC) rn
+            FROM cnet_mbr_prof_scrp_info Mpsi
+            WHERE 1= 1
+                AND scrp_class_cd = #{scrpClassCd}
+                AND mbr_no IN (
+                    SELECT
+                        Mi.mbr_no
+                    FROM cnet_mbr_info Mi
+                        LEFT JOIN cnet_mbr_job_info Mji ON (Mi.mbr_no = Mji.mbr_no)
+                    WHERE 1 = 1
+                        AND Mi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                        AND Mi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                        AND Mji.job_no = #{jobNo}
+                )
+
+        ) R
+        WHERE rn BETWEEN 1 AND 5
+    </select>
+
+
+    <!-- 관련 멘토 정보 -->
+    <select id="listRelationMentor" resultType="kr.or.career.mentor.domain.MentorDTO">
+        /* [JobMapper.xml#listRelationMentor][관련멘토정보] */
+        /* paging */
+        SELECT
+            Mi.mbr_no,
+            Mi.nm,
+            (SELECT icon_kind_cd FROM cnet_mbr_icon_info WHERE mbr_no = Mi.mbr_no AND icon_kind_cd = '101598') AS icon_kind_cd,
+            Mpi.title AS prof_title,
+            Mpi.intdc_info AS prof_intdc_info,
+            Mji.job_nm,
+            (SELECT Z.file_ser FROM cnet_mbr_prof_pic_info Z WHERE Z.mbr_no = Mi.mbr_no and rownum = 1) AS prof_file_ser,
+            ROW_NUMBER() OVER(ORDER BY Mi.reg_dtm DESC, Mi.nm ASC) AS rn
+        /* paging */
+        FROM cnet_mbr_info Mi
+            LEFT JOIN cnet_mbr_job_info Mji ON (Mi.mbr_no = Mji.mbr_no)
+            LEFT JOIN cnet_mbr_prof_info Mpi ON (Mi.mbr_no = Mpi.mbr_no)
+        WHERE 1 = 1
+            AND Mi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+            AND Mi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+            AND Mji.job_no = #{jobNo}
+    </select>
+
+
+    <!-- 관련 멘토 정보 -->
+    <!-- // TODO 관련 수업정보 쿼리 입력 -->
+    <select id="listRelationLecture" resultType="kr.or.career.mentor.domain.LectureDTO">
+        /* paging */
+        SELECT
+            Li.lect_title,
+            Li.lectr_mbr_no,
+            (SELECT nm FROM cnet_mbr_info WHERE mbr_no = Li.lectr_mbr_no) AS lectr_mbr_nm,
+            Li.lect_targt_cd,
+            (SELECT cd_nm FROM cnet_code WHERE cd = Li.lect_targt_cd) AS lect_targt_cd_nm,
+            Li.lect_intdc_info,
+            Lsi.lect_stat_cd,
+            (SELECT cd_nm FROM cnet_code WHERE cd = Lsi.lect_stat_cd) AS lect_stat_cd_nm,
+            Lsi.lect_day,
+            Lsi.lect_start_time,
+            Lsi.lect_end_time,
+            VI.CNTNTSID,
+            VI.ARCLSER,
+            Lsi.lect_ser,
+            Lsi.lect_tims,
+            Lsi.schd_seq,
+            (SELECT cd_nm FROM cnet_code WHERE cd = Li.lect_type_cd) AS lectTypeNm,
+            ROW_NUMBER() OVER(ORDER BY Lsi.lect_day DESC, Lsi.lect_start_time DESC, Li.lect_title) AS rn
+        /* paging */
+        FROM cnet_lect_info Li
+            INNER JOIN cnet_lect_tims_info Lti ON (Li.lect_ser = Lti.lect_ser AND Lti.exps_yn = 'Y')
+            INNER JOIN cnet_lect_schd_info Lsi ON (Lti.lect_ser = Lsi.lect_ser AND Lti.lect_tims = Lsi.lect_tims)
+            LEFT OUTER JOIN
+                            (
+                                SELECT  CNTNTS_TARGT_NO,
+                                        CNTNTS_TARGT_TIMS,
+                                        CNTNTS_TARGT_SEQ,
+                                        ARCL_SER AS ARCLSER,
+                                        CNTNTS_ID as CNTNTSID
+                                FROM    CNET_ARCL_INFO AI,
+                                        CNET_LECT_INFO LI
+                                WHERE   AI.CNTNTS_TARGT_NO = LI.LECT_SER
+                                AND     AI.CNTNTS_TARGT_CD = '101654'
+                            ) VI
+                ON VI.CNTNTS_TARGT_NO = LI.LECT_SER
+                    and vi.CNTNTS_TARGT_TIMS = Lsi.lect_tims
+                    and vi.CNTNTS_TARGT_SEQ = Lsi.schd_seq
+        WHERE 1 = 1
+            AND lectr_mbr_no IN (
+                SELECT
+                    Mi.mbr_no
+                FROM cnet_mbr_info Mi
+                    LEFT OUTER JOIN cnet_mbr_job_info Mji ON (Mi.mbr_no = Mji.mbr_no)
+                WHERE 1 = 1
+                    AND Mi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                    AND Mi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                    AND Mji.job_no = #{jobNo}
+            )
+            AND Lsi.schd_seq = 1
+    </select>
+
+    <!-- 1차 직업분류 -->
+    <select id="jobListCode" resultType="kr.or.career.mentor.domain.JobClsfDTO">
+        SELECT  B.CD AS JOB_CD
+              , B.CD_NM AS JOB_NM
+          FROM CNET_JOB_CLSF_CD B
+         WHERE 1 = 1
+           AND B.CD_LV = 1
+    </select>
+
+    <!-- 직업소개 (직업 그룹별 목록) -->
+    <select id="listJobInfoFromGroup" resultType="kr.or.career.mentor.domain.JobInfo">
+        /* [JobMapper.xml#listJobInfoFromGroup][직업소개 (직업 그룹별 목록)] */
+        /* paging */
+        SELECT
+            R.*,
+            rownum rn
+        /* paging */
+        FROM (
+        <include refid="sqlListJobInfoFromGroup" />
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchKey)">
+                <if test="searchType eq 'all'">
+                    AND EXISTS (
+                                SELECT 1
+                                FROM CNET_MBR_INFO A, CNET_MBR_JOB_INFO B
+                                WHERE M.JOB_NO = B.JOB_NO
+                                AND   A.MBR_NO = B.MBR_NO
+                                AND   A.MBR_CLASS_CD = '101505' /* 회원구분 - 멘토 */
+                                AND   A.MBR_STAT_CD = '100862' /* 회원상태 - 정상이용 */
+                                AND   REGEXP_LIKE(A.NM, #{searchKey})
+                                )
+                    UNION
+                    <include refid="sqlListJobInfoFromGroup" />
+                    AND   REGEXP_LIKE(M.JOB_NM, #{searchKey})
+                </if>
+            </if>
+             ) R
+        ORDER BY R.mentor_cnt DESC, R.reg_dtm DESC, R.job_nm
+    </select>
+
+    <sql id="sqlListJobInfoFromGroup">
+        SELECT
+            M.*
+        FROM (
+
+                SELECT
+                    Ji.job_no,
+                    Ji.job_clsf_cd,
+                    Ji.job_nm,
+                    Ji.job_def_nm,
+                    Ji.job_pic_info,
+                    /* Ji.job_intdc_info, */
+                    Ji.core_abl_info,
+                    Ji.asso_sch_dept_info,
+                    Ji.asso_cualf_info,
+                    Ji.smlr_job_nm,
+                    Ji.reg_dtm,
+                    Ji.reg_mbr_no,
+                    (
+                        SELECT
+                            NVL(COUNT(*), 0)
+                        FROM cnet_mbr_info sMi LEFT JOIN cnet_mbr_job_info sMji ON (sMi.mbr_no = sMji.mbr_no)
+                        WHERE 1 = 1
+                            AND sMi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                            AND sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                            AND sMji.job_no = Ji.job_no
+                    ) AS mentor_cnt,
+                    (
+                        SELECT
+                            LISTAGG(sMppi.file_ser, ',') WITHIN GROUP(ORDER BY DBMS_RANDOM.VALUE)
+                        FROM cnet_mbr_info sMi
+                            LEFT JOIN cnet_mbr_job_info sMji ON (sMi.mbr_no = sMji.mbr_no)
+                            LEFT JOIN cnet_mbr_prof_pic_info sMppi ON (sMi.mbr_no = sMppi.mbr_no)
+                        WHERE 1 = 1
+                            AND sMi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                            AND sMi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                            AND sMji.job_no = Ji.job_no
+                    ) AS mentor_prof_pic_info
+                FROM cnet_job_info Ji
+                    LEFT JOIN cnet_job_clsf_cd Jcc ON (Ji.job_clsf_cd = jcc.cd)
+                WHERE 1 = 1
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(jobClsfCd)">
+                AND Ji.job_no IN (
+
+                                SELECT
+                                    job_no
+                                FROM cnet_job_info
+                                WHERE 1 = 1
+                                    AND job_clsf_cd IN (
+                                                        SELECT
+                                                        cd
+                                                        FROM cnet_job_clsf_cd
+                                                        WHERE 1 = 1
+                                                        AND cd_lv = 3
+                                                        START WITH cd = #{jobClsfCd}
+                                                        CONNECT BY NOCYCLE PRIOR cd = sup_cd
+                                                        )
+                                 )
+            </if>
+            <if test="@org.apache.commons.collections.CollectionUtils@isNotEmpty(chrstcClsfCds)">
+                AND Ji.job_no IN (
+
+                                SELECT
+                                    smji.job_no
+                                FROM cnet_mbr_info smi
+                                LEFT JOIN cnet_lect_info sli on (smi.mbr_no = sli.lectr_mbr_no)
+                                LEFT JOIN cnet_mbr_job_info smji on (smi.mbr_no = smji.mbr_no)
+                                LEFT JOIN cnet_mbr_job_chrstc_info smjci on (smi.mbr_no = smjci.mbr_no)
+                                WHERE 1 = 1
+                                  AND smi.mbr_class_cd = '101505' /* 회원구분 - 멘토 */
+                                  AND smi.mbr_stat_cd = '100862' /* 회원상태 - 정상이용 */
+                                <foreach collection="chrstcClsfCds" item="chrstcClsfCd" open="AND sMjci.mbr_no IN (" close=")" separator="INTERSECT">
+                                    SELECT mbr_no FROM cnet_mbr_job_chrstc_info WHERE job_chrstc_cd =  #{chrstcClsfCd}
+                                </foreach>
+                                GROUP BY smji.job_no
+                                 )
+            </if>
+            ) M
+        WHERE 1 = 1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchKey)">
+            <choose>
+                <when test="searchType eq 'mentor'">
+                    AND EXISTS (
+                                SELECT 1
+                                FROM CNET_MBR_INFO A, CNET_MBR_JOB_INFO B
+                                WHERE M.JOB_NO = B.JOB_NO
+                                AND   A.MBR_NO = B.MBR_NO
+                                AND   A.MBR_CLASS_CD = '101505' /* 회원구분 - 멘토 */
+                                AND   A.MBR_STAT_CD = '100862' /* 회원상태 - 정상이용 */
+                                AND   REGEXP_LIKE(A.NM, #{searchKey})
+                             )
+                </when>
+                <when test="searchType eq 'job'">
+                    AND   REGEXP_LIKE(M.JOB_NM, #{searchKey})
+                </when>
+            </choose>
+        </if>
+    </sql>
+</mapper>

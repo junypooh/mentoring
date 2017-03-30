@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.ArclFileInfoMapper">
+
+  <resultMap id="arclFileInfoResult" type="kr.or.career.mentor.domain.ArclFileInfo" autoMapping="true">
+    <id property="arclSer" column="ARCL_SER" javaType="int" />
+    <id property="boardId" column="BOARD_ID" javaType="java.lang.String" />
+    <id property="fileSer" column="FILE_SER" javaType="int" />
+  </resultMap>
+
+  <resultMap type="kr.or.career.mentor.domain.ArclFileInfo" id="fileInfoResult" extends="arclFileInfoResult">
+    <association property="comFileInfo" column="{fileSer=FILE_SER}" select="kr.or.career.mentor.dao.ComFileInfoMapper.getComFileList" autoMapping="true" />
+  </resultMap>
+
+  <select id="getArclFileList" parameterType="kr.or.career.mentor.domain.ArclInfo" resultMap="fileInfoResult" >
+    SELECT
+      ARCL_SER
+      , BOARD_ID
+      , FILE_SER
+      , REG_DTM
+      , REG_MBR_NO
+    FROM CNET_ARCL_FILE_INFO
+    <where>
+      ARCL_SER = #{arclSer}
+    </where>
+  </select>
+
+  <insert id="registArclFileInfo" parameterType="kr.or.career.mentor.domain.ArclFileInfo">
+    INSERT INTO CNET_ARCL_FILE_INFO
+      (ARCL_SER
+      , BOARD_ID
+      , FILE_SER
+      , REG_DTM
+      , REG_MBR_NO)
+    VALUES
+      ( #{arclSer}
+      , #{boardId}
+      , SQ_MOVIE_ARCL_FILE_INFO.nextval
+      , SYSDATE
+      , #{regMbrNo})
+  </insert>
+
+  <update id="deleteArclFileInfo" parameterType="kr.or.career.mentor.domain.ArclFileInfo">
+    DELETE *
+    FROM CNET_ARCL_FILE_INFO
+    <where>
+      FILE_SER = #{fileSer}
+    </where>
+  </update>
+
+</mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.career.mentor.dao.WorkHistoryMapper">
+
+    <insert id="saveWorkHistory" parameterType="kr.or.career.mentor.domain.WorkInfo">
+        <![CDATA[
+            INSERT INTO CNET_WORK_HIST
+            (
+                MBR_NO
+                ,WORK_DTM
+                ,WORK_NO
+                ,CONN_IP
+                ,REQ_INFO_SMRY
+                ,TARGT_MBR_NO
+            )
+            VALUES
+            (
+                #{mbrNo, jdbcType=VARCHAR}
+                ,SYSDATE
+                ,#{workNo, jdbcType=VARCHAR}
+                ,#{connIp, jdbcType=VARCHAR}
+                ,#{reqInfoSmry, jdbcType=CLOB}
+                ,#{targtMbrNo, jdbcType=VARCHAR}
+            )
+        ]]>
+    </insert>
+
+    <update id="saveWorkInfo" parameterType="kr.or.career.mentor.domain.WorkInfo">
+        MERGE INTO CNET_WORK_INFO
+            USING dual ON (WORK_NO = #{workNo})
+        WHEN NOT MATCHED THEN
+            INSERT (
+                WORK_NO,
+                WORK_URL,
+                WORK_TYPE_CD,
+                PRIVATE_INFO_CONN_YN
+            )
+            VALUES (
+                #{workNo, jdbcType=VARCHAR},
+                #{workUrl, jdbcType=VARCHAR},
+                ' ',
+                'N'
+            )
+    </update>
+
+    <select id="selectWorkHistList" parameterType="kr.or.career.mentor.domain.WorkInfo" resultType="kr.or.career.mentor.domain.WorkInfo">
+        /* paging */
+        SELECT
+            A.WORK_DTM, B.WORK_SUST, A.TARGT_MBR_NO, F.NM AS TARGT_MBR_NM
+            , C.ID, C.NM, FN_GET_MBR_AUTH_NM(C.MBR_NO) AS AUTH_NM, E.CO_NM
+            , ROW_NUMBER() OVER(ORDER BY A.WORK_DTM DESC) AS RN
+        /* paging */
+        FROM CNET_WORK_HIST A
+        , CNET_WORK_INFO B
+        , CNET_MBR_INFO C
+        , CNET_CODE D
+        , CNET_CO_INFO E
+        , CNET_MBR_INFO F
+        WHERE A.WORK_NO = B.WORK_NO
+        AND B.PRIVATE_INFO_CONN_YN = 'Y'
+        AND A.MBR_NO = C.MBR_NO
+        AND B.WORK_TYPE_CD = D.CD
+        AND C.POS_CO_NO = E.CO_NO(+)
+        AND A.TARGT_MBR_NO = F.MBR_NO(+)
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStDate)">
+            AND TO_CHAR(A.WORK_DTM, 'YYYY-MM-DD') <![CDATA[ >= ]]> #{searchStDate}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchEndDate)">
+            AND TO_CHAR(A.WORK_DTM, 'YYYY-MM-DD') <![CDATA[ <= ]]> #{searchEndDate}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord)">
+            <choose>
+                <when test="searchKey.equals('id')">
+                    AND REGEXP_LIKE(C.ID, #{searchWord})
+                </when>
+                <when test="searchKey.equals('nm')">
+                    AND REGEXP_LIKE(C.NM, #{searchWord})
+                </when>
+                <otherwise>
+                    AND (REGEXP_LIKE(C.ID, #{searchWord}) OR REGEXP_LIKE(C.NM, #{searchWord}))
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
+
+</mapper>
