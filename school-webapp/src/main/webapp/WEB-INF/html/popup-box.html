@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<title>산들바람 진로멘토링</title>
+	<link rel="stylesheet" href="css/main.css">
+	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
+</head>
+<body>
+	<ul id="skipNav">
+		<li><a href="#">본문</a></li>
+		<li><a href="#">footer</a></li>
+	</ul>
+	<div id="wrap" class="box-collection">
+		<div id="container">
+			<div class="content">
+
+				<div class="layer-pop m-blind">
+					<div class="layer-header">
+						<strong class="title">동영상보기</strong>
+					</div>
+					<div class="layer-cont">
+						<div style="text-align:center">
+							<img src="http://218.36.252.231:58080/mentor-webapp/images/popup/img_movie_area.jpg">
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 cancel">닫기</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop class">
+					<div class="layer-header">
+						<strong class="title">나의 교실</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style">
+							<strong class="title-style"><em>등록하신 교실 정보</em> 입니다.</strong>
+							<div class="box-style2">
+								<p><strong>학교 명:</strong> 대전 둔원 고등학교</p>
+								<p><strong>반 명:</strong> 1-7</p>
+							</div>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 search">반 닫기</a>
+							<a href="#" class="btn-type2 cancel">취소</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop class">
+					<div class="layer-header">
+						<strong class="title">APP 다운로드 안내</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="app-down-info">
+							<strong>모바일 어플리케이션(App) 다운로드 안내</strong>
+							<div>
+								<p>온라인 멘토링 수업은 모바일 App에서 입장 가능합니다.</p>
+								<p>아래 ‘ App Store로 이동‘ 버튼을 눌러 App을 설치해주세요.</p>
+								<span class="btn"><a href="#" class="btn-type2">APP Store 로 이동</a></span>
+							</div>
+
+						</div>
+
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 popup">확인</a>
+							<a href="#" class="btn-type2 cancel">취소</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop  m-blind class">
+					<div class="layer-header">
+						<strong class="title">나의 교실 등록</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style">
+							<strong class="title-style"><em>교실 등록이 완료</em> 되었습니다.<br />나의 교실에서 <em>등록 상태를 확인</em>하세요.</strong>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 cancel">닫기</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop m-blind">
+					<div class="layer-header">
+						<strong class="title">나의 교실 등록</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style">
+							<strong class="title-style"><em>해당 교실을 등록</em>하시겠습니까?.</strong>
+							<div class="box-style2 class">
+								<p><strong>학교 명:</strong> 대전 둔원 고등학교</p>
+								<div class="class-opt">
+									<span>
+										<strong>선택</strong>
+										<label class="radio-skin" title="반">
+											<input type="radio" title="반" name="선택" />반
+										</label>
+										<label class="radio-skin" title="그룹">
+											<input type="radio" title="그룹" name="선택" />그룹
+										</label>
+									</span>
+									<span>
+										<strong>반명</strong>
+										<select class="slt-style" title="반명">
+											<option>선택</option>
+											<option>1-1</option>
+											<option>1-2</option>
+											<option>1-3</option>
+											<option>1-4</option>
+											<option>1-5</option>
+											<option>1-6</option>
+											<option>1-7</option>
+										</select>
+										<!-- 그룹 선택 시 -->
+										<span style="display:none;">
+											<strong class="grop"><label for="grop-name">그룹명</label></strong>
+											<input type="text" id="grop-name" style="width:105px;" title="그룹명 입력" />
+										</span>
+										<!-- //그룹 선택 시 -->
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 popup">등록</a>
+							<a href="#" class="btn-type2 cancel">취소</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop class">
+					<div class="layer-header">
+						<strong class="title">나의 교실 찾기</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style">
+							<strong class="title-style"><em>교실 등록이 완료</em> 되었습니다.<br />나의 교실에서 <em>등록 상태를 확인</em>하세요.</strong>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 popup">확인</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop class">
+					<div class="layer-header">
+						<strong class="title">나의 교실 찾기</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style">
+							<strong class="title-style"><em>해당 교실을 등록</em>하시겠습니까?</strong>
+							<div class="box-style2 src-class">
+								<p><strong>학교 명</strong><span>대전 둔원 고등학교</span></p>
+								<p><strong>반 명</strong><span>1-6</span></p>
+								<p><strong>교사 명</strong><span>홍길동</span></p>
+							</div>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 popup">등록</a>
+							<a href="#" class="btn-type2 cancel">취소</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop m-blind">
+					<div class="layer-header">
+						<strong class="title">멘토찾기</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style none-border">
+							<div class="mentor-search">
+								<div class="mentor-search-area">
+									<select class="slt-style" title="전체">
+										<option>전체</option>
+										<option>수업</option>
+										<option>멘토</option>
+										<option>태그</option>
+										<option>직업</option>
+									</select>
+									<input type="search" class="inp-style" title="멘토찾기" />
+									<a href="#" class="job-search">멘토찾기</a>
+								</div>
+							</div>
+							<div class="result-info">
+								<p class="search-result">검색 결과<strong>총<em>00</em>건</strong></p>
+							</div>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 blue">뒤로</a>
+							<a href="#" class="btn-type2 cancel">취소</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop">
+					<div class="layer-header">
+						<strong class="title">수업 취소 신청</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style cancel">
+							<strong class="title-style"><em>해당 수업을 취소</em>하시겠습니까?.</strong>
+							<div class="box-style2 class">
+								<strong>[특강] 향기를 창조하는 전문가</strong>
+								<p>2015-09-20 11:00 ~ 11:50</p>
+							</div>
+							<div class="cancel-reason">
+								<div class="reason-input">
+									<strong>취소사유입력</strong>
+									<span><em>0</em> / 200자</span>
+								</div>
+								<div class="reason-text">
+									<textarea class="ta-style">향기를 창조하는 전문가 취소합니다.
+									</textarea>
+								</div>
+								<div class="reason-btn">
+									<a href="#" class="btn-type2 search">취소신청</a>
+								</div>
+							</div>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 popup">확인</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop m-blind">
+					<div class="layer-header">
+					<strong class="title">직업 선택</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="layer-pop-scroll">
+							<div class="box-style none-border">
+								<strong>특징 분류</strong>
+								<ul class="job-select-ul">
+									<li>
+										<label class="chk-skin">
+											<span class="job-wrap"><span>첨단&middot;정보첨단&middot;첨단&middot;정보첨단&middot;첨단&middot;정보첨단&middot;첨단&middot;정보첨단&middot;첨단&middot;정보첨단&middot;</span></span>
+											<em>(95)</em>
+											<input type="checkbox" class="check-style" name="특징분류" />
+										</label>
+									</li>
+									<li>
+										<label class="chk-skin">
+											<span class="job-wrap"><span>글로벌&middot;세계화 인재</span></span>
+											<em>(6)</em>
+											<input type="checkbox" class="check-style" name="특징분류" />
+										</label>
+									</li>
+									<li>
+										<label class="chk-skin">
+											<span class="job-wrap"><span>환경 관련 녹색직업</span></span>
+											<em>(11)</em>
+											<input type="checkbox" class="check-style" name="특징분류" />
+										</label>
+									</li>
+									<li>
+										<label class="chk-skin">
+											<span class="job-wrap"><span>잘 알려진 직업</span></span>
+											<em>(00)</em>
+											<input type="checkbox" class="check-style" name="특징분류" />
+										</label>
+									</li>
+									<li>
+										<label class="chk-skin">
+											<span class="job-wrap"><span>생소한 직업</span></span>
+											<em>(00)</em>
+											<input type="checkbox" class="check-style" name="특징분류" />
+										</label>
+									</li>
+									<li>
+										<label class="chk-skin">
+											<span class="job-wrap"><span>아시아나 교육기부</span></span>
+											<em>(00)</em>
+											<input type="checkbox" class="check-style" name="특징분류" />
+										</label>
+									</li>
+									<li>
+										<label class="chk-skin">
+											<span class="job-wrap"><span>감성,웰빙 트렌드</span></span>
+											<em>(9)</em>
+											<input type="checkbox" class="check-style" name="특징분류" />
+										</label>
+									</li>
+									<li>
+										<label class="chk-skin">
+											<span class="job-wrap"><span>기업가정신</span></span>
+											<em>(000)</em>
+											<input type="checkbox" class="check-style" name="특징분류" />
+										</label>
+									</li>
+									<li>
+										<label class="chk-skin">
+											<span class="job-wrap"><span>대한민국명장 교육기부대한민국명장 교육기부대한민국명장 교육기부</span></span>
+											<em>(00)</em>
+											<input type="checkbox" class="check-style" name="특징분류" />
+										</label>
+									</li>
+								</ul>
+
+								<strong>직업 분류</strong>
+								<div class="job-selection" style="position:relative;">
+									<ul class="job-select-ul other-btm">
+										<li>
+											<label class="radio-skin">선택 안함
+											<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>경영&middot;회계&middot;사무</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>금융&middot;보험</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>보건&middot;의료</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>사회 복지 및 종교</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>교육 및 자연과학, 사회과학 연구</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>영업 및 판매</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>경비 및 청소</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>법률&middot;경찰&middot;소방&middot;교도</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>전기&middot;전자</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>음식 서비스</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>문화&middot;예술&middot;디자인&middot;방송</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>화학</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>기계</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>정보통신</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>농림어업</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>건설</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>식품가공</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>군인</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>재료(금속&middot;유리&middot;점토&middot;시멘트)</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>환경&middot;인쇄&middot;목재&middot;가구&middot;공예 및 생산단순</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>섬유 및 의복</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>미용&middot;숙박&middot;여행&middot;오락&middot;스포츠</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li></li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>운전 및 운송</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+										<li>
+											<label class="radio-skin">
+												<span class="job-wrap"><span>관리</span></span>
+												<em>(5)</em>
+												<input type="radio" name="job" />
+											</label>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="btn-area border">
+							<a href="#" class="btn-type2 popup">확인</a>
+							<a href="#" class="btn-type2 cancel">취소</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop mobile">
+					<div class="layer-header mobile">
+						<strong class="title mobile">평점 및 후기 등록</strong>
+					</div>
+					<div class="layer-cont mobile">
+						<div class="box-style3">
+							<strong>평점</strong>
+							<div class="score-info">
+								<p>이미지 영역</p>
+							</div>
+							<strong>내용</strong>
+							<div class="text-info">
+								<div class="text-area popup">
+									<textarea id="textaInfo" class="ta-style" name="text"></textarea><span class="text-limit"><strong>0</strong> / 400자</span>
+								</div>
+							</div>
+						</div>
+						<div class="btn-area mobile">
+							<a href="#" class="btn-type2 popup">확인</a>
+							<a href="#" class="btn-type2 cancel">취소</a>
+						</div>
+						<a href="#" class="layer-close mobile">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop class m-blind">
+					<div class="layer-header">
+						<strong class="title">비밀번호 찾기</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style none-border">
+							<strong class="title-style">임시비밀번호 발급 완료</strong>
+							<div class="box-style2 border">
+								<p><strong>임시비밀번호</strong><em>AeEbbsdf1293</em></p>
+							</div>
+							<ul class="pass-info">
+								<li>비밀번호 입력란에 임시비밀번호를 복사하여 붙여 넣으시면<br />보다 편리하게 이용하실 수 있습니다.</li>
+								<li>로그인 후, [마이페이지] 메뉴에서 비밀번호를 변경하여 이용하시기 바랍니다.</li>
+							</ul>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 popup">확인</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop class m-blind">
+					<div class="layer-header">
+						<strong class="title">아이디 중복확인</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style none-border">
+							<strong class="title-style id-check"><em>SandleWind00</em><em class="gray">는 현재 사용 중인 아이디입니다.</em><br />다른 아이디를 사용해주세요.</strong>
+							<div class="box-style2 border">
+								<strong><label for="idCheck">아이디</label></strong>
+								<input type="text" id="idCheck" value="아이디를 입력해주세요." title="아이디" />
+								<a href="#"  class="btn-type2 search">아이디 중복확인</a>
+							</div>
+							<span class="pass-point"><span>중요</span>5자리 ~ 12자리 영문 소문자, 숫자 및 기호 '_', '-' 만 사용 가능합니다.</span>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 popup">확인</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop class m-blind">
+					<div class="layer-header">
+						<strong class="title">아이디 중복확인</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style none-border2">
+							<strong class="title-style">아이디를 입력하세요.</strong>
+							<div class="box-style2 border">
+								<strong><label for="idCheck2">아이디</label></strong>
+								<input type="text" id="idCheck2" value="아이디를 입력해주세요." title="아이디" />
+								<a href="#"  class="btn-type2 search">아이디 중복확인</a>
+							</div>
+							<span class="pass-point"><span>중요</span>5자리 ~ 12자리 영문 소문자, 숫자 및 기호 '_', '-' 만 사용 가능합니다.</span>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop class m-blind">
+					<div class="layer-header">
+						<strong class="title">아이디 중복확인</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style none-border">
+							<strong class="title-style"><em>SandleWind00</em>는 사용 가능합니다.</strong>
+							<a href="#"  class="btn-type2 search">아이디 사용하기</a>
+							<div class="box-style2 border">
+								<strong><label for="idCheck3">아이디</label></strong>
+								<input type="text" id="idCheck3" value="아이디를 입력해주세요." title="아이디" />
+								<a href="#"  class="btn-type2 search">아이디 중복확인</a>
+							</div>
+							<span class="pass-point"><span>중요</span>5자리 ~ 12자리 영문 소문자, 숫자 및 기호 '_', '-' 만 사용 가능합니다.</span>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop class m-blind">
+					<div class="layer-header">
+						<strong class="title">아이디 중복확인</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style none-border">
+							<strong class="title-style id-check"><em>SandleWind00</em><em class="gray">는 현재 사용 중인 아이디입니다.</em><br />다른 아이디를 사용해주세요.</strong>
+							<div class="box-style2 border">
+								<strong><label for="idCheck4">아이디</label></strong>
+								<input type="text" id="idCheck4" value="아이디를 입력해주세요." title="아이디" />
+								<a href="#"  class="btn-type2 search">아이디 중복확인</a>
+							</div>
+							<span class="pass-point"><span>중요</span>5자리 ~ 12자리 영문 소문자, 숫자 및 기호 '_', '-' 만 사용 가능합니다.</span>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop class m-blind">
+					<div class="layer-header">
+						<strong class="title">반려사유</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style none-border2">
+							<strong class="title-style">반려 사유를 입력해주세요</strong>
+							<div class="box-style2 border">
+								<strong><label for="reason">반려사유</label></strong>
+								<input type="text" id="reason" title="반려사유 입력란">
+							</div>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 popup">확인</a>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="layer-pop class">
+					<div class="layer-header">
+						<strong class="title">알림</strong>
+					</div>
+					<div class="layer-cont alert-pop">
+						<p class="alert-date">2016.00.00</p>
+						<p class="alert-title">[수업개설 승인] 개설 신청 하신 수업이 승인되었습니다.</p>
+						<div class="box-style alert-text">
+							<p>신청하신 수업이 승인되어 수업이 등록될 예정입니다. 수업등록 후, 수강모집이 시작되면 수업현황 > 수강모집 탭에서 확인 할 수 있습니다.</p>
+						</div>
+						<div class="box-style2 alert-memo">
+							<p>홍길동 선생님 <br />수업과 관련하여 따로 연락 드리도록 하겠습니다.</p>
+						</div>
+						<div class="btn-area">
+							<a href="#" class="btn-type2">더 이상 보지않기</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,91 @@
+@charset "utf-8";
+@import url(common.css);
+/* 사업소개 */
+.replace-txt { overflow:hidden; width:0; height:0; font-size:0; line-height:0; text-indent:-9999; opacity:0;}
+
+.bsns-cont { padding:45px 0 50px; border-top:1px solid #e0e0e0; }
+.bsns-cont h3 { padding-bottom:30px; color:#475553; font-size:26px; font-weight:500; line-height:36px;}
+.bsns-cont p { color:#666; font-size:14px; line-height:22px; word-break: keep-all;}
+.bsns-cont ul li { color:#666; font-size:14px; line-height:22px;}
+.bsns01 { padding-left:380px; border-top:0; background:url("../images/service/bg_bsns01.png") no-repeat 0 50px;}
+.bsns01 p strong { font-size:26px; font-weight:500;}
+.bsns02 { padding-right:300px; background:url("../images/service/bg_bsns02.png") no-repeat right 50px;}
+.bsns03 h3 { padding-bottom:15px;}
+.bsns03 .graph-wrap { margin-top:45px; text-align:center;}
+.bsns03 .graph-wrap span { display:block;color:#475553; font-size:14px; font-weight:500; line-height:18px;}
+.bsns04 { padding-bottom:0;}
+.bsns04 h3 { padding-bottom:15px;}
+.bsns04 ul li em { color:#f26522;}
+
+/* 서비스 소개 */
+.service-cont { padding-top:50px;}
+.service-cont h3 { font-size:26px; font-weight:500; line-height:36px;}
+.service01 { position:relative; box-sizing:content-box; height:0; margin-top:50px; padding-top:53.3%; border:1px solid #d4d5d4; background:#fdfdfd url("../images/service/bg_service_school.png") no-repeat 50% 54px;}
+.service01 h3 { position:absolute; top:62px; left:45px; border-bottom:3px solid #000;  color:#000; font-size:23px; line-height:43px;}
+.service02 .way-wrap { position:relative; overflow:hidden; margin-top:30px;}
+.service02 .way-logo { position:absolute; top:0; left:50%; margin-left:-66px; font-size:0; line-height:0;}
+.service02 .way-box { float:left; width:373px; height:130px; padding:20px 55px 0 25px; border:3px solid #34becf; background:#fff url("../images/service/bg_waybox01.png") no-repeat 325px 50%;}
+.service02 .way-box.right { float:right; padding:20px 20px 0 70px; background:#fff url("../images/service/bg_waybox02.png") no-repeat 19px 50%;}
+.service02 .way-box p { padding-top:10px; color:#555; font-size:14px; line-height:18px; word-break:keep-all;}
+.service02 .way-box p.lead-txt { padding-top:5px; color:#07a6be; font-size:18px; font-weight:700; line-height:24px;}
+.service02 .way-ul { margin-top:37px;}
+.service02 .way-ul > li { margin-top:16px;}
+.service02 .way-ul > li .steps { padding-bottom:10px; color:#000; font-size:18px; font-weight:500; line-height:28px;}
+.service02 .way-ul > li > ul { overflow:hidden; border-top:1px solid #d4d5d4; border-left:1px solid #d4d5d4;}
+.service02 .way-ul > li > ul > li {float:left; width:33.33%; height:228px; padding:37px 23px 0 23px; border-right:1px solid #d4d5d4; border-bottom:1px solid #d4d5d4;}
+.service02 .way-ul > li > ul > li .way-tit { padding-bottom:19px; border-bottom:1px solid #d7d7d7; color:#000; font-size:20px; font-weight:500; line-height:22px;}
+.service02 .way-ul > li > ul > li .way-tit .num { display:inline-block; width:37px; height:37px; margin-right:12px; border-radius:50%; background:#f26522; color:#fff; font-size:20px; line-height:37px; text-align:center;}
+.service02 .way-ul > li > ul > li .way-txt { padding-top:16px; color:#666; font-size:14px; line-height:22px; word-break:keep-all;}
+.service02 .way-ul > li > ul.way-list02 .way-tit .num { background-color:#34becf;}
+.service02 .way-ul > li > ul.way-list03 .way-tit .num { background-color:#7fb539;}
+.service02 .way-ul > li > ul.way-list01 .way-ico01 { background:url("../images/service/bg_way_ico01.gif") no-repeat right 37px;}
+.service02 .way-ul > li > ul.way-list01 .way-ico02 { background:url("../images/service/bg_way_ico02.gif") no-repeat right 37px;}
+.service02 .way-ul > li > ul.way-list01 .way-ico03 { background:url("../images/service/bg_way_ico03.gif") no-repeat right 37px;}
+.service02 .way-ul > li > ul.way-list02 .way-ico01 { background:url("../images/service/bg_way_ico04.gif") no-repeat right 37px;}
+.service02 .way-ul > li > ul.way-list02 .way-ico02 { background:url("../images/service/bg_way_ico05.gif") no-repeat right 37px;}
+.service02 .way-ul > li > ul.way-list02 .way-ico03 { background:url("../images/service/bg_way_ico06.gif") no-repeat right 37px;}
+.service02 .way-ul > li > ul.way-list03 .way-ico01 { background:url("../images/service/bg_way_ico07.gif") no-repeat right 37px;}
+.service02 .way-ul > li > ul.way-list03 .way-ico02 { background:url("../images/service/bg_way_ico08.gif") no-repeat right 37px;}
+.service02 .way-ul > li > ul.way-list03 .way-ico03 { background:url("../images/service/bg_way_ico09.gif") no-repeat right 37px;}
+@media (max-width: 979px) {
+	/* 사업소개 */
+	.bsns-cont { padding:30px 18px 25px;}
+	.bsns-cont h3 { padding-bottom:10px;}
+	.bsns01 { padding:235px 18px 25px 18px; background-size:230px 150px; background-position:48% 65px;}
+	.bsns02 { padding:30px 18px 25px; background:none;}
+
+	/* 서비스 소개 */
+	.service-cont { margin:0 10px}
+	.service-cont h3 { font-size:20px;}
+	.service01  { margin-top:30px; background-size:auto 87%; background-position:50% 52%;}
+	.service01 h3 { top:15px; left:22px; font-size:16px; line-height:36px;}
+	.service02 .way-wrap  {}
+	.service02 .way-logo { top:50%; margin-top:-65px;}
+	.service02 .way-logo img { width:130px; height:130px;}
+	.service02 .way-box { float:none; width:100%; height:auto; min-height:142px; padding:20px 55px 35px 25px;  background:none;}
+	.service02 .way-box.right { padding:20px 55px 35px 25px; float:none; margin-top:87px; background:none;}
+	.service02 .way-box p  {}
+	.service02 .way-box p.lead-txt  {}
+	.service02  .way-ul  {}
+	.service02  .way-ul > li {}
+	.service02  .way-ul > li .steps  {}
+	.service02  .way-ul > li > ul {}
+	.service02  .way-ul > li > ul > li { float:none; width:100%; height:auto; padding:25px 23px;}
+	.service02  .way-ul > li > ul > li .way-tit { border-bottom:0;}
+	.service02  .way-ul > li > ul > li .way-tit .num {}
+	.service02  .way-ul > li > ul > li .way-txt { padding-top:0;}
+	.service02  .way-ul > li > ul.way-list02 .way-tit .num {}
+	.service02  .way-ul > li > ul.way-list03 .way-tit .num {}
+	.service02  .way-ul > li > ul.way-list01 .way-ico01,
+	.service02  .way-ul > li > ul.way-list01 .way-ico02,
+	.service02  .way-ul > li > ul.way-list02 .way-ico01,
+	.service02  .way-ul > li > ul.way-list02 .way-ico02,
+	.service02  .way-ul > li > ul.way-list02 .way-ico03,
+	.service02  .way-ul > li > ul.way-list03 .way-ico01,
+	.service02  .way-ul > li > ul.way-list03 .way-ico02,
+	.service02  .way-ul > li > ul.way-list03 .way-ico03 { background-position:97% 25px;}
+	.service02  .way-ul > li > ul.way-list01 .way-ico03 { background-position:100% 25px;}
+}
+@media (max-width: 767px){
+	.service01 h3 { top:0; left:10px;}
+}

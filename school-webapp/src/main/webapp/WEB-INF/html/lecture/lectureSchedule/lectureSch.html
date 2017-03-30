@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<title>산들바람 진로멘토링</title>
+	<link rel="stylesheet" href="../../css/common.css">
+	<link rel="stylesheet" href="../../css/mypage.css">
+
+	<script type="text/javascript" src="../../../../js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="../../../../js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../../../../js/common.js"></script>
+	<style>
+		@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+	</style>
+
+
+</head>
+<body>
+
+	<div id="wrap">
+
+		<div id="container">
+			<div class="location">
+				<a href="#" class="home">HOME</a>
+				<span class="first">수업</span>
+				<span>수업일정</span>
+			</div>
+			<div class="content sub">
+				<h2 class="txt-type">수업일정</h2>
+
+				<!--s : 수업캘린더-->
+				<div class="sch-calendar">
+					<div class="sch-month"><a href="#">이전달</a>5월<a href="#">다음달</a></div>
+					<table>
+						<caption>일요일에서 월요일까지의 수업캘린더</caption>
+						<colgroup>
+							<col style="width:10%">
+							<col style="width:10%">
+							<col style="width:10%">
+							<col style="width:10%">
+							<col style="width:10%">
+							<col style="width:10%">
+							<col style="width:10%">
+						</colgroup>
+						<thead>
+							<tr>
+								<th>SUNDAY</th>
+								<th>MONDAY</th>
+								<th>TUESDAY</th>
+								<th>WEDNESDAY</th>
+								<th>THUSDAY</th>
+								<th>FRIDAY</th>
+								<th>SATURDAY</th>
+							</tr>
+						<tbody>
+							<tr>
+								<td class="nd"><a href="#"><b>31</b></a></td>
+								<td><a href="#"><b>31</b><span class="lecture-con lv1" title="초등학교">초</span></a></td>
+								<td><a href="#"><b>1</b></a></td>
+								<td><a href="#"><b>2</b></a></td>
+								<td><a href="#"><b>3</b></a></td>
+								<td><a href="#"><b>4</b><span class="lecture-con lv2" title="중학교">중</span><span class="lecture-con lv3" title="고등학교">고</span></a></td>
+								<td><a href="#"><b>5</b></a></td>
+							</tr>
+							<tr>
+								<td><a href="#"><b>6</b></a></td>
+								<td><a href="#"><b>7</b></a></td>
+								<td><a href="#"><b>8</b></a></td>
+								<td><a href="#"><b>9</b></a></td>
+								<td><a href="#"><b>10</b><span class="lecture-con lv1" title="초등학교">초</span><span class="lecture-con lv2" title="중학교">중</span><span class="lecture-con lv3" title="고등학교">고</span></a></td>
+								<td><a href="#"><b>11</b></a></td>
+								<td><a href="#"><b>12</b></a></td>
+							</tr>
+							<tr>
+								<td><a href="#"><b>13</b></a></td>
+								<td><a href="#"><b>14</b></a></td>
+								<td><a href="#"><b>15</b></a></td>
+								<td><a href="#"><b>16</b></a></td>
+								<td><a href="#"><b>17</b><span class="lecture-con lv2" title="중학교">중</span><span class="lecture-con lv3" title="고등학교">고</span></a></td>
+								<td><a href="#"><b>18</b></a></td>
+								<td><a href="#" class="today"><b>19</b></a></td>
+							</tr>
+							<tr>
+								<td><a href="#"><b>20</b></a></td>
+								<td><a href="#"><b>21</b></a></td>
+								<td><a href="#"><b>22</b></a></td>
+								<td><a href="#"><b>23</b></a></td>
+								<!--사용자가 선택한 날의 수업-->
+								<td class="select-on"><a href="#"><b>24</b><span class="lecture-con lv2" title="중학교">중</span><span class="lecture-con lv3" title="고등학교">고</span></a></td>
+								<td><a href="#"><b>25</b></a></td>
+								<td><a href="#"><b>26</b></a></td>
+							</tr>
+							<tr>
+								<td><a href="#"><b>27</b></a></td>
+								<td><a href="#"><b>28</b></a></td>
+								<td><a href="#"><b>29</b></a></td>
+								<td><a href="#"><b>30</b></a></td>
+								<td class="nd"><a href="#"><b>1</b></a></td>
+								<td class="nd"><a href="#"><b>2</b></a></td>
+								<td class="nd"><a href="#"><b>3</b></a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!--e : 수업캘린더-->
+
+				<!--s : 수업리스트-->
+				<div class="board-list-type">
+					<div class="board-list-title">
+						<ul class="sch-list-tab">
+							<li class="on"><a href="#">전체</a></li>
+							<li><a href="#">초등학교</a></li>
+							<li><a href="#">중학교</a></li>
+							<li><a href="#">고등학교</a></li>
+						</ul>
+						<div class="sch-count"><strong>5월19일</strong> 수업목록 :  <span class="lecture-con lv1" title="초등학교">초</span><em>3건</em><span class="lecture-con lv2" title="중학교">중</span><em>3건</em></div>
+					</div>
+					<table class="sch-list">
+						<caption>학교 테이블정보 - 번호, 수업시작(소요시간), 학교급, 직업분류, 직업명, 멘토, 수업명, 상태</caption>
+						<colgroup>
+							<col style="width:5%">
+							<col style="width:15%">
+							<col/>
+							<col/>
+							<col/>
+							<col/>
+							<col style="width:28%">
+							<col/>
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">번호</th>
+								<th scope="col">수업시작<br class="nb">(소요시간)</th>
+								<th scope="col">학교급</th>
+								<th scope="col" class="tbl-hide">직업분류</th>
+								<th scope="col" class="tbl-hide">직업명</th>
+								<th scope="col" class="tbl-hide">멘토</th>
+								<th scope="col">수업명</th>
+								<th scope="col">상태</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td colspan="8" class="tbl-hide">"수업이 없습니다."</td>
+								<td colspan="5" class="tbl">"수업이 없습니다."</td><!--모바일-->
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>5/14 09:00 (35분)</td>
+								<td><span class="lecture-con lv1" title="초등학교">초</span><span class="lecture-con lv2" title="중학교">중</span><span class="lecture-con lv3" title="고등학교">고</span></td>
+								<td class="tbl-hide"><span class="long-txt">공무</span></td>
+								<td class="tbl-hide"><span class="long-txt">프로파일러</sf74141pan></td>
+								<td class="tbl-hide">표창원</td>
+								<td><a href="#" class="long-txt class-name">심리를 연구하여 범인을 잡는다!범죄심리연구소</a></td>
+								<td>정원마감</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>5/14 09:00 (35분)</td>
+								<td><span class="lecture-con lv1" title="초등학교">초</span><span class="lecture-con lv2" title="중학교">중</span><span class="lecture-con lv3" title="고등학교">고</span></td>
+								<td class="tbl-hide"><span class="long-txt">공무</span></td>
+								<td class="tbl-hide"><span class="long-txt">프로파일러</span></td>
+								<td class="tbl-hide">표창원</td>
+								<td><a href="#" class="long-txt class-name">심리를 연구하여 범인을 잡는다!범죄심리연구소</a></td>
+								<td class="txt-recruit">수강모집</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!--e : 수업리스트-->
+			</div>
+		</div>
+	</div>
+</body>
+</html>

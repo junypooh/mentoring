@@ -1,0 +1,45 @@
+@charset "utf-8";
+@import url(common.css);
+
+.login-wrap{padding-bottom:16px; background:#fff;}
+.login-top{font-size:0; line-height:0;}
+.login-top img{width:100%;}
+.login-box{position:relative; overflow:hidden; padding:0 58px 36px;}
+.login-box .login{position:relative; margin:60px 0 0 0; padding:9px 42px 9px 60px; border:1px solid #ddd;}
+.login-box .login + .login{margin:14px 0 0 0;}
+.login-box .login.on{border-color:#4764c0;}
+.login-box .login input{width:100%; height:30px; border:none; font-size:16px; line-height:30px; outline-color:#fff;}
+.login-box .login label{position:absolute; top:10px; left:0; width:60px; height:30px; background:url('../images/utility/bg_login.gif') no-repeat 0 0; font-size:0; line-height:0;}
+.login-box .login.id label{background-position:0 0;}
+.login-box .login.id.on label{background-position:0 -30px;}
+.login-box .login.pw label{background-position:0 -60px;}
+.login-box .login.pw.on label{background-position:0 -90px;}
+.login-box .chk-skin{position:absolute; bottom:0; left:58px;}
+.login-wrap .btn-area{margin:30px 0 0;}
+.login-info-txt{margin:100px 58px 0; padding:8px 0 0; background:url('../images/common/bg_bar_01.gif') no-repeat 0 0; font-size:12px; line-height:18px;}
+.login-info-txt br{display:none;}
+.login-info-txt a{color:#4764c0;}
+
+.setting-info{}
+.setting-info li{padding:0 18px 0 0; border-bottom:1px solid #dfdfdf; background:#fff;}
+.setting-info li a{display:block; overflow:hidden; height:58px; padding:20px 36px 20px 26px;  background:url('../images/common/bg_arrow.gif') no-repeat 100% 50%; font-size:18px; line-height:18px;}
+.setting-info li a .num{float:right; color:#6e87d3; font-weight:700; line-height:18px;}
+
+.setting-info + .setting-box{margin-top:6px;}
+.setting-box{padding:8px 18px 0; border-bottom:1px solid #dfdfdf; background:#fff;}
+.setting-box .tit{font-size:12px; font-weight:700; line-height:15px;}
+.clause-wrap{}
+.clause-wrap li{border-top:1px solid #dfdfdf; background:#fff;}
+.clause-wrap li a{display:block; overflow:hidden; height:59px; padding:0 8px;  background:url('../images/common/bg_arrow.gif') no-repeat 100% 50%; font-size:18px; line-height:58px;}
+
+.norice-setting li{height:59px; padding:16px 8px 18px; border-top:1px solid #dfdfdf; background:#fff; text-align:right;}
+.norice-setting li > span{float:left; font-size:18px; line-height:24px;}
+@media (max-width: 599px) {
+   .login-box{overflow:hidden; padding:0 18px 36px;}
+   .login-info-txt{margin:42px 18px 0;}
+   .login-box .login{margin:30px 0 0 0;}
+   .login-box .chk-skin{left:18px;}
+   .login-info-txt br{display:block;}
+   .setting-info li{padding:0 10px 0 0;}
+   .setting-box{padding:0 10px;}
+}

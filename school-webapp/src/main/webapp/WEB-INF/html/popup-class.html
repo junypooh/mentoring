@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<title>산들바람 진로멘토링</title>
+	<link rel="stylesheet" href="css/main.css">
+	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
+</head>
+<body>
+	<ul id="skipNav">
+		<li><a href="#">본문</a></li>
+		<li><a href="#">footer</a></li>
+	</ul>
+	<div id="wrap" class="tbl-collection">
+		<div id="container" class="popup">
+			<div class="content">
+				<div class="layer-pop m-blind">
+					<div class="layer-header">
+						<strong class="title">나의 교실 찾기</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="tbl-style3">
+							<table>
+								<caption>나의 교실 찾기 - 학교급, 지역/시군구 , 학교명</caption>
+								<colgroup>
+									<col style="width:21%" />
+									<col />
+								</colgroup>
+								<tbody>
+									<tr>
+										<th scope="row"><label for="schoolLevel">학교급</label></th>
+										<td>
+											<div class="select-grp">
+												<select id="schoolLevel" class="slt-style" title="학교급 선택">
+													<option>전체</option>
+													<option>초</option>
+													<option>중</option>
+													<option>고</option>
+													<option>기타</option>
+												</select>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><label for="schoolAddr">지역/시군구</label></th>
+										<td>
+											<div class="select-grp">
+												<select id="schoolAddr" class="slt-style" title="지역 선택">
+													<option>지역 선택</option>
+												</select>
+												<select class="slt-style" title="시군구선택">
+													<option>시군구 선택</option>
+												</select>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><label for="schoolName">학교명</label></th>
+										<td><input type="text" id="schoolName" class="inp-style" title="학교명" /></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 search"><span>검색</span></a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop m-blind">
+					<div class="layer-header">
+						<strong class="title">나의 교실 찾기</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="tbl-style3">
+							<table>
+								<caption>나의 교실 찾기 - 학교급, 지역/시군구 , 학교명</caption>
+								<colgroup>
+									<col style="width:21%" />
+									<col />
+								</colgroup>
+								<tbody>
+									<tr>
+										<th scope="row"><label for="schoolLevel">학교급</label></th>
+										<td>
+											<div class="select-grp">
+												<select id="schoolLevel" class="slt-style" title="학교급 선택">
+													<option>전체</option>
+													<option>초</option>
+													<option>중</option>
+													<option>고</option>
+													<option>기타</option>
+												</select>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><label for="schoolAddr">지역/시군구</label></th>
+										<td>
+											<div class="select-grp">
+												<select id="schoolAddr" class="slt-style" title="지역 선택">
+													<option>지역 선택</option>
+												</select>
+												<select class="slt-style" title="시군구선택">
+													<option>시군구 선택</option>
+												</select>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><label for="schoolName">학교명</label></th>
+										<td><input type="text" id="schoolName" class="inp-style" title="학교명" /></td>
+									</tr>
+									<tr>
+										<th scope="row"><label for="classManager">교실 담당자</label></th>
+										<td><input type="text" id="classManager" class="inp-style" title="교실 담당자" /></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 search"><span>검색</span></a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop m-blind">
+					<div class="layer-header">
+						<strong class="title">나의 교실 찾기</strong>
+					</div>
+					<div class="layer-cont">
+						<!-- 2015-11-10 스크롤추가 -->
+						<div class="layer-pop-scroll line">
+							<div class="tbl-style2 no-line">
+								<p class="search-result">검색 결과<strong>총<em>02</em>건</strong></p>
+								<table>
+									<caption>나의 교실 찾기 검색결과 - 겸색결과와 지역,학교,유형,교실명,교실 담당자,선택</caption>
+									<colgroup><!-- 2015-11-13 넓이값 수정 -->
+										<col style="width:18%" />
+										<col />
+										<col style="width:10%" />
+										<col style="width:12%" />
+										<col style="width:20%" />
+										<col style="width:12%" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th scope="col">지역</th>
+											<th scope="col">학교</th>
+											<th scope="col">유형</th>
+											<th scope="col">교실명</th>
+											<th scope="col">담당자</th>
+											<th scope="col" class="none-line">선택</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>동아리</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup" name="완료">완료</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop m-blind">
+					<div class="layer-header">
+						<strong class="title">나의 교실 찾기</strong>
+					</div>
+					<div class="layer-cont">
+						<!-- 2015-11-10 스크롤추가 -->
+						<div class="layer-pop-scroll line">
+							<div class="tbl-style2 no-line">
+								<p class="search-result">검색 결과<strong>총<em>02</em>건</strong></p>
+								<table>
+									<caption>나의 교실 찾기 검색결과 - 겸색결과와 지역,학교,유형,교실명,교실 담당자,선택</caption>
+									<colgroup><!-- 2015-11-13 넓이값 수정 -->
+										<col style="width:18%" />
+										<col />
+										<col style="width:10%" />
+										<col style="width:12%" />
+										<col style="width:20%" />
+										<col style="width:12%" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th scope="col">지역</th>
+											<th scope="col">학교</th>
+											<th scope="col">유형</th>
+											<th scope="col">교실명</th>
+											<th scope="col">담당자</th>
+											<th scope="col" class="none-line">선택</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>동아리</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+										<tr>
+											<td>대전광역시</td>
+											<td>대전 둔원 고등학교</td>
+											<td>반</td>
+											<td>1-6</td>
+											<td>홍길동 > 외1</td>
+											<td class="none-line"><button type="button" class="btn-type3 popup blue" name="신청">신청</button></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<span class="pass-point"><span>중요</span>교실담당자명에 마우스를 오버하면 담당자를 모두 확인할 수 있어요. 나의 을 찾지 못했을 경우 담당 선생님께 확인하세요.</span>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+
+				<div class="layer-pop m-blind">
+					<div class="layer-header">
+						<strong class="title">나의 교실 찾기</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style">
+							<strong class="title-style"><em>해당 교실을 등록</em>하시겠습니까?.</strong>
+							<div class="box-style2 class">
+								<p><strong>학교 명:</strong> 대전 둔원 고등학교</p>
+								<div class="class-opt">
+									<div>
+										<label class="radio-skin" title="반">
+											<input type="radio" title="반" name="선택" checked="checked" />반
+										</label>
+										<label class="radio-skin" title="그룹">
+											<input type="radio" title="그룹" name="선택" />그룹
+										</label>
+										<label class="radio-skin" title="동아리">
+											<input type="radio" title="동아리" name="선택" />동아리
+										</label>
+									</div>
+									<!-- 반 선택 시 -->
+									<div>
+										<strong>교실명</strong>
+										<select class="slt-style" title="학년">
+											<option>선택</option>
+										</select>
+										<select class="slt-style" title="반">
+											<option>선택</option>
+										</select>
+									</div>
+									<!-- //반 선택 시 -->
+									<!-- 그룹 선택 시 -->
+									<div style="display:none;">
+										<strong class="grop"><label for="grop-name">그룹명</label></strong>
+										<input type="text" id="grop-name" style="width:105px;" title="그룹명 입력" />
+									</div>
+									<!-- //그룹 선택 시 -->
+									<!-- 동아리 선택 시 -->
+									<div style="display:none;">
+										<strong class="grop"><label for="club-name">동아리명</label></strong>
+										<input type="text" id="club-name" style="width:105px;" title="동아리명 입력" />
+									</div>
+									<!-- //동아리 선택 시 -->
+								</div>
+							</div>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 popup">등록</a>
+							<a href="#" class="btn-type2 cancel">취소</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop class">
+					<div class="layer-header">
+						<strong class="title">나의 교실 찾기</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style">
+							<strong class="title-style"><em>해당 교실을 신청</em>하시겠습니까?</strong>
+							<div class="box-style2 src-class">
+								<p><strong class="long">학교 명</strong><span>대전 둔원 고등학교</span></p>
+								<p><strong class="long">유형</strong><span>동아리</span></p>
+								<p><strong class="long">반 명</strong><span>1-6</span></p>
+								<p><strong class="long">교실 담당자</strong><span>홍길동 > 외1</span></p>
+							</div>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 popup">등록</a>
+							<a href="#" class="btn-type2 cancel">취소</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+				<div class="layer-pop class">
+					<div class="layer-header">
+						<strong class="title">나의 교실 찾기</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style">
+							<strong class="title-style"><em>교실 등록이 완료 되었습니다.</em><br>교실 신청관리 현황 상태를 확인</em>해주세요.</strong>
+							<span class="pass-point"><span>중요</span>신청된 교실은 학교 관리자 또는 대표교사 승인 후<br />나의 교실 정보에서 확인할 수 있습니다.</span>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 popup">확인</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+
+
+				<div class="layer-pop class">
+					<div class="layer-header">
+						<strong class="title">나의 교실 찾기</strong>
+					</div>
+					<div class="layer-cont">
+						<div class="box-style">
+							<strong class="title-style"><em>교실 등록이 완료 되었습니다.</em><br>교실 신청관리 현황 상태를 확인</em>해주세요.</strong>
+							<span class="pass-point"><span>중요</span>신청된 교실은 교실 담당자 승인 후  나의 교실 정보에서 확인할 수 있습니다. </span>
+						</div>
+						<div class="btn-area popup">
+							<a href="#" class="btn-type2 popup">확인</a>
+						</div>
+						<a href="#" class="layer-close">팝업 창 닫기</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

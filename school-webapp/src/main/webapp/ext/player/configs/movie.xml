@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<MovieList autoPlay="true" volume="50" cfSkipDuration="0">
+	<Movie type="http" encResult="100" startTime="0" stopTime="0" isCopy="true">
+		<url>http://192.168.50.90/fCore/data/KARA.HONEY0522.mp4</url>
+		<thumbnailImg>
+			<imgurl time="0">http://192.168.50.90/fCore/data/thumb/0000000001_00.jpg</imgurl>
+			<imgurl time="250">http://192.168.50.90/fCore/data/thumb/0000000001_01.jpg</imgurl>
+			<imgurl time="500">http://192.168.50.90/fCore/data/thumb/0000000001_02.jpg</imgurl>
+			<imgurl time="750">http://192.168.50.90/fCore/data/thumb/0000000001_03.jpg</imgurl>
+			<imgurl time="1000">http://192.168.50.90/fCore/data/thumb/0000000001_04.jpg</imgurl>
+			<imgurl time="1250">http://192.168.50.90/fCore/data/thumb/0000000001_05.jpg</imgurl>
+		</thumbnailImg>
+	</Movie>
+</MovieList>

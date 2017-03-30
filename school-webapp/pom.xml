@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>kr.go.career.mentor</groupId>
+        <artifactId>mentor-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+<!--    <properties>
+        <buildVersion>${maven.build.timestamp}</buildVersion>
+    </properties>-->
+
+    <artifactId>school-webapp</artifactId>
+    <packaging>war</packaging>
+    <name>School Service Web Application</name>
+<!--    <version>${buildVersion}</version>-->
+
+    <dependencies>
+        <dependency>
+          <groupId>${project.groupId}</groupId>
+          <artifactId>mentor-service</artifactId>
+          <version>${project.version}</version>
+            <scope>${appserver.scope}</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>egovframework.rte</groupId>
+          <artifactId>egovframework.rte.ptl.mvc</artifactId>
+          <version>${egovframework.rte.version}</version>
+          <exclusions>
+              <exclusion>
+                  <artifactId>commons-logging</artifactId>
+                  <groupId>commons-logging</groupId>
+              </exclusion>
+          </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>school-webapp</finalName>
+        <!--<plugins>
+            <plugin>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>maven-jetty-plugin</artifactId>
+            <version>6.1.9</version>
+            </plugin>
+        </plugins>-->
+        <plugins>
+
+           <!-- <plugin>
+                <groupId>uk.co.codezen</groupId>
+                <artifactId>react-jsxtransformer-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>react-jsxtransformer</id>
+                        <phase>compile</phase>
+                        <goals><goal>compile</goal></goals>
+                        <configuration>
+                            <sourceCharSet>utf8</sourceCharSet>
+                            <sourcePath>${project.basedir}/src/main/webapp/js/react</sourcePath>
+                            <targetPath>${project.basedir}/src/main/webapp/js/react</targetPath>
+                            <extension>jsx</extension>
+                            <targetCharSet>utf8</targetCharSet>
+                            <targetEcmaScriptVersion>es6</targetEcmaScriptVersion>
+                            <nodeModuleExtractPath>${project.parent}/react-jsxtransformer/</nodeModuleExtractPath>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <port>8080</port>
+                    <path>/school</path>
+                    <charset>UTF-8</charset>
+                    <uriEncoding>UTF-8</uriEncoding>
+                    <!--<ajpPort>8009</ajpPort>-->
+                    <systemProperties>
+                        <JAVA_OPTS>-Xms256m -Xmx768m -XX:MaxPermSize=512m</JAVA_OPTS>
+                    </systemProperties>
+                    <additionalClasspathDirs>
+                        <additionalClasspathDir>
+                            C:\workspace\mentoring_new\mentor-service\target\classes
+                        </additionalClasspathDir>
+                    </additionalClasspathDirs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warSourceExcludes>WEB-INF/html/**,WEB-INF/mobile_html/**</warSourceExcludes>
+                </configuration>
+            </plugin>
+
+
+        </plugins>
+
+    </build>
+</project>

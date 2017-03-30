@@ -1,0 +1,66 @@
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
+<head>
+    <title>::: Sample Player :::</title>
+    <STYLE>
+    <!--
+        * {text-decoration:none; color:#7F7F7F; font-family:dotum; font-size:12}
+        input,Textarea {text-decoration:none; color:#7F7F7F; font-family:dotum;border: 1 solid silver; border-bottom: 1 solid silver}
+    -->
+    </STYLE>
+    <style type="text/css" media="screen">
+        #MGPlayer {
+            visibility: hidden
+        }
+    </style>
+</head>
+<body topmargin="0" leftmargin="0" marginwidth="0" marginheight="0" oncontextmenu="return true" onselectstart="return true" ondragstart="return true">
+<TABLE border="0" width="672" height="580" cellpadding="0" cellspacing="0">
+    <TR height="38">
+        <td>&nbsp;<!--<img src="./images/logo.png">--></td>
+    </TR>
+    <TR>
+        <TD align="center" valign="center" background="./images/playBG.png">
+            <object id="MGPlayer" width="640" height="510" tabindex="1" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" style="visibility: visible;">
+                        <param name="movie" value="MGPlayer.swf?mode=service&amp;accessJS=true&amp;cID=13598&amp;ctid=13598&amp;isCopy=true&amp;startTime=0&amp;endTime=0&amp;autoPlay=true&amp;volume=50">
+                        <param name="allowScriptAccess" value="always">
+                        <param name="allowFullScreen" value="true">
+                        <param name="quality" value="high">
+                        <param name="wmode" value="window">
+                        <!--[if !IE]>-->
+                        <object name="MGPlayer" type="application/x-shockwave-flash" width="640" height="510" data="MGPlayer.swf?mode=service&amp;accessJS=true&amp;cID=13598&amp;isCopy=true&amp;startTime=0&amp;endTime=0&amp;autoPlay=true&amp;volume=50">
+                            <param name="allowScriptAccess" value="always">
+                            <param name="allowFullScreen" value="true">
+                            <param name="quality" value="high">
+                            <param name="wmode" value="window">
+                            <!--<![endif]-->
+                            <p>
+                                해당 콘텐츠는 플래시 플레이어 10 이상에서 정상적으로 작동합니다.
+                            </p>
+                            <p>
+                                <a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" border="0" alt="Get Adobe Flash player" title="Get Adobe Flash player"></a>
+                            </p><!--[if !IE]>-->
+                        </object><!--<![endif]-->
+                    </object><!--플레이어 플래쉬 영역 끝-->
+
+<!--<object id="MGPlayer" width="640" height="510"
+                classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">
+                <param name="movie" value="MGPlayer.swf?mode=debug&accessJS=true&cID=13598&isCopy=true&startTime=0&endTime=0&autoPlay=true&volume=50" />
+                <param name="allowScriptAccess" value="always" />
+                <param name="allowFullScreen" value="true" />
+                <param name="quality" value="high" />
+                <param name="wmode" value="window" />
+
+
+            </object>
+-->
+        </TD>
+    </TR>
+</TABLE>
+<script type="text/javascript" src="./scripts/swfobject.js"></script>
+<script type="text/javascript">
+    swfobject.registerObject("MGPlayer", "10.0.0", "expressInstall.swf");
+</script>
+</body>
+</html>

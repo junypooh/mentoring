@@ -1,0 +1,65 @@
+@charset "utf-8";
+@import url(common.css);
+
+/*자유게시판*/
+.free-board-detail{padding:25px 29px; border:1px solid #dfdfdf;}
+.free-board-detail .board-wrap{position:relative; padding-bottom:9px;}
+.free-board-detail .board-wrap > p{color:#333; font-size:14px; line-height:22px;}
+.free-board-detail .board-wrap .writing-btn{bottom:-30px; right:0;}
+.free-board-detail .comment{}
+.free-board-detail .comment .num{padding:0 14px 0 0; border:none; background:none; color:#333; font-weight:bold; text-decoration:underline;}
+.free-board-detail .comment .num span{color:#666; font-weight:normal;}
+.free-board-detail .comment .comment-list{margin-top:18px; border-top:1px solid #dfdfdf; background:#f3f3f3;}
+.free-board-detail .comment .comment-list li{border-bottom:1px solid #dfdfdf;}
+.free-board-detail .comment .comment-writing{background:#f3f3f3;}
+
+.free-board-detail .comment{width:100%;overflow:hidden;}
+.free-board-detail .comment a.num{display:inline-block;margin-top:10px;text-decoration:underline;font-weight:700;color:#333;background:url('../images/lesson/bg_comment_arw.png') no-repeat right 8px;overflow:hidden;}
+.free-board-detail .comment a.num span{font-weight:400;}
+.free-board-detail .comment a.num.active{background-position:right -17px;}
+.free-board-detail .comment a.num + .comment-list{display:none;}
+.free-board-detail .comment a.num.active + .comment-list{display:block;}
+.free-board-detail .comment-list{overflow:hidden;background:#f3f3f3;border-top:1px solid #dfdfdf;}
+.free-board-detail .comment-list li{position:relative;display:block;padding:11px 0 10px;border-bottom:1px solid #dfdfdf;}
+.free-board-detail .comment-list li em{float:left;width:123px;padding-left:37px;font-weight:700;color:#333;background:url('../images/lesson/bg_comment_name.png') no-repeat 20px 5px;}
+.free-board-detail .comment-list li em:before{content:'';display:inline-block;width:16px;height:16px;margin-right:6px;vertical-align:-4px;background:url('../images/lesson/bg_comment_name01.png') no-repeat;}
+.free-board-detail .comment-list li em.teacher:before{background:url('../images/lesson/icon_user.png') no-repeat;}
+.free-board-detail .comment-list li em.mentor:before{background:url('../images/mypage/icon_layer_mentor.png') no-repeat;}
+.free-board-detail .comment-list li em.student:before{background:url('../images/mypage/icon_user.png') no-repeat 0 -17px;}
+.free-board-detail .comment-list li p{margin-left:123px;margin-right:60px;}
+.free-board-detail .comment-list li .ben-del{position:absolute;right:20px;top:15px;}
+.free-board-detail .comment-list .reg-form{position:relative;margin:14px 20px 14px 122px;height:80px;background:#fff;border:1px solid #ccc;}
+.free-board-detail .comment-list .reg-form > div{position:relative;height:auto;margin-right:88px;}
+.free-board-detail .comment-list .reg-form > div span{display:block; padding:0 10px; font-size:12px; text-align:right;}
+.free-board-detail .comment-list .reg-form > div span > span.txt-num{display:inline-block;padding:0;text-align:left;}
+.free-board-detail .comment-list .reg-form > div span strong{color:#4764c0; font-size:14px; font-weight:bold;}
+.free-board-detail .comment-list .reg-form > div textarea{width:100%;height:46px;border:0;}
+.free-board-detail .comment-list .reg-form > a{position:absolute;right:-1px;top:-1px;width:88px;height:80px;padding-top:29px;background:#4764c0;color:#fff;font-weight:700;font-size:16px;text-align:center;}
+
+.mb-35{margin-bottom:50px;}
+@media (max-width: 979px) {
+
+}
+
+@media (max-width: 767px) {
+   .title-group{padding:0 10px;}
+
+   .relation-lesson > span{display:block;width:100%;margin:0 0 2px 0;}
+   .relation-lesson > span:first-child{margin-top:7px;}
+
+   /*자유게시판*/
+   .free-board-detail{padding:0;}
+   .free-board-detail .board-wrap{padding:10px;}
+   .free-board-detail .board-wrap .writing-btn{right:10px;}
+   .free-board-detail .board-wrap .writing-btn a{display:inline-block; margin:0;}
+   .free-board-detail .board-wrap .writing-btn a + a{margin-left:6px;}
+   .free-board-detail .comment a.num{padding-left:10px;}
+   .free-board-detail .comment-list li{overflow:hidden;}
+   .free-board-detail .comment-list li em{width:100%; padding-left:26px; background-position:9px 5px;}
+   .free-board-detail .comment-list li p{float:left; margin:6px 11px 0 27px;}
+   .free-board-detail .comment .comment-list{margin-top:0;}
+   .free-board-detail .comment-list .reg-form{height:80px; margin:14px 9px 64px;}
+   .free-board-detail .comment-list .reg-form > a{top:87px; right:0; width:100%; height:40px; padding-top:10px;}
+   .free-board-detail .comment-list .reg-form > div{margin:0;}
+   .free-board-detail .comment-list .reg-form > div textarea{width:100%;}
+}

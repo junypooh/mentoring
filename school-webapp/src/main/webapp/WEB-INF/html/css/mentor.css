@@ -1,0 +1,125 @@
+@charset "utf-8";
+@import url(common.css);
+
+.replay-detail .img-star.type2 .star .job-relation-wrap{position:relative;margin-top:90px;padding-bottom:20px;overflow:hidden;box-sizing: content-box;}
+.replay-detail .img-star.type2 .star .job-relation-wrap{margin-bottom:20px;}
+.replay-detail .img-star.type2 .star .job-relation-wrap .slide_list li > div > a{display:block; border:1px solid #dfdfdf; border-width:1px 0;}
+.bx-controls-direction{display:none;}
+.job-relation-wrap .slide_list{width:100%;}
+.job-relation-wrap .slide_list:after{content:""; display:block;width:100%; clear:both;}
+.slide_list li{width:100%;float:left; display:block; position:absolute}
+.job-relation-wrap .slide_list li > a:focus{}
+.job-relation-info{overflow:hidden; padding:30px 0 30px;}
+.job-relation-info .info{float:left; width:160px;}
+.job-relation-info .info .title{display:block ;overflow:hidden; height:51px; font-size:14px; line-height:17px;}
+.job-relation-info .info .job{margin-top:21px; color:#666; font-size:14px; line-height:19px;}
+.job-relation-info .info .job span.icon{display:inline-block; margin-left:5px; padding:0 10px; border-radius:10px; border:1px solid #c7c7c7; color:#666; background:#fff; font-size:11px; line-height:17px; vertical-align:top;}
+.job-relation-info .img{overflow:hidden; float:right; width:88px; border-radius:50%;}
+.job-relation-info .img img{width:88px;height:88px;}
+.job-relation .clearfix{margin-top:12px;}
+
+
+
+/*검색 리스트*/
+.introduction-list{overflow:hidden; margin-top:-20px;}
+.introduction-list ul{overflow:hidden; width:919px; margin-top:-4px; margin-left:-18px;}
+.introduction-list ul li{float:left; width:288px; margin:18px 0 0 18px;}
+.introduction-list ul li > a{display:block; position:relative; font-size:0; line-height:0;}
+.introduction-list ul li > a:after{display:none; position:absolute; z-index:5; top:0; right:0; bottom:0; left:0; content:''; border:2px solid #4764c0;}
+.introduction-list ul li > a:hover:after{display:block;}
+.introduction-list h3.recomm{position:absolute;left:0;top:-34px;font-size:18px;font-weight:700;color:#333;}
+.introduction-list .recomm-job{position:relative;margin:90px 0 20px;background:#f3f3f3;border:1px solid #dfdfdf;}
+.introduction-list .recomm-job ul{padding:0 20px 18px;}
+.introduction-list .recomm-job ul li{width:274px;}
+.introduction-info{overflow:hidden;height:133px; padding:14px 10px 14px 146px; border:1px solid #dfdfdf;background:#fff;}
+.introduction-info .title{display:block;overflow:hidden; max-height:40px; color:#4764c0; font-size:16px; font-weight:500; line-height:20px;text-overflow:ellipsis; white-space:nowrap;}
+.introduction-info .cate{display:block;overflow:hidden; max-height:40px; margin-bottom:34px; color:#333; font-size:14px; font-weight:500; line-height:20px;text-overflow:ellipsis; white-space:nowrap;}
+.introduction-info .info{overflow:hidden; height:34px; margin-top:5px; font-size:14px; font-weight:400; line-height:17px;}
+.introduction-info .img{position:absolute; top:0; left:0; width:132px; height:132px; background:url('../images/mentor/bg_thumb_132x132.gif') no-repeat center center;}
+.introduction-info .img img{width:132px;height:132px;border-right: 1px solid #e9e9e9;}
+.introduction-info .icon{position:absolute; z-index:1; bottom:1px; left:0; color:#fff;}
+.introduction-info .job{margin-top:6px; font-size:14px; line-height:17px;}
+
+.icon-total-mentor{display:block; padding:0 8px; background:url('../images/mentor/bg_opacity_01.png') repeat 0 0; font-size:14px; font-weight:500; line-height:27px;}
+.icon-donation{display:inline-block; height:19px; padding:0 10px; border:1px solid #c7c7c7; border-radius:8px; background:#fff; color:#333; font-size:11px; line-height:17px;}
+
+.introduction-list.mentor { margin-top:0;}
+.introduction-list.mentor .introduction-info .title{position:absolute; z-index:1; bottom:0; left:0; color:#fff; width:131px; height:40px; padding: 0 0 0 10px; background:url('../images/common/bg_opacity_01.png') repeat 0 0; font-size:22px; line-height:40px;}
+.introduction-list.mentor .introduction-info .info{overflow:hidden; height:40px; font-size:16px; font-weight:500; line-height:20px;}
+.introduction-list.mentor .introduction-info .icon{position:absolute; z-index:1; top:10px; left:10px; color:#fff;}
+.introduction-list.mentor .introduction-info .job{overflow:hidden; width:97%; margin-top:16px; color:#4764c0; font-weight:700; text-overflow:ellipsis; white-space:nowrap;}
+.introduction-list.mentor .introduction-info .desc{overflow:hidden; width:97%; font-size:14px; font-weight:400; line-height:35px; text-overflow:ellipsis; white-space:nowrap;}
+.result-total-wrap.mentor{margin:55px 0 0;}
+.result-total-wrap{width:100%;overflow:hidden;margin:35px 0 0;}
+.result-total-wrap span.result-class{float:left; max-width:88%;}
+.result-total-wrap span.result-class > span { position:relative;}
+.result-total-wrap span.result-class > span:after {content:''; position:absolute; bottom:0; right:0; display:inline-block; margin:2px 0 0 8px; width:1px; height:18px; background:#707070;}
+.result-total-wrap span.result-class > span a{display:inline-block;margin-right:1px;color:#4764c0;text-decoration:underline;}
+.result-total-wrap span.result-class > span a:after{content:',';display:inline-block;}
+.result-total-wrap span.result-class > span a:last-child:after{display:none;}
+.result-total-wrap .result-total{display:inline-block;margin:2px 0 0 8px; }
+.result-total-wrap select.order-select { float:right; padding:3px;}
+.result-total-top { overflow:hidden;}
+
+
+/*관련 멘토*/
+.lesson-connection.mento-type ul li{padding:11px 10px 12px 0;}
+.lesson-connection.mento-type ul li > p{overflow:hidden; margin:0; padding-left:15px;}
+.lesson-connection.mento-type ul li > p > span{height:40px; text-overflow:inherit;white-space:inherit;overflow:hidden;}
+.lesson-connection.mento-type ul li .title { padding-left:15px; line-height:17px;}
+.lesson-connection.mento-type ul li .title a { color:#4764c0;}
+.lesson-connection.mento-type ul li .title a span{color:#333;}
+.lesson-connection.mento-type {}
+.lesson-connection.mento-type .comento-pic {float:left; overflow:hidden; width:64px; height:64px; font-size:0; line-height:0;}
+.lesson-connection.mento-type .comento-pic img { width:100%; height:100%;}
+
+@media (max-width: 979px) {
+	.replay-detail .img-star.type2 .star .job-relation-wrap{width:auto; margin:0 0 0 264px;padding:0; background:#f3f3f3;}
+	.job-relation-info{width:100%; padding:15px 14px 15px 94px;}
+	.job-relation-info .info{width:100%;}
+	.job-relation-info .info .title{height:34px;}
+	.job-relation-info .info .job{margin-top:10px;}
+	.job-relation-info .img{position:absolute; top:15px; left:14px; width:64px; height:64px;}
+	.job-relation-info .img img{width:64px;height:64px;}
+	.replay-detail .img-star.type2 .star .job-relation-wrap .clearfix{position:absolute; z-index:10; bottom:6px; right:14px; margin:0;}
+	.replay-detail .img-star.type2 .star .job-relation-wrap .slide_list li > div > a{border:0;}
+	
+	/*검색 리스트*/
+	.introduction-list ul{width:auto;margin-left:-2%;}
+	.introduction-list ul li, .introduction-list .recomm-job ul li{width:48%; margin:18px 0 0 2%;}
+}
+
+@media (max-width: 767px) {
+	
+
+	.replay-detail .img-star.type2 .star .job-relation-wrap{margin:20px 10px 0; background:#fff;}
+	.replay-detail .img-star.type2 .star .job-relation-wrap .slide_list li > a{border:1px solid #dfdfdf; border-width:1px 0;}
+	.job-relation-info{width:100%; padding:18px 10px 32px;}
+	.job-relation-info .info{width:100%; margin:14px 0 0; padding:0 120px 0 0;}
+	.job-relation-info .info .title{height:51px;}
+	.job-relation-info .info .job{margin-top:10px;}
+	.job-relation-info .img{position:absolute; top:18px; left:100%; margin-left:-116px; width:116px; height:116px;}
+	.job-relation-info .img img{width:116px;height:116px;}
+	.replay-detail .img-star.type2 .star .job-relation-wrap .clearfix{position:inherit; bottom:0; right:0; margin:12px auto 0; text-align:center;}
+	.job-relation-info{width:100%;}
+	.job-relation-info .info .title{width:70%;}
+	.replay-detail .img-star.type2 .star .job-relation-wrap .slide_list li > div > a{border:1px solid #dfdfdf; border-width:1px 0;}
+	.replay-detail .img-star.type2 .star .job-relation-wrap{padding-bottom:30px;}
+	
+
+	/*검색 리스트*/
+	.introduction-list{margin-top:0;}
+	.introduction-list ul{float:none; width:calc(100% + 0%); margin-left:0; padding:0 10px}
+	.introduction-list .recomm-job{margin-top:40px;}
+	.introduction-list .recomm-job ul{float:none; width:calc(100% + 0%); margin-left:0; padding:0 10px 10px;}
+	.introduction-list ul li, .introduction-list .recomm-job ul li{width:100%; margin:10px 0 0 0;}
+	.introduction-list h3.recomm{padding-left:10px;}
+	.navi .bx-pager-item a {width: 16px;height: 16px;border-radius: 10px;}
+
+	.result-total-wrap{display:none;}
+	.lesson-connection.mento-type ul li > p {padding-left:0;}
+
+	.lesson-connection.mento-type ul li { padding-left:10px;}
+	.lesson-connection.mento-type ul li .title { height:64px; margin-top:0;}
+	.lesson-connection.mento-type ul li > p > span { height:auto;}
+}

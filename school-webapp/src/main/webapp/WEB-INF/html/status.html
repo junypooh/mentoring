@@ -1,0 +1,1012 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ko-KR">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=euc-kr">
+		<title>학교</title>
+		<style type="text/css">
+			html, body {
+				margin:0;
+				padding:0;
+			}
+			html {
+				overflow-y:scroll;
+			}
+			body {
+				color:#666;
+				background-color:#fff;
+				font:12px/1.5 Dotum, '돋움', Verdana, sans-serif;
+			}
+			a {
+				color:#27e;
+				text-decoration:none;
+			}
+			a:focus,
+			a:hover,
+			a:active {
+				text-decoration:underline;
+			}
+			.header {
+				padding:.5em;
+			}
+				.header h1 {
+					display:inline;
+					margin-right:1em;
+					color:#000;
+					font-size:2em;
+				}2013-04-11
+				.header ul {
+					display:inline;
+					font-size:1.5em;
+					list-style:none;
+				}
+				.header ul li {
+					display:inline;
+				}
+			.group-title {
+				margin-top:1em;
+				color:#000;
+				font-weight:bold;
+				font-size:1.5em;
+			}
+			table {
+				width:100%;
+				border-collapse:collapse;
+				border-spacing:0;
+			}
+				table caption {
+					display:none;
+				}
+				table th {
+					color:#333;
+					background-color:#eee;
+				}
+				table th,
+				table td {
+					padding:0 .5em;
+					border:1px solid #ddd;
+					text-align:left;
+				}
+				table th,
+				table td.stat,
+				table td.date {
+					text-align:center;
+				}
+				table tr.even,
+				table tr td.multi {
+					background-color:#fafafa;
+				}
+				table tr.add td {
+					background-color:#fd0;
+				}
+				table tr.modify td {
+					background-color:#fffeb4;
+				}
+				table tr.hover td {
+					background-color:#eee;
+				}
+			table tr.none td {
+				color:#000;
+				background-color:#fc8989;
+			}
+			table tr.up td {
+				background-color:#ffe9f5;
+			}
+				.section {
+					margin:0 0 15px;
+				}
+					.section .title {
+						margin:0;
+						padding:0;
+						color:#000;
+						font-weight:bold;
+						font-size:100%;
+					}
+					body.js .section .title {
+						padding:.5em;
+						border:1px solid #ccc;
+						background-color:#ddd;
+						cursor:pointer;
+					}
+					body.js .section + .section .title {
+						border-top:0;
+					}
+						body.js .section .title .page-count {
+							color:#666;
+							font-weight:normal;
+						}
+					body.js .section .content {
+						display:none;
+					}
+				#sb-body{border:none !important;}
+
+				table tr.new td { background:#cdfecc;}
+		</style>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+		<script type="text/javascript">
+			(function ($) {
+				$.fn.stat = function (options) {
+					var settings = $.extend({
+							title: 'h2.title',
+							content: 'div.content',
+							files: 'tbody tr',
+							stat: 'td.stat',
+							index: 0,
+							openAll: false,
+							speed: 'fast'
+						}, options),
+						all_sections = this,
+						header = $('div.header');
+					return this.each(function () {
+						var self = this,
+							$self = $(self),
+							title_text = [],
+							completed = 0;
+						self.section_title = $(settings.title, $self);
+						self.content = $(settings.content, $self);
+						self.files = $(settings.files, $self);
+						self.files.each(function () {
+							var stat = $(settings.stat, this);
+							stat.each(function () {
+								var text = $(this).text();
+								if (text) {
+									completed++;
+								}
+							});
+						});
+						self.files
+							.bind('mouseenter', function () {
+								$(this).addClass('hover');
+							})
+							.bind('mouseleave', function () {
+								$(this).removeClass('hover');
+							});
+						title_text = [self.section_title.text(), ' <span class="page-count">(', completed, '/', self.files.length, ')</span>'];
+						self.section_title.html(title_text.join(''));
+						self.section_title.bind('click', function () {
+							self.content.slideToggle(settings.speed);
+						});
+						if (settings.openAll || ((settings.index - 1) === all_sections.index(this))) {
+							self.content.css('display', 'block');
+						}
+					});
+				};
+				$(document).ready(function () {
+					$('div.section').stat({ openAll: true });
+					$('#total').text($('tbody tr').length);
+					$('tbody tr:even').addClass('even');
+					$('tbody td[rowspan][rowspan!=1]').addClass('multi');
+				});
+			}(jQuery));
+		</script>
+	</head>
+	<body>
+		<script type="text/javascript">document.body.className += ' js';</script>
+		<div class="header">
+			<h1>작업현황판</h1>
+		</div>
+
+		<!-- <p class="guide-link"><a href="./guide/layout.html">layout 가이드 보기</a></p>
+		<p class="guide-link"><a href="./guide/content.html">content 가이드 보기</a></p> -->
+
+
+
+		<div class="section">
+			<h2 class="title">main</h2>
+			<div class="content">
+				<table>
+					<thead>
+						<tr>
+							<th scope="col">1depth</th>
+							<th scope="col">2depth</th>
+							<th scope="col">3depth</th>
+							<th scope="col">4depth</th>
+							<th scope="col">path</th>
+							<th scope="col">file</th>
+							<th scope="col">stat</th>
+							<th scope="col">end</th>
+							<th scope="col">note</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>main</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><a target="_blank" href="./index.html">index.html</a></td>
+							<td class="stat">2015-08-18</td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="section">
+			<h2 class="title">서비스</h2>
+			<div class="content">
+				<table>
+					<thead>
+						<tr>
+							<th scope="col">1depth</th>
+							<th scope="col">2depth</th>
+							<th scope="col">3depth</th>
+							<th scope="col">4depth</th>
+							<th scope="col">path</th>
+							<th scope="col">file</th>
+							<th scope="col">stat</th>
+							<th scope="col">end</th>
+							<th scope="col">note</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="2">서비스</td>
+							<td>사업소개</td>
+							<td></td>
+							<td></td>
+							<td>services/</td>
+							<td><a target="_blank" href="services/business_intro.html">business_intro.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>서비스 소개</td>
+							<td></td>
+							<td></td>
+							<td>services/</td>
+							<td><a target="_blank" href="services/service_intro.html">service_intro.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="section">
+			<h2 class="title">멘토</h2>
+			<div class="content">
+				<table>
+					<thead>
+						<tr>
+							<th scope="col">1depth</th>
+							<th scope="col">2depth</th>
+							<th scope="col">3depth</th>
+							<th scope="col">4depth</th>
+							<th scope="col">path</th>
+							<th scope="col">file</th>
+							<th scope="col">stat</th>
+							<th scope="col">end</th>
+							<th scope="col">note</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						<tr>
+							<td rowspan="4">멘토</td>
+							<td rowspan="2">직업 소개</td>
+							<td>직업 소개</td>
+							<td></td>
+							<td>mentor/</td>
+							<td><a target="_blank" href="mentor/job_introduction.html">job_introduction.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>직업 상세</td>
+							<td></td>
+							<td>mentor/</td>
+							<td><a target="_blank" href="mentor/job_info.html">job_info.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td rowspan="2">멘토 소개</td>
+							<td>멘토 소개</td>
+							<td></td>
+							<td>mentor/</td>
+							<td><a target="_blank" href="mentor/mentor_introduction.html">mentor_introduction.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>멘토 상세</td>
+							<td></td>
+							<td>mentor/</td>
+							<td><a target="_blank" href="mentor/mentor_info.html">mentor_info.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="section">
+			<h2 class="title">수업</h2>
+			<div class="content">
+				<table>
+					<thead>
+						<tr>
+							<th scope="col">1depth</th>
+							<th scope="col">2depth</th>
+							<th scope="col">3depth</th>
+							<th scope="col">4depth</th>
+							<th scope="col">path</th>
+							<th scope="col">file</th>
+							<th scope="col">stat</th>
+							<th scope="col">end</th>
+							<th scope="col">note</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="6">수업</td>
+							<td>수업 전체</td>
+							<td>접수 중 수업</td>
+							<td></td>
+							<td>lesson/</td>
+							<td><a target="_blank" href="lesson/receive_lesson.html">receive_lesson.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td rowspan="3">수업 다시보기</td>
+							<td>목록</td>
+							<td></td>
+							<td>lesson/</td>
+							<td><a target="_blank" href="lesson/lesson_replay.html">lesson_replay.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>상세</td>
+							<td></td>
+							<td>lesson/</td>
+							<td><a target="_blank" href="lesson/lesson_replay_detail.html">lesson_replay_detail.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>다시보기</td>
+							<td></td>
+							<td>lesson/</td>
+							<td><a target="_blank" href="lesson/lesson_replay_video.html">lesson_replay_video.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td rowspan="2">팝업</td>
+							<td>멘토 찾기</td>
+							<td></td>
+							<td>lesson/</td>
+							<td><a target="_blank" href="lesson/lesson_pop_01.html">lesson_pop_01.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>직업 찾기</td>
+							<td></td>
+							<td>lesson/</td>
+							<td><a target="_blank" href="lesson/lesson_pop_02.html">lesson_pop_02.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="section">
+			<h2 class="title">커뮤니티</h2>
+			<div class="content">
+				<table>
+					<thead>
+						<tr>
+							<th scope="col">1depth</th>
+							<th scope="col">2depth</th>
+							<th scope="col">3depth</th>
+							<th scope="col">4depth</th>
+							<th scope="col">path</th>
+							<th scope="col">file</th>
+							<th scope="col">stat</th>
+							<th scope="col">end</th>
+							<th scope="col">note</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="3">커뮤니티</td>
+							<td>자료실</td>
+							<td></td>
+							<td></td>
+							<td>community/</td>
+							<td><a target="_blank" href="community/data_llist.html">data_llist.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>Q &amp; A </td>
+							<td></td>
+							<td></td>
+							<td>community/</td>
+							<td><a target="_blank" href="community/qna_list.html">qna_list.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>자유 게시판</td>
+							<td></td>
+							<td></td>
+							<td>community/</td>
+							<td><a target="_blank" href="community/free_bulletin_board_detail.html">free_bulletin_board_detail.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="section">
+			<h2 class="title">이용안내</h2>
+			<div class="content">
+				<table>
+					<thead>
+						<tr>
+							<th scope="col">1depth</th>
+							<th scope="col">2depth</th>
+							<th scope="col">3depth</th>
+							<th scope="col">4depth</th>
+							<th scope="col">path</th>
+							<th scope="col">file</th>
+							<th scope="col">stat</th>
+							<th scope="col">end</th>
+							<th scope="col">note</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="4">이용안내</td>
+							<td>공지사항</td>
+							<td></td>
+							<td></td>
+							<td>userguide/</td>
+							<td><a target="_blank" href="userguide/userguide_notice.html">userguide_notice.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>자주 찾는 질문</td>
+							<td></td>
+							<td></td>
+							<td>userguide/</td>
+							<td><a target="_blank" href="userguide/userguide_qna.html">userguide_qna.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>웹 이용가이드</td>
+							<td></td>
+							<td></td>
+							<td>userguide/</td>
+							<td><a target="_blank" href="userguide/userguide.html">userguide.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>모바일 이용가이드</td>
+							<td></td>
+							<td></td>
+							<td>userguide/</td>
+							<td><a target="_blank" href="userguide/userguide_mobile.html">userguide_mobile.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="section">
+			<h2 class="title">마이페이지</h2>
+			<div class="content">
+				<table>
+					<thead>
+						<tr>
+							<th scope="col">1depth</th>
+							<th scope="col">2depth</th>
+							<th scope="col">3depth</th>
+							<th scope="col">4depth</th>
+							<th scope="col">path</th>
+							<th scope="col">file</th>
+							<th scope="col">stat</th>
+							<th scope="col">end</th>
+							<th scope="col">note</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="15">마이페이지</td>
+							<td rowspan="3">나의 교실</td>
+							<td>학급/그룹 관리</td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_my_class_room.html">mypage_my_class_room.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>학생/구성원 관리 </td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_my_class_student.html">mypage_my_class_student.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>교사/그룹 소속 관리</td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_my_class_teacher.html">mypage_my_class_teacher.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+
+
+						<tr>
+							<td>나의 수업</td>
+							<td></td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_my_lesson.html">mypage_my_lesson.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td rowspan="2">나의 커뮤니티</td>
+							<td></td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_community_list.html">mypage_community_list.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr class="new">
+							<td>동영상 수업자료 윈도우팝업</td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_video_pop.html">mypage_video_pop.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>나의 관심</td>
+							<td></td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_my_interest.html">mypage_my_interest.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td rowspan="4">나의 정보</td>
+							<td>기본정보</td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_my_info.html">mypage_my_info.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>상세정보</td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_my_info_detail.html">mypage_my_info_detail.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>회원탈퇴 신청</td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_member_out.html">mypage_member_out.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>회원탈퇴 완료</td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_member_out_end.html">mypage_member_out_end.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>학교 신청 현황</td>
+							<td></td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_school_request.html">mypage_school_request.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr class="new">
+							<td rowspan="3">나의 교실</td>
+							<td>학생/반대표 전용</td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_my_class01.html">mypage_my_class01.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr class="new">
+							<td>교사 전용</td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="mypage/mypage_my_class02.html">mypage_my_class02.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr class="new">
+							<td>나의 교실 찾기 : 레이어팝업</td>
+							<td></td>
+							<td>mypage/</td>
+							<td><a target="_blank" href="popup-class.html">popup-class.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="section">
+			<h2 class="title">유틸</h2>
+			<div class="content">
+				<table>
+					<thead>
+						<tr>
+							<th scope="col">1depth</th>
+							<th scope="col">2depth</th>
+							<th scope="col">3depth</th>
+							<th scope="col">4depth</th>
+							<th scope="col">path</th>
+							<th scope="col">file</th>
+							<th scope="col">stat</th>
+							<th scope="col">end</th>
+							<th scope="col">note</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="11">유틸</td>
+							<td rowspan="6">로그인</td>
+							<td>로그인</td>
+							<td></td>
+							<td>utility/</td>
+							<td><a target="_blank" href="utility/login.html">login.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>가입동의</td>
+							<td></td>
+							<td>utility/</td>
+							<td><a target="_blank" href="utility/minor_member_join.html">minor_member_join.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>동의메일 재발송</td>
+							<td></td>
+							<td>utility/</td>
+							<td><a target="_blank" href="utility/protector_mail.html">protector_mail.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>아이디/비밀번호 찾기</td>
+							<td></td>
+							<td>utility/</td>
+							<td><a target="_blank" href="utility/id_pw_search.html">id_pw_search.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>아이디/비밀번호 이메일 발송</td>
+							<td></td>
+							<td>utility/</td>
+							<td><a target="_blank" href="utility/pw_email_send.html">pw_email_send.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>아이디 찾기 완료</td>
+							<td></td>
+							<td>utility/</td>
+							<td><a target="_blank" href="utility/id_search_finish.html">id_search_finish.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td rowspan="4">회원가입</td>
+							<td>회원분류 선택</td>
+							<td></td>
+							<td>utility/</td>
+							<td><a target="_blank" href="utility/member_class.html">member_class.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>약관동의</td>
+							<td></td>
+							<td>utility/</td>
+							<td><a target="_blank" href="utility/clause_agree.html">clause_agree.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>가입정보 입력</td>
+							<td></td>
+							<td>utility/</td>
+							<td><a target="_blank" href="utility/join_info_write.html">join_info_write.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>접수완료</td>
+							<td></td>
+							<td>utility/</td>
+							<td><a target="_blank" href="utility/join_finish.html">join_finish.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>검색</td>
+							<td></td>
+							<td></td>
+							<td>utility/</td>
+							<td><a target="_blank" href="utility/total_search.html">total_search.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="section">
+			<h2 class="title">footer</h2>
+			<div class="content">
+				<table>
+					<thead>
+						<tr>
+							<th scope="col">1depth</th>
+							<th scope="col">2depth</th>
+							<th scope="col">3depth</th>
+							<th scope="col">4depth</th>
+							<th scope="col">path</th>
+							<th scope="col">file</th>
+							<th scope="col">stat</th>
+							<th scope="col">end</th>
+							<th scope="col">note</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="5">footer</td>
+							<td>이용약관</td>
+							<td></td>
+							<td></td>
+							<td>footer/</td>
+							<td><a target="_blank" href="footer/agreement.html">agreement.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>이용약관 및 개인정보처리방침 동의</td>
+							<td></td>
+							<td></td>
+							<td>footer/</td>
+							<td><a target="_blank" href="footer/agreement_personal_information.html">agreement_personal_information.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>이메일 무단수집 거부</td>
+							<td></td>
+							<td></td>
+							<td>footer/</td>
+							<td><a target="_blank" href="footer/email_refusal.html">email_refusal.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>개인정보처리방침</td>
+							<td></td>
+							<td></td>
+							<td>footer/</td>
+							<td><a target="_blank" href="footer/personal_information_01.html">personal_information_01.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>개인정보처리방침이력</td>
+							<td></td>
+							<td></td>
+							<td>footer/</td>
+							<td><a target="_blank" href="footer/personal_information_02.html">personal_information_02.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+
+		<div class="section">
+			<h2 class="title">레이어 팝업</h2>
+			<div class="content">
+				<table>
+					<thead>
+						<tr>
+							<th scope="col">1depth</th>
+							<th scope="col">2depth</th>
+							<th scope="col">3depth</th>
+							<th scope="col">4depth</th>
+							<th scope="col">path</th>
+							<th scope="col">file</th>
+							<th scope="col">stat</th>
+							<th scope="col">end</th>
+							<th scope="col">note</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="3">레이어 팝업</td>
+							<td>table popup</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><a target="_blank" href="./popup-table.html">popup-table.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>box popup</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><a target="_blank" href="./popup-box.html">popup-box.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>error popup</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><a target="_blank" href="./error_popup.html">error_popup.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+
+		<div class="section">
+			<h2 class="title">에러</h2>
+			<div class="content">
+				<table>
+					<thead>
+						<tr>
+							<th scope="col">1depth</th>
+							<th scope="col">2depth</th>
+							<th scope="col">3depth</th>
+							<th scope="col">4depth</th>
+							<th scope="col">path</th>
+							<th scope="col">file</th>
+							<th scope="col">stat</th>
+							<th scope="col">end</th>
+							<th scope="col">note</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="3">에러</td>
+							<td>유형01</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><a target="_blank" href="./error01.html">error01.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>유형02</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><a target="_blank" href="./error02.html">error02.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>유형03</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><a target="_blank" href="./error03.html">error03.html</a></td>
+							<td class="stat"></td>
+							<td class="date"></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</body>
+</html>

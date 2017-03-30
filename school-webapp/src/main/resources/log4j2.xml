@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%X{tid} - %d %5p [%C{1.}.%M:%L] - %m%n" />
+        </Console>
+    </Appenders>
+    <Loggers>
+<!--         <Logger name="java.sql" level="debug" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger> -->
+
+        <Logger name="org.springframework.web" level="debug" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="org.springframework.context" level="debug" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="org.springframework.security" level="debug" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="org.springframework.security.web.util" level="info" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+
+        <Logger name="jdbc.sqltiming" level="debug" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc.audit" level="debug" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc.resultset" level="warn" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc.resultsettable" level="debug" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc.connection" level="debug" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+
+        <Logger name="kr.or.career.mentor" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
+        </Logger>
+
+        <Root level="warn">
+            <AppenderRef ref="console" />
+        </Root>
+    </Loggers>
+</Configuration>

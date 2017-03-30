@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+
+    <definition name="main-layout" template="/WEB-INF/jsp/layouts/main-layout.jsp">
+        <put-attribute name="jsHeader" value="/WEB-INF/jsp/layouts/jsHeader.jsp" />
+        <put-attribute name="header" value="/WEB-INF/jsp/layouts/header.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/layouts/footer.jsp" />
+    </definition>
+
+    <definition name="mentor-layout" template="/WEB-INF/jsp/layouts/mentor-layout.jsp">
+        <put-attribute name="jsHeader" value="/WEB-INF/jsp/layouts/jsHeader.jsp" />
+        <put-attribute name="header" value="/WEB-INF/jsp/layouts/header.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/layouts/footer.jsp" />
+    </definition>
+
+    <definition name="utility-layout" template="/WEB-INF/jsp/layouts/utility-layout.jsp">
+        <put-attribute name="jsHeader" value="/WEB-INF/jsp/layouts/jsHeader.jsp" />
+        <put-attribute name="header" value="/WEB-INF/jsp/layouts/header.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/layouts/footer.jsp" />
+    </definition>
+
+    <definition name="mypage-layout" template="/WEB-INF/jsp/layouts/mypage-layout.jsp">
+        <put-attribute name="jsHeader" value="/WEB-INF/jsp/layouts/jsHeader.jsp" />
+        <put-attribute name="header" value="/WEB-INF/jsp/layouts/header.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/layouts/footer.jsp" />
+    </definition>
+
+    <definition name="empty-layout" template="/WEB-INF/jsp/layouts/empty-layout.jsp">
+        <put-attribute name="jsHeader" value="/WEB-INF/jsp/layouts/jsHeader.jsp" />
+    </definition>
+
+    <definition name="error-layout" template="/WEB-INF/jsp/layouts/empty-layout.jsp">
+        <put-attribute name="jsHeader" value="/WEB-INF/jsp/layouts/jsHeader.jsp" />
+    </definition>
+
+    <definition name="lectureTab-layout" template="/WEB-INF/jsp/layouts/sub-layout.jsp">
+    </definition>
+
+    <definition name="myCommunuityTab-layout" template="/WEB-INF/jsp/layouts/sub-layout.jsp">
+    </definition>
+
+    <definition name="lecturePopup-layout" template="/WEB-INF/jsp/layouts/popup-layout.jsp">
+        <put-attribute name="jsHeader" value="/WEB-INF/jsp/layouts/jsHeader.jsp" />
+        <put-attribute name="header" value="/WEB-INF/jsp/layouts/header.jsp" />
+    </definition>
+
+    <definition name="mobile-layout" template="/WEB-INF/jsp/mobile/layouts/main-layout.jsp">
+        <put-attribute name="jsHeader" value="/WEB-INF/jsp/mobile/layouts/jsHeader.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/mobile/layouts/footer.jsp" />
+    </definition>
+
+    <definition name="layouts/*" extends="empty-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/layouts/{1}.jsp" />
+    </definition>
+
+    <definition name="daumeditor/*/*/*" extends="empty-layout">
+        <put-attribute name="body" expression="/daumeditor/{1}/{2}/{3}.jsp" />
+    </definition>
+
+    <definition name="layer/*" extends="lectureTab-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/layer/{1}.jsp" />
+    </definition>
+
+    <definition name="index" extends="main-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/index.jsp" />
+    </definition>
+
+    <definition name="login" extends="utility-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/login.jsp" />
+    </definition>
+
+    <definition name="lecture/lectureTotal/tab*" extends="lectureTab-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/lecture/lectureTotal/tab{1}.jsp" />
+    </definition>
+
+    <definition name="mentor/mentorIntroduce/tab*" extends="lectureTab-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/mentor/mentorIntroduce/tab/tab{1}.jsp" />
+    </definition>
+
+    <definition name="lecture/lectureTotal/popup*" extends="lecturePopup-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/lecture/lectureTotal/popup{1}.jsp" />
+    </definition>
+
+    <definition name="lecture/lectureReplay/popup*" extends="empty-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/lecture/lectureReplay/popup{1}.jsp" />
+    </definition>
+
+    <definition name="join/*" extends="utility-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/join/{1}.jsp" />
+    </definition>
+
+    <definition name="myPage/myCommnuity/data/tab*" extends="myCommunuityTab-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/myPage/myCommnuity/data/tab{1}.jsp" />
+    </definition>
+
+    <definition name="myPage/*" extends="mypage-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/myPage/{1}.jsp" />
+    </definition>
+
+    <definition name="myPage/*/*" extends="mypage-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/myPage/{1}/{2}.jsp" />
+    </definition>
+
+    <definition name="myPage/*/*/*" extends="mypage-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/myPage/{1}/{2}/{3}.jsp" />
+    </definition>
+
+    <definition name="mobile/*" extends="mobile-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/mobile/{1}.jsp" />
+    </definition>
+
+    <definition name="mobile/*/*" extends="mobile-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/mobile/{1}/{2}.jsp" />
+    </definition>
+
+    <definition name="errors/*" extends="error-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/errors/{1}.jsp" />
+    </definition>
+
+    <definition name="*" extends="mentor-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}.jsp" />
+    </definition>
+
+    <definition name="*/*" extends="mentor-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />
+    </definition>
+
+    <definition name="*/*/*" extends="mentor-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+    </definition>
+
+</tiles-definitions>

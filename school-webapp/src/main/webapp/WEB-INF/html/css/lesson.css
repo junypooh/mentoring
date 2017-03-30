@@ -1,0 +1,218 @@
+@charset "utf-8";
+@import url(common.css);
+
+
+/* 수업상세-문의하기 */
+.introduce-wrap .mentor-inquiry{}
+
+/*다시보기 리스트*/
+.lesson-replay-wrap{margin-top:38px; border-top:1px solid #dfdfdf;}
+.lesson-replay-wrap ul{}
+.lesson-replay-wrap ul li{clear:both; width:100%; padding:15px 0 14px; border-bottom:1px solid #dfdfdf;}
+.lesson-replay-wrap ul li.best-lesson{float:left; clear:inherit; width:285px; padding:12px 9px 12px 8px; background:#f3f3f3;}
+.lesson-replay-wrap ul li.best-lesson.first{width:307px; padding:12px 19px; border-left:1px solid #dfdfdf;}
+.lesson-replay-wrap ul li.best-lesson.last{width:307px; padding:12px 19px; border-right:1px solid #dfdfdf;}
+.lesson-replay-wrap ul li.best-lesson.last + li{padding:30px 0 10px;}
+.lesson-replay-wrap ul li.best-lesson.last + li +li{padding:15px 0 14px;}
+.lesson-replay-wrap ul li:hover{background:#f3f3f3;}
+.lesson-replay-wrap ul li:hover.best-lesson .lesson-info-type .info{}
+.lesson-replay-wrap ul li:hover.best-lesson .lesson-info-type .info .title{border-bottom:1px solid #fff;}
+.lesson-replay-wrap ul li:hover.best-lesson dl{background:#fff;}
+
+.lesson-replay-wrap ul.best-lesson{overflow:hidden;background:#f3f3f3;border-right:1px solid #dfdfdf;}
+.lesson-replay-wrap ul.best-lesson li{float:left; clear:inherit; width:285px; padding:12px 9px 12px 8px; background:#f3f3f3;}
+.lesson-replay-wrap ul.best-lesson li:first-child{width:307px; padding:12px 19px; border-left:1px solid #dfdfdf;}
+.lesson-replay-wrap ul.best-lesson li:last-child{width:307px; padding:12px 19px; }
+
+/*리스트 베스트3*/
+.best-lesson .lesson-info-type .info{padding:0 0 10px 0;}
+.best-lesson .lesson-info-type .thumb{float:none; width:auto; padding:0}
+.best-lesson .lesson-info-type .thumb > a img{width:268px; height:160px;}
+.best-lesson .lesson-info-type .thumb > a .title{display:block;margin-left:1px;}
+.best-lesson .lesson-info-type .thumb > a .ranking{display:block;}
+.best-lesson .lesson-info-type .info > dd{padding:0 8px}
+.best-lesson .lesson-info-type .info .title{height:57px; padding:8px; border-bottom:1px solid #dfdfdf;}
+.best-lesson .lesson-info-type .info .title a{top:50%; color:#4764c0; font-size:16px; transform:translateY(-50%); -webkit-transform:translateY(-50%); -ms-transform:translateY(-50%);}
+.best-lesson .lesson-info-type .info .title a:hover{text-decoration:underline;}
+.best-lesson .lesson-info-type .info .title a strong{display:none;}
+.best-lesson .lesson-info-type .info .play-time{margin-top:3px;}
+
+/* 평점 및 후기 */
+.grade-epilogue{position:relative;}
+.grade-epilogue .btn-inquiry{position:absolute;right:0;top:15px;float:right;;padding:0 20px;color:#536ec4;border:2px solid #4764c0;line-height:22px;}
+.grade-epilogue .btn-inquiry{display:none;}
+.grade-epilogue .give-grade{position:relative;height:74px;margin-top:15px;border:1px solid #ccc;}
+.grade-epilogue .give-grade .star-view{float:left;}
+.grade-epilogue .give-grade .star-view a{position:relative;display:inline-block;padding-left:23px;width:134px;line-height:74px;border-right:1px solid #ccc;font-weight:700;font-size:16px;color:#333;}
+.grade-epilogue .give-grade .star-view a:before{content:'';position:absolute;right:20px;top:33px;display:block;width:12px;height:8px;background:url('../images/lesson/bg_star_view.png') no-repeat;}
+.grade-epilogue .give-grade .star-view.star a{padding-left:10px;}
+.grade-epilogue .give-grade .star-view.star a:before{right:15px;}
+.grade-epilogue .give-grade .star-view + .star-layer{display:none;}
+.grade-epilogue .give-grade .star-view.active + .star-layer{display:block;}
+.grade-epilogue .give-grade .star-layer{position:absolute;left:-1px;bottom:-181px;width:269px;background:#fff;border-top:1px solid #ccc;border-right:1px solid #ccc;z-index:5;}
+.grade-epilogue .give-grade .star-layer ul li{float:left;width:50%;}
+.grade-epilogue .give-grade .star-layer ul li a{display:block;height:36px;padding-top:10px;border-left:1px solid #ccc;border-bottom:1px solid #ccc;text-align:center;}
+.grade-epilogue .give-grade .text-area{position:relative;display:block;height:74px;margin-left:135px;margin-right:88px;}
+.grade-epilogue .give-grade .text-area textarea{width:100%;height:50px;border:0;}
+.grade-epilogue .give-grade .text-area span{position:absolute;right:8px;bottom:8px;display:inline-block;line-height:100%;font-size:12px;font-weight:700;}
+.grade-epilogue .give-grade .text-area span strong, .comment-list .reg-form > div span strong{font-size:14px;color:#4764c0;}
+.grade-epilogue .give-grade a.btn-reg{position:absolute;right:0;top:-1px;width:88px;height:74px;padding-top:28px;background:#4764c0;color:#fff;font-weight:700;font-size:16px;text-align:center;}
+.epilogue-list{width:100%;margin-top:20px;overflow:hidden;}
+.epilogue-list li{padding:20px 0;overflow:hidden;border-bottom:1px solid #dfdfdf;}
+.epilogue-list li .picture-area{float:left;width:135px;}
+.epilogue-list li .picture-area .img{display:inline-block;position:relative;width:76px;height:76px;margin-left:29px;overflow:hidden;border-radius:50%;border: 1px solid #e9e9e9;background:url('../images/lesson/img_epilogue_default.gif') no-repeat;}
+
+.epilogue-list li .picture-area .img:after{display:none;content:'';position:absolute;left:0;top:0;display:;width:76px;height:76px;background:url('../images/lesson/img_epilogue_default01.png') no-repeat;}
+.epilogue-list li .picture-area .img img{width:76px;height:76px;border-radius:50%;}
+
+.epilogue-list li .picture-area .name{display:block;text-align:center;font-weight:700;color:#333;}
+.epilogue-list li .picture-area .name em{display:inline-block;margin-right:5px;vertical-align:-3px;}
+.epilogue-list li .picture-area .star{display:block;padding-top:5px;text-align:center;}
+.epilogue-list li .comment-box{display:block;position:relative;margin-left:135px;}
+.epilogue-list li .comment-box p{margin-right:80px;}
+.epilogue-list li .comment-box p a{display:block;overflow:hidden;}
+.epilogue-list li .btn-del{position:absolute;right:11px;top:0;}
+.epilogue-list li .comment-box .comment{width:100%;overflow:hidden;}
+.epilogue-list li .comment-box .comment a.num{display:inline-block;margin-top:10px;text-decoration:underline;font-weight:700;color:#333;background:url('../images/lesson/bg_comment_arw.png') no-repeat right 8px;overflow:hidden;}
+.epilogue-list li .comment-box .comment a.num span{padding-right:12px;font-weight:400;}
+.epilogue-list li .comment-box .comment a.num.active{background-position:right -17px;}
+.epilogue-list li .comment-box .comment a.num + .comment-list{display:none;}
+.epilogue-list li .comment-box .comment a.num.active + .comment-list{display:block;}
+ .comment-list{overflow:hidden;background:#f3f3f3;border-top:1px solid #dfdfdf;}
+.comment-list li{position:relative;display:block;padding-top:10px;border-bottom:1px solid #dfdfdf;}
+.comment-list li em{float:left;width:135px;padding-left:37px;font-weight:700;color:#333;background:url('../images/lesson/bg_comment_name.png') no-repeat 20px 5px;}
+.comment-list li em:before{content:'';display:inline-block;width:16px;height:16px;margin-right:6px;vertical-align:-4px;background:url('../images/lesson/bg_comment_name01.png') no-repeat;}
+
+.comment-list li em.teacher:before{background:url('../images/lesson/icon_user.png') no-repeat;}
+.comment-list li em.mentor:before{background:url('../images/mypage/icon_layer_mentor.png') no-repeat;}
+.comment-list li em.student:before{background:url('../images/mypage/icon_user.png') no-repeat 0 -17px;}
+
+
+.comment-list li p{margin-left:123px;margin-right:60px;}
+.comment-list li .ben-del{position:absolute;right:20px;top:15px;}
+.comment-list .reg-form{position: relative;margin: 14px 20px 14px 135px;height: 80px;background: #fff;    border: 1px solid #ccc;}
+.comment-list .reg-form > div{position:relative;height:48px;margin-right:88px;}
+.comment-list .reg-form > div span{display: block;padding: 0 10px;font-size: 12px;text-align: right;}
+.comment-list .reg-form > div textarea{width:100%;height:46px;border:0;}
+.comment-list .reg-form > a{position: absolute;
+    right: -1px;
+    top: -1px;
+    width: 88px;
+    height: 80px;
+    padding-top: 29px;
+    background: #4764c0;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    text-align: center;}
+.detail-anchor .lesson-replay .lesson-replay-wrap{margin-top:13px;}
+
+
+ /* 문의하기 */
+.mentor-inquiry{position:relative}
+.mentor-inquiry .btn-inquiry{position:absolute;right:0;top:15px;display:inline-block;padding:0 20px;color:#536ec4;border:2px solid #4764c0;line-height:22px;}
+
+/* 별점 */
+.layer-cont .star{width:208px;height:36px;margin:0 auto;}
+.layer-cont .slider-area {position: relative;width: 208px;float:left;}
+.layer-cont .laptop-slider .ui-slider-range {background:url('../images/lesson/bg_star.png') no-repeat 0 0;}
+.layer-cont .slider-area .ui-slider-range {position:absolute; top:0; bottom:0; left:0;}
+.layer-cont .slider-area .ui-slider-handle {position:absolute; top:0; bottom:0; width:18px; cursor:pointer;}
+.layer-pop-wrap.star-score{ z-index: 20;background: #fff;}
+
+/* 수업다시보기 비디오 */
+.lesson-replay-video h3{padding-bottom:16px;font-weight:700;color:#4764c0;font-size:18px;}
+.lesson-replay-video .movie_area{width:638px;height:508px;overflow:hidden;}
+.lesson-replay-video .text_bar {margin-bottom: 35px;}
+.lesson-replay-video .text_bar textarea {border: 1px solid #dfdfdf;padding: 10px;width:638px;height:208px;}
+.lesson-replay-video h4{line-height:45px;font-weight:700;color:#333;font-size:16px;}
+.lesson-replay-video h4:before{content:'';display:inline-block;width:5px;height:5px;margin-right:6px;vertical-align:2px;background:#333;border-radius:5px;}
+
+
+@media (max-width: 979px) {
+	/* 수업상세-멘토소개 */
+	.introduce-wrap .img-star .eximg ul.info{float:none;width:100%;padding-top:10px;margin-left:0;overflow:hidden;}
+	.introduce-wrap .img-star .eximg ul > li .r-txt{margin-left:67px;}
+	.introduce-wrap .img-star .eximg ul li ul.info{padding-top:0;}
+
+	/*다시보기 리스트*/
+	.lesson-replay-wrap ul li.best-lesson, .lesson-replay-wrap ul.best-lesson li.best-lesson{display:table-cell; table-layout:fixed; float:none; clear:inherit; width:33%; padding:10px 5px 10px 5px; background:#f3f3f3;}
+	.lesson-replay-wrap ul li.best-lesson.first{width:33%; padding:10px 5px 10px 5px; border-left:1px solid #dfdfdf;}
+	.lesson-replay-wrap ul li.best-lesson.last{width:33%; padding:10px 5px 10px 5px; border-right:1px solid #dfdfdf;}
+	.best-lesson .lesson-info-type .info .date .t-mobile-blind{display:none;}
+	.best-lesson .lesson-info-type .info .date strong{display:block;}
+	.best-lesson .lesson-info-type .thumb > a img{width:100%;border: 1px solid #e9e9e9;}
+
+	/* 평점 및 후기 */
+	.comment-list .reg-form{margin-left:20px;}
+}
+
+@media (max-width: 767px) {
+	.layer-pop-wrap.my-class-reg {display: none !important;}
+
+	/*다시보기 리스트*/
+	.lesson-replay-wrap{margin-top:0;}
+	.lesson-replay-wrap ul li{width:100%; padding:10px 10px 0; border:none;}
+	.lesson-replay-wrap ul li.best-lesson, .lesson-replay-wrap ul.best-lesson li.best-lesson{display:block; table-layout:inherit; float:none; width:100%; background:#f3f3f3; padding:0 10px 10px;}
+	.lesson-replay-wrap ul li .lesson-info-type{padding:0 0 10px; border-bottom:1px solid #dfdfdf;}
+	.lesson-replay-wrap ul li:hover .lesson-info-type{background:#fff; border-bottom:1px solid #fff;}
+	.lesson-replay-wrap ul li.best-lesson.last .lesson-info-type,
+	.lesson-replay-wrap ul li.best-lesson.last:hover .lesson-info-type{border-bottom:none;}
+	.lesson-replay-wrap ul li.best-lesson:hover{background:#f3f3f3;}
+	.lesson-replay-wrap ul li.best-lesson.first{width:100%; padding:10px 10px 10px; border:none;}
+	.lesson-replay-wrap ul li.best-lesson.first .lesson-info-type{padding:0 0 7px;}
+	.lesson-replay-wrap ul li.best-lesson.last{width:100%; padding:0 10px; border:1px solid #dfdfdf; border-width:0 0 1px;}
+	.lesson-replay-wrap ul li.best-lesson.last + li{padding:10px 10px 10px;}
+	.lesson-replay-wrap ul li.best-lesson.last + li +li{padding:10px 10px 0;}
+	.lesson-replay-wrap ul li:hover{background:#fff;}
+	.best-lesson .lesson-info-type .info .date .t-mobile-blind{display:inline-block;}
+	.best-lesson .lesson-info-type .info .date strong{display:inline;}
+	.best-lesson .lesson-replay-wrap ul li.best-lesson:hover{background:#fff;}
+	.best-lesson .lesson-info-type .thumb > a img{width:100%;}
+	.best-lesson .lesson-info-type .info{padding:0 10px;}
+	.best-lesson .lesson-info-type .info .title{height:auto; padding:0;}
+	.best-lesson .lesson-info-type .info .title a{top:0; transform:translateY(0%); -webkit-transform:translateY(0%); -ms-transform:translateY(0%);}
+	.best-lesson .lesson-info-type .info .title{border-bottom:1px solid #f3f3f3;}
+	.best-lesson .lesson-info-type .info > dd,
+	.best-lesson .lesson-info-type .info > dd > span{padding:0}
+
+	/* 평점 및 후기 */
+	.grade-epilogue .give-grade, .epilogue-list li .comment-box .comment{display:none;}
+	.epilogue-list li .picture-area{width:100%;float:none;overflow:hidden;}
+	.epilogue-list li .picture-area .img{display:none;}
+	.grade-epilogue h3{margin:0 10px;padding-bottom:10px;padding-left:0;border-bottom:1px solid #e0e0e0;}
+	.epilogue-list li .picture-area .name{float:left;padding-left:20px;}
+	.epilogue-list li .picture-area .star{float:right;padding-right:10px;}
+	.epilogue-list li .comment-box{margin:0 10px;padding:10px 10px 25px;}
+	.epilogue-list li .comment-box.active{margin-top:3px;background:#f3f3f3;}
+	.epilogue-list li{padding-top:15px;}
+	.epilogue-list{margin-top:0;}
+	.epilogue-list li .comment-box .btn-del{display:none;}
+	.epilogue-list li .comment-box.active .btn-del{display:block;position: absolute;right: 11px;top:initial;bottom: 0 !important;}
+	.epilogue-list li .comment-box p{margin-right:0;}
+	.grade-epilogue .btn-inquiry{display:block;right:10px;}
+
+	/* 수업다시보기 비디오 */
+	.lesson-replay-video{padding:0 10px;}
+	.lesson-replay-video .movie_area{width:100%;height:auto;}
+	.lesson-replay-video .movie_area img{width:100%;}
+	.lesson-replay-video .text_bar {margin-bottom: 35px;}
+	.lesson-replay-video .text_bar textarea {width:100%;height:208px;}
+	.lesson-replay-video h4{line-height:45px;font-weight:700;color:#333;font-size:16px;}
+	
+	.lesson-info .title {
+    left: 0;
+	}
+	.lesson-info .title > span {
+    width: 100%;
+    /* position: relative; */
+    /* left: 0; */
+	}
+	.lesson-info .title .icon-lesson {
+    top: -40px;
+    right: 10px;
+	}
+	.lesson-info dd.title {
+    padding-left: 107px;
+	}
+}

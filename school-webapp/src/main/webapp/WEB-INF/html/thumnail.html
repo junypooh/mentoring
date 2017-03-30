@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<title>산들바람 진로멘토링</title>
+	<link rel="stylesheet" href="css/main2.css">
+	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
+	<script type="text/javascript" src="js/jquery.easing.min.js"></script>
+	<!-- bxSlider -->
+	<script type="text/javascript" src="./js/jquery.bxslider.min.js"></script>
+	<link rel="stylesheet" href="./css/jquery.bxslider.css">
+</head>
+<body><!-- 로딩이미지 block일때 class="dim loader" 추가 -->
+	<ul id="skipNav">
+		<li><a href="#container">본문 바로가기</a></li>
+		<li><a href="#gnb">주 메뉴 바로가기</a></li>
+	</ul>
+	<div id="wrap">
+		<!-- header -->
+		<!-- <div class="web-service-info">
+			<img src="./images/common/banner_img_01.png" alt="반응형 웹 서비스"><p class="txt-info"><strong>진로멘토링 산들바람</strong> 은 PC, 태블릿, 모바일 기기 환경 및 웹 브라우저 크기에 따라 <br> 화면 구성이 달라지는 <strong>반응형 웹 서비스</strong> 입니다. <br> 현재 크기는 태블릿, 및 모바일 기기 반응형 화면입니다. <br> 화면을 늘려 PC용 최적화 사이즈로 서비스를 이용하세요.</p>
+			<div class="ctl-box">
+				<label for="webService" class="chk-skin"><input type="checkbox" id="webService">다시 보지 않기</label><a href="#">닫기</a>
+			</div>
+		</div> -->
+		<div id="header">
+
+			<div class="gnb-wrap">
+				<h1><a href="#">산들바람 진로멘토링</a></h1>
+				<!-- 로그인 전 -->
+				<ul>
+					<li class="mentor"><a href="#" target="_blank">산들바람 멘토</a></li>
+					<li class="login"><a href="#">로그인</a></li>
+					<li class="join"><a href="#">회원가입</a></li>
+				</ul>
+				<!-- 로그아웃상태 -->
+				<ul style="display:none;">
+					<li class="login-state"><a href="#">김상경</a></li>
+					<li class="logout"><a href="#">로그아웃</a></li>
+				</ul>
+				<!-- gnb -->
+				<div id="gnb">
+					<ul>
+						<li>
+							<a href="#">서비스</a>
+							<div class="sub-gnb smenu1">
+								<ul>
+									<li><a href="#">사업소개</a></li>
+									<li><a href="#">서비스소개</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">멘토</a>
+							<div class="sub-gnb smenu2">
+								<ul>
+									<li><a href="#">직업소개</a></li>
+									<li><a href="#">멘토소개</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">수업</a>
+							<div class="sub-gnb smenu3">
+								<ul>
+									<li><a href="#">수업전체</a></li>
+									<li><a href="#">수업 다시보기</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">커뮤니티</a>
+							<div class="sub-gnb smenu4">
+								<ul>
+									<li><a href="#">자료실</a></li>
+									<li><a href="#">문의하기</a></li>
+									<li><a href="#">자유게시판</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">이용안내</a>
+							<div class="sub-gnb smenu5">
+								<ul>
+									<li><a href="#">공지사항</a></li>
+									<li><a href="#">자주찾는질문</a></li>
+									<li><a href="#">웹가이드</a></li>
+									<li><a href="#">모바일가이드</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">마이페이지</a>
+							<div class="sub-gnb smenu6">
+								<ul>
+									<li><a href="#">나의교실</a></li>
+									<li><a href="#">나의수업</a></li>
+									<li><a href="#">나의커뮤니티</a></li>
+									<li><a href="#">나의관심</a></li>
+									<li><a href="#">나의정보</a></li>
+									<li><a href="#">학교신청현황</a></li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<!-- //gnb -->
+
+				<div class="header-search">
+					<!-- search -->
+					<a href="#" class="search"><img src="images/common/btn_gnb_search.png" alt="search" /></a>
+					<div class="form-wrap">
+						<div class="form">
+							<div>
+								<span><input type="text" class="txt" value="" title="검색어 입력" /></span>
+								<a href="#" class="btn-search">검색</a>
+							</div>
+						</div>
+					</div>
+					<!-- //search -->
+				</div>
+
+			</div>
+
+		</div>
+		<!-- //header -->
+		<div id="container">
+			<div class="main-inner">
+				<div class="mylesson-area">
+					<div class="profile-box">
+						<span class="profile-img"><img src="./images/main/thumb_132x105_01.jpg" alt="프로필 사진" /></span>
+						<p class="profile-nm">김산들</p>
+						<p class="profile-class">
+							<span>서라벌 고등학교</span>
+							<em>1학년 3반</em>
+						</p>
+						<button class="btn-profile-set">프로필사진 수정</button>
+					</div>
+					<div class="weekly-lesson-area">
+						<div class="weekly-top">
+							<span>2015.08.03(월) ~ 08.09(금)</span>
+							<div class="weekly-btn">
+								<button>오늘</button>
+								<button class="on">1주</button>
+								<button>2주</button>
+								<button class="btn-detail">자세히 보기</button>
+							</div>
+						</div>
+						<div class="weekly-slide-wrap">
+							<ul class="weekly-slide">
+								<li>
+									<p class="teacher-nm">김길중</p>
+									<p class="lesson-title">목소리로 행복을 전하라</p>
+									<p class="lesson-date"><em>2016-08-08</em> 10:00~15:05 (40분)</p>
+									<a href="#" class="ls-label">입장</a>
+								</li>
+								<li>
+									<p class="teacher-nm">김길중</p>
+									<p class="lesson-title">목소리로 행복을 전하라</p>
+									<p class="lesson-date">2016-08-08 10:00~15:05 (40분)</p>
+									<a href="#" class="ls-label waiting">대기</a>
+								</li>
+								<li>
+									<p class="teacher-nm">김길중</p>
+									<p class="lesson-title">목소리로 행복을 전하라</p>
+									<p class="lesson-date">2016-08-08 10:00~15:05 (40분)</p>
+									<a href="#" class="ls-label waiting">대기</a>
+								</li>
+								<li>
+									<p class="teacher-nm">김길중</p>
+									<p class="lesson-title">목소리로 행복을 전하라</p>
+									<p class="lesson-date">2016-08-08 10:00~15:05 (40분)</p>
+									<a href="#" class="ls-label waiting">대기</a>
+								</li>
+								<li>
+									<p class="teacher-nm">김길중</p>
+									<p class="lesson-title">목소리로 행복을 전하라</p>
+									<p class="lesson-date">2016-08-08 10:00~15:05 (40분)</p>
+									<a href="#" class="ls-label waiting">대기</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="cont-top">
+					<div class="carousel-wrap bx-sdw">
+						<ul class="carousel-slide">
+							<li><img src="./images/main/carousel01.jpg" alt="사람이 사람에게 꿈을 전하다. 원격영상진로멘토링은 여러분의 직업에 대한 생생한 정보를 전달하여 청소년들이 자신의 꿈을 결정하는데 도움을 받을 수 있습니다." /></li>
+							<li><img src="./images/main/carousel01.jpg" alt="사람이 사람에게 꿈을 전하다. 원격영상진로멘토링은 여러분의 직업에 대한 생생한 정보를 전달하여 청소년들이 자신의 꿈을 결정하는데 도움을 받을 수 있습니다." /></li>
+							<li><img src="./images/main/carousel01.jpg" alt="사람이 사람에게 꿈을 전하다. 원격영상진로멘토링은 여러분의 직업에 대한 생생한 정보를 전달하여 청소년들이 자신의 꿈을 결정하는데 도움을 받을 수 있습니다." /></li>
+							<li><img src="./images/main/carousel01.jpg" alt="사람이 사람에게 꿈을 전하다. 원격영상진로멘토링은 여러분의 직업에 대한 생생한 정보를 전달하여 청소년들이 자신의 꿈을 결정하는데 도움을 받을 수 있습니다." /></li>
+						</ul>
+					</div>
+					<div class="lesson-slide-area">
+						<ul class="lesson-tab">
+							<li class="on">추천 수업</li>
+							<li>마감 임박 수업</li>
+							<li>신규 수업</li>
+						</ul>
+						<div class="lesson-slide-wrap">
+							<ul class="lesson-slide">
+								<li>
+									<ul class="lesson-list">
+										<li>
+											<a href="#">
+												<dl class="lesson-info">
+													<dt class="mento"><strong>김길중김길중김길중김길중김길중김길중김길중김길중김길중김길중</strong><em>가수가수가수가수가수가수가수가수가수</em></dt>
+													<dd class="rating">
+														<span class="ico-ls-type">단강</span>
+														<span class="icon-rating elementary">초</span><span class="icon-rating middle">중</span><span class="icon-rating high">고</span><span class="icon-rating etc">기타</span>
+													</dd>
+													<dd class="date-time">
+														<span class="date">2015-07-11</span><span class="time">10:00~10:50 (40분)</span>
+													</dd>
+													<dd class="title"><span class="icon-lesson orange">수강모집</span><span>플로리스트, 미디어 크리에이터 등 직업명이 들어갑니다.</span></dd>
+													<dd class="info"><p>경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...</p></dd>
+													<dd class="image aspect"><img src="https://mentee.career.go.kr/fileDown.do?fileSer=10002948" alt="항공승무원 인물 사진"></dd>
+												</dl>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<dl class="lesson-info">
+													<dt class="mento"><strong>김길중</strong><em>가수</em></dt>
+													<dd class="rating">
+														<span class="ico-ls-type">연강</span>
+														<span class="icon-rating elementary">초</span><span class="icon-rating middle">중</span><span class="icon-rating high">고</span><span class="icon-rating etc">기타</span>
+													</dd>
+													<dd class="date-time">
+														<span class="date">2015-07-11</span><span class="time">10:00~10:50 (40분)</span>
+													</dd>
+													<dd class="title"><span class="icon-lesson">수강완료</span><span>플로리스트, 미디어 크리에이터 등 직업명이 들어갑니다.</span></dd>
+													<dd class="info"><p>경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...</p></dd>
+													<dd class="image aspect"><img src="https://mentee.career.go.kr/fileDown.do?fileSer=10000211" alt="항공승무원 인물 사진"></dd>
+												</dl>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<dl class="lesson-info">
+													<dt class="mento"><strong>김길중</strong><em>가수</em></dt>
+													<dd class="rating">
+														<span class="ico-ls-type">단강</span>
+														<span class="icon-rating elementary">초</span><span class="icon-rating middle">중</span><span class="icon-rating high">고</span><span class="icon-rating etc">기타</span>
+													</dd>
+													<dd class="date-time">
+														<span class="date">2015-07-11</span><span class="time">10:00~10:50 (40분)</span>
+													</dd>
+													<dd class="title"><span class="icon-lesson yellow">수업예정</span><span>플로리스트, 미디어 크리에이터 등 직업명이 들어갑니다.</span></dd>
+													<dd class="info"><p>경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...</p></dd>
+													<dd class="image"><img src="./images/main/img_ls_sample02.jpg" alt="항공승무원 인물 사진"></dd>
+												</dl>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<dl class="lesson-info">
+													<dt class="mento"><strong>김길중</strong><em>가수</em></dt>
+													<dd class="rating">
+														<span class="ico-ls-type">단강</span>
+														<span class="icon-rating elementary">초</span><span class="icon-rating middle">중</span><span class="icon-rating high">고</span><span class="icon-rating etc">기타</span>
+													</dd>
+													<dd class="date-time">
+														<span class="date">2015-07-11</span><span class="time">10:00~10:50 (40분)</span>
+													</dd>
+													<dd class="title"><span class="icon-lesson skyblue">수업대기</span><span>플로리스트, 미디어 크리에이터 등 직업명이 들어갑니다.</span></dd>
+													<dd class="info"><p>경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...</p></dd>
+													<dd class="image"><img src="./images/main/img_ls_sample03.jpg" alt="항공승무원 인물 사진"></dd>
+												</dl>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<dl class="lesson-info">
+													<dt class="mento"><strong>김길중</strong><em>가수</em></dt>
+													<dd class="rating">
+														<span class="ico-ls-type">연강</span>
+														<span class="icon-rating elementary">초</span><span class="icon-rating middle">중</span><span class="icon-rating high">고</span><span class="icon-rating etc">기타</span>
+													</dd>
+													<dd class="date-time">
+														<span class="date">2015-07-11</span><span class="time">10:00~10:50 (40분)</span>
+													</dd>
+													<dd class="title"><span class="icon-lesson">수강완료</span><span>플로리스트, 미디어 크리에이터 등 직업명이 들어갑니다.</span></dd>
+													<dd class="info"><p>경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...</p></dd>
+													<dd class="image"><img src="./images/main/img_ls_sample02.jpg" alt="항공승무원 인물 사진"></dd>
+												</dl>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<dl class="lesson-info">
+													<dt class="mento"><strong>김길중</strong><em>가수</em></dt>
+													<dd class="rating">
+														<span class="ico-ls-type">연강</span>
+														<span class="icon-rating elementary">초</span><span class="icon-rating middle">중</span><span class="icon-rating high">고</span><span class="icon-rating etc">기타</span>
+													</dd>
+													<dd class="date-time">
+														<span class="date">2015-07-11</span><span class="time">10:00~10:50 (40분)</span>
+													</dd>
+													<dd class="title"><span class="icon-lesson">수강완료</span><span>플로리스트, 미디어 크리에이터 등 직업명이 들어갑니다.</span></dd>
+													<dd class="info"><p>경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...</p></dd>
+													<dd class="image"><img src="./images/main/img_ls_sample01.jpg" alt="항공승무원 인물 사진"></dd>
+												</dl>
+											</a>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<ul class="lesson-list">
+										<li>
+											<a href="#">
+												<dl class="lesson-info">
+													<dt class="mento"><strong>김길중</strong><em>가수</em></dt>
+													<dd class="rating">
+														<span class="ico-ls-type">단강</span>
+														<span class="icon-rating elementary">초</span><span class="icon-rating middle">중</span><span class="icon-rating high">고</span><span class="icon-rating etc">기타</span>
+													</dd>
+													<dd class="date-time">
+														<span class="date">2015-07-11</span><span class="time">10:00~10:50 (40분)</span>
+													</dd>
+													<dd class="title"><span class="icon-lesson orange">수강모집</span><span>플로리스트, 미디어 크리에이터 등 직업명이 들어갑니다.</span></dd>
+													<dd class="info"><p>경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...</p></dd>
+													<dd class="image"><img src="./images/main/thumb_132x105_01.jpg" alt="항공승무원 인물 사진"></dd>
+												</dl>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<dl class="lesson-info">
+													<dt class="mento"><strong>김길중</strong><em>가수</em></dt>
+													<dd class="rating">
+														<span class="ico-ls-type">연강</span>
+														<span class="icon-rating elementary">초</span><span class="icon-rating middle">중</span><span class="icon-rating high">고</span><span class="icon-rating etc">기타</span>
+													</dd>
+													<dd class="date-time">
+														<span class="date">2015-07-11</span><span class="time">10:00~10:50 (40분)</span>
+													</dd>
+													<dd class="title"><span class="icon-lesson">수강완료</span><span>플로리스트, 미디어 크리에이터 등 직업명이 들어갑니다.</span></dd>
+													<dd class="info"><p>경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...</p></dd>
+													<dd class="image"><img src="./images/main/img_ls_sample01.jpg" alt="항공승무원 인물 사진"></dd>
+												</dl>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<dl class="lesson-info">
+													<dt class="mento"><strong>김길중</strong><em>가수</em></dt>
+													<dd class="rating">
+														<span class="ico-ls-type">단강</span>
+														<span class="icon-rating elementary">초</span><span class="icon-rating middle">중</span><span class="icon-rating high">고</span><span class="icon-rating etc">기타</span>
+													</dd>
+													<dd class="date-time">
+														<span class="date">2015-07-11</span><span class="time">10:00~10:50 (40분)</span>
+													</dd>
+													<dd class="title"><span class="icon-lesson yellow">수업예정</span><span>플로리스트, 미디어 크리에이터 등 직업명이 들어갑니다.</span></dd>
+													<dd class="info"><p>경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...</p></dd>
+													<dd class="image"><img src="./images/main/img_ls_sample02.jpg" alt="항공승무원 인물 사진"></dd>
+												</dl>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<dl class="lesson-info">
+													<dt class="mento"><strong>김길중</strong><em>가수</em></dt>
+													<dd class="rating">
+														<span class="ico-ls-type">연강</span>
+														<span class="icon-rating elementary">초</span><span class="icon-rating middle">중</span><span class="icon-rating high">고</span><span class="icon-rating etc">기타</span>
+													</dd>
+													<dd class="date-time">
+														<span class="date">2015-07-11</span><span class="time">10:00~10:50 (40분)</span>
+													</dd>
+													<dd class="title"><span class="icon-lesson skyblue">수업대기</span><span>플로리스트, 미디어 크리에이터 등 직업명이 들어갑니다.</span></dd>
+													<dd class="info"><p>경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...경쾌하고 익살스러운 만화 속 세상! 웹툰 만화가들은 어떻게 웹툰을...</p></dd>
+													<dd class="image"><img src="./images/main/img_ls_sample03.jpg" alt="항공승무원 인물 사진"></dd>
+												</dl>
+											</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="ls-srch-area">
+						<a href="#" class="banner-wrap"><img src="./images/main/img_banner01.jpg" alt="수업시간표 - 신청 가능한 수업을 확인하세요!" /></a>
+						<div class="ls-srch-box bx-sdw">
+							<h2><span>수업찾기</span></h2>
+							<ul>
+								<li><a href="#" class="srch-elementary">초등학교</a></li>
+								<li><a href="#" class="srch-middle">중학교</a></li>
+								<li><a href="#" class="srch-high">고등학교</a></li>
+							</ul>
+							<div class="input-shch-box">
+								<input type="text" placeholder="검색해보세요" />
+								<button type="button">수업찾기 검색</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="cont-mid">
+					<ul class="mentos-tab">
+						<li>HOT멘토</li>
+						<li>NEW멘토</li>
+					</ul>
+					<div class="mentos-cont">
+						<h2><span>HOT</span> 멘토</h2>
+						<div class="mento-slide-wrap">
+							<ul class="hot-slide">
+								<li>
+									<ul class="hot-list">
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수가수가수가수가수가수</p>
+												<p class="mento-nm">메이비메이비메이비메이비메이비메이비메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사꿈을 현실로 보여주는 마술사꿈을 현실로 보여주는 마술사꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수</p>
+												<p class="mento-nm">메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수</p>
+												<p class="mento-nm">메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수</p>
+												<p class="mento-nm">메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<ul class="hot-list">
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수</p>
+												<p class="mento-nm">메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수</p>
+												<p class="mento-nm">메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수</p>
+												<p class="mento-nm">메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수</p>
+												<p class="mento-nm">메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="mentos-cont small">
+						<h2><span>NEW</span> 멘토</h2>
+						<div class="mento-slide-wrap">
+							<ul class="new-slide">
+								<li>
+									<ul class="new-list">
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수가수가수가수가수가수</p>
+												<p class="mento-nm">메이비메이비메이비메이비메이비메이비메이비메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사꿈을 현실로 보여주는 마술사꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수</p>
+												<p class="mento-nm">메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<ul class="new-list">
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수</p>
+												<p class="mento-nm">메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수</p>
+												<p class="mento-nm">메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<ul class="new-list">
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수</p>
+												<p class="mento-nm">메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<span class="mento-pic"><img src="./images/main/img_ls_sample01.jpg" alt="가수 메이비 사진" /></span>
+												<p class="mento-job">가수</p>
+												<p class="mento-nm">메이비</p>
+												<p class="mento-desc">꿈을 현실로 보여주는 마술사</p>
+											</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="cont-bot">
+					<div class="active-mento-area">
+						<h2>활동멘토</h2>
+						<ul class="field-mento-list">
+							<li><a href="#"><span class="txt-hid">전체</span><span class="count">(514)</span></a></li>
+							<li><a href="#"><span class="txt-hid">건설관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">경비 및 청소관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">경영회계사무관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">관리직</span><span class="count">(6)</span></a></li>
+							<li class="on"><a href="#"><span class="txt-hid">교육및 자연,사회과학</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">금융보험관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">기계관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">농림어업관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">문화예술디자인방송</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">미용숙박여행오락</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">법률경찰소방관교도</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">보건의료관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">사회복지및종교</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">섬유및의복관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">식품가공관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">영업및판매관련직영업및판매관련직영업및판매관련직영업및판매관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">사회복지및종교</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">음식서비스관련직음식서비스관련직음식서비스관련직</span><span class="count">(8888)</span></a></li>
+							<li><a href="#"><span class="txt-hid">재료관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">전기전자관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">정보통신관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">화학관련직</span><span class="count">(6)</span></a></li>
+							<li><a href="#"><span class="txt-hid">환경인쇄목재가구공예</span><span class="count">(6)</span></a></li>
+						</ul>
+					</div>
+					<div class="main-board">
+						<h2>공지사항</h2>
+						<table class="mboard-tbl">
+							<caption>공지사항 목록</caption>
+							<colgroup>
+								<col>
+								<col style="width:136px">
+							</colgroup>
+							<tbody>
+								<tr>
+									<td class="title"><a href="#" class="new">[수업보조자료]수업보조자료_개그맨[수업보조자료]수업보조자료_개그맨[수업보조자료]수업보조자료_개그맨</a></td>
+									<td class="last">2016.09.20</td>
+								</tr>
+								<tr>
+									<td class="title"><a href="#" class="new">[수업보조자료]수업보조자료_개그맨</a></td>
+									<td class="last">2016.09.20</td>
+								</tr>
+								<tr>
+									<td class="title"><a href="#">[수업보조자료]수업보조자료_개그맨</a></td>
+									<td class="last">2016.09.20</td>
+								</tr>
+								<tr>
+									<td class="title"><a href="#">[수업보조자료]수업보조자료_개그맨</a></td>
+									<td class="last">2016.09.20</td>
+								</tr>
+								<tr>
+									<td class="title"><a href="#">[수업보조자료]수업보조자료_개그맨</a></td>
+									<td class="last">2016.09.20</td>
+								</tr>
+							</tbody>
+						</table>
+						<a href="#" class="btn-mboard-more">공지사항 더보기</a>
+					</div>
+					<div class="main-board">
+						<h2>Q &amp; A</h2>
+						<table class="mboard-tbl">
+							<caption>Q &amp; A 목록</caption>
+							<colgroup>
+								<col>
+								<col style="width:136px">
+							</colgroup>
+							<tbody>
+								<tr>
+									<td class="title"><a href="#" class="attach">[수업보조자료]수업보조자료_개그맨[수업보조자료]수업보조자료_개그맨[수업보조자료]수업보조자료_개그맨[수업보조자료]수업보조자료_개그맨</a></td>
+									<td class="last">2016.09.20</td>
+								</tr>
+								<tr>
+									<td class="title"><a href="#" class="attach">[수업보조자료]수업보조자료_개그맨</a></td>
+									<td class="last">2016.09.20</td>
+								</tr>
+								<tr>
+									<td class="title"><a href="#">[수업보조자료]수업보조자료_개그맨</a></td>
+									<td class="last">2016.09.20</td>
+								</tr>
+								<tr>
+									<td class="title"><a href="#">[수업보조자료]수업보조자료_개그맨</a></td>
+									<td class="last">2016.09.20</td>
+								</tr>
+								<tr>
+									<td class="title"><a href="#">[수업보조자료]수업보조자료_개그맨</a></td>
+									<td class="last">2016.09.20</td>
+								</tr>
+							</tbody>
+						</table>
+						<a href="#" class="btn-mboard-more">Q &amp; A 더보기</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$('.carousel-slide').bxSlider({
+				auto: true,
+				autoHover:true,
+				autoControls: true,
+				controls: false
+			});
+			$('.lesson-slide').bxSlider({
+				pager:false
+			});
+			$('.hot-slide').bxSlider({
+				controls:false
+			});
+			$('.new-slide').bxSlider({
+				controls:false
+			});
+			$('.weekly-slide').bxSlider({
+				pager:false,
+				minSlides:3,
+				maxSlides:3,
+				moveSlides:1,
+				slideWidth:258
+			});
+
+
+		</script>
+		<div class="cont-quick double">
+			<a href=""><img src="./images/common/img_quick3.png" alt="리스트로 이동"></a>
+			<a href=""><img src="./images/common/img_quick2.png" alt="상단으로 이동"></a>
+		</div>
+		<div id="footer">
+			<div class="footer-cont">
+				<div class="footer-info">
+					<ul class="footer-menu">
+						<li><a href="#">이용약관</a></li>
+						<li><a href="#">개인정보처리방침</a></li>
+						<li><a href="#">이메일무단수집거부</a></li>
+						<li><a href="#" target="_blank">산들바람 멘토</a></li>
+					</ul>
+					<div class="footer-menu-organization">
+						<a href="#" class="organization">관련사이트</a>
+						<ul class="organization-ul">
+							<li><a href="#">커리어넷</a></li>
+							<li><a href="#">한국직업능률개발원</a></li>
+							<li><a href="#">한국과학창의재단</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-organization">
+					<img src="./images/main/img_footer_edu.png" alt="교육부">
+					<img src="./images/main/img_footer_fscience.png" alt="미래창조과학부">
+				</div>
+				<div class="footer-science-menu">
+					<address>세종특별자치시 시청대로 370 세종국책연구단지 사회정책동 한국직업능력개발원 커리어넷</address>
+					<p class="footer-manage">운영: 한국직업능력개발원 진료교육센터</p>
+					<p class="footer-support">지원: 교육부</p>
+					<p class="footer-copyright">COPYRIGHTS <em>&copy;</em> KRIVET ALL RIGHTS RESERVED.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="page-loader none">
+		<img src="images/common/img_page_loader.gif" alt="페이지 로딩 이미지" />
+	</div>
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<title>산들바람 진로멘토링</title>
+	<link rel="stylesheet" href="../css/mentor.css">
+	<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../js/common.js"></script>
+	<script type="text/javascript" src="../js/jquery.gallery.slide.js"></script>
+	<script type="text/javascript" src="../js/jquery.easing.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.slide_list').sistarGallery({
+				$animateTime_ : 500,
+				$animateEffect_ : "easeInOutQuint",
+				$autoDelay : 2000,
+				$focusFade : 500,
+				$currentNum : 1
+			});
+
+			$('.bxslider1').sistarGallery({
+				$animateTime_ : 500,
+				$animateEffect_ : "easeInOutQuint",
+				$autoDelay : 2000,
+				$focusFade : 500,
+				$currentNum : 1
+			});
+
+		});
+	</script>
+</head>
+<body>
+	<ul id="skipNav">
+		<li><a href="#">본문</a></li>
+		<li><a href="#">footer</a></li>
+	</ul>
+	<div id="wrap">
+		<!-- header -->
+		<div class="web-service-info">
+			<img src="../images/common/banner_img_01.png" alt="반응형 웹 서비스"><p class="txt-info"><strong>진로멘토링 산들바람</strong> 은 PC, 태블릿, 모바일 기기 환경 및 웹 브라우저 크기에 따라 <br> 화면 구성이 달라지는 <strong>반응형 웹 서비스</strong> 입니다. <br> 현재 크기는 태블릿, 및 모바일 기기 반응형 화면입니다. <br> 화면을 늘려 PC용 최적화 사이즈로 서비스를 이용하세요.</p>
+			<div class="ctl-box">
+				<label for="webService" class="chk-skin"><input type="checkbox" id="webService">다시 보지 않기</label><a href="#">닫기</a>
+			</div>
+		</div>
+		<div id="header">
+
+			<div class="gnb-wrap">
+				<h1><a href="#">산들바람 진로멘토링</a></h1>
+				<!-- 로그인 전 -->
+				<ul>
+					<li><a href="#">로그인</a></li>
+					<li><a href="#">회원가입</a></li>
+					<li class="lesson-timetable"><a href="#">수업시간표</a></li>
+				</ul>
+				<!-- 로그아웃상태 -->
+				<ul style="display:none;">
+					<li class="login alert"><a href="#">김상경</a></li>
+					<li><a href="#">로그아웃</a></li>
+					<li class="lesson-timetable"><a href="#">수업시간표</a></li>
+				</ul>
+				<!-- gnb -->
+				<div id="gnb">
+					<ul>
+						<li>
+							<a href="#">서비스</a>
+							<div class="sub-gnb first">
+								<ul>
+									<li><a href="#">사업소개</a></li>
+									<li><a href="#">서비스소개</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">멘토</a>
+							<div class="sub-gnb ">
+								<ul>
+									<li><a href="#">멘토소개</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">수업</a>
+							<div class="sub-gnb ">
+								<ul>
+									<li><a href="#">수업전체</a></li>
+									<li><a href="#">수업시간표</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">커뮤니티</a>
+							<div class="sub-gnb ">
+								<ul>
+									<li><a href="#">자료실</a></li>
+									<li><a href="#">문의하기</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">이용안내</a>
+							<div class="sub-gnb ">
+								<ul>
+									<li><a href="#">공지사항</a></li>
+									<li><a href="#">자주찾는질문</a></li>
+									<li><a href="#">웹가이드</a></li>
+									<li><a href="#">모바일가이드</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">마이페이지</a>
+							<div class="sub-gnb last">
+								<ul>
+									<li><a href="#">나의교실</a></li>
+									<li><a href="#">나의수업</a></li>
+									<li><a href="#">나의커뮤니티</a></li>
+									<li><a href="#">나의관심</a></li>
+									<li><a href="#">나의정보</a></li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+					<div class="gnb-notice">
+						<p><span class="gnb-date">2016. 09. 10</span>[알림] 진로멘토링에서 나의 진로를 찾아보세요 <a href="#">더보기</a></p>
+					</div>
+				</div>
+				<!-- //gnb -->
+				<div class="header-search">
+					<!-- search -->
+					<a href="#" class="search"><img src="../images/common/btn_gnb_search.png" alt="search" /></a>
+					<div class="form-wrap">
+						<div class="form">
+							<div>
+								<span><input type="text" class="txt" value="" title="검색어 입력" /></span>
+								<a href="#" class="btn-search">검색</a>
+							</div>
+						</div>
+					</div>
+					<!-- //search -->
+				</div>
+
+
+			</div>
+
+		</div>
+		<!-- //header -->
+		<div id="container">
+			<div class="location">
+				<a href="#" class="home">HOME</a>
+				<span class="first">멘토</span>
+				<span>직업소개</span>
+			</div>
+			<div class="content sub">
+				<h2>직업상세</h2>
+				<div class="replay-detail">
+					<div class="detail-info">
+						<p class="jop-tit"><strong class="stit">가수</strong><span>연예인 및 스포츠 매니저</span></p>
+						<div class="jop-tags">
+							<a href="#" class="max">예술</a><a href="#">싱어송라이터</a><a href="#">나는가수다</a><a href="#">송매니지먼트</a><a href="#" class="overlap">노래</a><a href="#">딴따라</a><a href="#">도끼 연간매출 50억 목표</a><a href="#">랄라</a><a href="#">빈지노</a><a href="#">LTE 연애기획사 대표 구속</a><a href="#">CIVA</a>
+						</div>
+					</div>
+					<div class="mento-btn-c">
+						<a href="#" class="heart">관심직업</a>
+						<a href="#" class="check">수업요청</a>
+					</div>
+					<div class="detail-anchor mobile">
+						<div class="anchor-tab-area">
+							<div class="move-bar tab-action">
+								<span class="title-bar">[연강] 세상을 평정한 1인 미디어 크리에이터 <span>수강모집</span></span>
+								<ul class="tab-type1 tab02">
+									<li class="active"><a href="#">관련멘토</a></li>
+									<li><a href="#">연관수업</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="tab-action-cont">
+							<!-- 관련멘토 -->
+							<div class="lesson-connection mento-type tab-cont active">
+								<p class="result-total"> 총 : <strong>00</strong> 명 </p>
+								<ul>
+									<li>
+										<span class="comento-pic"><img src="../images/mentor/thumb_132x132_01.jpg" alt="멘토 김기수 사진" /></span>
+										<div class="title"><strong><a href="#">프랑스도 인정한 대한민국 제 1호 소믈리에! <span>김기수</span></a></strong></div>
+										<p>
+											<a href="#" class="view">멘토소개보기</a>
+											<span>와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에....</span>
+										</p>
+									</li>
+									<li>
+										<span class="comento-pic"><img src="../images/mentor/thumb_132x132_01.jpg" alt="멘토 김기수 사진" /></span>
+										<div class="title"><strong><a href="#">프랑스도 인정한 대한민국 제 1호 소믈리에! <span>김기수</span></a></strong></div>
+										<p>
+											<a href="#" class="view">멘토소개보기</a>
+											<span>와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에....</span>
+										</p>
+									</li>
+									<li>
+										<span class="comento-pic"><img src="../images/mentor/thumb_132x132_01.jpg" alt="멘토 김기수 사진" /></span>
+										<div class="title"><strong><a href="#">프랑스도 인정한 대한민국 제 1호 소믈리에! <span>김기수</span></a></strong></div>
+										<p>
+											<a href="#" class="view">멘토소개보기</a>
+											<span>와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에....</span>
+										</p>
+									</li>
+									<li>
+										<span class="comento-pic"><img src="../images/mentor/thumb_132x132_01.jpg" alt="멘토 김기수 사진" /></span>
+										<div class="title"><strong><a href="#">프랑스도 인정한 대한민국 제 1호 소믈리에! <span>김기수</span></a></strong></div>
+										<p>
+											<a href="#" class="view">멘토소개보기</a>
+											<span>와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에....</span>
+										</p>
+									</li>
+									<li>
+										<span class="comento-pic"><img src="../images/mentor/thumb_132x132_01.jpg" alt="멘토 김기수 사진" /></span>
+										<div class="title"><strong><a href="#">프랑스도 인정한 대한민국 제 1호 소믈리에! <span>김기수</span></a></strong></div>
+										<p>
+											<a href="#" class="view">멘토소개보기</a>
+											<span>와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에 와인감별사로고도 불리는 소믈리에는 와인에 관한 전반적인 일들을 맡아 관리하고 책임지는 사람을 일컫는 프랑스 말이다. 국내에 와인이 수입되기도 전 처음으로 소믈리에라는 이름으로 와인 대중화에....</span>
+										</p>
+									</li>
+								</ul>
+								<div class="paging m-hide">
+									<a href="#" class="prev"><img src="../images/common/btn_paging_prev.gif" alt="처음"></a>
+									<strong>1</strong>
+									<a href="#"><span>2</span></a><a href="#"><span>3</span></a><a href="#"><span>4</span></a><a href="#"><span>5</span></a><a href="#"><span>6</span></a><a href="#"><span>7</span></a><a href="#"><span>8</span></a><a href="#"><span>9</span></a><a href="#"><span>10</span></a><a href="#" class="next"><img src="../images/common/btn_paging_next.gif" alt="맨끝"></a>
+								</div>
+								<div class="btn-more-view m-view ">
+									<a href="#">더 보기 (<span>00</span>)</a>
+								</div>
+							</div>
+							<!-- //관련멘토 -->
+
+							<!-- 연관수업 -->
+							<div class="lesson-connection tab-cont">
+								<p class="result-total"> 총 : <strong>00</strong> 건</p>
+								<ul>
+									<li>
+										<div class="title">
+											<span class="tit"><a href="#">인류의 건강을 책임질 심층수와 직업세계</a></span>
+											<span class="r-align">
+												<span class="icon-rating elementary">초</span>
+												<span class="icon-rating middle">중</span>
+												<span class="icon-rating high">고</span>
+												<em>모집취소</em>
+											</span>
+										</div>
+										<div class="date">
+											<span class="user mentor">박주용</span>
+											<p>2015.08.23 <span class="t-mobile-blind">/</span> <strong>10:00~12:00</strong></p>
+										</div>
+										<p>
+											<a href="#" class="view">수업소개보기</a>
+											<span>어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향</span>
+										</p>
+									</li>
+									<li>
+										<div class="title">
+											<span class="tit"><a href="#">인류의 건강을 책임질 심층수와 직업세계</a></span>
+											<span class="r-align">
+												<span class="icon-rating middle">중</span>
+												<span class="icon-rating high">고</span>
+												<em>모집취소</em>
+											</span>
+										</div>
+										<div class="date">
+											<span class="user">박주용</span>
+											<p>2015.08.23 <span class="t-mobile-blind">/</span> <strong>10:00~12:00</strong></p>
+										</div>
+										<p>
+											<a href="#" class="view">수업소개보기</a>
+											<span>어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향</span>
+										</p>
+									</li>
+									<li>
+										<div class="title">
+											<span class="tit"><a href="#">인류의 건강을 책임질 심층수와 직업세계</a></span>
+											<span class="r-align">
+												<span class="icon-rating middle">중</span>
+												<span class="icon-rating high">고</span>
+												<em>모집취소</em>
+											</span>
+										</div>
+										<div class="date">
+											<span class="user">박주용</span>
+											<p>2015.08.23 <span class="t-mobile-blind">/</span> <strong>10:00~12:00</strong></p>
+										</div>
+										<p>
+											<a href="#" class="view">수업소개보기</a>
+											<span>어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향</span>
+										</p>
+									</li>
+									<li>
+										<div class="title">
+											<span class="tit"><a href="#">인류의 건강을 책임질 심층수와 직업세계</a></span>
+											<span class="r-align">
+												<span class="icon-rating middle">중</span>
+												<span class="icon-rating high">고</span>
+												<em>모집취소</em>
+											</span>
+										</div>
+										<div class="date">
+											<span class="user">박주용</span>
+											<p>2015.08.23 <span class="t-mobile-blind">/</span> <strong>10:00~12:00</strong></p>
+										</div>
+										<p>
+											<a href="#" class="view">수업소개보기</a>
+											<span>어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향</span>
+										</p>
+									</li>
+									<li>
+										<div class="title">
+											<span class="tit"><a href="#">인류의 건강을 책임질 심층수와 직업세계</a></span>
+											<span class="r-align">
+												<span class="icon-rating middle">중</span>
+												<span class="icon-rating high">고</span>
+												<em>모집취소</em>
+											</span>
+										</div>
+										<div class="date">
+											<span class="user">박주용</span>
+											<p>2015.08.23 <span class="t-mobile-blind">/</span> <strong>10:00~12:00</strong></p>
+										</div>
+										<p>
+											<a href="#" class="view">수업소개보기</a>
+											<span>어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향어떤 일을 하는지? 한번 주위를 둘러보세요. 냄새가 있죠. 이처럼 우리 주위에는 늘 냄새가 있습니다. 제가 하는 일이 바로 이런 향</span>
+										</p>
+									</li>
+								</ul>
+								<div class="paging m-hide">
+									<a href="#" class="prev"><img src="../images/common/btn_paging_prev.gif" alt="처음"></a>
+									<strong>1</strong>
+									<a href="#"><span>2</span></a><a href="#"><span>3</span></a><a href="#"><span>4</span></a><a href="#"><span>5</span></a><a href="#"><span>6</span></a><a href="#"><span>7</span></a><a href="#"><span>8</span></a><a href="#"><span>9</span></a><a href="#"><span>10</span></a><a href="#" class="next"><img src="../images/common/btn_paging_next.gif" alt="맨끝"></a>
+								</div>
+								<div class="btn-more-view m-view ">
+									<a href="#">더 보기 (<span>00</span>)</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="cont-quick"><a href="#header"><img src="../images/common/img_quick.png" alt="상단으로 이동" /></a></div>
+		</div>
+
+		<div class="cont-quick double">
+			<a href=""><img src="../images/common/img_quick3.png" alt="리스트로 이동" /></a>
+			<a href=""><img src="../images/common/img_quick2.png" alt="상단으로 이동" /></a>
+		</div>
+
+		<div id="footer">
+			<div class="footer-cont">
+				<div class="footer-info">
+					<ul class="footer-menu">
+						<li><a href="#">이용약관</a></li>
+						<li><a href="#">개인정보처리방침</a></li>
+						<li><a href="#">이메일무단수집거부</a></li>
+						<li><a href="#">변경동의</a></li>
+					</ul>
+					<div class="footer-menu-organization">
+						<a href="#" class="organization">관련기관 바로가기</a>
+						<ul class="organization-ul">
+							<li><a href="#">커리어넷</a></li>
+							<li><a href="#">한국직업능률개발원</a></li>
+							<li><a href="#">한국과학창의재단</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-organization">
+					<img src="../images/main/img_footer_fscience.png" alt="미래창조과학부" />
+					<img src="../images/main/img_footer_edu.png" alt="교육부" />
+				</div>
+				<div class="footer-science-menu">
+					<address>세종특별자치시 시청대로 370 세종국책연구단지 사회정책동 한국직업능력개발원 커리어넷</address>
+					<p class="footer-manage">운영: 한국직업능력개발원 진료교육센터</p>
+					<p class="footer-support">지원: 교육부</p>
+					<p class="footer-copyright">COPYRIGHTS <em>&copy;</em> KRIVET ALL RIGHTS RESERVED.</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- layerpopup -->
+		<div class="layer-pop-wrap my-class-reg" id="requestPop">
+			<div class="layer-pop m-blind">
+				<div class="layer-header">
+					<strong class="title">수업요청</strong>
+				</div>
+				<div class="layer-cont">
+					<div class="tbl-style demend">
+						<table>
+							<caption>수업요청 - 교사,학교,주제,내용,학교급,희망일시,직업,멘토</caption>
+							<colgroup>
+								<col style="width:20%" />
+								<col />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="row">교사</th>
+									<td>홍길동</td>
+								</tr>
+								<tr>
+									<th scope="row">학교</th>
+									<td>산들고등학교</td>
+								</tr>
+								<tr>
+									<th scope="row"><label for="subjectTitle">주제</label></th>
+									<td><input type="text" id="subjectTitle" class="inp-style" title="주제" /></td>
+								</tr>
+								<tr>
+									<th scope="row"><label for="textaInfo">내용</label></th>
+									<td>
+										<div class="text-area popup">
+											<textarea id="textaInfo" class="ta-style" name="text"></textarea><span class="text-limit"><strong>0</strong> / 400자</span>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row"><label for="demendSchool">학교급</label></th>
+									<td>
+										<select id="demendSchool" class="slt-style" title="학교급">
+											<option>선택</option>
+											<option>초등</option>
+											<option>중등</option>
+											<option>고등</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row"><label for="wishDate">희망일시</label></th>
+									<td>
+										<div class="wish-dat">
+											<input type="text" id="wishDate" class="inp-style date" name="날짜선택창" />
+											<span class="demend-cal"><img src="../images/popup/img_lesson_calendar.png" alt="달력" /></span>
+											<select class="slt-style" title="희망일시">
+												<option>선택</option>
+												<option>08:00</option>
+												<option>09:00</option>
+												<option>10:00</option>
+												<option>11:00</option>
+												<option>12:00</option>
+												<option>13:00</option>
+												<option>14:00</option>
+												<option>15:00</option>
+												<option>16:00</option>
+											</select>
+											<span class="add-time"></span>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">직업</th>
+									<td>
+										<div class="job-area">
+											<span class="inp-radio">
+												<label class="radio-skin">
+													<input type="radio" name="직업" />선택 안함
+												</label>
+											</span>
+											<span class="inp-radio">
+												<label class="radio-skin">
+													<input type="radio" name="직업" />선택
+												</label>
+											</span>
+											<a href="#" class="job-search">검색</a>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">멘토</th>
+									<td>
+										<div class="job-area">
+											<span class="inp-radio">
+												<label class="radio-skin">
+													<input type="radio" name="멘토" />지정 안함
+												</label>
+											</span>
+											<span class="inp-radio">
+												<label class="radio-skin">
+													<input type="radio" name="멘토" />지정
+												</label>
+											</span>
+											<a href="#" class="job-search">검색</a>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">영상 솔루션</th>
+									<td>
+										<div class="job-area">
+											<span class="inp-radio">
+												<label class="radio-skin">
+													<input type="radio" title="지정 안함" name="멘토" />지정 안함
+												</label>
+											</span>
+											<span class="inp-radio">
+												<label class="radio-skin">
+													<input type="radio" title="지정" name="멘토" />지정
+												</label>
+											</span>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="btn-area popup">
+						<a href="#" class="btn-type2 popup">확인</a>
+						<a href="#" class="btn-type2 cancel">취소</a>
+					</div>
+					<a href="#" class="layer-close">팝업 창 닫기</a>
+				</div>
+			</div>
+		</div>
+		<!-- //layerpopup -->
+
+	</div>
+</body>
+</html>

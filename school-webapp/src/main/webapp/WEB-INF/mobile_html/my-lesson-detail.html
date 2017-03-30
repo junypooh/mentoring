@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+		<title>산들바람 진로멘토링</title>
+		<link rel="stylesheet" href="css/my_lesson.css">
+		<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="js/common.js"></script>
+		<script type="text/javascript" src="js/jquery.easing.min.js"></script>
+		<script type="text/javascript" src="js/jquery.event.drag-1.5.min.js"></script>
+		<script type="text/javascript" src="js/jquery.touchSlider.js"></script>
+	</head>
+	<body>
+		<ul id="skipNav">
+			<li><a href="#">본문</a></li>
+			<li><a href="#">footer</a></li>
+		</ul>
+		<div id="wrap">
+			<div id="header">
+				<h1>수업상세</h1>
+				<a href="#" class="btn-slide-menu">전체메뉴 열기</a>
+				<!-- slide menu -->
+				<div class="slide-menu">
+					<dl class="user-info">
+						<dt class="name">김희재</dt>
+						<dd class="img"><img src="./images/common/thumb_70x70_01.jpg" alt="김희재 인물사진"></dd>
+						<dd class="info">이화여자대학교 사범대학 부속 이화&middot;금란고등학교</dd>
+					</dl>
+					<ul class="tab">
+						<li><a href="#"><span>나의 수업</span></a></li>
+						<li><a href="#"><span>멘토링 수업</span></a></li>
+					</ul>
+					<ul class="tab2">
+						<li class="nth1"><a href="#"><span>로그아웃</span></a></li>
+						<li class="nth2"><a href="#"><span>PC버전</span></a></li>
+						<li class="nth3"><a href="#"><span>공지사항</span></a></li>
+						<li class="nth4"><a href="#"><span>설정</span></a></li>
+					</ul>
+					<a href="#" class="slide-menu-close">전체메뉴 닫기</a>
+				</div>
+				<!-- //slide menu -->
+			<div class="dim"></div>
+			</div>
+			<div id="container">
+				<!-- content -->
+				<div class="content">
+					<div class="lesson-go-wrap">
+						<a href="#"><span>입장</span></a>
+					</div>
+					<div class="lesson-detail-wrap">
+						<h2><strong>[연강] 세상을 평정한 1인 미디어 크뤼이에이터<span class="r-icon">수업 대기</span></strong></h2>
+						<div class="lesson-detail-thumb">
+							<div class="thumb-list">
+								<ul>
+									<li>
+										<img src="./images/mypage/thumb_298x243_01.jpg" alt="사진1">
+									</li>
+									<li style="background:#396">
+										<img src="./images/mypage/thumb_298x243_01.jpg" alt="사진2">
+									</li>
+									<li style="background:#39C">
+										<img src="./images/mypage/thumb_298x243_01.jpg" alt="사진3">
+									</li>
+									<li style="background:#33C">
+										<img src="./images/mypage/thumb_298x243_01.jpg" alt="사진4">
+									</li>
+								</ul>
+							</div>
+							<div class="thum-paging"></div>
+						</div>
+						<p class="lesson-detail-txt">해양심층수란 햇빛이 도달하지 않는 수심 200m 이하 바닷물을 뜻합니다. 2도의 찬 온도와 깊은 수심으로 유기물이나 오염물질이 없으니 청정성이 뛰어나며 온도와 깊은 수심으로 유기물이나 오염물질이 뛰어나며 후략하지 않습니다. 해양심층수란 햇빛이 도달하지 않는 수심 200m 이하 바닷물을 뜻합니다. 2도의 찬 온도와 깊은 수심으로 유기물이나 오염물질이 없으니 청정성이 뛰어나며 온도와 깊은 수심으로 유기물이나 오염물질이 뛰어나며 후략하지 않습니다.  <br><br> 바닷물을 뜻합니다. 2도의 찬 온도와 깊은 수심으로 유기물이나 오염물질이 없으니 청정성이 뛰어나며 온도와 깊은 수심으로 유기물이나 오염물질이 뛰어나며 후략하지 않습니다. </p>
+						<ul class="lesson-detail-info">
+							<li>
+								<span>멘토</span><p>양띵 <span class="ic-box-round">재능기부</span></p>
+							</li>
+							<li>
+								<span>직업</span><p>크리에이터</p>
+							</li>
+							<li>
+								<span>일시</span><p>2015. 08. 23 10:00 ~ 11:00 <br>2015. 08. 25 10:00 ~ 11:00 <br>2015. 08. 27 10:00 ~ 11:00</p>
+							</li>
+							<li>
+								<span>대상</span><p><span class="icon-rating elementary">초</span> <span class="icon-rating middle">중</span> <span class="icon-rating high">고</span></p>
+							</li>
+							<li>
+								<span>태그</span><p>마인드크래프트, 게임 직업, BJ, 트레져헌터, 마이래빗, 태그, 태그</p>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!-- //content -->
+			</div>
+			<div class="cont-quick double">
+				<a href=""><img src="./images/common/img_quick3.png" alt="리스트로 이동"></a>
+				<a href=""><img src="./images/common/img_quick2.png" alt="상단으로 이동"></a>
+			</div>
+		</div>
+		<script>
+		$(".thumb-list").touchSlider({
+			flexible : true,
+			initComplete : function (e) {
+				$(".thum-paging").html("");
+				var num = 1;
+				$(".thumb-list ul li").each(function (i, el) {
+					if((i+1) % e._view == 0) {
+						$(".thum-paging").append('<button type="button" class="btn-page">사진' + (num++) + '</button>');
+					}
+				});
+				$(".btn-page").bind("click", function (e) {
+					var i = $(this).index();
+					$(".thumb-list").get(0).go_page(i);
+				});
+			},
+			counter : function (e) {
+				$(".thum-paging .btn-page").removeClass("on").eq(e.current-1).addClass("on");
+			}
+		});
+		</script>
+	</body>
+</html>
