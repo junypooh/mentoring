@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<title>산들바람 멘토 - 원격진로멘토링</title>
+	<link rel="stylesheet" href="../css/community.css">
+	<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="../js/common.js"></script>
+</head>
+<body>
+	<ul id="skipNav">
+		<li><a href="#">본문</a></li>
+		<li><a href="#">footer</a></li>
+	</ul>
+	<div id="wrap">
+		<!-- header -->
+		<div id="header">
+			<div class="gnb-wrap">
+				<h1><a href="#">산들바람 멘토 - 원격진로멘토링</a></h1>
+				<!-- 로그인 전 -->
+				<ul>
+					<li class="login"><a href="#">로그인</a></li>
+					<li class="join"><a href="#">회원가입</a></li>
+				</ul>
+				<!-- 로그아웃상태 -->
+				<ul style="display:none;">
+					<li class="login-state"><a href="#">김상경</a></li>
+					<li class="member-info"><a href="#">회원정보</a></li>
+					<li class="logout"><a href="#">로그아웃</a></li>
+				</ul>
+
+				<!-- gnb -->
+				<div id="gnb"><!-- 소속멘토: affiliate  기업멘토:business -->
+					<ul>
+						<li>
+							<a href="#">활동멘토</a>
+							<div class="sub-gnb smenu1">
+								<ul>
+									<li><a href="#">활동멘토</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">수업관리</a>
+							<div class="sub-gnb smenu2">
+								<ul>
+									<li><a href="#">수업현황</a></li>
+									<li><a href="#">수업개설신청</a></li>
+									<li><a href="#">요청수업</a></li>
+									<li><a href="#">자료등록</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">커뮤니티관리</a>
+							<div class="sub-gnb smenu3">
+								<ul>
+									<li><a href="#">질문답변</a></li>
+									<li><a href="#">수업과제</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">활동이력</a>
+							<div class="sub-gnb smenu4">
+								<ul>
+									<li><a href="#">나의 수업내역</a></li>
+									<li><a href="#">알림내역</a></li>
+								</ul>
+							</div>
+						</li>
+						<li class="gnb-last">
+							<a href="#">서비스소개</a>
+							<div class="sub-gnb smenu5">
+								<ul>
+									<li><a href="#">산들바람소개</a></li>
+									<li><a href="#">멘토활동안내</a></li>
+									<li><a href="#">공지사항</a></li>
+									<li><a href="#">자주 찾는 질문</a></li>
+									<li><a href="#">서비스가이드</a></li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<!-- //gnb -->
+			</div>
+			<div class="sub-area"></div>
+		</div>
+		<!-- //header -->
+		<div id="container">
+			<div class="location">
+				<a href="#" class="home">메인으로 이동</a>
+				<span>멘토관리</span>
+				<span>정산</span>
+			</div>
+			<div class="content">
+				<h2>정산</h2>
+				<div class="cont">
+					<div class="tab-action">
+						<ul class="sub-tab tab02">
+							<li class="active"><a href="#">수업 정산</a></li>
+							<li><a href="#">문자 정산</a></li>
+						</ul>
+						<div class="tab-action-cont">
+							<!-- 수업정산 -->
+							<div class="tab-cont active">
+								<div class="calculate-management">
+									<div class="search-box business">
+										<dl>
+											<dt>기간</dt>
+											<dd>
+												<span class="calendar">
+													<input type="text" class="inp-style1" style="width:110px;" name="" />
+													<a href="#"><img src="../images/common/btn_calendar.png" alt="달력" /></a> ~
+													<input type="text" class="inp-style1" style="width:110px;" name="" />
+													<a href="#"><img src="../images/common/btn_calendar.png" alt="달력" /></a>
+												</span>
+												<span class="btn">
+													<a href="#" class="btn-type1">1주일</a>
+													<a href="#" class="btn-type1">1개월</a>
+													<a href="#" class="btn-type1">3개월</a>
+												</span>
+											</dd>
+											<dt>수업명</dt>
+											<dd>
+												<input type="text" class="inp-style1" style="width:496px;" name="" />
+												<select name="" style="width:108px;">
+													<option>유형</option>
+												</select>
+											</dd>
+										</dl>
+										<div class="btn-area">
+											<a href="#" class="btn-search"><span>검색</span></a>
+										</div>
+										<div class="total-lesson">
+											<span>총 수업 참여 수<em>2</em></span>
+											<span>총 수업 횟수<em>7</em></span>
+										</div>
+									</div>
+									<p class="lesson-participate">※ 수업 참여 수: 수업 일수, 수업 횟수: 수업 제공 수를 의미함</p>
+									<div class="board-type1 schedule">
+										<span class="excel-file-down"><a href="#">엑셀파일 다운로드</a></span>
+										<table>
+											<caption>정산관리 - 번호, 수업일, 시간, 수업횟수, 멘토명, 유형, 수업명, 신청디바이스</caption>
+											<colgroup>
+												<col style="width:65px;" />
+												<col style="width:100px;" />
+												<col style="width:115px;" />
+												<col style="width:93px;" />
+												<col style="width:85px;" />
+												<col style="width:300px;" />
+												<col />
+											</colgroup>
+											<thead>
+												<tr>
+													<th scope="col">번호</th>
+													<th scope="col">수업일</th>
+													<th scope="col">시간</th>
+													<th scope="col">수업횟수</th>
+													<th scope="col">유형</th>
+													<th scope="col">수업명</th>
+													<th scope="col">신청<br/>디바이스</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>100</td>
+													<td>2015.08.28</td>
+													<td>10:00 ~ 11:00</td>
+													<td>2</td>
+													<td><a href="#">연강</a></td>
+													<td class="al-left"><a href="#">세상을 평정한 1인 미디어 크리에이터세상을 평정한 1인 미디어 크리에이터</a></td>
+													<td><a href="#layer1" class="layer-open">5</a></td>
+												</tr>
+												<tr>
+													<td>100</td>
+													<td>2015.08.28</td>
+													<td>10:00 ~ 11:00</td>
+													<td>2</td>
+													<td><a href="#">연강</a></td>
+													<td class="al-left"><a href="#">세상을 평정한 1인 미디어 크리에이터세상을 평정한 1인 미디어 크리에이터</a></td>
+													<td><a href="#layer1" class="layer-open">5</a></td>
+												</tr>
+												<tr>
+													<td>100</td>
+													<td>2015.08.28</td>
+													<td>10:00 ~ 11:00</td>
+													<td>2</td>
+													<td><a href="#">단강</a></td>
+													<td class="al-left"><a href="#">세상을 평정한 1인 미디어 크리에이터세상을 평정한 1인 미디어 크리에이터</a></td>
+													<td><a href="#layer1" class="layer-open">5</a></td>
+												</tr>
+												<tr>
+													<td>100</td>
+													<td>2015.08.28</td>
+													<td>10:00 ~ 11:00</td>
+													<td>2</td>
+													<td><a href="#">블럭</a></td>
+													<td class="al-left"><a href="#">세상을 평정한 1인 미디어 크리에이터세상을 평정한 1인 미디어 크리에이터</a></td>
+													<td><a href="#layer1" class="layer-open">5</a></td>
+												</tr>
+												<tr>
+													<td>100</td>
+													<td>2015.08.28</td>
+													<td>10:00 ~ 11:00</td>
+													<td>2</td>
+													<td><a href="#">특강</a></td>
+													<td class="al-left"><a href="#">세상을 평정한 1인 미디어 크리에이터세상을 평정한 1인 미디어 크리에이터</a></td>
+													<td><a href="#layer1" class="layer-open">5</a></td>
+												</tr>
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="paging">
+									<a href="#" class="prev"><img src="../images/common/btn_paging_prev.gif" alt="처음" /></a>
+									<strong>1</strong>
+									<a href="#">2</a>
+									<a href="#">3</a>
+									<a href="#">4</a>
+									<a href="#">5</a>
+									<a href="#">6</a>
+									<a href="#">7</a>
+									<a href="#">8</a>
+									<a href="#">9</a>
+									<a href="#">10</a>
+									<a href="#" class="next"><img src="../images/common/btn_paging_next.gif" alt="맨끝" /></a>
+								</div>
+							</div>
+
+							<!-- 문자 정산 -->
+							<div class="tab-cont">
+								<div class="calculate-management">
+									<div class="total-send">
+										<div>
+											<span class="num">총 전송 횟수(회) <em>100회</em></span>
+											<span class="won">총 금액(원) <em>8,590원</em></span>
+										</div>
+										<p>※ 매월 1일 부터 말일까지의 누적 사용량 표시 </p>
+									</div>
+
+									<div class="search-box business">
+										<dl>
+											<dt>기간</dt>
+											<dd>
+												<span class="calendar">
+													<input type="text" class="inp-style1" style="width:110px;" name="" />
+													<a href="#"><img src="../images/common/btn_calendar.png" alt="달력" /></a> ~
+													<input type="text" class="inp-style1" style="width:110px;" name="" />
+													<a href="#"><img src="../images/common/btn_calendar.png" alt="달력" /></a>
+												</span>
+												<span class="btn">
+													<a href="#" class="btn-type1">1주일</a>
+													<a href="#" class="btn-type1">1개월</a>
+													<a href="#" class="btn-type1">3개월</a>
+												</span>
+											</dd>
+										</dl>
+										<div class="btn-area">
+											<a href="#" class="btn-search"><span>검색</span></a>
+										</div>
+									</div>
+									<span class="list-number">
+										<select name="" style="width:70px;">
+											<option>10</option>
+										</select>
+									</span>
+									<div class="board-type1 schedule">
+										<table>
+											<caption>문자정산 - 번호, 전송일시, 내역, 발송자, 금액(원)</caption>
+											<colgroup>
+												<col style="width:10%;" />
+												<col style="width:20%;" />
+												<col style="width:20%;" />
+												<col style="width:20%;" />
+												<col />
+											</colgroup>
+											<thead>
+												<tr>
+													<th scope="col">번호</th>
+													<th scope="col">전송일시</th>
+													<th scope="col">내역</th>
+													<th scope="col">발송자</th>
+													<th scope="col">금액(원)</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>100</td>
+													<td>2015.08.28 10:00</td>
+													<td>단문 전송 (1건)</td>
+													<td>홍길동</td>
+													<td>60원</td>
+												</tr>
+												<tr>
+													<td>100</td>
+													<td>2015.08.28 10:00</td>
+													<td>단문 전송 (1건)</td>
+													<td>홍길동</td>
+													<td>60원</td>
+												</tr>
+												<tr>
+													<td>100</td>
+													<td>2015.08.28 10:00</td>
+													<td>단문 전송 (1건)</td>
+													<td>홍길동</td>
+													<td>60원</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="paging-btn">
+									<div class="paging">
+										<a href="#" class="prev"><img src="../images/common/btn_paging_prev.gif" alt="처음" /></a>
+										<strong>1</strong>
+										<a href="#">2</a>
+										<a href="#">3</a>
+										<a href="#">4</a>
+										<a href="#">5</a>
+										<a href="#">6</a>
+										<a href="#">7</a>
+										<a href="#">8</a>
+										<a href="#">9</a>
+										<a href="#">10</a>
+										<a href="#" class="next"><img src="../images/common/btn_paging_next.gif" alt="맨끝" /></a>
+									</div>
+									<span class="r-btn"><span class="excel-file-down"><a href="#">엑셀파일 다운로드</a></span></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="cont-quick"><a href="#header"><img src="../images/common/img_quick.png" alt="상단으로 이동" /></a></div>
+		</div>
+
+		<div id="footer">
+			<div class="footer-cont">
+				<div class="footer-info">
+					<ul class="footer-menu">
+						<li><a href="#">이용약관</a></li>
+						<li><a href="#">개인정보처리방침</a></li>
+						<li><a href="#">이메일무단수집거부</a></li>
+						<li><a href="#">변경동의</a></li>
+					</ul>
+					<div class="footer-menu-organization">
+						<a href="#" class="organization">관련사이트</a>
+						<ul class="organization-ul">
+							<li><a href="#">커리어넷</a></li>
+							<li><a href="#">한국직업능률개발원</a></li>
+							<li><a href="#">한국과학창의재단</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-organization">
+					<img src="./../images/main/img_footer_fscience.png" alt="미래창조과학부">
+					<img src="./../images/main/img_footer_edu.png" alt="교육부">
+				</div>
+				<div class="footer-science-menu">
+					<address>세종특별자치시 시청대로 370 세종국책연구단지 사회정책동 한국직업능력개발원 커리어넷</address>
+					<p class="footer-manage">운영: 한국직업능력개발원 진료교육센터</p>
+					<p class="footer-support">지원: 교육부</p>
+					<p class="footer-copyright">COPYRIGHTS <em>&copy;</em> KRIVET ALL RIGHTS RESERVED.</p>
+				</div>
+			</div>
+		</div>
+		<!-- layerpopup -->
+		<div class="layer-pop-wrap" id="layer1">
+			<div class="title">
+				<strong>신청 디바이스</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont board">
+				<div class="device-request">
+					<div class="board-type2">
+						<table>
+							<caption>신청 디바이스 - 수업, 멘토, 상태, 일시</caption>
+							<colgroup>
+								<col style="width:114px;" />
+								<col />
+								<col style="width:114px;" />
+								<col />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="row" class="compulsory">수업</th>
+									<td colspan="3">[블록] 세상을 평정한 1인 미디어 크리에이터</td>
+								</tr>
+								<tr>
+									<th scope="row" class="compulsory">멘토</th>
+									<td>양띵</td>
+									<th scope="row" class="compulsory">상태</th>
+									<td>수업예정</td>
+								</tr>
+								<tr>
+									<th scope="row" class="compulsory">일시</th>
+									<td colspan="3">2015.08.23  10:00 ~ 10:45</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="pop-board-scroll">
+						<div class="board-type1">
+							<table>
+								<caption>정산관리 - 번호, 학교, 학급/그룹</caption>
+								<colgroup>
+									<col style="width:15%;" />
+									<col />
+									<col style="width:20%;" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">번호</th>
+										<th scope="col">학교</th>
+										<th scope="col">학급/그룹</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>100</td>
+										<td class="al-left">연무중학교</td>
+										<td><a href="#">3학년 1반</a></td>
+									</tr>
+									<tr>
+										<td>100</td>
+										<td class="al-left">대전둔원고등학교</td>
+										<td><a href="#">3학년 1반</a></td>
+									</tr>
+									<tr>
+										<td>100</td>
+										<td class="al-left">서울고등학교</td>
+										<td><a href="#">3학년 1반</a></td>
+									</tr>
+									<tr>
+										<td>100</td>
+										<td class="al-left">서울고등학교</td>
+										<td><a href="#">3학년 1반</a></td>
+									</tr>
+									<tr>
+										<td>100</td>
+										<td class="al-left">서울고등학교</td>
+										<td><a href="#">3학년 1반</a></td>
+									</tr>
+									<tr>
+										<td>100</td>
+										<td class="al-left">서울고등학교</td>
+										<td><a href="#">3학년 1반</a></td>
+									</tr>
+									<tr>
+										<td>100</td>
+										<td class="al-left">서울고등학교</td>
+										<td><a href="#">3학년 1반</a></td>
+									</tr>
+									<tr>
+										<td>100</td>
+										<td class="al-left">서울고등학교</td>
+										<td><a href="#">3학년 1반</a></td>
+									</tr>
+									<tr>
+										<td>100</td>
+										<td class="al-left">서울고등학교</td>
+										<td><a href="#">3학년 1반</a></td>
+									</tr>
+									<tr>
+										<td>100</td>
+										<td class="al-left">서울고등학교</td>
+										<td><a href="#">3학년 1반</a></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type2">확인</a>
+					<a href="#" class="btn-type2 gray">취소</a>
+				</div>
+			</div>
+		</div>
+		<!-- //layerpopup -->
+	</div>
+</body>
+</html>

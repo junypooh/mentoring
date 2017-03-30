@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<title>산들 바람 관리자 페이지</title>
+
+	<link rel="stylesheet" href="./css/common.css" />
+
+	<script src="./js/jquery-1.11.1.min.js"></script>
+	<script src="./js/common.js"></script>
+	<script type="text/javascript" src="./js/jquery.gallery.slide.js"></script>
+	<script type="text/javascript" src="./js/jquery.easing.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.bxslider1').sistarGallery({
+				$animateTime_ : 500,
+				$animateEffect_ : "easeInOutQuint",
+				$autoDelay : 2000,
+				$focusFade : 500,
+				$currentNum : 1
+			});
+		});
+	</script>
+</head>
+
+<body>
+	<div id="wrap">
+		<!-- header -->
+		<div id="header" class="administrator">
+			<div class="logo-area">
+				<ul class="header-utill">
+					<li class="top-admin"><a href="#"><span>최고관리자(admin)</span></a></li>
+					<li><a href="#">나의정보</a></li>
+					<li class="logout"><a href="#"><span>로그아웃</span></a></li>
+					<li class="logout login" style="display:none;"><a href="#"><span>로그인</span></a></li>
+				</ul>
+			</div>
+			<!-- gnb -->
+			<div class="gnb-area">
+				<h1 class="logo"><a href="#"><img src="./images/common/logo1.gif" alt="산들바람 관리자 페이지" /></a></h1>
+				<ul class="alarm">
+					<li>
+						<a href="#">메인관리</a>
+						<div class="menu1">
+							<div>
+								<ul>
+									<li><a href="#">배너관리</a></li>
+									<li><a href="#">멘토영역관리</a></li>
+									<li><a href="#">수업영역관리</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li class="active">
+						<a href="#">수업운영관리</a>
+						<div>
+							<div>
+								<ul>
+									<li><a href="#">학교정보관리</a></li>
+									<li><a href="#" class="active">수업현황관리</a></li>
+									<li><a href="#">개인멘토 승인관리</a></li>
+									<li><a href="#">스튜디오관리</a></li>
+									<li><a href="#">MC관리</a></li>
+									<li><a href="#">기기제한설정</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#">이용안내관리</a>
+						<div class="menu3">
+							<div>
+								<ul>
+									<li><a href="#">공지사항</a></li>
+									<li><a href="#">자주찾는질문</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#">게시판관리</a>
+						<div class="menu4">
+							<div>
+								<ul>
+									<li><a href="#">다시보기</a></li>
+									<li><a href="#">자료실</a></li>
+									<li><a href="#">문의하기</a></li>
+									<li><a href="#">자유게시판</a></li>
+									<li><a href="#">평점및후기</a></li>
+									<li><a href="#">수업과제</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#">사용자관리</a>
+						<div class="menu5">
+							<div>
+								<ul>
+									<li><a href="#">관리자관리</a></li>
+									<li><a href="#">기업멘토관리</a></li>
+									<li><a href="#" class="active">회원정보관리</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#">알림관리</a>
+						<div class="w-100">
+							<div>
+								<ul>
+									<li><a href="#" class="active">문자전송</a></li>
+									<li><a href="#">푸시알림방송</a></li>
+									<li><a href="#">이메일발송</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li class="line">
+						<a href="#">통계</a>
+						<div>
+							<div>
+								<ul>
+									<li>
+										<a href="#" class="active">회원통계</a>
+										<ul class="s-menu">
+											<li><a href="#">접속 현황</a></li>
+											<li><a href="#">가입 현황</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#">수업통계</a>
+										<ul class="s-menu">
+											<li><a href="#">수업통계</a></li>
+											<li><a href="#">직업통계</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#">멘토 통계</a>
+										<ul class="s-menu">
+											<li><a href="#">멘토통계</a></li>
+											<li><a href="#">기업통계</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#">게시판 통계</a>
+										<ul class="s-menu">
+											<li><a href="#">정산통계</a></li>
+											<li><a href="#">학교별 정산</a></li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- //gnb -->
+		</div>
+		<!-- //header -->
+		<!-- contents -->
+		<div id="contents">
+			<div class="cont">
+				<div class="location">
+					<span class="home"><img src="./images/common/home.png" alt="home" /></span>
+					<span>수업운영관리 </span>
+					<span>개인멘토 승인관리</span>
+				</div>
+				<h2 class="title-type2">수업개설 상세</h2>
+				
+				<div class="lesson_detail">
+					<h3>[연강] 꿈을 찾는 학생들의 서포터가 되어볼래? 진로교육강사</h3>
+					<div class="board-slide">
+						<div class="slide">
+							<ul class="bxslider1">
+								<li><div><img src="../images/management/thumb_243x243.jpg" alt="" /></div></li>
+								<li><div><img src="../images/management/thumb_243x243.jpg" alt="" /></div></li>
+								<li><div><img src="../images/management/thumb_243x243.jpg" alt="" /></div></li>
+							</ul>
+							<ul class="navi slide-btn">
+								<li class="active"><button type="button">사진1</button></li>
+								<li><button type="button">사진2</button></li>
+								<li><button type="button">사진3</button></li>
+							</ul>
+						</div>
+						<div class="board-type2 detail b-line">
+							<table>
+								<caption></caption>
+								<colgroup>
+									<col style="width:114px;" />
+									<col />
+									<col style="width:114px;" />
+									<col>
+								</colgroup>
+								<tbody>
+									<tr>
+										<th scope="row">수업개요</th>
+										<td colspan="3">건강한 코와 정신, 그리고 향기를 사랑하는 사람</td>
+									</tr>
+									<tr>
+										<th scope="row">태그</th>
+										<td colspan="3">컬러미퍼퓸, 스피치교육, 스피치, 교육봉사, 청소년, 아트스피치, 진로교육, 김미경, 라온제나스피치</td>
+									</tr>
+									<tr>
+										<th scope="row">수업유형</th>
+										<td>연강</td>
+										<th scope="row">학교급</th>
+										<td>
+											<span class="icon-rating middle">중</span>
+											<span class="icon-rating high">고</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">수업소개</th>
+										<td colspan="3">
+											<div class="lesson-cont">
+												<a href="#">2014년 사회적기업가 육성사업에 선정된 컬러미퍼퓸은 '스피치 교육을 통해 20대와 함께 청소년 사회문제를 해결한다'라는 소셜 미션을 가진 스피치 전문 교육업체이다. </a>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">수업내용</th>
+										<td colspan="3">
+											<div class="lesson-cont">
+												<a href="#">2014년 사회적기업가 육성사업에 선정된 컬러미퍼퓸은 '스피치 교육을 통해 20대와 함께 청소년 사회문제를 해결한다'라는 소셜 미션을 가진 스피치 전문 교육업체이다. </a>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					
+				</div>
+				<div class="btn-paging">
+					<div class="btn-right">
+						<a href="#" class="btn-type1">승인</a>
+						<a href="#" class="btn-type1 gray">반려</a>
+						<a href="#" class="btn-type1 gray">목록</a>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		<!-- //contents -->
+		<div id="footer" class="admin">
+			<div class="footer-cont">
+				<div class="footer-info">
+					<ul class="footer-menu">
+						<li><a href="#">이용약관</a></li>
+						<li><a href="#">개인정보처리방침</a></li>
+						<li><a href="#">이메일무단수집거부</a></li>
+						<li><a href="#">변경동의</a></li>
+					</ul>
+					<div class="footer-menu-organization">
+						<a href="#" class="organization">관련사이트</a>
+						<ul class="organization-ul">
+							<li><a href="#">커리어넷</a></li>
+							<li><a href="#">한국직업능률개발원</a></li>
+							<li><a href="#">한국과학창의재단</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-organization">
+					<img src="images/common/img_footer_fscience.png" alt="미래창조과학부" />
+					<img src="images/common/img_footer_edu.png" alt="교육부" />
+				</div>
+				<div class="footer-science-menu">
+					<address>세종특별자치시 시청대로 370 세종국책연구단지 사회정책동 한국직업능력개발원 커리어넷</address>
+					<p class="footer-manage">운영: 한국직업능력개발원 진료교육센터</p>
+					<p class="footer-support">지원: 교육부</p>
+					<p class="footer-copyright">COPYRIGHTS <em>©</em> KRIVET ALL RIGHTS RESERVED.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

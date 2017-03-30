@@ -1,0 +1,114 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+             http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+             http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+    <context:component-scan base-package="kr.or.career.mentor">
+        <context:include-filter expression="org.aspectj.lang.annotation.Aspect" type="annotation" />
+        <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+        <context:exclude-filter expression="org.springframework.stereotype.Service" type="annotation"/>
+        <context:exclude-filter expression="org.springframework.stereotype.Repository" type="annotation"/>
+    </context:component-scan>
+
+    <mvc:annotation-driven  />
+    <aop:aspectj-autoproxy />
+
+    <mvc:resources mapping="/images/**" location="/images/" />
+    <mvc:resources mapping="/js/**" location="/js/" />
+    <mvc:resources mapping="/css/**" location="/css/" />
+    <!-- For Pagination Tag -->
+    <!--<bean class="egovframework.com.cmm.ImagePaginationRenderer" id="imageRenderer"/>
+
+    <bean class="egovframework.rte.ptl.mvc.tags.ui.pagination.DefaultPaginationManager" id="paginationManager">
+        <property name="rendererType">
+            <map>
+                <entry key="image" value-ref="imageRenderer"/>
+            </map>
+        </property>
+    </bean>-->
+
+    <!--<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        &lt;!&ndash;<property name="webBindingInitializer">
+            <bean class="egovframework.com.cmm.web.EgovBindingInitializer"/>
+        </property>&ndash;&gt;
+    </bean>-->
+    <!--<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>-->
+
+    <!-- IP 정보 기록 및 로그인 체크가 필요한 URL과 로그인 여부를 체크해줄 인터셉터를 등록한다. -->
+    <!-- <mvc:interceptors>
+        <bean class="egovframework.com.cmm.interceptor.IpObtainInterceptor" />
+        <mvc:interceptor>
+            <mvc:mapping path="/**/*.do" />
+            <mvc:exclude-mapping path="/uat/uia/**" />
+            <mvc:exclude-mapping path="/index.do" />
+            <mvc:exclude-mapping path="/EgovLeft.do" />
+            <mvc:exclude-mapping path="/EgovContent.do" />
+            <mvc:exclude-mapping path="/EgovTop.do" />
+            <mvc:exclude-mapping path="/EgovBottom.do" />
+            <mvc:exclude-mapping path="/uat/uia/egovLoginUsr.do" />
+            <mvc:exclude-mapping path="/uat/uia/actionLogin.do" />
+            <bean class="egovframework.com.cmm.interceptor.AuthenticInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors> -->
+
+
+<!--
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="defaultErrorView" value="egovframework/com/cmm/error/egovError"/>
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.dao.DataAccessException">egovframework/com/cmm/error/dataAccessFailure</prop>
+                <prop key="org.springframework.transaction.TransactionException">egovframework/com/cmm/error/dataAccessFailure</prop>
+                <prop key="egovframework.rte.fdl.cmmn.exception.EgovBizException">egovframework/com/cmm/error/egovBizException</prop>
+                <prop key="org.springframework.web.HttpSessionRequiredException">egovframework/com/uat/uia/EgovLoginUsr</prop>
+
+            </props>
+        </property>
+    </bean>
+ -->
+    <!-- for JFile -->
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="0"/>
+
+    <bean class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+        <property name="definitions">
+            <list>
+                <value>classpath:tiles/templates.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="1"
+          p:viewClass="org.springframework.web.servlet.view.tiles2.TilesView"/>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:order="2"
+          p:prefix="/WEB-INF/jsp/" p:suffix=".jsp"/>
+
+    <bean name="JsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+        <property name="prefixJson" value="true" />
+    </bean>
+
+
+    <!-- MULTIPART RESOLVERS -->
+    <!-- regular spring resolver -->
+    <bean id="spring.RegularCommonsMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="20971520" /><!-- 20MB -->
+        <property name="maxInMemorySize" value="20971520" /><!-- 20MB -->
+    </bean>
+
+    <!-- custom multi file resolver -->
+    <!--    <bean id="local.MultiCommonsMultipartResolver" class="egovframework.com.cmm.web.EgovMultipartResolver">
+            <property name="maxUploadSize" value="100000000" />
+            <property name="maxInMemorySize" value="100000000" />
+        </bean>-->
+
+    <!-- choose one from above and alias it to the name Spring expects -->
+    <!-- alias name="local.MultiCommonsMultipartResolver" alias="multipartResolver" /-->
+    <alias name="spring.RegularCommonsMultipartResolver" alias="multipartResolver" />
+
+</beans>

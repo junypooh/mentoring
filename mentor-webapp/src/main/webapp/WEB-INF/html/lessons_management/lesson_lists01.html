@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<title>산들바람 멘토 - 원격진로멘토링</title>
+	<link rel="stylesheet" href="../css/management.css">
+	<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="../js/common.js"></script>
+</head>
+<body>
+	<ul id="skipNav">
+		<li><a href="#">본문</a></li>
+		<li><a href="#">footer</a></li>
+	</ul>
+	<div id="wrap">
+		<!-- header -->
+		<div id="header">
+			<div class="gnb-wrap">
+				<h1><a href="#">산들바람 멘토 - 원격진로멘토링</a></h1>
+				<!-- 로그인 전 -->
+				<ul>
+					<li class="login"><a href="#">로그인</a></li>
+					<li class="join"><a href="#">회원가입</a></li>
+				</ul>
+				<!-- 로그아웃상태 -->
+				<ul style="display:none;">
+					<li class="login-state"><a href="#">김상경</a></li>
+					<li class="member-info"><a href="#">회원정보</a></li>
+					<li class="logout"><a href="#">로그아웃</a></li>
+				</ul>
+
+				<!-- gnb -->
+				<div id="gnb"><!-- 소속멘토: affiliate  기업멘토:business -->
+					<ul>
+						<li>
+							<a href="#">활동멘토</a>
+							<div class="sub-gnb smenu1">
+								<ul>
+									<li><a href="#">활동멘토</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">수업관리</a>
+							<div class="sub-gnb smenu2">
+								<ul>
+									<li><a href="#">수업현황</a></li>
+									<li><a href="#">수업개설신청</a></li>
+									<li><a href="#">요청수업</a></li>
+									<li><a href="#">자료등록</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">커뮤니티관리</a>
+							<div class="sub-gnb smenu3">
+								<ul>
+									<li><a href="#">질문답변</a></li>
+									<li><a href="#">수업과제</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">활동이력</a>
+							<div class="sub-gnb smenu4">
+								<ul>
+									<li><a href="#">나의 수업내역</a></li>
+									<li><a href="#">알림내역</a></li>
+								</ul>
+							</div>
+						</li>
+						<li class="gnb-last">
+							<a href="#">서비스소개</a>
+							<div class="sub-gnb smenu5">
+								<ul>
+									<li><a href="#">산들바람소개</a></li>
+									<li><a href="#">멘토활동안내</a></li>
+									<li><a href="#">공지사항</a></li>
+									<li><a href="#">자주 찾는 질문</a></li>
+									<li><a href="#">서비스가이드</a></li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<!-- //gnb -->
+			</div>
+			<div class="sub-area"></div>
+		</div>
+		<!-- //header -->
+		<div id="container">
+			<div class="location">
+				<a href="#" class="home">메인으로 이동</a>
+				<span>수업관리</span>
+				<span>수업현황</span>
+			</div>
+			<div class="content">
+				<h2>수업현황</h2>
+				<div class="cont type3">
+					<div class="calculate-management lists">
+						<div class="search-box">
+							<dl>
+								<dt>날짜</dt>
+								<dd>
+									<span class="calendar">
+										<input type="text" class="inp-style1" style="width:110px;" name="" />
+										<a href="#"><img src="../images/common/btn_calendar.png" alt="달력" /></a> ~
+										<input type="text" class="inp-style1" style="width:110px;" name="" />
+										<a href="#"><img src="../images/common/btn_calendar.png" alt="달력" /></a>
+									</span>
+									<span class="btn">
+										<em class="school">학교급</em>
+										<span>
+											<select name="" style="width:108px;">
+												<option>전체</option>
+											</select>
+										</span>
+									</span>
+								</dd>
+								<dt>키워드</dt>
+								<dd>
+									<select name="" style="width:108px;">
+										<option>전체</option>
+									</select>
+									<input type="text" class="inp-style1" style="width:282px;" name="">
+									<span class="btn">
+										<em>수업유형</em>
+										<span>
+											<select name="" style="width:108px;">
+												<option>전체</option>
+											</select>
+										</span>
+									</span>
+								</dd>
+							</dl>
+							<div class="btn-area">
+								<a href="#" class="btn-search"><span>검색</span></a>
+							</div>
+						</div>
+					</div>
+					<div class="tab-action">
+						<ul class="sub-tab tab05">
+							<li class="active"><a href="#">전체</a></li>
+							<li><a href="#">수강모집</a></li>
+							<li><a href="#">수업예정</a></li>
+							<li><a href="#">수업대기</a></li>
+							<li><a href="#">수업완료</a></li>
+						</ul>
+
+						<div class="tab-action-cont">
+							<!-- 전체 -->
+							<div class="tab-cont active">
+								<div class="tit-wrap">
+									<span class="right">
+										<select style="width:68px;" name="">
+											<option>10</option>
+										</select>
+									</span>
+								</div>
+								<div class="board-type1 lesson_lists">
+									<table>
+										<caption>수업 전체현황 - 상태, 수업, 신청, 참관</caption>
+										<colgroup>
+											<col style="width:100px;" />
+											<col />
+											<col style="width:80px;" />
+											<col style="width:80px;" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th scope="col">상태</th>
+												<th scope="col">수업</th>
+												<th scope="col">신청</th>
+												<th scope="col">참관</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>수업대기</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#layer5" class="layer-open">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>수업예정</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission video"><a href="#"><img src="../images/common/btn_video.png" alt="다시보기" /></a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#layer5" class="layer-open">00</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>승인대기</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#layer5" class="layer-open">10</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">5</a>10</span></td>
+											</tr>
+											<tr>
+												<td>수업완료</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#layer5" class="layer-open">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>승인반려</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#layer5" class="layer-open">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>모집중</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#layer5" class="layer-open">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>모집취소</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#layer5" class="layer-open">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td class="board-no-data" colspan="4" style="display:none;">등록된 수업이 없습니다.</td><!-- 2015-11-10 추가 -->
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="paging">
+									<a href="#" class="prev"><img src="../images/common/btn_paging_prev.gif" alt="처음" /></a>
+									<strong>1</strong>
+									<a href="#">2</a>
+									<a href="#">3</a>
+									<a href="#">4</a>
+									<a href="#">5</a>
+									<a href="#">6</a>
+									<a href="#">7</a>
+									<a href="#">8</a>
+									<a href="#">9</a>
+									<a href="#">10</a>
+									<a href="#" class="next"><img src="../images/common/btn_paging_next.gif" alt="맨끝" /></a>
+								</div>
+							</div>
+
+							<!-- 수강모집 -->
+							<div class="tab-cont">
+								<div class="tit-wrap">
+									<span class="right">
+										<select style="width:68px;" name="">
+											<option>10</option>
+										</select>
+									</span>
+								</div>
+								<div class="board-type1 lesson_lists">
+									<table>
+										<caption>수업 전체현황 - 상태, 수업, 신청, 참관</caption>
+										<colgroup>
+											<col style="width:100px;" />
+											<col />
+											<col style="width:80px;" />
+											<col style="width:80px;" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th scope="col">상태</th>
+												<th scope="col">수업</th>
+												<th scope="col">신청</th>
+												<th scope="col">참관</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>수업대기</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연2</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>수업예정</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission video"><a href="#"><img src="../images/common/btn_video.png" alt="다시보기" /></a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">00</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>승인대기</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">5</a>10</span></td>
+											</tr>
+											<tr>
+												<td>수업완료</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>승인반려</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>모집중</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>모집취소</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="paging">
+									<a href="#" class="prev"><img src="../images/common/btn_paging_prev.gif" alt="처음" /></a>
+									<strong>1</strong>
+									<a href="#">2</a>
+									<a href="#">3</a>
+									<a href="#">4</a>
+									<a href="#">5</a>
+									<a href="#">6</a>
+									<a href="#">7</a>
+									<a href="#">8</a>
+									<a href="#">9</a>
+									<a href="#">10</a>
+									<a href="#" class="next"><img src="../images/common/btn_paging_next.gif" alt="맨끝" /></a>
+								</div>
+
+							</div>
+
+							<!-- 수업예정 -->
+							<div class="tab-cont">
+								<div class="tit-wrap">
+									<span class="right">
+										<select style="width:68px;" name="">
+											<option>10</option>
+										</select>
+									</span>
+								</div>
+								<div class="board-type1 lesson_lists">
+									<table>
+										<caption>수업 전체현황 - 상태, 수업, 신청, 참관</caption>
+										<colgroup>
+											<col style="width:100px;" />
+											<col />
+											<col style="width:80px;" />
+											<col style="width:80px;" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th scope="col">상태</th>
+												<th scope="col">수업</th>
+												<th scope="col">신청</th>
+												<th scope="col">참관</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>수업대기</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연2</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>수업예정</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission video"><a href="#"><img src="../images/common/btn_video.png" alt="다시보기" /></a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">00</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>승인대기</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">5</a>10</span></td>
+											</tr>
+											<tr>
+												<td>수업완료</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>승인반려</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>모집중</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>모집취소</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="paging">
+									<a href="#" class="prev"><img src="../images/common/btn_paging_prev.gif" alt="처음" /></a>
+									<strong>1</strong>
+									<a href="#">2</a>
+									<a href="#">3</a>
+									<a href="#">4</a>
+									<a href="#">5</a>
+									<a href="#">6</a>
+									<a href="#">7</a>
+									<a href="#">8</a>
+									<a href="#">9</a>
+									<a href="#">10</a>
+									<a href="#" class="next"><img src="../images/common/btn_paging_next.gif" alt="맨끝" /></a>
+								</div>
+
+							</div>
+
+							<!-- 수업대기 -->
+							<div class="tab-cont">
+								<div class="tit-wrap">
+									<span class="right">
+										<select style="width:68px;" name="">
+											<option>10</option>
+										</select>
+									</span>
+								</div>
+								<div class="board-type1 lesson_lists">
+									<table>
+										<caption>수업 전체현황 - 상태, 수업, 신청, 참관</caption>
+										<colgroup>
+											<col style="width:100px;" />
+											<col />
+											<col style="width:80px;" />
+											<col style="width:80px;" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th scope="col">상태</th>
+												<th scope="col">수업</th>
+												<th scope="col">신청</th>
+												<th scope="col">참관</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>수업대기</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연2</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>수업예정</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission video"><a href="#"><img src="../images/common/btn_video.png" alt="다시보기" /></a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">00</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>승인대기</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">5</a>10</span></td>
+											</tr>
+											<tr>
+												<td>수업완료</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>승인반려</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>모집중</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>모집취소</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="paging">
+									<a href="#" class="prev"><img src="../images/common/btn_paging_prev.gif" alt="처음" /></a>
+									<strong>1</strong>
+									<a href="#">2</a>
+									<a href="#">3</a>
+									<a href="#">4</a>
+									<a href="#">5</a>
+									<a href="#">6</a>
+									<a href="#">7</a>
+									<a href="#">8</a>
+									<a href="#">9</a>
+									<a href="#">10</a>
+									<a href="#" class="next"><img src="../images/common/btn_paging_next.gif" alt="맨끝" /></a>
+								</div>
+
+							</div>
+
+							<!-- 수업완료 -->
+							<div class="tab-cont">
+								<div class="tit-wrap">
+									<span class="right">
+										<select style="width:68px;" name="">
+											<option>10</option>
+										</select>
+									</span>
+								</div>
+								<div class="board-type1 lesson_lists">
+									<table>
+										<caption>수업 전체현황 - 상태, 수업, 신청, 참관</caption>
+										<colgroup>
+											<col style="width:100px;" />
+											<col />
+											<col style="width:80px;" />
+											<col style="width:80px;" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th scope="col">상태</th>
+												<th scope="col">수업</th>
+												<th scope="col">신청</th>
+												<th scope="col">참관</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>수업대기</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연2</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>수업예정</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission video"><a href="#"><img src="../images/common/btn_video.png" alt="다시보기" /></a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">00</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>승인대기</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">5</a>10</span></td>
+											</tr>
+											<tr>
+												<td>수업완료</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>승인반려</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>모집중</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+											<tr>
+												<td>모집취소</td>
+												<td class="al-left">
+													<div class="lesson-mngmt-info">
+														<a href="#">[특강] 내 손으로 만드는 향긋한 식음료의 향연내 손으로 만드는 향긋한 식음료의 향연</a>
+														<span class="time">2015.08.23<em>10:00~11:00</em></span>
+														<span class="icon">
+															<span class="icon-rating elementary">초</span>
+															<span class="icon-rating middle">중</span>
+															<span class="icon-rating high">고</span>
+														</span>
+														<span class="admission"><a href="#">입장</a></span>
+													</div>
+												</td>
+												<td class="al-r"><span class="visit"><a href="#">7</a>10</span></td>
+												<td class="al-r"><span class="visit"><a href="#">10</a>10</span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="paging">
+									<a href="#" class="prev"><img src="../images/common/btn_paging_prev.gif" alt="처음" /></a>
+									<strong>1</strong>
+									<a href="#">2</a>
+									<a href="#">3</a>
+									<a href="#">4</a>
+									<a href="#">5</a>
+									<a href="#">6</a>
+									<a href="#">7</a>
+									<a href="#">8</a>
+									<a href="#">9</a>
+									<a href="#">10</a>
+									<a href="#" class="next"><img src="../images/common/btn_paging_next.gif" alt="맨끝" /></a>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="cont-quick"><a href="#header"><img src="../images/common/img_quick.png" alt="상단으로 이동" /></a></div>
+		</div>
+
+		<div id="footer">
+			<div class="footer-cont">
+				<div class="footer-info">
+					<ul class="footer-menu">
+						<li><a href="#">이용약관</a></li>
+						<li><a href="#">개인정보처리방침</a></li>
+						<li><a href="#">이메일무단수집거부</a></li>
+						<li><a href="#">변경동의</a></li>
+					</ul>
+					<div class="footer-menu-organization">
+						<a href="#" class="organization">관련사이트</a>
+						<ul class="organization-ul">
+							<li><a href="#">커리어넷</a></li>
+							<li><a href="#">한국직업능률개발원</a></li>
+							<li><a href="#">한국과학창의재단</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-organization">
+					<img src="./../images/main/img_footer_fscience.png" alt="미래창조과학부">
+					<img src="./../images/main/img_footer_edu.png" alt="교육부">
+				</div>
+				<div class="footer-science-menu">
+					<address>세종특별자치시 시청대로 370 세종국책연구단지 사회정책동 한국직업능력개발원 커리어넷</address>
+					<p class="footer-manage">운영: 한국직업능력개발원 진료교육센터</p>
+					<p class="footer-support">지원: 교육부</p>
+					<p class="footer-copyright">COPYRIGHTS <em>&copy;</em> KRIVET ALL RIGHTS RESERVED.</p>
+				</div>
+			</div>
+		</div>
+		<!-- layerpopup -->
+		<div class="layer-pop-wrap" id="layer1">
+			<div class="title">
+				<strong>문의하기 답변</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="lesson-task-popup">
+					<textarea name="" rows="" class="textarea-type1" cols=""></textarea>
+					<span class="area-txt"><em>0</em>/400자</span>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type2">확인</a>
+					<a href="#" class="btn-type2 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap" id="layer2">
+			<div class="title">
+				<strong>수업과제 답글</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="lesson-task-popup">
+					<textarea name="" rows="" class="textarea-type1" cols=""></textarea>
+					<span class="area-txt"><em>0</em>/200자</span>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type2">확인</a>
+					<a href="#" class="btn-type2 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap" id="layer3">
+			<div class="title">
+				<strong>수업자료 수정</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="lesson-data">
+					<span class="designation"><label><input type="checkbox" name="" class="aaa"> 공지 지정</label></span>
+					<div class="board-input-type1 upload">
+						<table>
+							<caption>추가정보 항목 - 연락처, 직업선택, 멘토약력 및 자기소개</caption>
+							<colgroup>
+								<col style="width:98px;" />
+								<col />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="row">제목</th>
+									<td><input type="text" class="inp-style1 h30" style="width:485px;" value="보조활동지 3종" name="" /></td>
+								</tr>
+								<tr>
+									<th scope="row">파일첨부</th>
+									<td>
+										<div class="input-file"><input type="file" /><span class="max-num">* 개별 파일 용량 20MB 및 최대 5개까지 지원</span></div>
+										<ul class="file-list">
+											<li>가나다라마바사아자차카타파하.pptx(13KB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제" /></a></li>
+											<li>가나다라마바사아자차카타파하.avi(19MB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제" /></a></li>
+											<li>가나다라마바사아자차카타파하.pptx(19KB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제" /></a></li>
+											<li>가나다라마바사아자차카타파하.docx(500KB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제" /></a></li>
+											<li>가나다라마바사아자차카타파하.wav(19MB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제" /></a></li>
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="btn-area">
+						<a href="#" class="btn-type2">확인</a>
+						<a href="#" class="btn-type2 gray">취소</a>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap" id="layer4">
+			<div class="title">
+				<strong>수업자료 등록</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="lesson-data">
+					<span class="designation"><label><input type="checkbox" name="" class="aaa"> 공지 지정</label></span>
+					<div class="board-input-type1 upload">
+						<table>
+							<caption>추가정보 항목 - 연락처, 직업선택, 멘토약력 및 자기소개</caption>
+							<colgroup>
+								<col style="width:98px;" />
+								<col />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="row">제목</th>
+									<td><input type="text" class="inp-style1 h30" style="width:485px;" value="" name="" /></td>
+								</tr>
+								<tr>
+									<th scope="row">파일첨부</th>
+									<td class="data-up-td">
+										<div class="input-file"><input type="file" /><span class="max-num">* 개별 파일 용량 20MB 및 최대 5개까지 지원</span></div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="btn-area">
+						<a href="#" class="btn-type2">확인</a>
+						<a href="#" class="btn-type2 gray">취소</a>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap" id="layer5">
+			<div class="title">
+				<strong>수업신청 정보</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type3">
+				<div class="request-info">
+					<p class="search-result">- 신청 기기수 <em>10</em> / 10</p>
+				</div>
+				<div class="mc-search-list box-scroll-wrap">
+					<table>
+						<caption>수업신청 정보 - 번호, 학교, 학급/그룹, 교사</caption>
+						<colgroup>
+							<col style="width:65px" />
+							<col style="width:256px"/>
+							<col style="width:144px" />
+							<col style="width:138px" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">번호</th>
+								<th scope="col">학교</th>
+								<th scope="col">학급/그룹</th>
+								<th scope="col">교사</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>10</td>
+								<td class="request-school">연무중학교</td>
+								<td class="request-group">3학년 1반 <em>(17)</em></td>
+								<td>홍길동</td>
+							</tr>
+							<tr>
+								<td>9</td>
+								<td class="request-school">경기여자고등학교</td>
+								<td class="request-group">1학년 2반 <em>(17)</em></td>
+								<td>김지현</td>
+							</tr>
+							<tr>
+								<td>8</td>
+								<td class="request-school">서울고등학교</td>
+								<td class="request-group">2학년 7반 <em>(17)</em></td>
+								<td>정재훈</td>
+							</tr>
+							<tr>
+								<td>7</td>
+								<td class="request-school">봉은중학교</td>
+								<td class="request-group">1학년 5반 <em>(17)</em></td>
+								<td>이재영</td>
+							</tr>
+							<tr>
+								<td>6</td>
+								<td class="request-school">청담고등학교</td>
+								<td class="request-group">1학년 2반 <em>(17)</em></td>
+								<td>김현수</td>
+							</tr>
+							<tr>
+								<td>5</td>
+								<td class="request-school">연무중학교</td>
+								<td class="request-group">3학년 1반 <em>(17)</em></td>
+								<td>홍길동</td>
+							</tr>
+							<tr>
+								<td>4</td>
+								<td class="request-school">연무중학교</td>
+								<td class="request-group">3학년 1반 <em>(17)</em></td>
+								<td>홍길동</td>
+							</tr>
+							<tr>
+								<td>3</td>
+								<td class="request-school">연무중학교</td>
+								<td class="request-group">3학년 1반 <em>(17)</em></td>
+								<td>홍길동</td>
+							</tr>
+							<tr>
+								<td>2</td>
+								<td class="request-school">연무중학교</td>
+								<td class="request-group">3학년 1반 <em>(17)</em></td>
+								<td>홍길동</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td class="request-school">연무중학교</td>
+								<td class="request-group">3학년 1반 <em>(17)</em></td>
+								<td>홍길동</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type2 blue">확인</a>
+					<a href="#" class="btn-type2 gray">취소</a>
+				</div>
+			</div>
+		</div>
+		<!-- //layerpopup -->
+	</div>
+</body>
+</html>

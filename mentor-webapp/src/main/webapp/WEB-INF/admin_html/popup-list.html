@@ -1,0 +1,789 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<title>산들 바람 관리자 페이지</title>
+
+	<link rel="stylesheet" href="css/common.css" />
+
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/common.js"></script>
+</head>
+<body class="popdim">
+	<div id="wrap" class="popup">
+		<div class="layer-pop-wrap w720">
+			<div class="title">
+				<strong>배정그룹 현황</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="grop-present">
+					<p>서울시교육청 그룹 관리자 소속 총 합계  <span>245개</span> 배정 그룹</p>
+					<div class="tbl-style2">
+						<div class="pop-scroll">
+							<table>
+								<caption></caption>
+								<colgroup>
+									<col style="width:10%" />
+									<col style="width:17%" />
+									<col style="width:10%" />
+									<col />
+									<col style="width:15%" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">번호</th>
+										<th scope="col">배정그룹</th>
+										<th scope="col">배정횟수</th>
+										<th scope="col">배정기간</th>
+										<th scope="col">학교 수</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>10</td>
+										<td><a href="#">그룹명</a></td>
+										<td>3</td>
+										<td>2014.09.01~2015.10.31</td>
+										<td>3</td>
+									</tr>
+									<tr>
+										<td>10</td>
+										<td><a href="#">그룹명</a></td>
+										<td>3</td>
+										<td>2014.09.01~2015.10.31</td>
+										<td>3</td>
+									</tr>
+									<tr>
+										<td>10</td>
+										<td><a href="#">그룹명</a></td>
+										<td>3</td>
+										<td>2014.09.01~2015.10.31</td>
+										<td>3</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type1">확인</a>
+					<a href="#" class="btn-type1 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap w720">
+			<div class="title">
+				<strong>수업 선택</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="search-box">
+					<table>
+						<caption></caption>
+						<colgroup>
+							<col style="width:15%">
+							<col style="width:45%">
+							<col style="width:15%">
+							<col>
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="row">날짜</th>
+								<td>
+									<span class="calendar">
+										<input type="text" class="inp-style1" style="width:110px;" name="">
+										<a href="#"><img src="images/common/btn_calendar.png" alt="달력"></a> ~
+										<input type="text" class="inp-style1" style="width:110px;" name="">
+										<a href="#"><img src="images/common/btn_calendar.png" alt="달력"></a>
+									</span>
+								</td>
+								<th scope="row">수업유형</th>
+								<td>
+									<select style="width:100px;" name="">
+										<option>단강</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">키워드</th>
+								<td colspan="3">
+									<select style="width:100px;" name="">
+										<option>전체</option>
+									</select>
+									<input type="text" class="inp-style1" style="width:390px;" name="">
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="btn-area-wrap">
+					<div class="btn-center">
+						<a href="#" class="btn-type1">검색</a>
+					</div>
+				</div>
+				<div class="grop-present">
+					<div class="tbl-style2">
+						<div class="pop-scroll">
+							<table>
+								<caption></caption>
+								<colgroup>
+									<col style="width:10%" />
+									<col style="width:30%" />
+									<col style="width:20%" />
+									<col style="width:15%" />
+									<col />
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">선택</th>
+										<th scope="col">수업일시</th>
+										<th scope="col">직업명</th>
+										<th scope="col">멘토명</th>
+										<th scope="col">수업명</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td><input type="radio" name="" /></td>
+										<td>2015.08.13 10:00~10:45</td>
+										<td class="al-left">푸드닥터</td>
+										<td>강정화</td>
+										<td class="al-left">음식으로 세상을 치유하는 푸드닥터</td>
+									</tr>
+									<tr>
+										<td><input type="radio" name="" /></td>
+										<td>2015.08.13 10:00~10:45</td>
+										<td class="al-left">푸드닥터</td>
+										<td>강정화</td>
+										<td class="al-left">음식으로 세상을 치유하는 푸드닥터</td>
+									</tr>
+									<tr>
+										<td><input type="radio" name="" /></td>
+										<td>2015.08.13 10:00~10:45</td>
+										<td class="al-left">푸드닥터푸드닥터푸드닥터</td>
+										<td>강정화</td>
+										<td class="al-left">음식으로 세상을 치유하는 푸드닥터</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type1">확인</a>
+					<a href="#" class="btn-type1 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap w720">
+			<div class="title">
+				<strong>수업자료 수정</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="detail-board">
+					<p><label><input type="checkbox" name="" />공지 지정</label></p>
+					<table>
+						<caption></caption>
+						<colgroup>
+							<col style="width:20%" />
+							<col />
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="row">제목</th>
+								<td><input type="text" style="width:90%;" name="" /></td>
+							</tr>
+							<tr>
+								<th scope="row">파일첨부</th>
+								<td>
+									<div class="input-file"><input type="file"><span class="max-num">* 개별 파일 용량 20MB 및 최대 5개까지 지원</span></div>
+									<ul class="file-list-type01">
+										<li>가나다라마바사아자차카타파하.pptx(13KB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+										<li>가나다라마바사아자차카타파하.avi(19MB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+										<li>가나다라마바사아자차카타파하.pptx(19KB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+										<li>가나다라마바사아자차카타파하.docx(500KB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+										<li>가나다라마바사아자차카타파하.wav(19MB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+									</ul>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type1">확인</a>
+					<a href="#" class="btn-type1 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap w720">
+			<div class="title">
+				<strong>수업과제</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="detail-board">
+					<table>
+						<caption></caption>
+						<colgroup>
+							<col style="width:20%" />
+							<col />
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="row">관련수업</th>
+								<td>음식으로 세상을 치유하는 푸드닥터</td>
+							</tr>
+							<tr>
+								<th scope="row">제목</th>
+								<td>광문고등학교 3학년 1반 이종헌 과제 제출합니다.</td>
+							</tr>
+							<tr>
+								<th scope="row">내용</th>
+								<td>광문고등학교 3학년 1반 이종헌 과제 제출합니다.</td>
+							</tr>
+							<tr>
+								<th scope="row">첨부</th>
+								<td>
+									<ul class="file-list-type01">
+										<li>가나다라마바사아자차카타파하.pptx(13KB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+										<li>가나다라마바사아자차카타파하.avi(19MB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+										<li>가나다라마바사아자차카타파하.pptx(19KB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+										<li>가나다라마바사아자차카타파하.docx(500KB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+										<li>가나다라마바사아자차카타파하.wav(19MB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+									</ul>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="detail-board">
+					<table>
+						<caption></caption>
+						<colgroup>
+							<col style="width:20%" />
+							<col />
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="row">답글</th>
+								<td>음식으로 세상을 치유하는 푸드닥터</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type1">확인</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap w720">
+			<div class="title">
+				<strong>수업횟수 및 기간 배정</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="detail-board">
+					<table>
+						<caption></caption>
+						<colgroup>
+							<col style="width:20%" />
+							<col />
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="row">배정명</th>
+								<td><input type="text" style="width:90%;" name="" /></td>
+							</tr>
+							<tr>
+								<th scope="row">배정횟수</th>
+								<td><input type="text" style="width:100px;" name="" /></td>
+							</tr>
+							<tr>
+								<th scope="row">기간</th>
+								<td>
+									<span class="calendar">
+										<input type="text" class="inp-style1" style="width:110px;" name="" />
+										<a href="#"><img src="images/common/btn_calendar.png" alt="달력"></a> ~
+										<input type="text" class="inp-style1" style="width:110px;" name="" />
+										<a href="#"><img src="images/common/btn_calendar.png" alt="달력"></a>
+									</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type1">확인</a>
+					<a href="#" class="btn-type1 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap w480">
+			<div class="title">
+				<strong>아이디 중복확인</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="box-style none-border2">
+					<strong class="title-style">아이디를 입력하세요.</strong>
+					<div class="box-style2 border">
+						<strong>아이디</strong>
+						<input type="text" value="아이디를 입력해주세요." title="아이디" />
+						<a href="#"  class="btn-type2 search">아이디 중복확인</a>
+					</div>
+					<span class="pass-point">* 5자리 ~ 12자리 영문 소문자, 숫자 및 기호 '_', '-' 만 사용 가능합니다.</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap w480">
+			<div class="title">
+				<strong>아이디 중복확인</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="box-style none-border">
+					<strong class="title-style"><em>SandleWind00</em>는 사용 가능합니다.</strong>
+					<a href="#" class="btn-type2 search">아이디 사용하기</a>
+					<div class="box-style2 border">
+						<strong>아이디</strong>
+						<input type="text" value="아이디를 입력해주세요." title="아이디" />
+						<a href="#"  class="btn-type2 search">아이디 중복확인</a>
+					</div>
+					<span class="pass-point">* 5자리 ~ 12자리 영문 소문자, 숫자 및 기호 '_', '-' 만 사용 가능합니다.</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap w480">
+			<div class="title">
+				<strong>아이디 중복확인</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="box-style none-border">
+					<strong class="title-style id-check"><em>SandleWind00</em><em class="gray">는 현재 사용 중인 아이디입니다.</em><br />다른 아이디를 사용해주세요.</strong>
+					<div class="box-style2 border">
+						<strong><label for="idCheck4">아이디</label></strong>
+						<input type="text" id="idCheck4" value="아이디를 입력해주세요." title="아이디" />
+						<a href="#"  class="btn-type2 search">아이디 중복확인</a>
+					</div>
+					<span class="pass-point">* 5자리 ~ 12자리 영문 소문자, 숫자 및 기호 '_', '-' 만 사용 가능합니다.</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap w720">
+			<div class="title">
+				<strong>레벨 별 권한 보기</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="grop-present">
+					<div class="tbl-style2">
+						<div class="pop-scroll">
+							<table class="al-left">
+								<caption></caption>
+								<colgroup>
+									<col style="width:10%" />
+									<col style="width:45%" />
+									<col />
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col"><input type="checkbox" name="" /></th>
+										<th scope="col">대 메뉴</th>
+										<th scope="col">소 메뉴</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td rowspan="3" class="r-line"><input type="checkbox" name="" /></td>
+										<td rowspan="3" class="r-line">메인관리</td>
+										<td class="al-left"><label><input type="checkbox" name="" />배너 관리</label></td>
+									</tr>
+									<tr>
+										<td class="al-left"><label><input type="checkbox" name="" />멘토영역 관리</label></td>
+									</tr>
+									<tr>
+										<td class="al-left"><label><input type="checkbox" name="" />수업영역 관리</label></td>
+									</tr>
+									<tr>
+										<td rowspan="5" class="r-line"><input type="checkbox" name="" /></td>
+										<td rowspan="5" class="r-line">수업운영 관리</td>
+										<td class="al-left"><label><input type="checkbox" name="" />학교정보 관리</label></td>
+									</tr>
+									<tr>
+										<td class="al-left"><label><input type="checkbox" name="" />수업현황 조회</label></td>
+									</tr>
+									<tr>
+										<td class="al-left"><label><input type="checkbox" name="" />수업현황 관리</label></td>
+									</tr>
+									<tr>
+										<td class="al-left"><label><input type="checkbox" name="" />개인멘토  승인관리</label></td>
+									</tr>
+									<tr>
+										<td class="al-left"><label><input type="checkbox" name="" />스튜디오 관리</label></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type1">확인</a>
+					<a href="#" class="btn-type1 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap w720">
+			<div class="title">
+				<strong>법인/상호명 찾기</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont">
+				<div class="search-box">
+					<table>
+						<caption></caption>
+						<colgroup>
+							<col style="width:25%" />
+							<col />
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="row">법인/상호명</th>
+								<td><input type="text" style="width:322px;" name="" /></td>
+							</tr>
+							<tr>
+								<th scope="row">사업자 등록 번호</th>
+								<td>
+									<input type="text" style="width:100px;" name="" /> -
+									<input type="text" style="width:100px;" name="" /> -
+									<input type="text" style="width:100px;" name="" />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="btn-area-wrap">
+					<div class="btn-center">
+						<a href="#" class="btn-type1">검색</a>
+					</div>
+				</div>
+
+				<div class="search-result total">
+					<span class="result">검색결과 총 <strong>00</strong> 건</span>
+				</div>
+				<div class="grop-present">
+					<div class="tbl-style2">
+						<div class="pop-scroll">
+							<table class="al-left">
+								<caption></caption>
+								<colgroup>
+									<col />
+									<col style="width:40%" />
+									<col style="width:20%" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">법인/상호명</th>
+										<th scope="col">사업자 등록 번호</th>
+										<th scope="col">선택</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>$법인/상호명$</td>
+										<td>123-56-78986</td>
+										<td><input type="radio" name="" /></td>
+									</tr>
+									<tr>
+										<td>$법인/상호명$</td>
+										<td>123-56-78986</td>
+										<td><input type="radio" name="" /></td>
+									</tr>
+									<tr>
+										<td>$법인/상호명$</td>
+										<td>123-56-78986</td>
+										<td><input type="radio" name="" /></td>
+									</tr>
+									<tr>
+										<td>$법인/상호명$</td>
+										<td>123-56-78986</td>
+										<td><input type="radio" name="" /></td>
+									</tr>
+									<tr>
+										<td>$법인/상호명$</td>
+										<td>123-56-78986</td>
+										<td><input type="radio" name="" /></td>
+									</tr>
+									<tr>
+										<td>$법인/상호명$</td>
+										<td>123-56-78986</td>
+										<td><input type="radio" name="" /></td>
+									</tr>
+									<tr>
+										<td>$법인/상호명$</td>
+										<td>123-56-78986</td>
+										<td><input type="radio" name="" /></td>
+									</tr>
+									<tr>
+										<td>$법인/상호명$</td>
+										<td>123-56-78986</td>
+										<td><input type="radio" name="" /></td>
+									</tr>
+									<tr>
+										<td>$법인/상호명$</td>
+										<td>123-56-78986</td>
+										<td><input type="radio" name="" /></td>
+									</tr>
+									<tr>
+										<td>$법인/상호명$</td>
+										<td>123-56-78986</td>
+										<td><input type="radio" name="" /></td>
+									</tr>
+									<tr>
+										<td>$법인/상호명$</td>
+										<td>123-56-78986</td>
+										<td><input type="radio" name="" /></td>
+									</tr>
+									<tr>
+										<td>$법인/상호명$</td>
+										<td>123-56-78986</td>
+										<td><input type="radio" name="" /></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type1">확인</a>
+					<a href="#" class="btn-type1 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap w720">
+			<div class="title">
+				<strong>스튜디오 찾기</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont">
+				<div class="search-box one">
+					<select style="width:200px;" name="">
+						<option>서울특별시</option>
+					</select>
+					<input type="text" style="width:400px;" name="" />
+				</div>
+
+				<div class="btn-area-wrap">
+					<div class="btn-center">
+						<a href="#" class="btn-type1">검색</a>
+					</div>
+				</div>
+
+				<div class="search-result total">
+					<span class="result">검색결과 총 <strong>00</strong> 건</span>
+				</div>
+				<div class="grop-present">
+					<div class="tbl-style2">
+						<div class="pop-scroll">
+							<table class="al-left">
+								<caption></caption>
+								<colgroup>
+									<col style="width:20%" />
+									<col style="width:20%" />
+									<col />
+									<col style="width:15%" />
+									<col style="width:10%" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">스튜디오</th>
+										<th scope="col">부가정보</th>
+										<th scope="col">주소</th>
+										<th scope="col">내부</th>
+										<th scope="col">선택</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>스튜디오명</td>
+										<td>105호</td>
+										<td class="al-left">주소주소주소주소주소주소주소주소주소주소주소</td>
+										<td>외부</td>
+										<td><input type="radio" name="" /></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type1">확인</a>
+					<a href="#" class="btn-type1 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap">
+			<div class="title">
+				<strong> MC 및 스튜디오 수정</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type2">
+				<div class="studio-search-list">
+					<div class="lesson-add-first">
+						<strong class="unit-title">연강 단위</strong>
+						<em>총 3회차</em>
+					</div>
+					<div class="tbl-add-area">
+						<em class="num-tit">1회차</em>
+						<div class="add-area w640">
+							<div class="add-date">
+								<strong>일시</strong>
+								<span>2015.08.23  10:00 ~ 10:45</span>
+							</div>
+							<div class="add-studio">
+								<strong>스튜디오</strong>
+								<label>
+									<input type="radio" name="studio">사용안함
+								</label>
+								<label>
+									<input type="radio" name="studio">사용
+								</label>
+								<input type="text" class="inp-style1" value="유승스튜디오 8층" /><a href="#" class="studio-search">스튜디오 찾기</a>
+							</div>
+							<div class="add-mc">
+								<strong>MC</strong>
+								<label>
+									<input type="radio" name="studio">지정안함
+								</label>
+								<label>
+									<input type="radio" name="studio">직접 지정
+								</label>
+								<input type="text" class="inp-style1" value="김엠씨" /><a href="#" class="mc-search">MC 찾기</a>
+							</div>
+						</div>
+					</div>
+					<div class="tbl-add-area">
+						<em class="num-tit">2회차</em>
+						<div class="add-area w640">
+							<div class="add-date">
+								<strong>일시</strong>
+								<span>2015.08.23  10:00 ~ 10:45</span>
+							</div>
+							<div class="add-studio">
+								<strong>스튜디오</strong>
+								<label>
+									<input type="radio" name="studio">사용안함
+								</label>
+								<label>
+									<input type="radio" name="studio">사용
+								</label>
+								<input type="text" class="inp-style1" value="유승스튜디오 8층" title="검색키워드" /><a href="#" class="studio-search">스튜디오 찾기</a>
+							</div>
+							<div class="add-mc">
+								<strong>MC</strong>
+								<label>
+									<input type="radio" name="studio">지정안함
+								</label>
+								<label>
+									<input type="radio" name="studio">직접 지정
+								</label>
+								<input type="text" class="inp-style1" value="김엠씨" title="검색키워드" /><a href="#" class="mc-search">MC 찾기</a>
+							</div>
+						</div>
+					</div>
+					<div class="tbl-add-area">
+						<em class="num-tit">3회차</em>
+						<div class="add-area w640">
+							<div class="add-date">
+								<strong>일시</strong>
+								<span>2015.08.23  10:00 ~ 10:45</span>
+							</div>
+							<div class="add-studio">
+								<strong>스튜디오</strong>
+								<label>
+									<input type="radio" name="studio">사용안함
+								</label>
+								<label>
+									<input type="radio" name="studio">사용
+								</label>
+								<input type="text" class="inp-style1" value="유승스튜디오 8층" title="검색키워드" /><a href="#" class="studio-search">스튜디오 찾기</a>
+							</div>
+							<div class="add-mc">
+								<strong>MC</strong>
+								<label>
+									<input type="radio" name="studio">지정안함
+								</label>
+								<label>
+									<input type="radio" name="studio">직접 지정
+								</label>
+								<input type="text" class="inp-style1" value="김엠씨" title="검색키워드" /><a href="#" class="mc-search">MC 찾기</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type1">확인</a>
+					<a href="#" class="btn-type1 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap">
+			<div class="title">
+				<strong>반려 사유</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type2">
+				<div class="pop-entry-area">
+					<p>※ 반려 사유를 입력하고, 저장과 동시에 반려 처리됩니다.</p>
+					<textarea name="" rows="" style="width:100%;height:200px;" cols=""></textarea>
+					<span class="txt-limit"><strong>0</strong> / 400자</span>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type1">저장</a>
+					<a href="#" class="btn-type1 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap w480">
+			<div class="title">
+				<strong>비밀번호 찾기</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type2">
+				<div class="box-style none-border">
+					<strong class="title-style">임시비밀번호 발급 완료</strong>
+					<div class="box-style2 border">
+						<p><strong>임시비밀번호</strong><em>AeEbbsdf1293</em></p>
+					</div>
+					<ul class="pass-info">
+						<li>비밀번호 입력란에 임시비밀번호를 복사하여 붙여 넣으시면<br />보다 편리하게 이용하실 수 있습니다.</li>
+						<li>로그인 후, [나의정보] 메뉴에서 비밀번호를 변경하여 이용하시기 바랍니다.</li>
+					</ul>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type1">확인</a>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<title>산들바람 멘토 - 원격진로멘토링</title>
+	<link rel="stylesheet" href="../css/member.css">
+	<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="../js/common.js"></script>
+</head>
+<body>
+	<ul id="skipNav">
+		<li><a href="#">본문</a></li>
+		<li><a href="#">footer</a></li>
+	</ul>
+	<div id="wrap">
+		<!-- header -->
+		<div id="header">
+			<div class="gnb-wrap">
+				<h1><a href="#">산들바람 멘토 - 원격진로멘토링</a></h1>
+				<!-- 로그인 전 -->
+				<ul>
+					<li class="login"><a href="#">로그인</a></li>
+					<li class="join"><a href="#">회원가입</a></li>
+				</ul>
+				<!-- 로그아웃상태 -->
+				<ul style="display:none;">
+					<li class="login-state"><a href="#">김상경</a></li>
+					<li class="member-info"><a href="#">회원정보</a></li>
+					<li class="logout"><a href="#">로그아웃</a></li>
+				</ul>
+
+				<!-- gnb -->
+				<div id="gnb"><!-- 소속멘토: affiliate  기업멘토:business -->
+					<ul>
+						<li>
+							<a href="#">활동멘토</a>
+							<div class="sub-gnb smenu1">
+								<ul>
+									<li><a href="#">활동멘토</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">수업관리</a>
+							<div class="sub-gnb smenu2">
+								<ul>
+									<li><a href="#">수업현황</a></li>
+									<li><a href="#">수업개설신청</a></li>
+									<li><a href="#">요청수업</a></li>
+									<li><a href="#">자료등록</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">커뮤니티관리</a>
+							<div class="sub-gnb smenu3">
+								<ul>
+									<li><a href="#">질문답변</a></li>
+									<li><a href="#">수업과제</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">활동이력</a>
+							<div class="sub-gnb smenu4">
+								<ul>
+									<li><a href="#">나의 수업내역</a></li>
+									<li><a href="#">알림내역</a></li>
+								</ul>
+							</div>
+						</li>
+						<li class="gnb-last">
+							<a href="#">서비스소개</a>
+							<div class="sub-gnb smenu5">
+								<ul>
+									<li><a href="#">산들바람소개</a></li>
+									<li><a href="#">멘토활동안내</a></li>
+									<li><a href="#">공지사항</a></li>
+									<li><a href="#">자주 찾는 질문</a></li>
+									<li><a href="#">서비스가이드</a></li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<!-- //gnb -->
+			</div>
+			<div class="sub-area"></div>
+		</div>
+		<!-- //header -->
+		<div id="container">
+			<div class="location">
+				<a href="#" class="home">메인으로 이동</a>
+				<span>회원가입</span>
+			</div>
+			<div class="content">
+				<h2 class="tab-tit">회원가입</h2>
+				<div class="tab-area">
+					<img src="../images/member/img_join_step3.gif" alt="가입정보 입력" />
+				</div>
+				<div class="cont">
+					<div class="join-info-write">
+						<p class="desc-txt">회원님의 소중한 개인정보를 동의 없이 공개 또는 제공하지 않습니다. </p>
+						<div class="board-title active">
+							<h3 class="board-tit">필수 입력항목</h3>
+							<div>
+								<span>모든 항목은 필수 입력사항 입니다.</span>
+								<a href="#">입력폼 접기, 펼치기</a>
+							</div>
+						</div>
+						<div class="board-input-type">
+							<div class="selectbox-zindex-wrap">
+								<div class="selectbox-zindex-box">
+									<div class="m-height540"></div>
+									<iframe scrolling="no" class="m-height540" frameborder="0"></iframe>
+								</div>
+							</div>
+							<table>
+								<caption>가입정보 입력 - 아이디, 비밀번호, 비밀번호 확인, 비밀번호찾기 질문, 이름, 생년월일, 이메일 주소, 이메일수신</caption>
+								<colgroup>
+									<col style="width:157px;" />
+									<col />
+								</colgroup>
+								<tbody>
+									<tr>
+										<th scope="row">아이디</th>
+										<td>
+											<input type="text" class="inp-style1" style="width:150px;" name="" /> <a href="#layer1" class="btn-type1 layer-open">아이디 중복확인</a>
+											<span class="refer">* 5자리 ~ 12자리 영문, 숫자 및 기호 '_', '-' 만 가능합니다.</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">비밀번호</th>
+										<td>
+											<input type="password" class="inp-style1" style="width:150px;" name="" />
+											<span class="refer">* 영문, 숫자 또는 특수문자를 포함한 10~20자리가 가능합니다.</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">비밀번호 확인</th>
+										<td>
+											<input type="password" class="inp-style1" style="width:150px;" name="" />
+											<span class="layer">비밀번호가 일치하지 않습니다.</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">비밀번호찾기 질문</th>
+										<td>
+											<select name="" style="width:270px;">
+												<option>나의 이름은?</option>
+												<option>어렸을 적 별명은?</option>
+												<option>태어난 곳은?</option>
+												<option>어머니 성함은?</option>
+												<option>즐겨부르는 노래는?</option>
+												<option>가장 가보고 싶은 곳은?</option>
+												<option>애완동물 이름은?</option>
+												<option>나의 보물 1호는?</option>
+												<option>나의 인생 좌우명은?</option>
+												<option>내가 좋아하는 과일은?</option>
+												<option>가장 인상깊게 읽은 책은?</option>
+											</select>
+											<input type="text" class="inp-style1" style="width:390px;" name="" />
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">이름</th>
+										<td>
+											<input type="text" class="inp-style1" style="width:150px;" value="강산들" name="" />
+											<span class="mgl-15">
+												<label class="radio-skin checked"><input type="radio" name="gender" class="radio-skin" checked="checked" />남자</label>
+												<label class="radio-skin"><input type="radio" name="gender" class="radio-skin" />여자</label>
+											</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">생년월일</th>
+										<td>
+											<select name="" style="width:80px;">
+												<option>1979</option>
+											</select>
+											<select name="" style="width:70px;">
+												<option>월</option>
+											</select>
+											<select name="" style="width:70px;">
+												<option>일</option>
+											</select>
+											<span class="mgl-15">
+												<label class="radio-skin checked"><input type="radio" name="birthday" class="radio-skin" checked="checked" />양력</label>
+												<label class="radio-skin"><input type="radio" name="birthday" class="radio-skin" />음력</label>
+											</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">이메일 주소</th>
+										<td>
+											<input type="text" class="inp-style1" style="width:180px;" value="" name="" />
+											@
+											<select name="" style="width:160px;">
+												<option>naver.com</option>
+												<option>hanmail.net</option>
+												<option>Nate.com</option>
+												<option>Gmail.com</option>
+												<option>Hotmail.com</option>
+												<option>Chol.com</option>
+												<option>Dreamwiz.com</option>
+												<option>Empal.com</option>
+												<option>Lycos.co.kr</option>
+												<option>Netian.com</option>
+												<option>직접입력</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">이메일 수신</th>
+										<td>
+											<label class="radio-skin checked"><input type="radio" name="email" class="radio-skin" checked="checked" />예</label>
+											<label class="radio-skin"><input type="radio" name="email" class="radio-skin" />아니오</label>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<div class="board-title active">
+							<h3 class="board-tit">멘토상세정보 입력</h3>
+							<div>
+								<span>*모든 항목을 입력하셔야 관리자 검토 후 승인이 됩니다.</span>
+								<a href="#">입력폼 접기, 펼치기</a>
+							</div>
+						</div>
+						<div class="board-input-type">
+							<table>
+								<caption>추가정보 항목 - 연락처, 직업선택, 멘토약력 및 자기소개</caption>
+								<colgroup>
+									<col style="width:157px;" />
+									<col />
+								</colgroup>
+								<tbody>
+									<tr>
+										<td colspan="2" class="txt-area">
+											<span class="refer">* 멘토회원 서비스를 이용하시려면 반드시 ‘추가정보‘를 입력해야 합니다.</span>
+											<span class="refer">* 추가정보 항목은 관리자가 승인여부를 판단할 근거 자료로 활용됩니다.</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">연락쳐</th>
+										<td>
+											<select name="" style="width:80px;">
+												<option>010</option>
+											</select> -
+											<input type="text" class="inp-style1" style="width:65px;" value="" name="" /> -
+											<input type="text" class="inp-style1" style="width:65px;" value="" name="" />
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">직업선택</th>
+										<td>
+											<ul class="job-choice">
+												<li>
+													<em>- 특징분류</em>
+													<div class="form">
+														<select name="" style="width:173px;">
+															<option>1차분류</option>
+														</select>
+														<a href="#" class="btn-type1">추가</a>
+														<ul>
+															<li><a href="#">대한민국명장 교육기부</a></li>
+															<li><a href="#">첨단&middot;정보(ICT)기술</a></li>
+															<li><a href="#">글로벌&middot;세계화 인재</a></li>
+															<li><a href="#">잘 알려진 직업</a></li>
+															<li><a href="#">생소한 직업</a></li>
+															<li><a href="#">아시아나 교육기부</a></li>
+															<li><a href="#">감성∙웰빙 트렌드</a></li>
+															<li><a href="#">기업가정신</a></li>
+															<li><a href="#">환경 관련 녹색직업</a></li>
+														</ul>
+													</div>
+												</li>
+												<li>
+													<em>- 직업분류</em>
+													<div class="form">
+														<select name="" style="width:173px;">
+															<option>1차분류</option>
+														</select>
+														<select name="" style="width:173px;">
+															<option>2차분류</option>
+														</select>
+														<select name="" style="width:173px;">
+															<option>3차분류</option>
+														</select>
+													</div>
+												</li>
+												<li>
+													<em>- 직업명</em>
+													<div class="form">
+														<select name="" style="width:150px;">
+															<option>4차분류</option>
+														</select>
+														<a href="#jobRegPop" class="btn-type1 layer-open">직접입력</a>
+														<span class="job-name">※ 등록 된 직업명이 없을 경우 ‘직접입력‘ 버튼을 클릭해 직업명을 추가해주세요. </span>
+													</div>
+												</li>
+											</ul>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">멘토약력 및<br/>자기소개</th>
+										<td>
+											<div class="txt-area-form">
+												<textarea name="" rows="" class="textarea" cols=""></textarea>
+												<span><em>0</em>/200자</span>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p class="desc-txt type1">입력 완료 후 [승인요청] 버튼을 클릭하시면, 관리자 승인 후 멘토 회원 가입이 완료됩니다.</p>
+						<div class="btn-area">
+							<a href="#" class="btn-type2">승인요청</a>
+							<a href="#" class="btn-type2 gray">취소</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="cont-quick"><a href="#header"><img src="../images/common/img_quick.png" alt="상단으로 이동" /></a></div>
+			</div>
+		</div>
+
+		<div id="footer">
+			<div class="footer-cont">
+				<div class="footer-info">
+					<ul class="footer-menu">
+						<li><a href="#">이용약관</a></li>
+						<li><a href="#">개인정보처리방침</a></li>
+						<li><a href="#">이메일무단수집거부</a></li>
+						<li><a href="#">변경동의</a></li>
+					</ul>
+					<div class="footer-menu-organization">
+						<a href="#" class="organization">관련사이트</a>
+						<ul class="organization-ul">
+							<li><a href="#">커리어넷</a></li>
+							<li><a href="#">한국직업능률개발원</a></li>
+							<li><a href="#">한국과학창의재단</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-organization">
+					<img src="./../images/main/img_footer_fscience.png" alt="미래창조과학부">
+					<img src="./../images/main/img_footer_edu.png" alt="교육부">
+				</div>
+				<div class="footer-science-menu">
+					<address>세종특별자치시 시청대로 370 세종국책연구단지 사회정책동 한국직업능력개발원 커리어넷</address>
+					<p class="footer-manage">운영: 한국직업능력개발원 진료교육센터</p>
+					<p class="footer-support">지원: 교육부</p>
+					<p class="footer-copyright">COPYRIGHTS <em>&copy;</em> KRIVET ALL RIGHTS RESERVED.</p>
+				</div>
+			</div>
+		</div>
+		<!-- layerpopup -->
+		<div class="layer-pop-wrap" id="layer1">
+			<div class="title">
+				<strong>아이디 중복확인</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont">
+				<div class="id-overlap">
+					<input type="text" class="inp-style1" style="width:249px;" name="" />
+					<a href="#layer1" class="btn-type1 layer-open">아이디 중복확인</a>
+				</div>
+				<p class="id-overlap-txt">* 5자리 ~ 12자리 영문, 숫자 및 기호 '_', '-' 만 가능합니다.</p>
+				<div class="btn-area">
+					<a href="#" class="btn-type2">확인</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap" id="jobRegPop">
+			<div class="title">
+				<strong>직업 등록</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont board">
+
+				<div class="mentor-member-signin job-reg">
+					<table>
+						<caption>멘토회원 등록 폼 - 아이디, 비밀번호, 비밀번호 확인, 이름, 이메일</caption>
+						<colgroup>
+							<col style="width:135px">
+							<col>
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="row">직업분류</th>
+								<td class="job-group">
+									<span>식품가공</span>
+									<span>2차분류</span>
+									<span>3차분류</span>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row" class="must">직업명</th>
+								<td><input type="text" style="width:200px;" class="inp-style1" /></td>
+							</tr>
+							<tr>
+								<th scope="row" class="must">직업 한 줄 소개</th>
+								<td><input type="text" style="width:200px;" class="inp-style1" /></td>
+							</tr>
+							<tr>
+								<th scope="row" class="must">핵심능력</th>
+								<td><input type="text" style="width:200px;" class="inp-style1" /></td>
+							</tr>
+							<tr>
+								<th scope="row" class="must">관련학과</th>
+								<td><input type="text" style="width:200px;" class="inp-style1" /></td>
+							</tr>
+							<tr>
+								<th scope="row" class="must">관련자격</th>
+								<td><input type="text" style="width:200px;" class="inp-style1" /></td>
+							</tr>
+							<tr>
+								<th scope="row" class="must">유사직업</th>
+								<td><input type="text" style="width:200px;" class="inp-style1" /></td>
+							</tr>
+							<tr>
+								<th scope="row" class="must">하는 일</th>
+								<td><textarea name="" rows="" class="textarea" cols=""></textarea></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="btn-area">
+					<a href="#" class="btn-type2">확인</a>
+					<a href="#" class="btn-type2 gray">취소</a>
+				</div>
+			</div>
+		</div>
+		<!-- //layerpopup -->
+	</div>
+</body>
+</html>

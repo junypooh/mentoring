@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<title>산들바람 멘토 - 원격진로멘토링</title>
+	<link rel="stylesheet" href="../css/management.css">
+	<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="../js/common.js"></script>
+</head>
+<body>
+	<ul id="skipNav">
+		<li><a href="#">본문</a></li>
+		<li><a href="#">footer</a></li>
+	</ul>
+	<div id="wrap">
+		<!-- header -->
+		<div id="header">
+			<div class="gnb-wrap">
+				<h1><a href="#">산들바람 멘토 - 원격진로멘토링</a></h1>
+				<!-- 로그인 전 -->
+				<ul>
+					<li class="login"><a href="#">로그인</a></li>
+					<li class="join"><a href="#">회원가입</a></li>
+				</ul>
+				<!-- 로그아웃상태 -->
+				<ul style="display:none;">
+					<li class="login-state"><a href="#">김상경</a></li>
+					<li class="member-info"><a href="#">회원정보</a></li>
+					<li class="logout"><a href="#">로그아웃</a></li>
+				</ul>
+
+				<!-- gnb -->
+				<div id="gnb"><!-- 소속멘토: affiliate  기업멘토:business -->
+					<ul>
+						<li>
+							<a href="#">활동멘토</a>
+							<div class="sub-gnb smenu1">
+								<ul>
+									<li><a href="#">활동멘토</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">수업관리</a>
+							<div class="sub-gnb smenu2">
+								<ul>
+									<li><a href="#">수업현황</a></li>
+									<li><a href="#">수업개설신청</a></li>
+									<li><a href="#">요청수업</a></li>
+									<li><a href="#">자료등록</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">커뮤니티관리</a>
+							<div class="sub-gnb smenu3">
+								<ul>
+									<li><a href="#">질문답변</a></li>
+									<li><a href="#">수업과제</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">활동이력</a>
+							<div class="sub-gnb smenu4">
+								<ul>
+									<li><a href="#">나의 수업내역</a></li>
+									<li><a href="#">알림내역</a></li>
+								</ul>
+							</div>
+						</li>
+						<li class="gnb-last">
+							<a href="#">서비스소개</a>
+							<div class="sub-gnb smenu5">
+								<ul>
+									<li><a href="#">산들바람소개</a></li>
+									<li><a href="#">멘토활동안내</a></li>
+									<li><a href="#">공지사항</a></li>
+									<li><a href="#">자주 찾는 질문</a></li>
+									<li><a href="#">서비스가이드</a></li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<!-- //gnb -->
+			</div>
+			<div class="sub-area"></div>
+		</div>
+		<!-- //header -->
+		<div id="container">
+			<div class="location">
+				<a href="#" class="home">메인으로 이동</a>
+				<span>수업관리</span>
+				<span>수업개설</span>
+			</div>
+			<div class="content">
+				<h2 class="fs24">수업개설</h2>
+				<div class="cont type1">
+					<div class="board-title1">
+						<h3 class="board-tit">기본정보</h3>
+						<span class="compulsory"><em>*</em> 표기된 항목은 필수 입력사항 입니다.</span>
+					</div>
+					<div class="board-input-type lesson_setup">
+						<div class="cont20">
+							<table>
+								<caption>기본정보 - 수업명, 멘토명, 수업유형, 수업대상, 수업개요, 수업유형, 이미지, 수업소개, 수업내용</caption>
+								<colgroup>
+									<col style="width:136px;" />
+									<col />
+								</colgroup>
+								<tbody>
+									<tr>
+										<th scope="row" class="compulsory">배정사업</th>
+										<td>
+											<select style="width:150px;">
+												<option>선택111</option>
+												<option>선택222</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row" class="compulsory">수업명</th>
+										<td><div class="text-limit"><input type="password" class="inp-style1" style="width:630px;" name="" /><span><em>0</em>/20자</span></div></td>
+									</tr>
+									<tr>
+										<th scope="row" class="compulsory">멘토</th>
+										<td><a href="#" class="btn-type5">검색</a></td>
+									</tr>
+									<tr>
+										<th scope="row">직업명</th>
+										<td>직업명이 들어갑니다.</td>
+									</tr>
+									<tr>
+										<th scope="row" class="compulsory">수업유형</th>
+										<td>
+											<label class="radio-skin checked"><input type="radio" name="lessontype" class="radio-skin" checked="checked" />단강</label>
+											<label class="radio-skin"><input type="radio" name="lessontype" class="radio-skin" />블록</label>
+											<label class="radio-skin"><input type="radio" name="lessontype" class="radio-skin" />연강</label>
+											<label class="radio-skin"><input type="radio" name="lessontype" class="radio-skin" />특강</label>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row" class="compulsory">수업대상</th>
+										<td>
+											<label class="chk-skin checked"><input type="checkbox" name="school" class="chk-skin" checked="checked" />초등</label>
+											<label class="chk-skin"><input type="checkbox" name="school" class="chk-skin" />중등</label>
+											<label class="chk-skin"><input type="checkbox" name="school" class="chk-skin" />고등</label>
+											<label class="chk-skin"><input type="checkbox" name="school" class="chk-skin" />기타</label>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row" class="compulsory">수업 한줄 소개</th>
+										<td><div class="text-limit"><input type="password" class="inp-style1" style="width:630px;" name="" /><span><em>0</em>/40자</span></div></td>
+									</tr>
+									<tr>
+										<th scope="row" class="compulsory">이미지</th>
+										<td>
+											<div class="input-file"><input type="file"><span class="max-num">* jpg및 png 지원 / 최적화 사이즈 000 x 000</span></div>
+											<ul class="file-list-type01">
+												<li>가나다라마바사아자차카타파하.pptx(13KB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제"></a></li>
+												<li>가나다라마바사아자차카타파하.avi(19MB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제"></a></li>
+												<li>가나다라마바사아자차카타파하.pptx(19KB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제"></a></li>
+												<li>가나다라마바사아자차카타파하.docx(500KB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제"></a></li>
+												<li>가나다라마바사아자차카타파하.wav(19MB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제"></a></li>
+											</ul>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row" class="compulsory">수업소개</th>
+										<td><div class="text-limit area"><textarea name="" rows="" style="height:63px;" class="textarea bggray" cols=""></textarea><span><em>132</em>/200자</span></div></td>
+									</tr>
+									<tr>
+										<th scope="row" class="compulsory">수업구성</th>
+										<td><img src="../images/common/img_input_area.gif" alt="" /></td>
+									</tr>
+									<tr>
+										<th scope="row">요청수업</th>
+										<td><a href="#layer5" class="btn-type5 layer-open">선택</a><span class="lesson-subject">조향사, 향기를 창조하는 전문가</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="btn-area">
+							<a href="#" class="btn-type2">저장</a>
+							<a href="#" class="btn-type2 gray">취소</a>
+							<span class="right"><a href="#layer1" class="btn-type5 layer-open">복사</a></span>
+						</div>
+					</div>
+
+					<div class="board-title1">
+						<h3 class="board-tit">수업자료</h3>
+					</div>
+					<div class="board-input-type lesson_setup">
+						<div class="cont20">
+							<table>
+								<caption>수업자료 - 수업자료</caption>
+								<colgroup>
+									<col style="width:136px;" />
+									<col />
+								</colgroup>
+								<tbody>
+									<tr>
+										<td colspan="2" class="board-no-data">기본정보 저장 후, 수업자료 입력이 가능합니다. </td>
+									</tr>
+									<tr>
+										<th scope="row" class="compulsory">수업자료</th>
+										<td>
+											<a href="#layer2" class="btn-type5 layer-open">등록</a>
+											<!-- 등록중 -->
+											<ul class="file-list-type01" style="display:none;">
+												<li>가나다라마바사아자차카타파하.pptx(13KB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제"></a></li>
+												<li>가나다라마바사아자차카타파하.avi(19MB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제"></a></li>
+												<li>가나다라마바사아자차카타파하.pptx(19KB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제"></a></li>
+												<li>가나다라마바사아자차카타파하.docx(500KB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제"></a></li>
+												<li>가나다라마바사아자차카타파하.wav(19MB)<a href="#"><img src="../images/common/btn_file_del.gif" alt="삭제"></a></li>
+											</ul>
+
+											<!-- 등록 후 -->
+											<div class="lesson-task data" style="display:;">
+												<ul class="lesson-data-list">
+													<li>
+														<div class="title">
+															<a href="#">
+																<em class="title notice">과제제목_ex:플로리스트가 되기 위해 무엇을 공부해야할까? 알아보기과제제목_ex:플로리스트가 되기 위해 무엇을 공부해야할까? 알아보기과제제목_ex:플로리스트가 되기 위해 무엇을 공부해야할까? 알아보기</em>
+															</a>
+														</div>
+														<div class="file-list">
+															<ul>
+																<li>
+																	<span class="file-type jpg">
+																		<a href="#">variousflower_buy.jpg</a>
+																	</span>
+																	<span class="file-size">999MB</span>
+																</li>
+																<li>
+																	<span class="file-type pptx">
+																		<a href="#">variousflower_buy.pptx</a>
+																	</span>
+																	<span class="file-size">999MB</span>
+																</li>
+																<li>
+																	<span class="file-type avi">
+																		<a href="#">variousflower_buy.avi</a>
+																	</span>
+																	<span class="file-size">999MB</span>
+																</li>
+																<li>
+																	<span class="file-type mp4">
+																		<a href="#">variousflower_buy.mp4</a>
+																	</span>
+																	<span class="file-size">999MB</span>
+																</li>
+																<li>
+																	<span class="file-type zip">
+																		<a href="#">variousflower_buy.zip</a>
+																	</span>
+																	<span class="file-size">999MB</span>
+																</li>
+															</ul>
+														</div>
+													</li>
+													<li>
+														<div class="title">
+															<a href="#">
+																<em class="title notice">과제제목_ex:플로리스트가 되기 위해 무엇을 공부해야할까? 알아보기과제제목_ex:플로리스트가 되기 위해 무엇을 공부해야할까? 알아보기과제제목_ex:플로리스트가 되기 위해 무엇을 공부해야할까? 알아보기</em>
+															</a>
+														</div>
+														<div class="file-list">
+															<ul>
+																<li>
+																	<span class="file-type jpg">
+																		<a href="#">variousflower_buy.jpg</a>
+																	</span>
+																	<span class="file-size">999MB</span>
+																</li>
+																<li>
+																	<span class="file-type pptx">
+																		<a href="#">variousflower_buy.pptx</a>
+																	</span>
+																	<span class="file-size">999MB</span>
+																</li>
+																<li>
+																	<span class="file-type avi">
+																		<a href="#">variousflower_buy.avi</a>
+																	</span>
+																	<span class="file-size">999MB</span>
+																</li>
+																<li>
+																	<span class="file-type mp4">
+																		<a href="#">variousflower_buy.mp4</a>
+																	</span>
+																	<span class="file-size">999MB</span>
+																</li>
+																<li>
+																	<span class="file-type zip">
+																		<a href="#">variousflower_buy.zip</a>
+																	</span>
+																	<span class="file-size">999MB</span>
+																</li>
+															</ul>
+														</div>
+													</li>
+												</ul>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="btn-area">
+							<a href="#" class="btn-type2">저장</a>
+							<a href="#" class="btn-type2 gray">취소</a>
+						</div>
+					</div>
+
+					<div class="board-title1">
+						<h3 class="board-tit">일시정보</h3>
+					</div>
+					<div class="board-type1 temporary-info">
+						<table>
+							<caption>일시정보 - 번호, 수업일시, 수업상태, MC 및 스튜디오, 입장/취소</caption>
+							<colgroup>
+								<col style="width:10%;" />
+								<col style="width:22%;" />
+								<col style="width:13%;" />
+								<col />
+								<col style="width:13%;" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th scope="col">번호</th>
+									<th scope="col">수업일시</th>
+									<th scope="col">수업상태</th>
+									<th scope="col">MC 및 스튜디오</th>
+									<th scope="col">입장/취소</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td colspan="5" class="board-no-data">수업 일시, MC 및 스튜디오 정보를 추가하세요.</td>
+								</tr>
+								<tr>
+									<td>10</td>
+									<td>2015.08.28  10:00 ~ 11:00</td>
+									<td>모집중</td>
+									<td class="al-left"><a href="#">세상을 평정한 1인 미디어 크리에이터세상을 평정한 1인 미디어 크리에이터 크리에이터</a></td>
+									<td><a href="#" class="btn-round-cancel">취소</a></td>
+								</tr>
+								<tr>
+									<td>10</td>
+									<td>2015.08.28  10:00 ~ 11:00</td>
+									<td>모집중</td>
+									<td class="al-left"><a href="#">세상을 평정한 1인 미디어 크리에이터</a></td>
+									<td>-</td>
+								</tr>
+								<tr>
+									<td>10</td>
+									<td>2015.08.28  10:00 ~ 11:00</td>
+									<td>모집중</td>
+									<td class="al-left"><a href="#">세상을 평정한 1인 미디어 크리에이터</a></td>
+									<td>-</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="btn-area r-align">
+							<a href="#layer4" class="btn-type5 layer-open">추가</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="cont-quick"><a href="#header"><img src="../images/common/img_quick.png" alt="상단으로 이동" /></a></div>
+		</div>
+
+		<div id="footer">
+			<div class="footer-cont">
+				<div class="footer-info">
+					<ul class="footer-menu">
+						<li><a href="#">이용약관</a></li>
+						<li><a href="#">개인정보처리방침</a></li>
+						<li><a href="#">이메일무단수집거부</a></li>
+						<li><a href="#">변경동의</a></li>
+					</ul>
+					<div class="footer-menu-organization">
+						<a href="#" class="organization">관련사이트</a>
+						<ul class="organization-ul">
+							<li><a href="#">커리어넷</a></li>
+							<li><a href="#">한국직업능률개발원</a></li>
+							<li><a href="#">한국과학창의재단</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-organization">
+					<img src="./../images/main/img_footer_fscience.png" alt="미래창조과학부">
+					<img src="./../images/main/img_footer_edu.png" alt="교육부">
+				</div>
+				<div class="footer-science-menu">
+					<address>세종특별자치시 시청대로 370 세종국책연구단지 사회정책동 한국직업능력개발원 커리어넷</address>
+					<p class="footer-manage">운영: 한국직업능력개발원 진료교육센터</p>
+					<p class="footer-support">지원: 교육부</p>
+					<p class="footer-copyright">COPYRIGHTS <em>&copy;</em> KRIVET ALL RIGHTS RESERVED.</p>
+				</div>
+			</div>
+		</div>
+		<!-- layer-popup-->
+		<div class="layer-pop-wrap" id="layer1">
+			<div class="title">
+				<strong>수업정보 복사</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type3">
+				<div class="mc-search">
+					<div class="mc-search-area">
+						<select class="slt-style" title="카테고리선택">
+							<option>전체</option>
+							<option>수업</option>
+							<option>직업</option>
+							<option>멘토</option>
+						</select>
+						<input type="text" class="inp-style1" value="이현경" style="width:400px" />
+						<a href="#" class="btn-type2 search"><span>검색</span></a>
+					</div>
+				</div>
+				<div class="result-info">
+					<p class="search-result">검색 결과 <strong>총 <em>00</em> 건</strong></p>
+				</div>
+				<div class="mc-search-list box-scroll-wrap">
+					<ul class="studio-info-ul">
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-info-title">아름다운 공간의 예술가</span>
+								<span class="lesson-info-name">이현경</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-info-title">찰나의 순간을 예술로 만들고 싶다면, 포토그래퍼</span>
+								<span class="lesson-info-name">이현경</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-info-title">마스터셰프 코리아로 이름을 알린 셰프</span>
+								<span class="lesson-info-name">이현경</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-info-title">얼굴에 표현하는 예술</span>
+								<span class="lesson-info-name">이현경</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-info-title">아름다운 공간의 예술가</span>
+								<span class="lesson-info-name">이현경</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-info-title">모든 사람을 be kind! 하게! 모금캠페인기획자</span>
+								<span class="lesson-info-name">이현경</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-info-title">패션계를 새롭게 창조하는 사람</span>
+								<span class="lesson-info-name">이현경</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-info-title">글자가 눈앞의 현실이 되다</span>
+								<span class="lesson-info-name">이현경</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+					</ul>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type2 blue">확인</a>
+					<a href="#" class="btn-type2 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap" id="layer2">
+			<div class="title">
+				<strong>수업자료 등록</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type3">
+				<div class="lesson-data">
+					<span class="designation"><label><input type="checkbox" name="" class="aaa"> 공지 지정</label></span>
+					<div class="board-input-type1 upload">
+						<table>
+							<caption>추가정보 항목 - 연락처, 직업선택, 멘토약력 및 자기소개</caption>
+							<colgroup>
+								<col style="width:98px;" />
+								<col />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="row">제목</th>
+									<td><input type="text" class="inp-style1 h30" style="width:485px;" value="" name="" /></td>
+								</tr>
+								<tr>
+									<th scope="row">파일첨부</th>
+									<td class="data-up-td">
+										<div class="input-file"><input type="file" /><span class="max-num">* 개별 파일 용량 20MB 및 최대 5개까지 지원</span></div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="btn-area">
+						<a href="#" class="btn-type2">확인</a>
+						<a href="#" class="btn-type2 gray">취소</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap" id="layer3">
+			<div class="title">
+				<strong>요청수업 선택</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type3">
+				<div class="mc-search">
+					<div class="mc-search-area lesson">
+						<select class="slt-style" title="카테고리선택">
+							<option>전체</option>
+							<option>오픈</option>
+							<option>멘토지정</option>
+							<option>직업지정</option>
+						</select>
+						<select class="slt-style" title="키워드선택">
+							<option>전체</option>
+							<option>수업</option>
+							<option>직업</option>
+							<option>멘토</option>
+						</select>
+						<input type="text" class="inp-style1" value="아시아나" style="width:298px" />
+						<a href="#" class="btn-type2 search"><span>검색</span></a>
+					</div>
+				</div>
+				<div class="result-info">
+					<p class="search-result">검색 결과 <strong>총 <em>00</em> 건</strong></p>
+				</div>
+				<div class="mc-search-list box-scroll-wrap">
+					<ul class="studio-info-ul">
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 공항서비스 직업특강</span>
+								<span class="lesson-request-status">멘토지정</span>
+								<span class="lesson-request-date">2015.09.20</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">사람과 기업, 사회를 변화시키는 매거진을 만든다!!!!!!!!!!!!!!!</span>
+								<span class="lesson-request-status">직접지정</span>
+								<span class="lesson-request-date">2015.09.21</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 정비사 직업특강</span>
+								<span class="lesson-request-status">오픈</span>
+								<span class="lesson-request-date">2015.09.20</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">내가 쓰고 고른 기사를 사람들이 읽는다, 언론사의 언론사언론사언론사</span>
+								<span class="lesson-request-status">멘토지정</span>
+								<span class="lesson-request-date">2015.09.20</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">음식으로 표현하는 다양한 세계, 푸드스타일리스트</span>
+								<span class="lesson-request-status">멘토지정</span>
+								<span class="lesson-request-date">2015.09.20</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 공항서비스 직업특강</span>
+								<span class="lesson-request-status">멘토지정</span>
+								<span class="lesson-request-date">2015.09.20</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 공항서비스 직업특강</span>
+								<span class="lesson-request-status">멘토지정</span>
+								<span class="lesson-request-date">2015.09.20</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 공항서비스 직업특강</span>
+								<span class="lesson-request-status">멘토지정</span>
+								<span class="lesson-request-date">2015.09.20</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 공항서비스 직업특강</span>
+								<span class="lesson-request-status">멘토지정</span>
+								<span class="lesson-request-date">2015.09.20</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 공항서비스 직업특강</span>
+								<span class="lesson-request-status">멘토지정</span>
+								<span class="lesson-request-date">2015.09.20</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 공항서비스 직업특강</span>
+								<span class="lesson-request-status">멘토지정</span>
+								<span class="lesson-request-date">2015.09.20</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 공항서비스 직업특강</span>
+								<span class="lesson-request-status">멘토지정</span>
+								<span class="lesson-request-date">2015.09.20</span>
+								<input type="radio" name="job">
+							</label>
+						</li>
+					</ul>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type2 blue">확인</a>
+					<a href="#" class="btn-type2 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap w710" id="layer4">
+			<div class="title">
+				<strong>수업일시 추가</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="layer-cont2">
+				<div class="studio-search-list">
+					<div class="lesson-add-first">
+						<strong>연강 단위</strong>
+						<select class="slt-style" title="회차횟수">
+							<option>총 1회차</option>
+							<option>총 2회차</option>
+							<option selected="selected">총 3회차</option>
+						</select>
+						<span>저장과 동시에 승인 요청 혹은 수강 모집을 자동 진행합니다.</span>
+					</div>
+					<div class="tbl-add-area">
+						<em>1회차</em>
+						<div class="add-area">
+							<div class="add-date">
+								<strong>일시</strong>
+								<input type="text" class="inp-style1" style="width:110px" />
+								<span class="add-calendar">달력선택</span>
+								<label title="시작">시작
+									<select class="slt-style" title="시">
+										<option>시</option>
+									</select>
+									<select class="slt-style" title="분">
+										<option>분</option>
+									</select>
+								</label>
+								<label title="종료">종료
+									<select class="slt-style" title="시">
+										<option>시</option>
+									</select>
+									<select class="slt-style" title="분">
+										<option>분</option>
+									</select>
+								</label>
+							</div>
+							<div class="add-studio">
+								<strong>스튜디오</strong>
+								<label class="radio-skin checked">사용안함
+									<input type="radio" name="studio">
+								</label>
+								<label class="radio-skin">사용
+									<input type="radio" name="studio">
+								</label>
+							</div>
+							<div class="add-mc">
+								<strong>MC</strong>
+								<label class="radio-skin checked">지정안함
+									<input type="radio" name="studio">
+								</label>
+								<label class="radio-skin">직접 지정
+									<input type="radio" name="studio">
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="tbl-add-area">
+						<em>2회차</em>
+						<div class="add-area">
+							<div class="add-date">
+								<strong>일시</strong>
+								<input type="text" class="inp-style1" style="width:110px" />
+								<span class="add-calendar">달력선택</span>
+								<label title="시작">시작
+									<select class="slt-style" title="시">
+										<option>시</option>
+									</select>
+									<select class="slt-style" title="분">
+										<option>분</option>
+									</select>
+								</label>
+								<label title="종료">종료
+									<select class="slt-style" title="시">
+										<option>시</option>
+									</select>
+									<select class="slt-style" title="분">
+										<option>분</option>
+									</select>
+								</label>
+							</div>
+							<div class="add-studio">
+								<strong>스튜디오</strong>
+								<label class="radio-skin">사용안함
+									<input type="radio" name="studio">
+								</label>
+								<label class="radio-skin checked">사용
+									<input type="radio" name="studio">
+								</label>
+								<a href="#" class="studio-search">스튜디오 찾기</a>
+							</div>
+							<div class="add-mc">
+								<strong>MC</strong>
+								<label class="radio-skin">지정안함
+									<input type="radio" name="studio">
+								</label>
+								<label class="radio-skin checked">직접 지정
+									<input type="radio" name="studio">
+								</label>
+								<a href="#" class="mc-search">MC 찾기</a>
+							</div>
+						</div>
+					</div>
+					<div class="tbl-add-area">
+						<em>3회차</em>
+						<div class="add-area">
+							<div class="add-date">
+								<strong>일시</strong>
+								<input type="text" class="inp-style1" style="width:110px" />
+								<span class="add-calendar">달력선택</span>
+								<label title="시작">시작
+									<select class="slt-style" title="시">
+										<option>시</option>
+									</select>
+									<select class="slt-style" title="분">
+										<option>분</option>
+									</select>
+								</label>
+								<label title="종료">종료
+									<select class="slt-style" title="시">
+										<option>시</option>
+									</select>
+									<select class="slt-style" title="분">
+										<option>분</option>
+									</select>
+								</label>
+							</div>
+							<div class="add-studio">
+								<strong>스튜디오</strong>
+								<label class="radio-skin">사용안함
+									<input type="radio" name="studio">
+								</label>
+								<label class="radio-skin checked">사용
+									<input type="radio" name="studio">
+								</label>
+								<a href="#" class="studio-search">스튜디오 찾기</a>
+							</div>
+							<div class="add-mc">
+								<strong>MC</strong>
+								<label class="radio-skin">지정안함
+									<input type="radio" name="studio">
+								</label>
+								<label class="radio-skin checked">직접 지정
+									<input type="radio" name="studio">
+								</label>
+								<a href="#" class="mc-search">MC 찾기</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type2 blue">확인</a>
+					<a href="#" class="btn-type2 gray">취소</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap" id="layer5">
+			<div class="title">
+				<strong>요청수업 선택</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="layer-cont2">
+				<div class="mc-search">
+					<div class="mc-search-area lesson">
+						<select class="slt-style" title="카테고리선택">
+							<option>전체</option>
+							<option>오픈</option>
+							<option>멘토지정</option>
+							<option>직업지정</option>
+						</select>
+						<select class="slt-style" title="키워드선택">
+							<option>전체</option>
+							<option>수업</option>
+							<option>직업</option>
+							<option>멘토</option>
+						</select>
+						<input type="text" class="inp-style1" value="아시아나" style="width:298px" />
+						<a href="#" class="btn-type2 search"><span>검색</span></a>
+					</div>
+				</div>
+				<div class="result-info">
+					<p class="search-result">검색 결과 <strong>총 <em>00</em> 건</strong></p>
+				</div>
+				<div class="mc-search-list box-scroll-wrap">
+					<ul class="studio-info-ul choice">
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 공항서비스 직업특강</span>
+								<span class="lesson-request-status">멘토지정</span>
+								<div class="lesson-request-date">
+									<div class="time-list">
+										<span>2015.01.11 <em>09:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+									</div>
+									<div class="time-box">
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+									</div>
+								</div>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">사람과 기업, 사회를 변화시키는 매거진을 만든다!!!!!!!!!!!!!!!</span>
+								<span class="lesson-request-status">직접지정</span>
+								<div class="lesson-request-date">
+									<div class="time-list">
+										<span>2015.01.11 <em>09:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+									</div>
+									<div class="time-box">
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+									</div>
+								</div>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 정비사 직업특강</span>
+								<span class="lesson-request-status">오픈</span>
+								<div class="lesson-request-date">
+									<div class="time-list"><!-- 한개일때 -->
+										<span>2015.01.11 <em>09:05</em></span>
+									</div>
+								</div>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 정비사 직업특강</span>
+								<span class="lesson-request-status">오픈</span>
+								<div class="lesson-request-date">
+									<div class="time-list"><!-- 한개일때 -->
+										<span>2015.01.11 <em>09:05</em></span>
+									</div>
+								</div>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 정비사 직업특강</span>
+								<span class="lesson-request-status">오픈</span>
+								<div class="lesson-request-date">
+									<div class="time-list"><!-- 한개일때 -->
+										<span>2015.01.11 <em>09:05</em></span>
+									</div>
+								</div>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 정비사 직업특강</span>
+								<span class="lesson-request-status">오픈</span>
+								<div class="lesson-request-date">
+									<div class="time-list"><!-- 한개일때 -->
+										<span>2015.01.11 <em>09:05</em></span>
+									</div>
+								</div>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 정비사 직업특강</span>
+								<span class="lesson-request-status">오픈</span>
+								<div class="lesson-request-date">
+									<div class="time-list"><!-- 한개일때 -->
+										<span>2015.01.11 <em>09:05</em></span>
+									</div>
+								</div>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 정비사 직업특강</span>
+								<span class="lesson-request-status">오픈</span>
+								<div class="lesson-request-date">
+									<div class="time-list"><!-- 한개일때 -->
+										<span>2015.01.11 <em>09:05</em></span>
+									</div>
+								</div>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 정비사 직업특강</span>
+								<span class="lesson-request-status">오픈</span>
+								<div class="lesson-request-date">
+									<div class="time-list"><!-- 한개일때 -->
+										<span>2015.01.11 <em>09:05</em></span>
+									</div>
+								</div>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 정비사 직업특강</span>
+								<span class="lesson-request-status">오픈</span>
+								<div class="lesson-request-date">
+									<div class="time-list"><!-- 한개일때 -->
+										<span>2015.01.11 <em>09:05</em></span>
+									</div>
+								</div>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">아시아나항공 정비사 직업특강</span>
+								<span class="lesson-request-status">오픈</span>
+								<div class="lesson-request-date">
+									<div class="time-list"><!-- 한개일때 -->
+										<span>2015.01.11 <em>09:05</em></span>
+									</div>
+								</div>
+								<input type="radio" name="job">
+							</label>
+						</li>
+						<li>
+							<label class="radio-skin">
+								<span class="lesson-request-title">사람과 기업, 사회를 변화시키는 매거진을 만든다!!!!!!!!!!!!!!!</span>
+								<span class="lesson-request-status">직접지정</span>
+								<div class="lesson-request-date">
+									<div class="time-list">
+										<span>2015.01.11 <em>09:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+									</div>
+									<div class="time-box">
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+										<span>2015.09.20 <em>10:05</em></span>
+									</div>
+								</div>
+								<input type="radio" name="job">
+							</label>
+						</li>
+					</ul>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type2 blue">확인</a>
+					<a href="#" class="btn-type2 gray">취소</a>
+				</div>
+			</div>
+		</div>
+		<!-- // layer-popup-->
+	</div>
+</body>
+</html>

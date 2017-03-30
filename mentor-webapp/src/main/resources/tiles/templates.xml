@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+
+    <definition name="main-layout" template="/WEB-INF/jsp/layouts/main-layout.jsp">
+        <put-attribute name="jsHeader" value="/WEB-INF/jsp/layouts/jsHeader.jsp" />
+        <put-attribute name="header" value="/WEB-INF/jsp/layouts/header.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/layouts/footer.jsp" />
+    </definition>
+
+    <definition name="community-layout" template="/WEB-INF/jsp/layouts/community-layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/jsp/layouts/header.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/layouts/footer.jsp" />
+    </definition>
+
+    <definition name="empty-layout" template="/WEB-INF/jsp/layouts/empty-layout.jsp">
+        <put-attribute name="jsHeader" value="/WEB-INF/jsp/layouts/jsHeader.jsp" />
+    </definition>
+
+    <definition name="error-layout" template="/WEB-INF/jsp/layouts/empty-layout.jsp">
+        <put-attribute name="jsHeader" value="/WEB-INF/jsp/layouts/jsHeader.jsp" />
+        <put-attribute name="header" value="/WEB-INF/jsp/layouts/header.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/layouts/footer.jsp" />
+    </definition>
+
+    <definition name="sub-layout" template="/WEB-INF/jsp/layouts/sub-layout.jsp">
+    </definition>
+
+    <definition name="popup-layout" template="/WEB-INF/jsp/layouts/popup-layout.jsp">
+        <put-attribute name="jsHeader" value="/WEB-INF/jsp/layouts/jsHeader.jsp" />
+        <put-attribute name="header" value="/WEB-INF/jsp/layouts/header.jsp" />
+    </definition>
+
+    <definition name="layouts/*" extends="empty-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/layouts/{1}.jsp" />
+    </definition>
+
+    <definition name="layer/popup*" extends="popup-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/layer/popup{1}.jsp" />
+    </definition>
+
+    <definition name="layer/*" extends="sub-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/layer/{1}.jsp" />
+    </definition>
+
+    <definition name="daumeditor/*/*/*" extends="empty-layout">
+        <put-attribute name="body" value="/daumeditor/{1}/{2}/{3}.jsp" />
+    </definition>
+
+    <definition name="notification/*" extends="empty-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/notification/{1}.jsp" />
+    </definition>
+
+    <definition name="calculateManagement/layerPopup*" extends="sub-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/calculateManagement/layerPopup{1}.jsp" />
+    </definition>
+
+    <definition name="lectManagement/layerPopup*" extends="sub-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/lectManagement/layerPopup{1}.jsp" />
+    </definition>
+
+    <definition name="calculateManagement/*" extends="main-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/calculateManagement/{1}.jsp" />
+    </definition>
+
+    <definition name="lecture/lectureState/tab*" extends="sub-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/lecture/lectureState/tab{1}.jsp" />
+    </definition>
+
+    <definition name="errors/*" extends="error-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/errors/{1}.jsp" />
+    </definition>
+
+    <definition name="*" extends="main-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}.jsp" />
+    </definition>
+
+    <definition name="*/*" extends="main-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />
+    </definition>
+
+    <definition name="community/*/*" extends="main-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/community/{1}/{2}.jsp" />
+    </definition>
+
+    <definition name="*/*/*" extends="main-layout">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+    </definition>
+
+</tiles-definitions>

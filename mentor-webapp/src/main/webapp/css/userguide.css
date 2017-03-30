@@ -1,0 +1,75 @@
+@charset "utf-8";
+@import url(common.css);
+
+.userguide-qna-wrap{overflow:hidden;margin-top:15px;padding:12px 20px 14px;border:1px solid #707070;line-height:40px;letter-spacing:-1px;}
+.userguide-qna-wrap strong{float:left;margin-right:24px;color:#333;}
+.userguide-ul, .userguide-search-area{overflow:hidden;float:left;}
+.userguide-ul li{float:left;margin-right:8px;}
+.userguide-ul .radio-skin{position:relative;padding:0 12px 0 24px;}
+.userguide-ul .radio-skin input{position:absolute;top:0;left:0;}
+.userguide-search-area div, .userguide-search-area .btn-type2.search{}
+.userguide-search-area div{display:inline-block;margin-left:29px;}
+.userguide-search-area div .slt-style{width:107px;margin-right:3px;border:1px solid #b2b2b2;}
+.userguide-search-area div .inp-style1{width:168px;height:32px;margin-right:3px;}
+.userguide-search-area .btn-search span{display:inline-block;margin-left:27px;}
+
+/*공지사항*/
+.lesson-data-list.userguide{}
+.lesson-data-list.userguide .title > a:after{display:none;}
+.lesson-data-list.userguide .title > a > span.day{float:right;width:120px;}
+.lesson-data-list.userguide .title > a > span.day:before {content: '';display: inline-block;vertical-align: -3px;width: 20px;height: 16px;background: url('../images/community/icon_file.png') no-repeat;}
+.lesson-data-list.userguide li .file-list p{padding-bottom:15px;}
+
+/*자주찾는 질문*/
+.writing-list.faq .subject-info .sort{float:left;margin-top:-2px;width:70px;text-align:center;}
+.writing-list.faq .subject-info .sort > span{display:inline-block;padding:1px 3px;color:#333; font-weight:700; text-align:left;border:1px solid #ccc;}
+.writing-list.faq > li .subject-info .subject{padding-left:10px;}
+
+/* 서비스 가이드 */
+.service-guide{position:relative;width:876px;height:694px !important;}
+.service-guide ul.bxslider1{position: relative;overflow: hidden;height: 694px;}
+.service-guide ul.bxslider1 li{float:left;display:block;position:absolute;}
+
+.service-guide .control_wrap{position:absolute;left:0;top:0;z-index:50;height:120px;}
+.service-guide .control_wrap button{width:58px;height:120px;overflow:hidden;display:inline-block;border:0;padding:0;background:none;}
+.service-guide .control_wrap .left_m{position:absolute;left:0;top:275px !important;}
+.service-guide .control_wrap .right_m{position:absolute;right:0;top:275px !important;}
+.service-guide .control_wrap button:hover img{margin-top:-120px;}
+.service-guide ul{width:876px;height:694px;}
+
+.service-guide.my-lesson{position:relative;width:876px;height:574px !important;}
+.service-guide.my-lesson ul.bxslider2{position: relative;overflow: hidden;height: 574px;}
+.service-guide.my-lesson ul.bxslider2 li{float:left;display:block;position:absolute;}
+
+/* 수업절차 */
+.lesson-proc-cont .proc-top { padding-bottom:60px;}
+.lesson-proc-cont .proc-top .proc-list { overflow:hidden; margin-top:36px;}
+.lesson-proc-cont .proc-top .proc-list li { float:left; width:185px; padding-left:55px; background:url("../images/userguide/bg_proc_steps.png") no-repeat 24px 50%; text-align:center;}
+.lesson-proc-cont .proc-top .proc-list li:first-child { width:130px; padding-left:0; background:none;}
+.lesson-proc-cont .proc-top .proc-list li > div { width:130px; height:130px; padding-top:12px; border-radius:50%; background:#f4f6f5;}
+.lesson-proc-cont .proc-top .proc-list li > div .proc-steps { display:inline-block; border-bottom:2px solid #ee5c6f; color:#ee5c6f; font-size:33px; font-weight:500; line-height:50px;}
+.lesson-proc-cont .proc-top .proc-list li > div p { color:#000; font-size:16px; font-weight:500;}
+.lesson-proc-cont .proc-top .proc-list li > p { margin-top:9px; font-size:14px; font-weight:400;}
+.lesson-proc-cont .proc-top .proc-list li > p a { display:inline-block; border-bottom:1px solid #000; color:#000; line-height:26px;}
+.lesson-proc-cont .proc-mid { height:410px; padding:30px 0 37px; border-bottom: 1px solid #d7d7d7; background:url("../images/userguide/bg_proc_mid.png") no-repeat 50% 94px;}
+.lesson-proc-cont .proc-mid .replace-txt { overflow:hidden; width:0; height:0; font-size:0; line-height:0; text-indent:-9999px; opacity:0;}
+.lesson-proc-cont .proc-bot { overflow:hidden; padding-top:30px;}
+.lesson-proc-cont .proc-bot .lead-condition { padding-bottom:5px; color:#000; font-size:16px; font-weight:500; line-height:28px;}
+.lesson-proc-cont .proc-bot .cond-desc,
+.lesson-proc-cont .proc-bot ul li { color:#666; font-size:14px;}
+.lesson-proc-cont .proc-bot .cond-desc { margin-top:0;}
+
+/* 사업소개 */
+.bsns-cont { padding:45px 0 50px; border-top:1px solid #e0e0e0; }
+.bsns-cont h3 { padding-bottom:30px; color:#475553; font-size:26px; font-weight:500; line-height:36px;}
+.bsns-cont p { color:#666; font-size:14px; line-height:22px; word-break: keep-all;}
+.bsns-cont ul li { padding-left:8px; color:#666; font-size:14px; line-height:22px; text-indent:-8px;}
+.bsns01 { padding-left:380px; border-top:0; background:url("../images/userguide/bg_bsns01.png") no-repeat 0 50px;}
+.bsns01 p strong { font-size:26px; font-weight:500;}
+.bsns02 { padding-right:300px; background:url("../images/userguide/bg_bsns02.png") no-repeat right 50px;}
+.bsns03 h3 { padding-bottom:15px;}
+.bsns03 .graph-wrap { margin-top:45px; text-align:center;}
+.bsns03 .graph-wrap span { display:block;color:#475553; font-size:14px; font-weight:500; line-height:18px;}
+.bsns05 { padding-bottom:0;}
+.bsns05 h3 { padding-bottom:15px;}
+.bsns05 ul li em { color:#f26522;}

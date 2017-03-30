@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<title>산들 바람 관리자 페이지</title>
+
+	<link rel="stylesheet" href="./css/common.css" />
+
+	<script src="./js/jquery-1.11.1.min.js"></script>
+	<script src="./js/common.js"></script>
+</head>
+
+<body>
+	<div id="wrap">
+		<!-- header -->
+		<div id="header">
+			<div class="logo-area">
+				<h1 class="logo"><a href="#"><img src="./images/common/logo.jpg" alt="산들바람 관리자 페이지" /></a></h1>
+				<ul class="header-utill">
+					<li class="top-admin"><a href="#"><span>최고관리자(admin)</span></a></li>
+					<li><a href="#">관리자정보</a></li>
+					<li><a href="#">환경설정</a></li>
+					<li><a href="#">커뮤니티</a></li>
+					<li class="logout"><a href="#"><span>로그아웃</span></a></li>
+				</ul>
+				<div class="font-controller">
+					글자크기
+					<button type="button" class="small">작게</button>
+					<button type="button" class="big">크게</button>
+				</div>
+			</div>
+			<!-- gnb -->
+			<div class="gnb-area">
+				<ul class="gnb">
+					<li class="nth1 on">
+						<a href="#"><strong>마스터관리</strong></a>
+						<ul class="sub-gnb">
+							<li><a href="#">직업관리</a></li>
+							<li><a href="#">MC관리</a></li>
+							<li><a href="#">스튜디오관리</a></li>
+							<li><a href="#">학급구분</a></li>
+							<li><a href="#">지역설정</a></li>
+							<li><a href="#">취소/수정 사유설정</a></li>
+							<li><a href="#">수업시간</a></li>
+							<li><a href="#">평가관리</a></li>
+							<li><a href="#">접근권한설정</a></li>
+						</ul>
+					</li>
+					<li class="nth2"><a href="#"><strong>멘토관리</strong></a></li>
+					<li class="nth3"><a href="#"><strong>학교관리</strong></a></li>
+					<li class="nth4"><a href="#"><strong>시간표관리</strong></a></li>
+					<li class="nth5"><a href="#"><strong>멘토링신청현황</strong></a></li>
+					<li class="nth6"><a href="#"><strong>수업정보관리</strong></a></li>
+					<li class="nth7"><a href="#"><strong>게시판관리</strong></a></li>
+					<li class="nth8"><a href="#"><strong>SMS관리</strong></a></li>
+				</ul>
+			</div>
+			<!-- //gnb -->
+		</div>
+		<!-- //header -->
+		<!-- contents -->
+		<div id="contents">
+			<div class="cont">
+				<h2 class="title-type1">환경설정</h2>
+				<ul class="tab-type">
+					<li class="active"><a href="#">기본환경</a></li>
+					<li><a href="#">게시판 기본</a></li>
+					<li><a href="#">회원가입</a></li>
+					<li><a href="#">본인확인</a></li>
+					<li><a href="#">기본 메일환경</a></li>
+					<li><a href="#">레이아웃 추가설정</a></li>
+				</ul>
+
+				<div class="tab-cont-wrap">
+					<div class="tab-cont active">
+						<div class="tbl-input-type">
+							<table>
+							<caption></caption>
+							<colgroup>
+								<col style="width:85px" />
+								<col />
+								<col style="width:116px" />
+								<col />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="row">제목</th>
+									<td><input type="text" name="" /></td>
+									<th scope="row">로그인 시 포인트</th>
+									<td>
+										<input type="text" style="width:28px;" name="" /> 점
+										<span class="reference">회원 로그인시 하루에 한번 적립 </span>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">최고관리자</th>
+									<td><input type="text" name="" disabled="disabled" /></td>
+									<th scope="row">이름(닉네임)표시</th>
+									<td>
+										<input type="text" style="width:38px;" name="" /> 자리만 표시
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">포인트사용</th>
+									<td>
+										<label><input type="radio" name="point" />사용</label>
+										<label><input type="radio" name="point" />사용안함</label>
+									</td>
+									<th scope="row">복사, 이동 시 로그</th>
+									<td>
+										<label><input type="checkbox" name="" />남김</label>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">접근가능 IP</th>
+									<td>
+										<p class="txt-type1">입력된 IP의 컴퓨터만 접근할 수 있습니다.</p>
+										<span class="reference ml-0">123.123.+도 입력 가능. (엔터로 구분)</span>
+										<div class="mt-10"><textarea name="" rows="" style="width:240px;height:80px;" cols=""></textarea></div>
+									</td>
+									<th scope="row">복사, 이동 시 로그</th>
+									<td>
+										<p class="txt-type1">입력된 IP의 컴퓨터만 접근할 수 있습니다.</p>
+										<span class="reference ml-0">123.123.+도 입력 가능. (엔터로 구분)</span>
+										<div class="mt-10"><textarea name="" rows="" style="width:240px;height:80px;" cols=""></textarea></div>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+				<div class="btn-paging">
+					<div class="btn-right">
+						<a href="#" class="btn-type1">확인</a>
+						<a href="#" class="btn-type1 gray">메인으로</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- //contents -->
+		<!-- footer -->
+		<div id="footer">
+			<p>Copyright &copy; mentor.career.go.kr. All rights reserved.</p>
+		</div>
+		<!-- //footer -->
+	</div>
+</body>
+</html>

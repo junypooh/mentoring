@@ -1,0 +1,157 @@
+@charset "utf-8";
+@import url(common.css);
+@import url(member.css);
+
+
+
+/* 멘토관리 */
+.calculate-management .search-box dl.mentor-search{overflow:hidden;padding:0 0 0 127px;margin:0 68px;border-bottom:1px solid #bbb;text-align:center;}
+.calculate-management .search-box dl.mentor-search dt{float:left;width:auto;padding-right:30px;}
+.calculate-management .search-box dl.mentor-search dd{float:left;width:auto;padding-right:60px;}
+.calculate-management .search-box dl.mentor-search dd .btn-type1, .paging-btn .r-btn .btn-type1{width:96px;text-align:center;font-weight:700;font-size:14px;}
+
+/* 멘토관리-팝업 */
+.layer-pop-wrap .mentor-mem-reg{padding:0 20px;}
+.layer-pop-wrap .mentor-mem-reg .board-input-type{border:0;padding:0;}
+.layer-pop-wrap .mentor-mem-reg .board-input-type table{border-bottom:1px solid #ddd;}
+.layer-pop-wrap .mentor-mem-reg .btn-area{padding-bottom:40px;}
+
+.box-style {font-size: 16px;}
+.box-style.none-border{padding:3px 30px;}
+.job-select-ul{padding:10px 0 35px;}
+.job-select-ul .chk-skin{position:relative;padding-left:24px;}
+.job-select-ul label.chk-skin input{position:absolute;top:-3px;left:-4px;height:24px;}
+.job-select-ul.other-btm{padding:10px 0 34px;}
+.job-select-ul.other-btm li{position:relative;}
+.job-select-ul.other-btm .radio-skin{position:relative;min-width:250px;padding-left:24px;line-height:1.5;}
+.job-select-ul.other-btm label.radio-skin input{position:absolute;top:-3px;left:-4px;height:24px;}
+.job-select-ul li{display:inline-block;width:217px;margin-top:6px;font-size:14px;color:#666;letter-spacing:-1px;}
+.job-select-ul li em{color:#ee5c6f;}
+.btn-area.border{border-top:1px solid #dfdfdf;}
+.btn-area.border a{margin:0;margin-left:7px;}
+.btn-area.border a:first-child{margin-left:0;}
+.box-style.none-border .btn-area{border-top: 1px solid #dfdfdf;}
+
+/* 수업상세 */
+.lesson_detail{width:100%;overflow:hidden;}
+.lesson_detail h3{padding-bottom:20px;font-size:18px;font-weight:700;color:#ee5c6f;}
+.lesson_detail h3 em { display:inline-block; color:#666; font-weight:500;}
+.lesson_detail h3 em span { padding:0 5px;}
+.board-type2.detail{float:left;width:610px;border-bottom:0;}
+.lesson_detail .board-slide{position:relative;width:100%;overflow:hidden;}
+.lesson_detail .slide{position:absolute;right:0;top:0;width:245px;}
+.lesson_detail .slide .bxslider1{position: relative;width:245px;height:245px;overflow:hidden;}
+.lesson_detail .slide .bxslider1 li{float: left;display: block;position: absolute;}
+.lesson_detail .slide .bxslider1 li > div{padding-bottom:15px;}
+.lesson_detail .slide .bxslider1 img{width:243px;height:243px;border:1px solid #dfdfdf;}
+
+.lesson_detail .slide .navi.slide-btn{display: inline-block;z-index: 10;position: absolute;left: 50%;bottom:0;margin-left: -27px;}
+.lesson_detail .slide .navi.slide-btn li{float:left;}
+.lesson_detail .slide .navi.slide-btn li button{display: block;width: 8px;height: 8px;margin-left: 5px;font-size: 0;text-indent: -9999px;background: #dfdfdf;border-radius: 10px;border: 0;padding: 0;}
+.lesson_detail .slide .navi.slide-btn li.active button{background:#ee5c6f;}
+
+
+.board-type2.detail table tbody tr th, .board-type2.info table tbody tr th{padding:18px 0 17px 30px;font-size:14px;text-align:left;vertical-align:top;}
+.board-type2.detail table tr td .schedule-cont li{width:100%;overflow:hidden;padding-top:10px;}
+.board-type2.detail table tr td .schedule-cont li:first-child{padding:0;}
+.board-type2.detail table tr td .schedule-cont li span{float:left;padding-right:20px;}
+.board-type2.detail table tr td .schedule-cont li span:before{content:'';display:inline-block;width:1px;height:16px;margin-right:20px;background:#666;vertical-align:-3px;}
+.board-type2.detail table tr td .schedule-cont li span:first-child:before{display:none;}
+.board-type2.detail table tbody tr.last th, .board-type2.detail table tr.last td{border-bottom:0;}
+
+.board-type2.info table tr td .request-equipment em{font-weight:700;color:#ee5c6f;font-size:16px;}
+.board-type2.info table tr td .lesson-cont > span.detail-btn{cursor:pointer;position:relative;display:block;padding-right:40px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.board-type2.info table tr td .lesson-cont > span.detail-btn:after{content:'';position:absolute;right:12px;top:5px;display:block;width:16px;height:9px;background: url('../images/management/bg_lesson_arw.png') no-repeat;}
+.board-type2.info table tr td .lesson-cont > p{display:none;padding-right:40px;}
+.board-type2.info table tr td .lesson-cont > span.detail-btn.active{overflow: auto;text-overflow: inherit;white-space: inherit;}
+.board-type2.info table tr td .lesson-cont > span.detail-btn.active + p{display:block;}
+.board-type2.info table tr td .lesson-cont > span.detail-btn.active:after{background-position:0 -9px;}
+.board-type2.info table tr td .lesson-cont.detail > span.detail-btn{height:22px;}
+.board-type2.info table tr td .lesson-cont.detail .detail-cont{display:none;}
+.board-type2.info table tr td .lesson-cont.detail > span.detail-btn.active + .detail-cont{display:block;}
+.board-type2.info{width:100%;overflow:hidden;border-top: 1px solid #ddd;border-bottom:2px solid #666;}
+.board-type2.info table tr td{padding:10px 0 8px 15px;}
+.lesson_detail .btn-area{padding-top:9px;}
+.lesson-data-list.detail{margin-top:0;}
+.board-type2.default table tr th {text-align:left; padding-left:25px;}
+
+.btn-area .btn-type4{width:80px;line-height:28px;font-weight:700;font-size:14px;}
+.btn-area .btn-type4.modify{background:#fff;border:2px solid #333;color:#333;}
+.btn-area .btn-type4.modify:hover{border:2px solid #ee5c6f;color:#ee5c6f;}
+.btn-area .btn-type4.list{background:#fff;border:2px solid #666;color:#666;}
+.btn-area .btn-type4.list:hover{border:2px solid #333;color:#333;}
+
+/* 요청수업 */
+.board-type2.request{border:1px solid #dfdfdf;border-bottom:0;}
+.board-type2.request table tbody tr th{padding:7px 0 6px 20px;font-size:14px;color:#666;vertical-align:top;}
+.board-type2.request table tr td{padding:7px 0 6px 20px;}
+.board-type2.request table tr td .hope-day{margin:0 !important;border:0;}
+.board-type2.request table tr td .hope-day li{position:relative;float:left;border:0;padding-left:12px;}
+.board-type2.request table tr td .hope-day li:before{content:',';display:inline-block;position:absolute;left:0;bottom:0;}
+.board-type2.request table tr td .hope-day li:first-child{padding:0;}
+.board-type2.request table tr td .hope-day li:first-child:before{display:none;}
+.board-type2.request table tr td .hope-day li:hover{background:none;}
+.board-type2.request table tr td .hope-day li .day{width:80px;}
+.board-type2.request table tr td .hope-day li .time{color:#ee5c6f;}
+.btn-area.r-align.request{padding:10px 0 0;margin-bottom:30px;}
+
+/* 수업다시보기 비디오 */
+.lesson-replay-video h3{padding-bottom:16px;font-weight:700;color:#ee5c6f;font-size:18px;}
+.lesson-replay-video .movie_area{width:638px;height:508px;overflow:hidden;}
+.lesson-replay-video .text_bar {margin-bottom: 35px;}
+.lesson-replay-video .text_bar textarea {border: 1px solid #dfdfdf;padding: 10px;width:638px;height:208px;}
+.lesson-replay-video h4{line-height:45px;font-weight:700;color:#333;font-size:16px;}
+.lesson-replay-video h4:before{content:'';display:inline-block;width:5px;height:5px;margin-right:6px;vertical-align:2px;background:#333;border-radius:5px;}
+
+/* 수업현황 */
+.calculate-management.lists .search-box dl dd .btn em.school{padding-right:40px;}
+.board-type1 table tr td .lesson-mngmt-info{position:relative;width:100%;overflow:hidden;}
+.board-type1 table tr td .lesson-mngmt-info > a{display:block;padding-bottom:2px;padding-right:100px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;font-weight:500;}
+.board-type1 table tr td .lesson-mngmt-info > a:hover{text-decoration:underline;}
+.board-type1 table tr td .lesson-mngmt-info .time{float:left;color:#666;}
+.board-type1 table tr td .lesson-mngmt-info .time em{display:inline-block;margin-right:28px;color:#ee5c6f;}
+.board-type1 table tr td .lesson-mngmt-info .time em:before{content:'/';display:inline-block;color:#6f6f6f;margin:0 3px;}
+.board-type1 table tr td .lesson-mngmt-info .admission{display:inline-block;position:absolute;right:20px;top:12px;}
+.board-type1 table tr td .lesson-mngmt-info .admission a{width:68px;line-height:19px;border:2px solid #47933f;border-radius:15px;text-align:center;color:#47933f;font-size:11px;font-weight:700;}
+.board-type1 table tr td .lesson-mngmt-info .admission a:hover{background:#47933f;color:#fff;}
+.board-type1 table tr td .lesson-mngmt-info .admission.video{right:33px;top:10px;}
+.board-type1 table tr td .lesson-mngmt-info .admission.video a{border:0;width:36px;line-height:auto;border-radius:0;}
+.board-type1 table tr td .lesson-mngmt-info .admission.video a:hover{background:none;}
+.board-type1 table tr td span.visit a{display:inline-block;color:#ee5c6f;font-size:16px;font-weight:700;}
+.board-type1 table tr td span.visit a:hover{text-decoration:underline;}
+.board-type1 table tr td span.visit a:after{content:'/';display:inline-block;margin:0 3px;color:#666;font-weight:400;}
+.board-type1.lesson_lists table tr td{padding: 5px 0 5px 30px;text-align:left;}
+.board-type1.lesson_lists table tr td.al-r{text-align:right;padding: 5px 15px 5px 0;}
+
+/* 수업수정 */
+.board-input-type table tr td .text-limit{width:98%;height:32px;background:#e2e2e2;}
+.board-input-type table tr td .text-limit input{background:#e2e2e2;border:0;height:32px;}
+.board-input-type table tr td .text-limit span{float:right;margin:8px 10px 0 0;font-size:11px;}
+.board-input-type table tr td .text-limit span em{font-weight:700;color:#ee5c6f;font-size:11px;}
+.board-input-type .input-file .max-num{float:left;margin:6px 0 0 120px;}
+.board-input-type .input-file .max-num.v-up-num{margin-left:20px;}
+.board-input-type .file-list li{color:#666;}
+.board-input-type table tr td .text-limit.area{height:86px;}
+.board-input-type table tr td .text-limit.area span{display:block;float:none;margin-top:0;line-height:100%;text-align:right;}
+.board-input-type table tr td .lesson-subject{margin-left:26px;}
+
+/* 수업개설 */
+.board-input-type.lesson_setup{display:block;padding:0;}
+.board-input-type.lesson_setup > .cont20{padding:0 20px;}
+.board-input-type.lesson_setup .btn-area{border-top:1px solid #ddd;}
+.board-input-type.lesson_setup .btn-area .right{right:19px;}
+.board-input-type.lesson_setup .lesson-data-list{margin-bottom:0;border-top: 1px solid #dfdfdf;border-bottom:1px solid #333;}
+.board-input-type.lesson_setup .lesson-data-list:before{display:none;}
+.board-input-type.lesson_setup .lesson-data-list .title > a > em{padding-left:20px;}
+.board-input-type.lesson_setup .lesson-data-list li.active .title + .file-list{padding:0 52px 0 19px;}
+.board-type1.temporary-info{border:1px solid #bbb;border-top:0;}
+.board-type1.temporary-info table{border-bottom:2px solid #666;}
+.board-type1.temporary-info .paging-btn .r-btn{right:15px;}
+
+/* etc */
+.btn-v-up { float:left; margin-left:105px; padding:0 15px; border:2px solid #ee5c6f; color:#ee5c6f;}
+.v-ps-list { width:467px; padding:10px; border:1px solid #d5d5d5; background:#fafafa; color:#666;}
+
+
+
+

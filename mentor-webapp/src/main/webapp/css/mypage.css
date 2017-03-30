@@ -1,0 +1,522 @@
+@charset "utf-8";
+@import url(common.css);
+
+
+
+/* 나의 정보 - 프로필 정보 */
+.join-info-write.myinfo{margin-top:9px;padding-top:6px;}
+.join-info-write.myinfo > h3{font-size:18px;color:#333;}
+.join-info-write.myinfo .board-tit{padding-left:14px;background:url('../images/mypage/bg_myinfo_dot.png') no-repeat 0 center;}
+.join-info-write.myinfo .board-title{border-top:0;border-bottom:0;line-height:27px;}
+.join-info-write.myinfo .board-input-type{margin-top:8px;border-top:1px solid #bbb;}
+
+.myinfo-desc{width:100%;height:158px;margin:8px 0 19px;border:1px solid #bbb;text-align:center;}
+.myinfo-desc .my-desc-profile, .myinfo-desc .my-desc-info{float:left;width:50%;height:100%;}
+.myinfo-desc .my-desc-profile{padding:20px;border-right:1px solid #bbb;}
+.myinfo-desc .my-desc-profile .img-area{display:inline-block;float:left;width:116px;height:116px;background:url('../images/mypage/bg_myinfo_profile.png') no-repeat;font-size:0;}
+.myinfo-desc .my-desc-profile .img-area img{width:116px;height:116px;}
+/*.myinfo-desc .my-desc-profile .img-area:hover{padding-top:44px;background:none;background:#e3e3e3;font-size:18px;color:#fff;}*/
+.myinfo-desc .my-desc-profile div{float:left;margin-left:10px;}
+.myinfo-desc .my-desc-profile a{display:block;min-width:auto;width:106px;margin-top:8px;font-size:14px;line-height:28px;text-align:left;}
+.myinfo-desc .my-desc-profile a:first-child{margin-top:0;}
+.myinfo-desc .my-desc-profile a span{display:inline-block;width:22px;height:16px;margin:6px 6px 0 13px;border:1px solid #fff;background:url('../images/mypage/bg_photo_out.png') no-repeat 6px 3px;font-size:0;vertical-align:top;}
+.myinfo-desc .my-desc-profile a:first-child span{background:url('../images/mypage/bg_photo_in.png') no-repeat 3px 2px;}
+.myinfo-desc .my-desc-info{padding-top:29px;font-size:16px;}
+.myinfo-desc .my-desc-info strong{display:block;line-height:30px;}
+.myinfo-desc .my-desc-info em{display:inline-block;width:100%;font-weight:bold;color:#4764c0;}
+.myinfo-desc .my-desc-info span{display:block;color:#333;}
+.myinfo-desc .my-desc-info a{min-width:auto;width:108px;margin-top:4px;font-size:14px;line-height:28px;}
+
+.join-info-write.myinfo .board-input-type{float:none;margin-bottom:20px;border-top:1px solid #bbb;}
+.join-info-write.myinfo .board-input-type table{line-height:20px;}
+.join-info-write.myinfo .board-input-type table td span{color:#333;}
+.join-info-write.myinfo .board-input-type table td .layer{color:#fff;}
+.join-info-write.myinfo .board-input-type table td > em{font-weight:bold;color:#4764c0;}
+.join-info-write.myinfo .board-input-type table td > strong{font-weight:normal;}
+.join-info-write.myinfo .board-input-type table td > strong > em{margin-left:18px;color:#999;}
+.join-info-write.myinfo .board-input-type .mgl-text{display:inline-block;min-width:168px;}
+.join-info-write.myinfo .btn-area{position:relative;}
+.join-info-write.myinfo .btn-out{position:absolute;top:20px;right:0;font-weight:bold;color:#999;text-decoration:underline;}
+.join-info-write.myinfo .btn-out:hover{color:#4764c0;}
+
+/* 나의 정보 - 프로필 정보 상세 */
+.board-input-type table tbody .birthday-slt select{width:70px;}
+.board-input-type table tbody .birthday-slt select:first-child{width:80px;}
+.board-input-type table tbody .email-slt select{width:160px;}
+.join-info-write.myinfo select{color:#333;}
+.join-info-write.myinfo .inp-style2{width:150px;color:#999;}
+.join-info-write.myinfo .inp-style2.bk{width:180px;color:#333;}
+.join-info-write .board-input-type table tbody tr .telephone-slt select{width:80px;}
+.join-info-write.myinfo .telephone-slt .inp-style2.bk{width:65px;}
+
+/* 회원 탈퇴 신청 */
+.member-out{padding:37px 0 73px;text-align:center;color:#333;}
+.member-out h3{font-size:28px;}
+.member-out span.welcome{display:block;font-size:18px;}
+.member-out > em{display:block;padding:0 0 12px 0;font-size:28px;font-weight:700;}
+.member-out > strong{display:block;font-size:18px;font-weight:700;}
+.member-out .member-out-box{width:653px;padding:25px 56px 25px 54px;margin:13px auto 0;border:1px solid #bbb;}
+.member-out .member-out-box > ul{font-size:16px;line-height:24px;}
+.member-out .member-out-box .member-out-info:before{content:'';float:left;width:539px;height:1px;margin-bottom:30px;background:#dfdfdf;}
+.member-out .member-out-box .member-out-info{margin-top:23px;font-size:14px;color:#666;letter-spacing:-1px;text-align:left;}
+.member-out .member-out-box .member-out-info > li{clear:both;background:url('../images/mypage/bg_memberout_dot.png') no-repeat 0 11px;padding-left:10px;}
+.member-out .btn-type2.out{margin-right:7px;}
+.member-out .btn-type2{margin-right:0;}
+
+/* 나의수업 */
+.tab-action.lesson-list{margin-top:25px;}
+.my-lesson-list > ul{margin:30px 10px 0;}
+.my-lesson-list > ul > li{height:111px;margin-top:20px;border:1px solid #e9e9e9;}
+.my-lesson-list ul li .state{float:left;width:312px;text-align:center;}
+.my-lesson-list ul li .state .layer{position:relative;float:left;height:109px;width:180px;background:#4764c0;color:#fff;}
+.my-lesson-list ul li .state .layer.finish, .my-lesson-list ul li .state .layer.cancel{background:#444;}
+.my-lesson-list ul li .state .layer.cancel strong{padding-top:33px;}
+.my-lesson-list ul li .state .layer.finish a.task{width:75px;line-height:25px;color:#fff;background:#444;border:1px solid #fff;font-size:12px;}
+.my-lesson-list ul li .state .layer.finish a.task:hover{border:1px solid #737373;color:#737373;}
+.my-lesson-list ul li .state .layer.finish a.task:before{display:none;}
+.my-lesson-list ul li .state .layer strong{display:block;padding:16px 0 0 0;font-size:18px;line-height:22px;font-weight:700;}
+.my-lesson-list ul li .state .layer span{display:block;font-weight:700;line-height:18px;}
+.my-lesson-list ul li .state .layer span:before{content:'';display:inline-block;width:13px;height:13px;margin-right:4px;vertical-align:-3px;background:url('../images/mypage/bg_time.png') no-repeat;}
+
+.my-lesson-list ul li .state .layer span.lesson-time a{display:inline-block;position:relative;}
+.my-lesson-list ul li .state .layer span.lesson-time a:after{content:'';display:inline-block;width:20px;height:10px;position:absolute;right:-30px;top:8px;background: url('../images/mypage/bg_lesson_time.png') no-repeat center 0;}
+.my-lesson-list ul li .state .layer span.lesson-time.active a:after{background-position:center -16px;}
+.my-lesson-list ul li .state .layer span.lesson-time.active + .date-open{display:block;}
+
+.my-lesson-list ul li .state .layer .date-open{display:none;position:absolute;left:0;top:65px;width:100%;padding-bottom:12px;background:#4764c0;z-index: 5;border-top:1px solid #6c83cd;}
+
+.my-lesson-list ul li .state .layer .date-open ul{position:relative;padding:0 0 10px;}
+.my-lesson-list ul li .state .layer .date-open a.close{display:inline-block;width:20px;height:20px;position:absolute;right:0;top:45px;text-indent:-999px;font-size:0;background: url('../images/mypage/bg_lesson_time.png') no-repeat 0 -4px;}
+.my-lesson-list ul li .state .layer .date-open ul li{padding-bottom:9px;border-bottom:1px solid #6c83cd;}
+.my-lesson-list ul li .state .layer .date-open ul li a strong{padding:10px 0 5px 0;}
+.my-lesson-list ul li .state .layer .date-open ul li a span:before {content:'';display:inline-block;width:13px;height:13px;margin-right:4px;vertical-align:-3px;background:url('../images/mypage/bg_time.png') no-repeat;}
+
+.my-lesson-list ul li .state .layer > a, .my-lesson-list ul li .state .layer .date-open a.cancel{display:inline-block;margin-top:10px;line-height:28px;width:78px;background:#fff;font-size:16px;font-weight:700;color:#4764c0;}
+.my-lesson-list ul li .state .layer > a:before, .my-lesson-list ul li .state .layer .date-open a.cancel:before{content:'';display:inline-block;width:17px;height:16px;margin-right:6px;vertical-align:-3px;background:url('../images/mypage/btn_admission.png') no-repeat;}
+.my-lesson-list ul li .state .layer > a:hover{background:#4764c0;border:1px solid #fff;color:#fff;}
+.my-lesson-list ul li .state .layer > a:hover:before{background-position:0 -16px;}
+.my-lesson-list ul li .state .layer a.stand-by, .my-lesson-list ul li .state .layer a.stand-by:hover{border:0;background:#314ca2;color:#fff;}
+.my-lesson-list ul li .state .layer a.stand-by:before{display:none;}
+.my-lesson-list ul li .state .layer a.cancel, .my-lesson-list ul li .state .layer a.cancel:hover{background:#fff;border:0;color:#4764c0;}
+.my-lesson-list ul li .state .layer a.cancel:before, .my-lesson-list ul li .state .layer .date-open a.cancel:before{width:15px;height:15px;background:url('../images/mypage/btn_cancel.png') no-repeat;}
+.my-lesson-list ul li .state .layer a.request:before{width:15px;height:15px;background:url('../images/mypage/btn_request.png') no-repeat;}
+.my-lesson-list ul li .state .layer a.request:hover:before{background-position:0 -15px;}
+.my-lesson-list ul li .state .thumb{float:left;width:132px;height:109px;}
+.my-lesson-list ul li .state .thumb a{display:block;width:100%;height:109px;}
+.my-lesson-list ul li .state .thumb img{width:132px;height:109px;border-right: 1px solid #e9e9e9;}
+.my-lesson-list ul li .info{position:relative;display:block;margin-left:312px;padding-left:19px;}
+.my-lesson-list ul li .info .day-wrap{display: table;table-layout: fixed;width: 100%;overflow:hidden;}
+.my-lesson-list ul li .info .request-day{display:inline-block;float:left;padding-left:19px;font-weight:700;color:#333;background:url('../images/mypage/icon_clock.png') no-repeat 0 3px;}
+.my-lesson-list ul li .info .request-day em{display:inline-block;margin-left:5px;font-weight:400;}
+.my-lesson-list ul li .info .professor{position:relative;margin:2px 20px 0 0;display:block;overflow:hidden;font-weight:400;font-size:12px;color:#666;}
+.my-lesson-list ul li .info .professor em, .my-lesson-list ul li .info .professor span{}
+.my-lesson-list ul li .info .professor em{position:relative;display:inline-block;overflow: hidden;max-width: 100%;padding-right: 30px;text-overflow: ellipsis;white-space: nowrap;}
+.my-lesson-list ul li .info .professor em span{position:absolute;right:0;top:0;}
+.my-lesson-list ul li .info .professor em:before{content:'';display:inline-block;width:1px;height:11px;margin:0 10px;vertical-align:-2px;background:#666;}
+.my-lesson-list ul li .info strong{display:block;padding:15px 235px 2px 0;font-size:18px;font-weight:700;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.my-lesson-list ul li .info strong a{color:#333;}
+.my-lesson-list ul li .info strong a em{color:#f7475e;font-weight:700;}
+.my-lesson-list ul li .info .m-name{position:absolute;right:80px;top:16px;display:inline-block;font-weight:700;color:#333;}
+.my-lesson-list ul li .info .m-name:before{content:'';display:inline-block;width:16px;height:16px;vertical-align: -4px;margin-right:3px;background: url('../images/mypage/icon_layer_mentor.png') no-repeat;}
+.my-lesson-list ul li .info p{display:block;padding:10px 100px 0 0;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.my-lesson-list ul li .info .icon{position:absolute;right:9px;top:18px;display:inline-block;width:64px;line-height:19px;font-weight:700;font-size:11px;color:#fff;border-radius:10px;background:#47933f;text-align:center;}
+.my-lesson-list ul li .info .icon.schedule{background:#4764c0;}
+.my-lesson-list ul li .info .icon.finish{background:#939393;}
+.my-lesson-list ul li .info .icon.cancel{background:#444;}
+.my-lesson-list ul li .info .icon.recruit{background:#758bcd;}
+.my-lesson-list ul li .info .icon.decide{background:#ef8b48;}
+.my-lesson-list ul li .info .icon.standby{background:#efae48;}
+
+/*.my-lesson-list ul li .state .layer{float:left;height:109px;width:60%;background:#4764c0;color:#fff;}
+.my-lesson-list ul li .state .layer strong{display:block;font-size:18px;font-weight:700;}
+.my-lesson-list ul li .state .thumb{float:left;width:40%;height:109px;}
+.my-lesson-list ul li .state .thumb img{width:100%;height:100%;}*/
+
+/* 나의교실 - 신청/관리 */
+.board-list-type{font-size:16px;}
+.board-list-title{margin-top:7px;line-height:46px;}
+.board-list-title > h3, .board-list-title > div{display:inline-block;color:#4764c0;}
+.board-list-title > div{float:right;color:#333;}
+.board-list-title > div > strong > em{font-weight:bold;color:#4764c0;}
+.board-list-type table{width:100%;border-top:2px solid #707070;border-bottom:1px solid #707070;}
+.board-list-type table thead th{background:#f3f3f3;padding:11px 0 10px;color:#333;}
+
+.board-list-type table tbody tr{border-top:1px solid #dfdfdf;font-size:14px;line-height:20px;text-align:center;}
+.board-list-type table tbody td{padding:13px 0;}
+.board-list-type table tbody .sign-wait{color:#f7475e;text-decoration:underline;}
+
+/* 나의교실 - 신청/교사 */
+.board-list-type.more .btn{position:relative;height:26px;}
+.board-list-type.more .btn a{position:absolute;top:-10px;right:0;width:109px;padding:0;text-align:center;}
+.board-list-type.more .student-stat{text-decoration:underline;}
+.board-list-type.more tr:first-child .empty{padding-left:32%;}
+
+/* 나의교실 - 신청/학생 */
+.board-list-type.more table tbody .sign-none{color:#f7475e;}
+
+/* 학교신청현황 */
+.board-list-title2{margin-top:9px;line-height:42px;}
+.board-list-title2 > div:first-child{float:left;}
+.board-list-title2 > div{float:right;}
+.board-list-title2 > div > strong{float:left;}
+.board-list-title2 > div > div.plural > strong{float:left;color:#333;}
+.board-list-title2 > div > div.plural span{display:block;height:30px;margin-left: 40px;}
+.board-list-title2.sel-list{line-height:inherit;}
+.board-list-title2 > div.lesson-number-box{width:565px;margin-bottom:20px;border:1px solid #e3e3e3;}
+.board-list-title2 > div.lesson-number-box > em{float:left;width:116px;padding:21px 25px 20px;font-weight:700;font-size:16px;color:#333;background:#f3f3f3;line-height:20px;}
+.board-list-title2 > div.lesson-number-box .education-office{overflow:hidden;padding:14px 0 0 15px;}
+.board-list-title2 > div.lesson-number-box .education-office > p{float:left;}
+.board-list-title2 > div.lesson-number-box .education-office > p > em{font-weight:700;font-size:18px;color:#f7475e;}
+.board-list-title2 > div.lesson-number-box .education-office > p.day{margin:5px 0 0 0;}
+.board-list-title2 > div.lesson-number-box .education-office > p > span{background:none !important;color:#333;}
+.board-list-title2 > div.lesson-number-box .education-office .select{display:block;width:100%;margin-bottom:5px;}
+.board-list-title2 > div.lesson-number-box .education-office .select select{color:#333;}
+
+.board-list-title2 > div.lesson-number-box.plural > em{height:116px;padding:40px 25px 0;}
+.board-list-title2 > div.lesson-number-box.plural .education-office .select{display:inline-block;width:auto;margin-right:10px;float:left;}
+.board-list-title2 > div.lesson-number-box.plural .education-office .select.last{width:100%;}
+
+.board-list-title2 > div > strong, .board-list-title2 > div > p > span{color:#333;}
+.board-list-title2 > div > strong > em{margin-left:12px;font-weight:bold;color:#4764c0;}
+.board-list-title2 > div > .slt-style{width:157px;height:28px;margin-left:10px;color:#333;}
+.board-list-title2 > span{font-size:14px;}
+.board-list-title2 > div > p, .board-list-title2 > div.lesson-number-box .education-office > p{display:inline-block;color:#666;font-size:14px;}
+.board-list-title2 > div > p:first-child{margin-right:30px;}
+.board-list-title2 > div > p > span, .board-list-title2 > div.lesson-number-box .education-office > p > span{margin-right:7px;padding-left:8px;font-size:14px;background:url('../images/mypage/bg_student_request.png') no-repeat 0 center;font-weight:bold;}
+.board-list-title2 > div > p > em{font-size:18px;font-weight:bold;color:#f7475e;}
+
+.board-list-type.more table tbody td em{font-weight:bold;color:#333;}
+.board-list-type.more table tbody .web-tbl-td.td1{float:left;padding-left:3px;text-align:center;}
+.board-list-type.more table tbody .web-tbl-td.td1:first-child{float:right;padding-left:0px;text-align:left;}
+
+.board-list-type.more .tbl-other .tbl-school{width:7%;}
+.board-list-type.more .tbl-other .tbl-school2{width:9%;}
+.board-list-type.more .tbl-other .tbl-school3{width:auto;}
+.board-list-type.more .tbl-other .tbl-school4{width:13%;}
+.board-list-type.more .tbl-other .tbl-school5{width:19%;}
+.board-list-type.more .web-tbl-th,
+.board-list-type.more .web-tbl-td{display:inline-block;width:70%;}
+.board-list-type.more .web-tbl-th + .web-tbl-th,
+.board-list-type.more .web-tbl-td + .web-tbl-td{width:30%; border-left:0;}
+.board-list-type.more .web-tbl-th.th1{display:inline-block;width:25%;}
+.board-list-type.more .web-tbl-td.td1{display:inline-block;width:75%;}
+.board-list-type.more .web-tbl-th.th1 + .web-tbl-th.th1{width:75%;}
+.board-list-type.more .web-tbl-td.td1 + .web-tbl-td.td1{width:25%;}
+.board-list-type.more .web-tbl-th.th2,
+.board-list-type.more .web-tbl-td.td2{display:inline-block;width:47%;}
+.board-list-type.more .web-tbl-th.th2 + .web-tbl-th.th2,
+.board-list-type.more .web-tbl-td.td2 + .web-tbl-td.td2{width:53%;}
+.board-list-type.more span.web-blind{display:none;}
+
+.board-list-type.more .web-tbl-th.th2.vertical{vertical-align: 11px;display: inline-block;width: 47%;}
+
+/* 나의 커뮤니티 - 자료실 */
+.tab-type2.my-community-wrap li.mypage-data-li.active .btn a{display:none;}
+.mypage-wrap{position:absolute;top:76px;right:0px;width:100%;}
+.mypage-wrap .community-data-list{margin:0 10px;}
+.mypage-wrap .community-data-list li:first-child .title{width:100%;border-top:1px solid #dfdfdf;}
+.mypage-wrap .community-data-list li .title.active a em{color:#4764c0;}
+.mypage-wrap .community-data-list li .title > a{display:block;overflow:hidden;padding:15px 0 14px;}
+.mypage-wrap .community-data-list li .title > a:hover{background:#f3f3f3;}
+.mypage-wrap .community-data-list li .title.active > a:hover{background:#fff;}
+.mypage-wrap .community-data-list li{border-bottom:1px solid #dfdfdf;}
+.mypage-wrap .community-data-list li .title > a > em{float:left;width:77%;padding-left:20px;color:#333;font-weight:700;}
+.mypage-wrap .community-data-list li .title > a > div{float:right;width:23%;}
+.mypage-wrap .community-data-list li .title .user.student{margin-right:18px;padding-left:21px; background:url('../images/mypage/icon_user.png') no-repeat 0 -17px;font-weight:700;}
+.mypage-wrap .community-data-list li .title .user.teacher{margin-right:18px;padding-left:21px; background:url('../images/mypage/icon_user.png') no-repeat;font-weight:700;}
+.mypage-wrap .community-data-list li .title .file{float:right;font-size:12px;}
+.mypage-wrap .community-data-list li .title .file:after{content:'';display:inline-block;width:20px;height:20px;margin:0 21px 0 8px;vertical-align:-6px;background: url('../images/mypage/icon_file.png') no-repeat;}
+.mypage-wrap .community-data-list li .file-list{display:none;padding:0 19px;margin-bottom:18px;}
+.mypage-wrap .community-data-list li .title.active + .file-list{display:block;}
+.mypage-wrap .community-data-list li .file-list .relation-lesson + a.all-down{margin-top:18px;}
+.mypage-wrap .community-data-list li .file-list a.all-down{display:block;padding-left:35px;line-height:38px;color:#fff;font-weight:700;background:#4764c0 url('../images/mypage/icon_all_down.png') no-repeat 12px 11px;}
+.mypage-wrap .community-data-list li .file-list div.download-brd{position:relative;margin-top:17px;}
+.mypage-wrap .community-data-list li .file-list div.download-brd span a{display:inline-block;font-size:0;}
+.mypage-wrap .community-data-list li .file-list div.download-brd span .btn-edit{position:absolute;top:11px;right:48px;width:15px;height:15px;background:#4764c0 url('../images/mypage/bg_btn_edit.png') no-repeat;}
+.mypage-wrap .community-data-list li .file-list div.download-brd span .btn-del{position:absolute;top:11px;right:18px;width:15px;height:16px;background:#4764c0 url('../images/mypage/bg_btn_del.png') no-repeat;}
+.mypage-wrap .community-data-list li .file-list ul{border:1px solid #dfdfdf;border-top:0;}
+.mypage-wrap .community-data-list li .file-list ul li{display:block;overflow:hidden;border:0;}
+.mypage-wrap .community-data-list li .file-list ul li .file-type{float:left;}
+.mypage-wrap .community-data-list li .file-list ul li .file-type a{display:inline-block;padding-left:39px;line-height:28px;font-size:12px;font-weight:bold;color:#666;}
+.mypage-wrap .community-data-list li .file-list ul li .file-type a:hover{color:#4764c0; text-decoration:underline;}
+.mypage-wrap .community-data-list li .file-list ul li .file-type.pptx{background: url('../images/mypage/icon_file_pptx.png') no-repeat 12px 7px;}
+.mypage-wrap .community-data-list li .file-list ul li .file-type.jpg{background: url('../images/mypage/icon_file_jpg.png') no-repeat 12px 7px;}
+.mypage-wrap .community-data-list li .file-list ul li .file-type.avi{background: url('../images/mypage/icon_file_avi.png') no-repeat 12px 7px;}
+.mypage-wrap .community-data-list li .file-list ul li .file-type.mp4{background: url('../images/mypage/icon_file_mp4.png') no-repeat 13px 7px;}
+.mypage-wrap .community-data-list li .file-list ul li .file-type.zip{background: url('../images/mypage/icon_file_zip.png') no-repeat 13px 7px;}
+.mypage-wrap .community-data-list li .file-list ul li .file-size{float:right;font-size:12px;line-height:28px;}
+.mypage-wrap .community-data-list li .file-list ul li .file-size:after{content:'';display:inline-block;width:20px;height:20px;margin:0 11px 0 9px;vertical-align:-6px;background: url('../images/mypage/icon_file01.png') no-repeat;}
+.tab-type2 li > a > span{display:inline-block;width:26px;height:26px;font-size:0;}
+.mypage-list-area .list-search-area input{margin-top:16px;padding-left:8px;}
+.mypage-list-area .list-search-area select, .list-search-area.mypage .search{top:16px;}
+.mypage-list-area .list-search-area .btn-border-type{margin-top:16px;}
+.mypage-list-area{position:relative;width:100%;}
+.mypage-list-area .list-search-area .search{top:16px;}
+.mypage-list-area .btn-border-type{padding:0 23px;}
+
+.mypage-wrap .community-data-list .relation-lesson{margin-top:-9px; font-size:12px;}
+.mypage-wrap .community-data-list .relation-lesson strong{color:#f7475e;}
+.mypage-wrap .community-data-list .relation-lesson a{margin-left:8px; color:#666; text-decoration:underline;}
+
+/* 나의 커뮤니티 - Q & A */
+.tab-type2.my-community-wrap li.active .btn{width:77px;position:absolute;bottom:-31px;right:0;z-index:10;}
+.tab-type2.my-community-wrap li.active .btn .btn-border-type.layer-open{padding:0 23px;}
+.mypage-wrap .writing-list{margin:0 10px;}
+.mypage-wrap .writing-list .subject-info .subject{max-width:100%;}
+.mypage-wrap .writing-list .subject-info .subject > span{display:inline-block;width:12px;height:16px;margin-left:10px;background: url('../images/mypage/bg_secret_lock.png') no-repeat;font-size:0;vertical-align:top;}
+.mypage-wrap .writing-list .user{font-weight:bold;}
+.mypage-wrap .writing-list .relation-lesson{margin-top:-9px; font-size:12px;}
+.mypage-wrap .writing-list .relation-lesson strong{color:#f7475e;}
+.mypage-wrap .writing-list .relation-lesson a{margin-left:8px; color:#666; text-decoration:underline;}
+.mypage-wrap .writing-list .question-detail .writing-btn{width:60px;height:27px;top:20px;left:inherit;right:10px;}
+.mypage-wrap .writing-list .question-detail .writing-btn a {background: url('../images/mypage/bg_mypage_btn.png') no-repeat 0 0;}
+.mypage-wrap .writing-list .question-detail .writing-btn .btn-del{background-position:-27px 0;}
+.mypage-wrap .writing-list .answer-mentor-info{position:absolute;top:227px;left:22px;}
+.mypage-wrap .writing-list .answer-mentor-info > span{display:block;margin-top:4px;}
+.mypage-wrap .writing-list .answer-mentor-info .user.mentor{padding-left:21px; background:url('../images/mypage/icon_layer_mentor.png') no-repeat 0 center;}
+.list-search-area.mypage{width:526px;}
+.list-search-area.mypage input{width:308px;padding-left:8px;}
+.list-search-area.mypage .btn{position:absolute;top:0;right:-187px;width:78px;}
+.tab-type2 .btn-more-view.no2 {position:absolute;top:586px;right:0;width:100%;}
+
+/* 나의 커뮤니티 - 자유게시판 */
+.mypage-wrap .writing-list .free-board-detail .board-wrap{position:relative; padding-bottom:9px;}
+.mypage-wrap .writing-list .free-board-detail .board-wrap > p{color:#333; font-size:14px; line-height:22px;}
+.mypage-wrap .writing-list .free-board-detail .writing-btn{width:60px;height:27px;bottom:-38px;right:0;}
+.mypage-wrap .writing-list .free-board-detail .writing-btn a {background: url('../images/mypage/bg_mypage_btn.png') no-repeat 0 0;}
+.mypage-wrap .writing-list .free-board-detail .writing-btn .btn-del{background-position:-27px 0;}
+.mypage-wrap .writing-list .free-board-detail .comment .num{padding:0 14px 0 0; border:none; background:none; color:#333; font-weight:bold; text-decoration:underline;}
+.mypage-wrap .writing-list .free-board-detail .comment .num span{color:#666; font-weight:normal;}
+.mypage-wrap .writing-list .free-board-detail .comment .comment-list{margin-top:18px; border-top:1px solid #dfdfdf; background:#f3f3f3;}
+.mypage-wrap .writing-list .free-board-detail .comment .comment-list li{border-bottom:1px solid #dfdfdf;}
+.mypage-wrap .writing-list .free-board-detail .comment .comment-writing{background:#f3f3f3;}
+
+.mypage-wrap .writing-list .free-board-detail .comment{width:100%;overflow:hidden;}
+.mypage-wrap .writing-list .free-board-detail .comment a.num{display:inline-block;margin-top:10px;text-decoration:underline;font-weight:700;color:#333;background:url('../images/lesson/bg_comment_arw.png') no-repeat right 8px;overflow:hidden;}
+.mypage-wrap .writing-list .free-board-detail .comment a.num span{font-weight:400;}
+.mypage-wrap .writing-list .free-board-detail .comment a.num.active{background-position:right -17px;}
+.mypage-wrap .writing-list .free-board-detail .comment a.num + .comment-list{display:none;}
+.mypage-wrap .writing-list .free-board-detail .comment a.num.active + .comment-list{display:block;}
+.mypage-wrap .writing-list .free-board-detail .comment-list{overflow:hidden;background:#f3f3f3;border-top:1px solid #dfdfdf;}
+.mypage-wrap .writing-list .free-board-detail .comment-list li{position:relative;display:block;padding:11px 0 10px;border-bottom:1px solid #dfdfdf;}
+.mypage-wrap .writing-list .free-board-detail .comment-list li em{float:left;width:123px;padding-left:37px;font-weight:700;color:#333;background:url('../images/lesson/bg_comment_name.png') no-repeat 20px 5px;}
+.mypage-wrap .writing-list .free-board-detail .comment-list li em:before{content:'';display:inline-block;width:16px;height:16px;margin-right:6px;vertical-align:-4px;background:url('../images/lesson/bg_comment_name01.png') no-repeat;}
+.mypage-wrap .writing-list .free-board-detail .comment-list li p{margin-left:123px;margin-right:60px;}
+.mypage-wrap .writing-list .free-board-detail .comment-list li .ben-del{position:absolute;right:20px;top:15px;}
+.mypage-wrap .writing-list .free-board-detail .comment-list .reg-form{position:relative;margin:14px 20px 14px 122px;height:80px;background:#fff;border:1px solid #ccc;}
+.mypage-wrap .writing-list .free-board-detail .comment-list .reg-form > div{position:relative;height:auto;margin-right:88px;}
+.mypage-wrap .writing-list .free-board-detail .comment-list .reg-form > div span{display:block; padding:0 10px; font-size:12px; text-align:right;}
+.mypage-wrap .writing-list .free-board-detail .comment-list .reg-form > div span strong{color:#4764c0; font-size:14px; font-weight:bold;}
+.mypage-wrap .writing-list .free-board-detail .comment-list .reg-form > div textarea{width:100%;height:46px;border:0;}
+.mypage-wrap .writing-list .free-board-detail .comment-list .reg-form > a{position:absolute;right:-1px;top:-1px;width:88px;height:80px;padding-top:29px;background:#4764c0;color:#fff;font-weight:700;font-size:16px;text-align:center;}
+
+/* 나의 커뮤니티 - 수업과제 */
+.community-data-list.mypage{position:absolute;top:76px;left:-295%;width:390%;border-top:1px solid #dfdfdf;}
+.tab-type2 .btn-more-view.no4 {position:absolute;top:586px;left:-675px;width:900px;}
+
+/* 나의관심 */
+.my_interest ul li .thumb span.lesson .name{display:inline-block;margin-right:3px;font-weight:700;}
+.my_interest ul li .thumb strong.title .mentor{display:inline-block;margin-right:20px;font-size:18px;}
+.my_interest ul li .layer span.set-btn{display:block;padding-left:9px;border-bottom:1px solid #dfdfdf;}
+.my_interest ul li .layer span.set-btn a{line-height:40px;font-weight:700;color:#3051b8;}
+
+@media (max-width: 979px) {
+	/* 학교 신청 현황 */
+	.lesson-date{width:12%}
+	.board-list-type.more table tbody .web-tbl-td.td1:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;word-wrap:normal;}
+	.board-list-title2 > div.lesson-number-box{width:100%;margin-top:10px;}
+
+	/* 나의 커뮤니티 - 자료실 */
+	.mypage-wrap .community-data-list li .title > a > em{width:70%;}
+	.mypage-wrap .community-data-list li .title > a > div{width:30%;}
+
+
+	/* 나의 커뮤니티 - Q & A */
+	.mypage-list-area .list-search-area{margin:0;padding-right:274px;}
+	.mypage-list-area .list-search-area .search{right:166px;}
+
+	/* 나의수업 */
+	.my-lesson-list ul li .info .m-name{float:left;position:static;margin-top:5px;}
+	.my-lesson-list ul li .info .icon{position:static;margin:6px 0 0 10px;}
+	.my-lesson-list ul li .info .request-day{margin-top:7px;display:block;}
+	.my-lesson-list ul li .info strong{padding-right:10px;}
+	.my-lesson-list ul li .info p{display:none;}
+	.my-lesson-list ul li .info .professor{display:block;margin:7px 20px 0 0;}
+	.my-lesson-list ul li .info .professor > em{float:left;margin-right:0;overflow: hidden;}
+	.my-lesson-list ul li .info .professor > span{}
+
+}
+
+@media (max-width: 767px) {
+	/* 나의 정보 - 프로필 정보 */
+	.join-info-write.myinfo .board-tit{margin-left:10px;}
+	.myinfo-desc .my-desc-profile, .myinfo-desc .my-desc-info{float:none;display:inline-block;width:100%;}
+	.myinfo-desc .my-desc-profile div{display:inline-block;margin-left:4%;}
+
+	.myinfo-desc{position:relative;height:auto;border:0;border-top:1px solid #bbb;border-bottom:1px solid #bbb;}
+	.myinfo-desc .my-desc-profile{padding-bottom:14px;border-right:0;}
+	.myinfo-desc .my-desc-profile .img-area{margin-left:9%;}
+
+	.myinfo-desc .my-desc-info{padding:13px 0 20px;}
+	.myinfo-desc .my-desc-info:before{content:'';position:absolute;top:155px;left:10px;right:10px;height:1px;background:#dfdfdf;}
+
+	/* 나의 정보 - 프로필 정보 상세 */
+	.board-input-type table colgroup{display:none;}
+	.board-input-type table tbody th{display:block;padding:18px 0 0;border-bottom:0;}
+	.board-input-type table tbody td{display:block;padding:10px 0;}
+	.board-input-type table tbody td.pw-question select{width:100% !important;}
+	.board-input-type table tbody .birthday-slt select{width:28%;}
+	.board-input-type table tbody .birthday-slt select:first-child{width:41%;}
+	.board-input-type table tbody .email-slt select{width:43%;}
+	.join-info-write.myinfo .inp-style2.bk{width:50%;}
+	.board-input-type table tbody td.pw-question input.inp-style2{width:100% !important;margin-top:6px;}
+	.join-info-write.myinfo .inp-style2{width:100%;}
+	.join-info-write.myinfo .board-input-type{margin-bottom:29px;padding:0 10px;border-left:0;border-right:0;}
+	.join-info-write.myinfo .board-input-type table td .layer, .join-info-write.myinfo .board-input-type table td span em{display:none;}
+	.join-info-write.myinfo .board-input-type table td span{float:none;display:block;margin-top:5px;}
+	.join-info-write.myinfo .board-input-type table td .mgl-text{min-width:120px;margin-top:0;}
+	.join-info-write.myinfo .board-input-type table td .mgl-15{display:inline-block;margin-top:10px;}
+	.join-info-write .board-input-type table tbody tr .telephone-slt{padding:10px 0 20px;}
+	.join-info-write .board-input-type table tbody tr .telephone-slt select{width:31%;}
+	.join-info-write.myinfo .telephone-slt .inp-style2.bk{width:30%;}
+
+
+	/* 나의수업 */
+	.my-lesson-list ul > li{height:220px;}
+	.my-lesson-list ul li .state{float:none;width:100%;height:109px;}
+	.my-lesson-list ul li .state .layer{float:left;height:108px;width:60%;}
+	.my-lesson-list ul li .state .layer strong{font-size:18px;}
+	.my-lesson-list ul li .state .thumb{width:40%;height:109px;}
+	.my-lesson-list ul li .state .thumb img{width:100%;height:100%;border-right:0;border-bottom: 1px solid #e9e9e9;}
+	.my-lesson-list ul li .info{margin:0;height:109px;}
+	.my-lesson-list ul li .state .layer .date-open ul li{height:auto;}
+	.my-lesson-list ul li .info p{display:none;}
+
+	/* 나의교실 - 신청/관리 */
+	.board-list-type{padding:0 10px;}
+	.board-list-type table colgroup{display:none;}
+	.board-list-type table thead th:first-child{width:11%;}
+	.board-list-type table .request-size{width:30%;}
+
+	/* 나의교실 - 신청/교사 */
+	.board-list-type.more .btn a{display:none;}
+	.board-list-type.more{padding:0 10px;}
+	.board-list-type.more table colgroup{display:none;}
+	.board-list-type.more .web-tbl-th + .web-tbl-th, .board-list-type.more .web-tbl-td + .web-tbl-td{width:auto;}
+	.board-list-type.more .web-tbl-th,
+	.board-list-type.more .web-tbl-td{display:inline;width:auto;}
+	.board-list-type.more .web-tbl-td{}
+	.board-list-type.more span.web-blind{display:inline;}
+	.board-list-type.more tr:first-child .empty{padding-left:0;}
+	.board-list-type.more td{padding:13px 0 13px;line-height:20px;}
+	.board-list-type.more .tbl-hide{display:none;}
+
+	/* 나의교실 - 신청/학생 */
+	.board-list-type.more table .tbl-teacher-size{width:45%;}
+	.board-list-type.more table .tbl-student-size{width:52%;}
+	.board-list-type.more table .tbl-status-size{width:23%;}
+	.board-list-type.more table .tbl-class-td{padding-left:10px;text-align:left;}
+
+	.board-list-type.more .sign-none span{display:block;}
+	.board-list-type.more td span{display:block;}
+
+	/* 학교 신청 현황 */
+	#container .location.mobile-sb span.first{padding:0 11px 0 0;}
+	#container .location.mobile-sb span.first:before{padding-left:11px;}
+	.board-list-title2{overflow:hidden;line-height:26px;}
+	.board-list-title2 > div{width:100%;margin-top:16px;}
+	.board-list-title2 > div:first-child{margin-top:18px;}
+	.board-list-title2 > div > strong > em{}
+	.board-list-title2 > div > .slt-style{display:inline-block;width:157px;height:28px;color:#333;}
+	.board-list-title2 > div.lesson-number-box > em{display:block;float:none;width:100%;text-align:center;padding:0;line-height:42px;}
+	.board-list-title2 > div.lesson-number-box.plural > em{height:auto;padding:0;}
+	.board-list-title2 > div.lesson-number-box .education-office > p.day{margin:0;padding-bottom:10px;}
+	.board-list-title2 > div.lesson-number-box .education-office > p > span{padding-left:0;}
+	.board-list-title2 > div.lesson-number-box .education-office > p{float:none;width:100%;}
+
+	.board-list-type.more .tbl-other{table-layout:fixed;margin-top:13px;}
+	.board-list-type.more .tbl-other colgroup{}
+	.board-list-type.more .tbl-other thead th{padding:4px 0;background:#f3f3f3;line-height:19px;color:#333;}
+	.board-list-type.more .web-tbl-th.th1 + .web-tbl-th.th1, .board-list-type.more .web-tbl-td.td1 + .web-tbl-td.td1{width:auto;}
+	.board-list-type.more .web-tbl-th.th2 + .web-tbl-th.th2, .board-list-type.more .web-tbl-td.td2 + .web-tbl-td.td2{width:auto;}
+	.board-list-type.more .web-tbl-th.th1,
+	.board-list-type.more .web-tbl-td.td1{display:inline;width:auto;}
+	.board-list-type.more .web-tbl-th.th2,
+	.board-list-type.more .web-tbl-td.td2{display:inline;width:auto;}
+	.board-list-type.more .web-tbl-th.th2.vertical{vertical-align:1px;display:block;width: auto;}
+	.board-list-type.more .web-tbl-th.th2.vertical + .web-tbl-th.th2{font-size:12px;}
+	.board-list-type.more .web-tbl-th.th2 .none{display:none;}
+	.board-list-type.more .web-tbl-th.th1:first-child{display:block;}
+	.board-list-type.more .web-tbl-td.td1{display:block;padding-left:10px;text-align:left;}
+
+	.board-list-type.more table tbody .web-tbl-td.td1:first-child{overflow:hidden;float:none;max-width:100%;padding-left:5px;text-overflow:ellipsis;white-space:nowrap;word-wrap:normal;}
+	.board-list-type.more table tbody .web-tbl-td.td1{padding-left:5px;text-align:left;}
+	.board-list-type.more .tbl-other .tbl-school{display:none;}
+	.board-list-type.more .tbl-other .tbl-school2{width:31%;}
+	.board-list-type.more .tbl-other .tbl-school3{width:auto;}
+	.board-list-type.more .tbl-other .tbl-school4{display:none;}
+	.board-list-type.more .tbl-other .tbl-school5{width:25%;}
+	.board-list-type.more .web-tbl-td.td2{display:block;padding-left:10px;text-align:center;}
+	.board-list-type.more span.web-blind{display:inline;}
+	.board-list-title2 > div > p.day{display:block;padding-top:5px;}
+
+	/* 나의 커뮤니티 - 자료실 */
+	.tab-type2.my-community-wrap{padding-bottom:0 !important;}
+	.tab-type2.my-community-wrap li.active .mypage-wrap{margin:20px 0 0;}
+	.mypage-wrap .community-data-list{position:static;width:auto;margin:20px 10px 0;}
+	.mypage-wrap .community-data-list li .title em {padding-left: 10px;}
+	.mypage-wrap .community-data-list li .title > a{padding:8px 0 3px;line-height:18px;}
+	.mypage-wrap .community-data-list li .title > a > em{width:100%;padding-left:10px;}
+	.mypage-wrap .community-data-list li .title > a > div {float:left;width:auto;margin:7px 0 4px 10px;}
+
+	.mypage-wrap .community-data-list li .file-list {padding:0;}
+	.mypage-wrap .community-data-list li .file-list ul li .file-type{width:70%;line-height:16px;}
+	.mypage-wrap .community-data-list li .file-list ul li .file-type a{overflow:hidden;width:100%;text-overflow:ellipsis;white-space: nowrap;word-wrap: normal;}
+	.mypage-wrap .community-data-list li .file-list div.download-brd{margin-top:10px;}
+	.mypage-wrap .community-data-list li .file-list div.download-brd ul{height:184px;}
+	.mypage-wrap .community-data-list li .file-list div.download-brd span{display:none;}
+
+	.tab-type2.my-community-wrap li{width:100%;}
+	.tab-type2.my-community-wrap li.active:after{content:none;}
+	.tab-type2.my-community-wrap li > a{position:relative;padding-left:10px;text-align:left;}
+	.tab-type2.my-community-wrap li.active > a{position:relative;height:44px;}
+	.tab-type2.my-community-wrap li.active > a > span{background:url('../images/mypage/bg_mypage_slide.png') no-repeat;}
+	.tab-type2.my-community-wrap li > a > span{position:absolute;top:7px;right:12px;background:url('../images/mypage/bg_mypage_slide.png') no-repeat;background-position:0 -26px;cursor:pointer;}
+	.tab-type2.my-community-wrap .btn-more-view{position:static;width:auto;}
+
+	/* 나의 커뮤니티 - Q & A */
+	.mypage-wrap{position:static;width:auto;margin:20px 10px 0;}
+	.mypage-wrap .writing-list{margin:0;}
+	.mypage-wrap .writing-list > li.active .subject-detail{padding:0;}
+	.mypage-wrap .writing-list .question-detail{margin-top:0;border-bottom:0;}
+	.mypage-wrap .writing-list .question-detail .writing-btn{width:60px;height:63px;top:inherit;bottom:10px;left:22px;}
+	.mypage-wrap .writing-list > li .subject-info{padding:17px 13px 17px 10px;}
+	.question-detail .answer .info{padding:10px 0 0 60px;}
+	.mypage-wrap .writing-list .question-detail .writing-btn a:first-child{margin-bottom:6px;}
+	.mypage-wrap .writing-list .question-detail .writing-btn a{display:block;margin:0;margin-bottom:6px;}
+	.mypage-wrap .writing-list .answer-mentor-info{position:static;padding-left:60px;}
+	.mypage-wrap .writing-list .relation-lesson{display:none;}
+	
+	/* 나의 커뮤니티 - 자유게시판 */
+	.mypage-wrap .writing-list{position:static;width:auto;margin:20px 10px 0;}
+	.mypage-wrap .writing-list > li.active .subject-detail{}
+	.mypage-wrap .writing-list > li .subject-detail{padding:10px 0 0;}
+	.mypage-wrap .writing-list .free-board-detail .writing-btn{bottom:-32px;right:10px;}
+	.mypage-wrap .writing-list .free-board-detail .board-wrap{padding:0 12px 9px 9px;}
+	.mypage-wrap .writing-list .free-board-detail .board-wrap > p{padding-top:5px;}
+	.mypage-wrap .writing-list .free-board-detail .comment .comment-list{border-left:1px solid #dfdfdf;border-right:1px solid #dfdfdf;}
+	.mypage-wrap .writing-list .free-board-detail .comment-list li em{float:none;}
+	.mypage-wrap .writing-list .free-board-detail .comment-list li p{margin:4px 10px 0 27px;}
+	.mypage-wrap .writing-list .free-board-detail .comment-list .reg-form{height:auto;margin:0;padding:14px 9px;border:0;background:#f3f3f3;}
+	.mypage-wrap .writing-list .free-board-detail .comment-list .reg-form > div{margin-right:0;border:1px solid #ccc;background:#fff;}
+	.mypage-wrap .writing-list .free-board-detail .comment-list .reg-form > a{position:static;display:block;width:auto;margin-top:10px;}
+	.mypage-wrap .writing-list .free-board-detail .comment a.num{margin-left:10px;}
+	.mypage-wrap .writing-list .writing-btn a{display:inline-block;margin:0 0 0 6px;}
+	.mypage-wrap .writing-list .writing-btn a:first-child{margin:0;}
+
+	/* 나의 커뮤니티 - 수업과제 */
+	.mypage-wrap .community-data-list .relation-lesson{margin-left:10px;}
+	.mypage-wrap .community-data-list li .file-list{padding-top:5px;}
+
+	.layer-pop-wrap.my-class-reg{display:none !important;}
+}

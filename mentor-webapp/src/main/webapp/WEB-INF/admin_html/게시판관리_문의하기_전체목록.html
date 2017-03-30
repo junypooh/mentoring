@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<title>산들 바람 관리자 페이지</title>
+
+	<link rel="stylesheet" href="./css/common.css" />
+
+	<script src="./js/jquery-1.11.1.min.js"></script>
+	<script src="./js/common.js"></script>
+</head>
+
+<body>
+	<div id="wrap">
+		<!-- header -->
+		<div id="header" class="administrator">
+			<div class="logo-area">
+				<ul class="header-utill">
+					<li class="top-admin"><a href="#"><span>최고관리자(admin)</span></a></li>
+					<li><a href="#">나의정보</a></li>
+					<li class="logout"><a href="#"><span>로그아웃</span></a></li>
+					<li class="logout login" style="display:none;"><a href="#"><span>로그인</span></a></li>
+				</ul>
+			</div>
+			<!-- gnb -->
+			<div class="gnb-area">
+				<h1 class="logo"><a href="#"><img src="./images/common/logo1.gif" alt="산들바람 관리자 페이지" /></a></h1>
+				<ul class="alarm">
+					<li><a href="#">메인관리</a></li>
+					<li><a href="#">수업운영관리</a></li>
+					<li><a href="#">이용안내관리</a></li>
+					<li class="active">
+						<a href="#">게시판관리</a>
+						<div class="menu4">
+							<div>
+								<ul>
+									<li><a href="#">다시보기</a></li>
+									<li><a href="#">자료실</a></li>
+									<li><a href="#" class="active">문의하기</a></li>
+									<li><a href="#">자유게시판</a></li>
+									<li><a href="#">평점및후기</a></li>
+									<li><a href="#">수업과제</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li><a href="#">사용자관리</a></li>
+					<li><a href="#">알림관리</a></li>
+					<li class="line"><a href="#">통계</a></li>
+				</ul>
+			</div>
+			<!-- //gnb -->
+		</div>
+		<!-- //header -->
+		<!-- contents -->
+		<div id="contents">
+			<div class="cont">
+				<div class="location">
+					<span class="home"><img src="./images/common/home.png" alt="home" /></span>
+					<span>게시판관리</span>
+					<span>문의하기</span>
+				</div>
+				<h2 class="title-type2">문의하기</h2>
+
+				<ul class="tab-type">
+					<li class="active"><a href="#">전체</a></li>
+					<li><a href="#">멘토별 문의</a></li>
+					<li><a href="#">수업별 문의</a></li>
+					<li><a href="#">커뮤니티 문의</a></li>
+				</ul>
+
+				<div class="tab-cont-wrap">
+					<div class="tab-cont active">
+						<div class="tbl-input-type">
+							<table>
+							<caption></caption>
+							<colgroup>
+								<col style="width:85px">
+								<col>
+								<col style="width:85px">
+								<col>
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="row">기간</th>
+									<td colspan="3">
+										<select style="width:200px;" name="">
+											<option>질문</option>
+										</select>
+										<span class="calendar">
+											<input type="text" class="inp-style1" style="width:110px;" name="" />
+											<a href="#"><img src="images/common/btn_calendar.png" alt="달력"></a> ~
+											<input type="text" class="inp-style1" style="width:110px;" name="" />
+											<a href="#"><img src="images/common/btn_calendar.png" alt="달력"></a>
+										</span>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">검색어</th>
+									<td colspan="3">
+										<select style="width:100px;" name="">
+											<option>전체</option>
+										</select>
+										<input type="text" style="width:393px;" name="" />
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">공개글 여부</th>
+									<td>
+										<label><input type="radio" name="" />전체</label>
+										<label><input type="radio" name="" />공개글</label>
+										<label><input type="radio" name="" />비밀글</label>
+									</td>
+									<th scope="row">답변여부</th>
+									<td>
+										<label><input type="radio" name="" />전체</label>
+										<label><input type="radio" name="" />미답변</label>
+										<label><input type="radio" name="" />답변완료</label>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+						<div class="btn-area-wrap">
+							<div class="btn-center">
+								<a href="#" class="btn-type1">검색</a>
+							</div>
+						</div>
+
+						<div class="search-result total">
+							<span class="result">검색결과 총 <strong>00</strong> 건</span>
+							<span class="btn">
+								<select style="width:70px;" name="">
+									<option>10</option>
+								</select>
+							</span>
+						</div>
+
+						<div class="tbl-type1 board">
+							<table>
+								<caption></caption>
+								<colgroup>
+									<col style="width:8%" />
+									<col style="width:10%" />
+									<col />
+									<col style="width:15%" />
+									<col style="width:10%" />
+									<col style="width:12%" />
+									<col style="width:12%" />
+									<col style="width:10%" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">번호</th>
+										<th scope="col">답변</th>
+										<th scope="col">질문 제목</th>
+										<th scope="col">문의유형</th>
+										<th scope="col">작성자</th>
+										<th scope="col">등록일</th>
+										<th scope="col">답변일</th>
+										<th scope="col">조회수</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>111</td>
+										<td>미답변</td>
+										<td class="al-left"><a href="#">수업 신청은 어디서 하나요?</a></td>
+										<td>커뮤니티</td>
+										<td>강정화</td>
+										<td>2015.10.31</td>
+										<td>2015.10.31</td>
+										<td>150</td>
+									</tr>
+									<tr>
+										<td>111</td>
+										<td>답변 완료</td>
+										<td class="al-left"><a href="#">수업 신청은 어디서 하나요?수업 신청은 어디서 하나요?</a></td>
+										<td>멘토별</td>
+										<td>강정화</td>
+										<td>2015.10.31</td>
+										<td>2015.10.31</td>
+										<td>150</td>
+									</tr>
+									<tr>
+										<td>111</td>
+										<td>답변 완료</td>
+										<td class="al-left"><a href="#">수업 신청은 어디서 하나요?</a></td>
+										<td>멘토별</td>
+										<td>강정화</td>
+										<td>2015.10.31</td>
+										<td>2015.10.31</td>
+										<td>150</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						
+						<div class="paging-area">
+							<a href="#" class="prev"><span>처음</span></a>
+							<a href="#"><span>1</span></a>
+							<strong>2</strong>
+							<a href="#"><span>3</span></a>
+							<a href="#"><span>4</span></a>
+							<a href="#"><span>5</span></a>
+							<a href="#"><span>6</span></a>
+							<a href="#"><span>7</span></a>
+							<a href="#"><span>8</span></a>
+							<a href="#"><span>9</span></a>
+							<a href="#"><span>10</span></a>
+							<a href="#" class="next"><span>맨끝</span></a>
+						</div>
+						
+					</div>
+
+					<div class="tab-cont">
+						2번째 텝 내용
+					</div>
+
+					<div class="tab-cont">
+						3번째 텝 내용
+					</div>
+
+					<div class="tab-cont">
+						4번째 텝 내용
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		<!-- //contents -->
+		<div id="footer" class="admin">
+			<div class="footer-cont">
+				<div class="footer-info">
+					<ul class="footer-menu">
+						<li><a href="#">이용약관</a></li>
+						<li><a href="#">개인정보처리방침</a></li>
+						<li><a href="#">이메일무단수집거부</a></li>
+						<li><a href="#">변경동의</a></li>
+					</ul>
+					<div class="footer-menu-organization">
+						<a href="#" class="organization">관련사이트</a>
+						<ul class="organization-ul">
+							<li><a href="#">커리어넷</a></li>
+							<li><a href="#">한국직업능률개발원</a></li>
+							<li><a href="#">한국과학창의재단</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-organization">
+					<img src="images/common/img_footer_fscience.png" alt="미래창조과학부" />
+					<img src="images/common/img_footer_edu.png" alt="교육부" />
+				</div>
+				<div class="footer-science-menu">
+					<address>세종특별자치시 시청대로 370 세종국책연구단지 사회정책동 한국직업능력개발원 커리어넷</address>
+					<p class="footer-manage">운영: 한국직업능력개발원 진료교육센터</p>
+					<p class="footer-support">지원: 교육부</p>
+					<p class="footer-copyright">COPYRIGHTS <em>©</em> KRIVET ALL RIGHTS RESERVED.</p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>

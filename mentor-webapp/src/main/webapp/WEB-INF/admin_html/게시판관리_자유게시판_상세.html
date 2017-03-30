@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<title>산들 바람 관리자 페이지</title>
+
+	<link rel="stylesheet" href="./css/common.css" />
+
+	<script src="./js/jquery-1.11.1.min.js"></script>
+	<script src="./js/common.js"></script>
+</head>
+
+<body>
+	<div id="wrap">
+		<!-- header -->
+		<div id="header" class="administrator">
+			<div class="logo-area">
+				<ul class="header-utill">
+					<li class="top-admin"><a href="#"><span>최고관리자(admin)</span></a></li>
+					<li><a href="#">나의정보</a></li>
+					<li class="logout"><a href="#"><span>로그아웃</span></a></li>
+					<li class="logout login" style="display:none;"><a href="#"><span>로그인</span></a></li>
+				</ul>
+			</div>
+			<!-- gnb -->
+			<div class="gnb-area">
+				<h1 class="logo"><a href="#"><img src="./images/common/logo1.gif" alt="산들바람 관리자 페이지" /></a></h1>
+				<ul class="alarm">
+					<li><a href="#">메인관리</a></li>
+					<li><a href="#">수업운영관리</a></li>
+					<li><a href="#">이용안내관리</a></li>
+					<li class="active">
+						<a href="#">게시판관리</a>
+						<div class="menu4">
+							<div>
+								<ul>
+									<li><a href="#">다시보기</a></li>
+									<li><a href="#">자료실</a></li>
+									<li><a href="#">문의하기</a></li>
+									<li><a href="#" class="active">자유게시판</a></li>
+									<li><a href="#">평점및후기</a></li>
+									<li><a href="#">수업과제</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li><a href="#">사용자관리</a></li>
+					<li><a href="#">알림관리</a></li>
+					<li class="line"><a href="#">통계</a></li>
+				</ul>
+			</div>
+			<!-- //gnb -->
+		</div>
+		<!-- //header -->
+		<!-- contents -->
+		<div id="contents">
+			<div class="cont">
+				<div class="location">
+					<span class="home"><img src="./images/common/home.png" alt="home" /></span>
+					<span>게시판관리</span>
+					<span>자유게시판</span>
+				</div>
+				<h2 class="title-type2">자유게시판</h2>
+
+				<div class="detail-board">
+					<table>
+						<caption></caption>
+						<colgroup>
+							<col style="width:15%" />
+							<col style="width:35%" />
+							<col style="width:15%" />
+							<col />
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="row">작성자</th>
+								<td>$작성자 이름$($작성자 ID$)</td>
+								<th scope="row">등록일</th>
+								<td>$등록일$</td>
+							</tr>
+							<tr>
+								<td colspan="4">$게시글 내용$</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="btn-side">
+					<div class="btn-left">
+						<a href="#" class="btn-type1">숨김</a>
+					</div>
+					<div class="btn-right">
+						<a href="#" class="btn-type1">수정</a>
+						<a href="#" class="btn-type1 gray">목록</a>
+					</div>
+				</div>
+
+				<div class="detail-board">
+					<table>
+						<caption></caption>
+						<colgroup>
+							<col style="width:15%" />
+							<col />
+							<col style="width:15%" />
+							<col style="width:13%" />
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="row">이철수<br/>(leechulsoo)</th>
+								<td class="al-left">완전 쩐다!완전 쩐다!완전 쩐다!완전 쩐다!완전 쩐다!완전 쩐다!완전 쩐다!완전 쩐다!완전 쩐다!완전 쩐다!완전 쩐다!완전 쩐다!</td>
+								<td>2014.09.01</td>
+								<td>
+									<a href="#" class="board-btn">수정</a>
+									<a href="#" class="board-btn gray">숨김</a>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">댓글 작성자<br/>(댓글 작성자 ID)</th>
+								<td class="al-left">완전 쩐다!</td>
+								<td>2014.09.01</td>
+								<td>
+									<a href="#" class="board-btn">수정</a>
+									<a href="#" class="board-btn gray">숨김</a>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">댓글 작성자</th>
+								<td class="al-left">완전 쩐다!</td>
+								<td>2014.09.01</td>
+								<td>
+									<a href="#" class="board-btn">수정</a>
+									<a href="#" class="board-btn gray">노출</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="detail-board">
+					<table>
+						<caption></caption>
+						<colgroup>
+							<col style="width:15%" />
+							<col />
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="row">이철수<br/>(leechulsoo)</th>
+								<td>
+									<textarea name="" style="width:90%;height:50px;" rows="" cols=""></textarea>
+									<div class="btn-area-wrap">
+										<div class="btn-center">
+											<a href="#" class="btn-type1">확인</a>
+											<a href="#" class="btn-type1 gray">취소</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- //contents -->
+		<div id="footer" class="admin">
+			<div class="footer-cont">
+				<div class="footer-info">
+					<ul class="footer-menu">
+						<li><a href="#">이용약관</a></li>
+						<li><a href="#">개인정보처리방침</a></li>
+						<li><a href="#">이메일무단수집거부</a></li>
+						<li><a href="#">변경동의</a></li>
+					</ul>
+					<div class="footer-menu-organization">
+						<a href="#" class="organization">관련사이트</a>
+						<ul class="organization-ul">
+							<li><a href="#">커리어넷</a></li>
+							<li><a href="#">한국직업능률개발원</a></li>
+							<li><a href="#">한국과학창의재단</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-organization">
+					<img src="images/common/img_footer_fscience.png" alt="미래창조과학부" />
+					<img src="images/common/img_footer_edu.png" alt="교육부" />
+				</div>
+				<div class="footer-science-menu">
+					<address>세종특별자치시 시청대로 370 세종국책연구단지 사회정책동 한국직업능력개발원 커리어넷</address>
+					<p class="footer-manage">운영: 한국직업능력개발원 진료교육센터</p>
+					<p class="footer-support">지원: 교육부</p>
+					<p class="footer-copyright">COPYRIGHTS <em>©</em> KRIVET ALL RIGHTS RESERVED.</p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>

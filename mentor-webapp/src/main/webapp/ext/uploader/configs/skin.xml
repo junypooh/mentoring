@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UploaderSkin borderThickess="0" componentGap="6">
+	<BGLayer isActive="true" bgImgURL="./images/MGUploaderBGImg.png"></BGLayer>
+	<VODUploadLayer 
+		isActive="true" bgImgURL="./images/VODUploaderLayerBGImg.png"
+		edgeGap="20" innerGap="5"
+		limitedUploadTypeDes="Videos (*.avi, *.mpeg, *.mpg *.wmv, *.asf, *.mov, *.mp4, *.flv)" 
+		limitedUploadTypeExt="*.avi; *.mpeg; *.mpg; *.wmv; *.asf; *.mov; *.mp4; *.flv"
+		maxUploadFileSize="2097152000"
+		uploadFormName="vodUploadForm"
+		uploadEmptyGageImgURL="./images/uploadEmptyGage.png"
+		uploadFullGageImgURL="./images/uploadFullGage.png"
+		uploadGageImgWidth="366" uploadGageImgHeight="26"
+		callBackMethodName="com.zodiack.uploader.utils.vodUploadFinished">
+<!--	maxUploadFileSize="2097152000" -->		
+		<VODUploadBtn
+			isActive="true"
+			btnImgURL="./images/uploadBtn.gif" btnImgWidth="65" btnImgHeight="20"
+		/>
+		<VODSearchBtn
+			isActive="true"
+			btnImgURL="./images/searchBtn.gif" btnImgWidth="47" btnImgHeight="20"
+		/>
+		<VODUploadForm
+			isActive="true"
+			fontFamily="돋움"
+			fontSize="12"
+		/>
+		<VODDirectionText
+			isActive="true"
+			textString="* 저장된 동영상파일을 선택해주세요.\* 최대 2G 까지 업로드 하실 수 있습니다.\* 등록 가능한 파일 : avi, asf, wmv, mp4, mpeg, mpg, mov, flv"
+			fontFamily="돋움"
+			fontSize="12"
+			fontColor="#7B7B7B"
+		/>
+	</VODUploadLayer>
+	<ThumbCheckLayer 
+		isActive="true"
+		checkBarURL="./images/thumbCheckBar.swf"
+		checkBarWidth="366" checkBarHeight="26" 
+		callBackMethodName="com.zodiack.uploader.utils.thumbCheckFinished"
+	/>
+	<ThumbSelectLayer 
+		isActive="true" edgeGap="28" innerGap="8" 
+		bgImgURL="./images/ThumbSelectLayerBGImg.png"
+		thumbTabBtnWidth="97" thumbTabBtnHeight="21"
+		thumbAutoExtrOffBtnURL="./images/thumbAutoExtrOffBtn.png"
+		thumbAutoExtrOnBtnURL="./images/thumbAutoExtrOnBtn.png"
+		thumbUploadOnBtnURL="./images/thumbUploadOnBtn.png"
+		thumbUploadOffBtnURL="./images/thumbUploadOffBtn.png"
+		imgCounter="5" imgBorder="2"
+		imgWidth="67" imgHeight="47" 
+		defaultColor="#7B7B7B"
+		strikeColor="#006e55"
+	/>
+	<ThumbUploadLayer 
+		isActive="true" bgImgURL="./images/ThumbUploaderLayerBGImg.png"
+		edgeGap="20" innerGap="5"
+		limitedUploadTypeDes="Images (*.jpg, *.jpeg, *.gif *.png)" 
+		limitedUploadTypeExt="*.jpg; *.jpeg; *.gif; *.png"
+		maxUploadFileSize="2048000"
+		uploadFormName="thumbUploadForm"
+		uploadEmptyGageImgURL="./images/emptyGage.gif"
+		uploadFullGageImgURL="./images/fullGage.gif"
+		uploadGageImgWidth="366" uploadGageImgHeight="26"
+		thumbTabBtnWidth="97" thumbTabBtnHeight="21"
+		thumbAutoExtrOffBtnURL="./images/thumbAutoExtrOffBtn.png"
+		thumbAutoExtrOnBtnURL="./images/thumbAutoExtrOnBtn.png"
+		thumbUploadOnBtnURL="./images/thumbUploadOnBtn.png"
+		thumbUploadOffBtnURL="./images/thumbUploadOffBtn.png"
+		callBackMethodName="com.zodiack.uploader.utils.thumbUploadFinished">
+		<ThumbUploadBtn
+			isActive="true"
+			btnImgURL="./images/uploadBtn.gif" btnImgWidth="65" btnImgHeight="20"
+		/>
+		<ThumbSearchBtn
+			isActive="true"
+			btnImgURL="./images/searchBtn.gif" btnImgWidth="47" btnImgHeight="20"
+		/>
+		<ThumbUploadForm
+			isActive="true"
+			fontFamily="돋움"
+			fontSize="12"
+		/>
+		<ThumbDirectionText
+			isActive="true"
+			textString="* 저장된 대표이미지를 선택해주세요.\* 최대 1M 까지 업로드 하실 수 있습니다.\* 등록 가능한 파일 : jpg, jpeg, gif, png"
+			fontFamily="돋움"
+			fontSize="12"
+			fontColor="#7B7B7B"
+		/>
+	</ThumbUploadLayer>
+	<TransCheckLayer 
+		isActive="true"
+		bgImgURL="./images/TransCheckLayerBGImg.png"
+		callBackMethodName="com.zodiack.uploader.utils.vodTransFinished"
+		transEmptyGageImgURL="./images/transEmptyGage.png"
+		transFullGageImgURL="./images/transFullGage.png"
+		transGageImgWidth="366" transGageImgHeight="26"
+	/>
+</UploaderSkin>

@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<title>산들 바람 관리자 페이지</title>
+
+	<link rel="stylesheet" href="./css/common.css" />
+
+	<script src="./js/jquery-1.11.1.min.js"></script>
+	<script src="./js/common.js"></script>
+</head>
+
+<body>
+	<div id="wrap">
+		<!-- header -->
+		<div id="header" class="administrator">
+			<div class="logo-area">
+				<ul class="header-utill">
+					<li class="top-admin"><a href="#"><span>최고관리자(admin)</span></a></li>
+					<li><a href="#">나의정보</a></li>
+					<li class="logout"><a href="#"><span>로그아웃</span></a></li>
+					<li class="logout login" style="display:none;"><a href="#"><span>로그인</span></a></li>
+				</ul>
+			</div>
+			<!-- gnb -->
+			<div class="gnb-area">
+				<h1 class="logo"><a href="#"><img src="./images/common/logo1.gif" alt="산들바람 관리자 페이지" /></a></h1>
+				<ul class="alarm">
+					<li>
+						<a href="#">메인관리</a>
+						<div class="menu1">
+							<div>
+								<ul>
+									<li><a href="#">배너관리</a></li>
+									<li><a href="#">멘토영역관리</a></li>
+									<li><a href="#">수업영역관리</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#">수업운영관리</a>
+						<div>
+							<div>
+								<ul>
+									<li><a href="#">학교정보관리</a></li>
+									<li><a href="#">수업현황관리</a></li>
+									<li><a href="#">개인멘토 승인관리</a></li>
+									<li><a href="#">스튜디오관리</a></li>
+									<li><a href="#">MC관리</a></li>
+									<li><a href="#">기기제한설정</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li class="active">
+						<a href="#">이용안내관리</a>
+						<div class="menu3">
+							<div>
+								<ul>
+									<li><a href="#" class="active">공지사항</a></li>
+									<li><a href="#">자주찾는질문</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#">게시판관리</a>
+						<div class="menu4">
+							<div>
+								<ul>
+									<li><a href="#">다시보기</a></li>
+									<li><a href="#">자료실</a></li>
+									<li><a href="#">문의하기</a></li>
+									<li><a href="#">자유게시판</a></li>
+									<li><a href="#">평점및후기</a></li>
+									<li><a href="#">수업과제</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#">사용자관리</a>
+						<div class="menu5">
+							<div>
+								<ul>
+									<li><a href="#">관리자관리</a></li>
+									<li><a href="#">기업멘토관리</a></li>
+									<li><a href="#">회원정보관리</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#">알림관리</a>
+						<div class="w-100">
+							<div>
+								<ul>
+									<li><a href="#">문자전송</a></li>
+									<li><a href="#">푸시알림방송</a></li>
+									<li><a href="#">이메일발송</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li class="line"><a href="#">통계</a></li>
+				</ul>
+			</div>
+			<!-- //gnb -->
+		</div>
+		<!-- //header -->
+		<!-- contents -->
+		<div id="contents">
+			<div class="cont">
+				<div class="location">
+					<span class="home"><img src="./images/common/home.png" alt="home" /></span>
+					<span>이용안내관리</span>
+					<span>공지사항</span>
+				</div>
+				<h2 class="title-type2">공지사항</h2>
+				<div class="my-info-board">
+					<p class="compulsory"><input type="checkbox" name="">공지 지정</p>
+					<table>
+						<caption></caption>
+						<colgroup>
+							<col style="width:150px" />
+							<col />
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="row">구분</th>
+								<td>
+									<label><input type="radio" name="" />전체</label>
+									<label><input type="radio" name="" />학교포털</label>
+									<label><input type="radio" name="" />멘토포털</label>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">제목</th>
+								<td><input type="text" style="width:90%" name="" /></td>
+							</tr>
+							<tr>
+								<th scope="row">내용</th>
+								<td></td>
+							</tr>
+							<tr>
+								<th scope="row">파일첨부</th>
+								<td>
+									<div class="input-file"><input type="file"><span class="max-num">* 개별 파일 용량 20MB 및 최대 5개까지 지원</span></div>
+									<ul class="file-list-type01">
+										<li>가나다라마바사아자차카타파하.pptx(13KB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+										<li>가나다라마바사아자차카타파하.avi(19MB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+										<li>가나다라마바사아자차카타파하.pptx(19KB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+										<li>가나다라마바사아자차카타파하.docx(500KB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+										<li>가나다라마바사아자차카타파하.wav(19MB)<a href="#"><img src="./images/common/btn_file_del.gif" alt="삭제"></a></li>
+									</ul>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="btn-paging">
+					<div class="btn-right">
+						<a href="#" class="btn-type1">수정</a>
+						<a href="#" class="btn-type1 gray">삭제</a>
+						<a href="#" class="btn-type1 gray">취소</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- //contents -->
+		<div id="footer" class="admin">
+			<div class="footer-cont">
+				<div class="footer-info">
+					<ul class="footer-menu">
+						<li><a href="#">이용약관</a></li>
+						<li><a href="#">개인정보처리방침</a></li>
+						<li><a href="#">이메일무단수집거부</a></li>
+						<li><a href="#">변경동의</a></li>
+					</ul>
+					<div class="footer-menu-organization">
+						<a href="#" class="organization">관련사이트</a>
+						<ul class="organization-ul">
+							<li><a href="#">커리어넷</a></li>
+							<li><a href="#">한국직업능률개발원</a></li>
+							<li><a href="#">한국과학창의재단</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-organization">
+					<img src="images/common/img_footer_fscience.png" alt="미래창조과학부" />
+					<img src="images/common/img_footer_edu.png" alt="교육부" />
+				</div>
+				<div class="footer-science-menu">
+					<address>세종특별자치시 시청대로 370 세종국책연구단지 사회정책동 한국직업능력개발원 커리어넷</address>
+					<p class="footer-manage">운영: 한국직업능력개발원 진료교육센터</p>
+					<p class="footer-support">지원: 교육부</p>
+					<p class="footer-copyright">COPYRIGHTS <em>©</em> KRIVET ALL RIGHTS RESERVED.</p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>

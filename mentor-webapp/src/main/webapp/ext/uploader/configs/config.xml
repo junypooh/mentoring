@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<Configs>
+	<!-- 업로더의 스킨정보(XML) URL -->
+	<Skin url="./configs/skin.xml"/> 
+	
+	<!-- 동영상 업로드 인터페이스 URL -->
+	<VODUpload url="http://movie.career.go.kr/interfaces/fileUploader.asp?sType=web"/>
+	
+	<!--썸네일 추출여부 확인 인터페이스 URL,  썸네일 추출여부 확인 최대시간(초) -->
+	<ThumbCheck url="http://movie.career.go.kr/interfaces/thumbCheck.asp?sType=web" limitTime="120"/>  
+	
+	<!--대표이미지 선택 인터페이스 URL  -->
+	<ThumbSelect url="http://movie.career.go.kr/interfaces/thumbSelect.asp?sType=web"/>  
+
+	<!-- 대표이미지 수동 업로드 인터페이스 URL -->
+	<ThumbUpload url="http://movie.career.go.kr/interfaces/thumbUploader.asp?sType=web"/>
+	
+	<!-- 동영상 변환여부 확인 인터페이스  --> 
+	<TransCheck url="http://movie.career.go.kr/interfaces/transCheck.asp?sType=web"/>  
+</Configs>

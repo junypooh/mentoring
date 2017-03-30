@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<title>산들 바람 관리자 페이지</title>
+
+	<link rel="stylesheet" href="./css/common.css" />
+
+	<script src="./js/jquery-1.11.1.min.js"></script>
+	<script src="./js/common.js"></script>
+</head>
+
+<body>
+	<div id="wrap">
+		<!-- header -->
+		<div id="header" class="administrator">
+			<div class="logo-area">
+				<ul class="header-utill">
+					<li class="top-admin"><a href="#"><span>최고관리자(admin)</span></a></li>
+					<li><a href="#">나의정보</a></li>
+					<li class="logout"><a href="#"><span>로그아웃</span></a></li>
+					<li class="logout login" style="display:none;"><a href="#"><span>로그인</span></a></li>
+				</ul>
+			</div>
+			<!-- gnb -->
+			<div class="gnb-area">
+				<h1 class="logo"><a href="#"><img src="./images/common/logo1.gif" alt="산들바람 관리자 페이지" /></a></h1>
+				<ul class="alarm">
+					<li><a href="#">메인관리</a></li>
+					<li><a href="#">수업운영관리</a></li>
+					<li><a href="#">이용안내관리</a></li>
+					<li><a href="#">게시판관리</a></li>
+					<li><a href="#">사용자관리</a></li>
+					<li class="active">
+						<a href="#">알림관리</a>
+						<div class="w-100">
+							<div>
+								<ul>
+									<li><a href="#" class="active">문자전송</a></li>
+									<li><a href="#">푸시알림방송</a></li>
+									<li><a href="#">이메일발송</a></li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li class="line"><a href="#">통계</a></li>
+				</ul>
+			</div>
+			<!-- //gnb -->
+		</div>
+		<!-- //header -->
+		<!-- contents -->
+		<div id="contents">
+			<div class="cont type1">
+				<!-- 배정그룹 현황 -->
+				<div class="strator-list">
+					<h2>배정그룹 현황</h2>
+					<a href="#" class="btn-more"><img src="images/common/btn_more.gif" alt="더보기" /></a>
+					<div class="present">
+						<p class="assing-grop">- 17개 시도교육청 중 <a href="#">2,342개</a> 배정 그룹</p>
+					</div>
+				</div>
+
+				<!-- 수업 현황 -->
+				<div class="strator-list">
+					<h2>수업 현황</h2>
+					<a href="#" class="btn-more"><img src="images/common/btn_more.gif" alt="더보기" /></a>
+					<div class="present">
+						<ul class="lesson-present">
+							<li><em>수업개설</em><a href="#">00건</a></li>
+							<li><em>승인요청</em><a href="#">00건</a></li>
+							<li><em>수강모집중</em><a href="#">00건</a></li>
+							<li><em>수업예정</em><a href="#">00건</a></li>
+							<li><em>수업진행중</em><a href="#">00건</a></li>
+							<li class="finish"><em>수업완료</em><a href="#">00건</a></li>
+						</ul>
+					</div>
+				</div>
+
+				<!-- 멘토 현황 -->
+				<div class="strator-list">
+					<h2>멘토 현황</h2>
+					<a href="#" class="btn-more"><img src="images/common/btn_more.gif" alt="더보기" /></a>
+					<div class="present" style="margin-top:30px;">
+						<!-- 멘토 -->
+						<div class="mentor-present">
+							<div class="tbl-present th60">
+								<table>
+									<caption></caption>
+									<colgroup>
+										<col style="width:30%" />
+										<col style="width:35%" />
+										<col />
+									</colgroup>
+									<tbody>
+										<tr>
+											<th>전체</th>
+											<th>기업멘토</th>
+											<th>소속멘토</th>
+										</tr>
+										<tr>
+											<td><a href="#">121</a></td>
+											<td><a href="#">36</a></td>
+											<td><a href="#">7</a></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- //contents -->
+		<div id="footer" class="admin">
+			<div class="footer-cont">
+				<div class="footer-info">
+					<ul class="footer-menu">
+						<li><a href="#">이용약관</a></li>
+						<li><a href="#">개인정보처리방침</a></li>
+						<li><a href="#">이메일무단수집거부</a></li>
+						<li><a href="#">변경동의</a></li>
+					</ul>
+					<div class="footer-menu-organization">
+						<a href="#" class="organization">관련사이트</a>
+						<ul class="organization-ul">
+							<li><a href="#">커리어넷</a></li>
+							<li><a href="#">한국직업능률개발원</a></li>
+							<li><a href="#">한국과학창의재단</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-organization">
+					<img src="images/common/img_footer_fscience.png" alt="미래창조과학부" />
+					<img src="images/common/img_footer_edu.png" alt="교육부" />
+				</div>
+				<div class="footer-science-menu">
+					<address>세종특별자치시 시청대로 370 세종국책연구단지 사회정책동 한국직업능력개발원 커리어넷</address>
+					<p class="footer-manage">운영: 한국직업능력개발원 진료교육센터</p>
+					<p class="footer-support">지원: 교육부</p>
+					<p class="footer-copyright">COPYRIGHTS <em>©</em> KRIVET ALL RIGHTS RESERVED.</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- layerpopup --><!-- body 에 dim 클래스 추가 시 검은반투명 bg -->
+		<div class="layer-pop-wrap w720">
+			<div class="title">
+				<strong>배정그룹 현황</strong>
+				<a href="#" class="pop-close"><img src="images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont type1">
+				<div class="grop-present">
+					<p>서울시교육청 그룹 관리자 소속 총 합계  <span>245개</span> 배정 그룹</p>
+					<div class="tbl-style2">
+						<div class="pop-scroll">
+							<table>
+								<caption></caption>
+								<colgroup>
+									<col style="width:10%" />
+									<col style="width:17%" />
+									<col style="width:10%" />
+									<col />
+									<col style="width:15%" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">번호</th>
+										<th scope="col">배정그룹</th>
+										<th scope="col">배정횟수</th>
+										<th scope="col">배정기간</th>
+										<th scope="col">학교 수</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>10</td>
+										<td><a href="#">그룹명</a></td>
+										<td>3</td>
+										<td>2014.09.01~2015.10.31</td>
+										<td>3</td>
+									</tr>
+									<tr>
+										<td>10</td>
+										<td><a href="#">그룹명</td>
+										<td>3</td></a>
+										<td>2014.09.01~2015.10.31</td>
+										<td>3</td>
+									</tr>
+									<tr>
+										<td>10</td>
+										<td><a href="#">그룹명</a></td>
+										<td>3</td>
+										<td>2014.09.01~2015.10.31</td>
+										<td>3</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="btn-area">
+					<a href="#" class="btn-type1">확인</a>
+					<a href="#" class="btn-type1 gray">취소</a>
+				</div>
+			</div>
+		</div>
+		<!-- //layerpopup -->
+	</div>
+</body>
+</html>

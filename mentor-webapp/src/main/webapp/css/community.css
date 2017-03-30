@@ -1,0 +1,27 @@
+@charset "utf-8";
+@import url(common.css);
+
+/* 수업자료 */
+.lesson-task .lesson-data-list .num .notice{display:inline-block;width:50px;line-height:24px;color:#fff;background:#ee5c6f;font-weight:700;font-size:12px;}
+.lesson-task .lesson-data-list .num .notice:before{content:'';display:inline-block;vertical-align:-3px;width:18px;height:14px;background: url('../images/community/bg_lesson_notice.png') no-repeat;}
+.lesson-task .lesson-data-list li.active .title > a > em.notice{font-weight:700;}
+.lesson-task .lesson-data-list li .file-list .file-down{position:relative;display:block;height:32px;}
+.lesson-task.data .lesson-data-list li .file-list ul{margin-top:10px;}
+.lesson-task.data .lesson-data-list li.active .title + .file-list{border-top:0;padding-top:0;}
+.lesson-task.data .lesson-data-list .title > a > em{width:600px;margin-right:15px;}
+.lesson-task.data .lesson-data-list .title > a > span.file-mb{float:right;margin-right:67px;}
+.lesson-task.data .lesson-data-list .title > a > span.file-mb em:before{content:'';display:inline-block;vertical-align:-3px;width:20px;height:16px;background: url('../images/community/icon_file.png') no-repeat;}
+.lesson-task.data .lesson-data-list .title > a > span.file-mb em{font-weight:700;color:#ef6779;}
+.lesson-task.data .lesson-data-list .title > a > span.file-mb span{color:#7a7a7a;}
+.lesson-task.data .file-down .left{float:left;height:32px;position:absolute;left:0;top:0;}
+.lesson-task.data .file-down .right{float:right;position:absolute;right:0;bottom:-5px;}
+.lesson-task.data .file-down .right a{float:left;margin-left:15px;}
+
+/* 정산관리 팝업 */
+.layer-pop-wrap .device-request{padding:0 20px;margin-top:13px;}
+.pop-board-scroll{width:100%;margin-top:17px;overflow-y:auto;max-height:280px;border-top:2px solid #666;border-bottom:1px solid #666;}
+.pop-board-scroll .board-type1{border:0;}
+.pop-board-scroll .board-type1 table thead tr th{padding: 12px 0 12px;}
+.pop-board-scroll .board-type1 table tbody tr td{padding: 13px 0 11px;}
+.pop-board-scroll .board-type1 table tbody tr td.al-left{padding-left:140px;}
+

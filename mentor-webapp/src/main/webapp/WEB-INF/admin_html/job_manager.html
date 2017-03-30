@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<title>산들 바람 관리자 페이지</title>
+
+	<link rel="stylesheet" href="./css/common.css" />
+
+	<script src="./js/jquery-1.11.1.min.js"></script>
+	<script src="./js/common.js"></script>
+</head>
+
+<body>
+	<div id="wrap">
+		<!-- header -->
+		<div id="header">
+			<div class="logo-area">
+				<h1 class="logo"><a href="#"><img src="./images/common/logo.jpg" alt="산들바람 관리자 페이지" /></a></h1>
+				<ul class="header-utill">
+					<li class="top-admin"><a href="#"><span>최고관리자(admin)</span></a></li>
+					<li><a href="#">관리자정보</a></li>
+					<li><a href="#">환경설정</a></li>
+					<li><a href="#">커뮤니티</a></li>
+					<li class="logout"><a href="#"><span>로그아웃</span></a></li>
+				</ul>
+				<div class="font-controller">
+					글자크기
+					<button type="button" class="small">작게</button>
+					<button type="button" class="big">크게</button>
+				</div>
+			</div>
+			<!-- gnb -->
+			<div class="gnb-area">
+				<ul class="gnb">
+					<li class="nth1 on">
+						<a href="#"><strong>마스터관리</strong></a>
+						<ul class="sub-gnb">
+							<li><a href="#">직업관리</a></li>
+							<li><a href="#">MC관리</a></li>
+							<li><a href="#">스튜디오관리</a></li>
+							<li><a href="#">학급구분</a></li>
+							<li><a href="#">지역설정</a></li>
+							<li><a href="#">취소/수정 사유설정</a></li>
+							<li><a href="#">수업시간</a></li>
+							<li><a href="#">평가관리</a></li>
+							<li><a href="#">접근권한설정</a></li>
+						</ul>
+					</li>
+					<li class="nth2"><a href="#"><strong>멘토관리</strong></a></li>
+					<li class="nth3"><a href="#"><strong>학교관리</strong></a></li>
+					<li class="nth4"><a href="#"><strong>시간표관리</strong></a></li>
+					<li class="nth5"><a href="#"><strong>멘토링신청현황</strong></a></li>
+					<li class="nth6"><a href="#"><strong>수업정보관리</strong></a></li>
+					<li class="nth7"><a href="#"><strong>게시판관리</strong></a></li>
+					<li class="nth8"><a href="#"><strong>SMS관리</strong></a></li>
+				</ul>
+			</div>
+			<!-- //gnb -->
+		</div>
+		<!-- //header -->
+		<!-- contents -->
+		<div id="contents">
+			<div class="cont">
+				<h2 class="title-type1">직업관리</h2>
+				<div class="select-type1">
+					<select title="1차 직업">
+						<option selected="selected">1차 직업</option>
+						<option>글로벌</option>
+						<option>농산어촌</option>
+						<option>신생</option>
+						<option>아시아나항공</option>
+						<option>주변</option>
+						<option>직무</option>
+						<option>창업</option>
+						<option>특수</option>
+						<option>희귀</option>
+						<option>희망</option>
+					</select>
+					<select title="2차 직업">
+						<option>2차 직업</option>
+					</select>
+					<select title="3차 직업">
+						<option>3차 직업</option>
+					</select>
+					<div class="search-bar">
+						<input type="text" title="직업검색" />
+						<a href="#">검색</a>
+					</div>
+				</div>
+
+				<div class="tbl-type1">
+					<table>
+						<caption>직업관리/번호/1차직업/2차직업/3차직업/1차직업소개/2차직업소개/3차직업소개/사용/기능</caption>
+						<colgroup>
+							<col style="width:3%" />
+							<col style="width:10%" />
+							<col style="width:14%" />
+							<col style="width:14%" />
+							<col style="width:14%" />
+							<col />
+							<col style="width:10%" />
+							<col style="width:4%" />
+							<col style="width:12%" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">번호</th>
+								<th scope="col">1차직업</th>
+								<th scope="col">2차직업</th>
+								<th scope="col">3차직업</th>
+								<th scope="col">1차직업소개</th>
+								<th scope="col">2차직업소개</th>
+								<th scope="col">3차직업소개</th>
+								<th scope="col">사용</th>
+								<th scope="col">기능</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="num">111</td>
+								<td>글로벌</td>
+								<td>UN헤비타트(UN산하기관)</td>
+								<td>모바일컨텐츠기획자</td>
+								<td class="job-introduce">국제교류 관련 직업 및 해외에서 뛰고 있는 직업인</td>
+								<td class="job-introduce">[국제협력프로그램]유엔해비타트, 한국 청소년들과 만나다</td>
+								<td></td>
+								<td class="use yes">Y</td>
+								<td class="func">
+									<a href="#">수정</a>
+									<a href="#">삭제</a>
+								</td>
+							</tr>
+							<tr>
+								<td class="num">111</td>
+								<td>글로벌</td>
+								<td>UN헤비타트(UN산하기관)</td>
+								<td>모바일컨텐츠기획자</td>
+								<td class="job-introduce">항공사에서 근무하는 직업</td>
+								<td class="job-introduce">소니가 하는 모든 것은, 당신에게 감동이 될 것 입니다.</td>
+								<td></td>
+								<td class="use yes">Y</td>
+								<td class="func">
+									<a href="#">수정</a>
+									<a href="#">삭제</a>
+								</td>
+							</tr>
+							<tr>
+								<td class="num">111</td>
+								<td>농산어촌</td>
+								<td>UN헤비타트(UN산하기관)</td>
+								<td>모바일컨텐츠기획자</td>
+								<td class="job-introduce">장소나 거리의 제한으로 직업장의 접근성이 낮거나 산출물이 시각적으로 특색있는 직업</td>
+								<td class="job-introduce">경쾌하고 익살스러운 그림 속 세상에서 살아 움직이는 친구들</td>
+								<td></td>
+								<td class="use yes">Y</td>
+								<td class="func"></td>
+							</tr>
+							<tr>
+								<td class="num">111</td>
+								<td>신생</td>
+								<td>UN헤비타트(UN산하기관)</td>
+								<td>모바일컨텐츠기획자</td>
+								<td class="job-introduce">직업 및 직무의 희귀성으로 인해 평소 주변에서 쉽게 볼 수 없는 직업</td>
+								<td class="job-introduce"></td>
+								<td></td>
+								<td class="use no">N</td>
+								<td class="func"></td>
+							</tr>
+							<tr>
+								<td class="num">111</td>
+								<td>아시아나항공</td>
+								<td>UN해비타트(UN산하기관)</td>
+								<td>모바일컨텐츠기획자</td>
+								<td class="job-introduce"></td>
+								<td class="job-introduce"></td>
+								<td></td>
+								<td class="use"></td>
+								<td class="func"></td>
+							</tr>
+							<tr>
+								<td class="num">111</td>
+								<td>창업</td>
+								<td>모바일컨텐츠기획자</td>
+								<td>모바일컨텐츠기획자</td>
+								<td class="job-introduce"></td>
+								<td class="job-introduce"></td>
+								<td></td>
+								<td class="use"></td>
+								<td class="func"></td>
+							</tr>
+							<tr>
+								<td class="num">111</td>
+								<td>특수</td>
+								<td>전시기획</td>
+								<td>외국어</td>
+								<td class="job-introduce"></td>
+								<td class="job-introduce"></td>
+								<td></td>
+								<td class="use"></td>
+								<td class="func"></td>
+							</tr>
+							<tr>
+								<td class="num">111</td>
+								<td>글로벌</td>
+								<td>UN헤비타트(UN산하기관)</td>
+								<td>모바일컨텐츠기획자</td>
+								<td class="job-introduce"></td>
+								<td class="job-introduce"></td>
+								<td></td>
+								<td class="use"></td>
+								<td class="func"></td>
+							</tr>
+							<tr>
+								<td class="num">111</td>
+								<td>글로벌</td>
+								<td>UN헤비타트(UN산하기관)</td>
+								<td>모바일컨텐츠기획자</td>
+								<td class="job-introduce"></td>
+								<td class="job-introduce"></td>
+								<td></td>
+								<td class="use"></td>
+								<td class="func"></td>
+							</tr>
+							<tr>
+								<td class="num">111</td>
+								<td>글로벌</td>
+								<td>UN헤비타트(UN산하기관)</td>
+								<td>모바일컨텐츠기획자</td>
+								<td class="job-introduce"></td>
+								<td class="job-introduce"></td>
+								<td></td>
+								<td class="use"></td>
+								<td class="func"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="btn-paging">
+					<div class="paging-area">
+						<a href="#" class="prev"><span>처음</span></a>
+						<a href="#"><span>1</span></a>
+						<strong>2</strong>
+						<a href="#"><span>3</span></a>
+						<a href="#"><span>4</span></a>
+						<a href="#"><span>5</span></a>
+						<a href="#"><span>6</span></a>
+						<a href="#"><span>7</span></a>
+						<a href="#"><span>8</span></a>
+						<a href="#"><span>9</span></a>
+						<a href="#"><span>10</span></a>
+						<a href="#" class="next"><span>맨끝</span></a>
+					</div>
+					<div class="btn-right">
+						<a href="#" class="btn-type1">신규등록</a>
+						<a href="#" class="btn-type1 gray">취소</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- //contents -->
+		<!-- footer -->
+		<div id="footer">
+			<p>Copyright &copy; mentor.career.go.kr. All rights reserved.</p>
+		</div>
+		<!-- //footer -->
+	</div>
+</body>
+</html>

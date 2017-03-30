@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- 절대경로 입력 -->
+<Configs encCheck="true" encCheckGap="5">
+	<Skin url="http://movie.career.go.kr/test/player/configs/skin.xml"/>
+	<CF url="http://movie.career.go.kr/test/player/configs/cf.xml?mode=service"/>
+	<Movie url="http://movie.career.go.kr/interfaces/movieInfo.asp?sType=web"/>
+</Configs>

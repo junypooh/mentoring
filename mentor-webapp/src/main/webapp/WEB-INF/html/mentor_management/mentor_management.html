@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<title>산들바람 멘토 - 원격진로멘토링</title>
+	<link rel="stylesheet" href="../css/management.css">
+	<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="../js/common.js"></script>
+</head>
+<body>
+	<ul id="skipNav">
+		<li><a href="#">본문</a></li>
+		<li><a href="#">footer</a></li>
+	</ul>
+	<div id="wrap">
+		<!-- header -->
+		<div id="header">
+			<div class="gnb-wrap">
+				<h1><a href="#">산들바람 멘토 - 원격진로멘토링</a></h1>
+				<!-- 로그인 전 -->
+				<ul>
+					<li class="login"><a href="#">로그인</a></li>
+					<li class="join"><a href="#">회원가입</a></li>
+				</ul>
+				<!-- 로그아웃상태 -->
+				<ul style="display:none;">
+					<li class="login-state"><a href="#">김상경</a></li>
+					<li class="member-info"><a href="#">회원정보</a></li>
+					<li class="logout"><a href="#">로그아웃</a></li>
+				</ul>
+
+				<!-- gnb -->
+				<div id="gnb"><!-- 소속멘토: affiliate  기업멘토:business -->
+					<ul>
+						<li>
+							<a href="#">활동멘토</a>
+							<div class="sub-gnb smenu1">
+								<ul>
+									<li><a href="#">활동멘토</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">수업관리</a>
+							<div class="sub-gnb smenu2">
+								<ul>
+									<li><a href="#">수업현황</a></li>
+									<li><a href="#">수업개설신청</a></li>
+									<li><a href="#">요청수업</a></li>
+									<li><a href="#">자료등록</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">커뮤니티관리</a>
+							<div class="sub-gnb smenu3">
+								<ul>
+									<li><a href="#">질문답변</a></li>
+									<li><a href="#">수업과제</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">활동이력</a>
+							<div class="sub-gnb smenu4">
+								<ul>
+									<li><a href="#">나의 수업내역</a></li>
+									<li><a href="#">알림내역</a></li>
+								</ul>
+							</div>
+						</li>
+						<li class="gnb-last">
+							<a href="#">서비스소개</a>
+							<div class="sub-gnb smenu5">
+								<ul>
+									<li><a href="#">산들바람소개</a></li>
+									<li><a href="#">멘토활동안내</a></li>
+									<li><a href="#">공지사항</a></li>
+									<li><a href="#">자주 찾는 질문</a></li>
+									<li><a href="#">서비스가이드</a></li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<!-- //gnb -->
+			</div>
+			<div class="sub-area"></div>
+		</div>
+		<!-- //header -->
+		<div id="container">
+			<div class="location">
+				<a href="#" class="home">메인으로 이동</a>
+				<span>멘토관리</span>
+			</div>
+			<div class="content">
+				<h2>멘토관리</h2>
+				<div class="cont">
+					<div class="calculate-management">
+						<div class="search-box management">
+							<dl class="mentor-search">
+								<dt>직업</dt>
+								<dd><a href="#layer2" class="btn-type1 layer-open">직업선택</a></dd>
+								<dt>멘토명</dt>
+								<dd><input type="text" class="inp-style1" style="width:203px;" name="" /></dd>
+							</dl>
+							<div class="btn-area">
+								<a href="#" class="btn-search"><span>검색</span></a>
+							</div>
+						</div>
+						<div class="board-type1">
+							<span class="excel-file-down"><a href="#">엑셀파일 다운로드</a></span>
+							<table>
+								<caption>정산관리 - 번호, 아이디, 멘토명, 직업명, 상태, 성별, 등록일</caption>
+								<colgroup>
+									<col style="width:10%;" />
+									<col style="width:12%;" />
+									<col style="width:16%;" />
+									<col />
+									<col style="width:10%;" />
+									<col style="width:10%;" />
+									<col style="width:17%;" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">번호</th>
+										<th scope="col">아이디</th>
+										<th scope="col">멘토명</th>
+										<th scope="col">직업명</th>
+										<th scope="col">상태</th>
+										<th scope="col">성별</th>
+										<th scope="col">등록일</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>100</td>
+										<td class="al-left"><a href="#">afdfefe12</a></td>
+										<td><a href="#">홍길동</a></td>
+										<td class="al-left job">노무사</td>
+										<td>Y</td>
+										<td>남</td>
+										<td>2014.12.12</td>
+									</tr>
+									<tr>
+										<td>100</td>
+										<td class="al-left"><a href="#">brandbrand7</a></td>
+										<td><a href="#">홍길동</a></td>
+										<td class="al-left job">-</td>
+										<td>Y</td>
+										<td>여</td>
+										<td>2014.12.12</td>
+									</tr>
+									<tr>
+										<td>100</td>
+										<td class="al-left"><a href="#">sun99</a></td>
+										<td><a href="#">홍길동</a></td>
+										<td class="al-left job">데이터베이스 관리자 </td>
+										<td>Y</td>
+										<td> 여</td>
+										<td>2014.12.12</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="paging-btn">
+						<div class="paging">
+							<a href="#" class="prev"><img src="../images/common/btn_paging_prev.gif" alt="처음" /></a>
+							<strong>1</strong>
+							<a href="#">2</a>
+							<a href="#">3</a>
+							<a href="#">4</a>
+							<a href="#">5</a>
+							<a href="#">6</a>
+							<a href="#">7</a>
+							<a href="#">8</a>
+							<a href="#">9</a>
+							<a href="#">10</a>
+							<a href="#" class="next"><img src="../images/common/btn_paging_next.gif" alt="맨끝" /></a>
+						</div>
+						<span class="r-btn"><a href="#layer1" class="btn-type1 layer-open">멘토등록</a></span>
+					</div>
+				</div>
+			</div>
+			<div class="cont-quick"><a href="#header"><img src="../images/common/img_quick.png" alt="상단으로 이동" /></a></div>
+		</div>
+
+		<div id="footer">
+			<div class="footer-cont">
+				<div class="footer-info">
+					<ul class="footer-menu">
+						<li><a href="#">이용약관</a></li>
+						<li><a href="#">개인정보처리방침</a></li>
+						<li><a href="#">이메일무단수집거부</a></li>
+						<li><a href="#">변경동의</a></li>
+					</ul>
+					<div class="footer-menu-organization">
+						<a href="#" class="organization">관련사이트</a>
+						<ul class="organization-ul">
+							<li><a href="#">커리어넷</a></li>
+							<li><a href="#">한국직업능률개발원</a></li>
+							<li><a href="#">한국과학창의재단</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-organization">
+					<img src="./../images/main/img_footer_fscience.png" alt="미래창조과학부">
+					<img src="./../images/main/img_footer_edu.png" alt="교육부">
+				</div>
+				<div class="footer-science-menu">
+					<address>세종특별자치시 시청대로 370 세종국책연구단지 사회정책동 한국직업능력개발원 커리어넷</address>
+					<p class="footer-manage">운영: 한국직업능력개발원 진료교육센터</p>
+					<p class="footer-support">지원: 교육부</p>
+					<p class="footer-copyright">COPYRIGHTS <em>&copy;</em> KRIVET ALL RIGHTS RESERVED.</p>
+				</div>
+			</div>
+		</div>
+		<!-- layerpopup -->
+		<div class="layer-pop-wrap w720" id="layer1">
+			<div class="title">
+				<strong>멘토회원 등록</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont board">
+				<div class="mentor-mem-reg">
+					<div class="board-input-type all-view">
+						<table>
+							<caption>가입정보 입력 - 아이디, 비밀번호, 비밀번호 확인, 비밀번호찾기 질문, 이름, 생년월일, 이메일 주소, 이메일수신</caption>
+							<colgroup>
+								<col style="width:135px;" />
+								<col />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="row" class="compulsory">아이디</th>
+									<td>
+										<input type="text" class="inp-style1" style="width:120px;" name="" /> <a href="#layer3" class="btn-type1 layer-open">아이디 중복확인</a>
+										<span class="refer">* 5자리 ~ 12자리 영문, 숫자 및 기호 '_', '-' 만 가능합니다.</span>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row" class="compulsory">비밀번호</th>
+									<td>
+										<input type="password" class="inp-style1" style="width:120px;" name="" />
+										<span class="refer">* 영문, 숫자 또는 특수문자를 포함한 10~20자리가 가능합니다.</span>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row" class="compulsory">비밀번호 확인</th>
+									<td>
+										<input type="password" class="inp-style1" style="width:120px;" name="" />
+										<span class="layer">비밀번호가 일치하지 않습니다.</span>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row" class="compulsory">이름</th>
+									<td>
+										<input type="text" class="inp-style1" style="width:120px;" value="강산들" name="" />
+										<span class="mgl-15">
+											<label class="radio-skin checked"><input type="radio" name="gender" class="radio-skin" checked="checked" />남자</label>
+											<label class="radio-skin"><input type="radio" name="gender" class="radio-skin" />여자</label>
+										</span>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">이메일</th>
+									<td>
+										<input type="text" class="inp-style1" style="width:120px;" value="" name="" />
+										@
+										<select name="" style="width:160px;">
+											<option>naver.com</option>
+											<option>hanmail.net</option>
+											<option>Nate.com</option>
+											<option>Gmail.com</option>
+											<option>Hotmail.com</option>
+											<option>Chol.com</option>
+											<option>Dreamwiz.com</option>
+											<option>Empal.com</option>
+											<option>Lycos.co.kr</option>
+											<option>Netian.com</option>
+											<option>직접입력</option>
+										</select>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="btn-area">
+						<a href="#" class="btn-type2">확인</a>
+						<a href="#" class="btn-type2 gray">취소</a>
+						<span class="right"><a href="#" class="btn-type1">멘토등록추가</a></span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap" id="layer3">
+			<div class="title">
+				<strong>아이디 중복확인</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont">
+				<div class="id-overlap">
+					<input type="text" class="inp-style1" style="width:249px;" name="" />
+					<a href="#layer1" class="btn-type1 layer-open">아이디 중복확인</a>
+				</div>
+				<p class="id-overlap-txt">* 5자리 ~ 12자리 영문, 숫자 및 기호 '_', '-' 만 가능합니다.</p>
+				<div class="btn-area">
+					<a href="#" class="btn-type2">확인</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="layer-pop-wrap w720" id="layer2">
+			<div class="title">
+				<strong>직업 선택</strong>
+				<a href="#" class="pop-close"><img src="../images/common/btn_popup_close.png" alt="팝업 닫기" /></a>
+			</div>
+			<div class="cont board">
+				<div class="box-style none-border">
+					<strong>특징 분류</strong>
+					<ul class="job-select-ul">
+						<li>
+							<label class="chk-skin">첨단&middot;정보(ICT)기술<em>(5)</em>
+								<input type="checkbox" class="check-style" name="특징분류" />
+							</label>
+						</li>
+						<li>
+							<label class="chk-skin">글로벌&middot;세계화 인재<em>(6)</em>
+								<input type="checkbox" class="check-style" name="특징분류" />
+							</label>
+						</li>
+						<li>
+							<label class="chk-skin">환경 관련 녹색직업<em>(11)</em>
+								<input type="checkbox" class="check-style" name="특징분류" />
+							</label>
+						</li>
+						<li>
+							<label class="chk-skin">잘 알려진 직업<em>(00)</em>
+								<input type="checkbox" class="check-style" name="특징분류" />
+							</label>
+						</li>
+						<li>
+							<label class="chk-skin">생소한 직업<em>(00)</em>
+								<input type="checkbox" class="check-style" name="특징분류" />
+							</label>
+						</li>
+						<li>
+							<label class="chk-skin">아시아나 교육기부<em>(00)</em>
+								<input type="checkbox" class="check-style" name="특징분류" />
+							</label>
+						</li>
+						<li>
+							<label class="chk-skin">감성,웰빙 트렌드<em>(9)</em>
+								<input type="checkbox" class="check-style" name="특징분류" />
+							</label>
+						</li>
+						<li>
+							<label class="chk-skin">기업가정신<em>(000)</em>
+								<input type="checkbox" class="check-style" name="특징분류" />
+							</label>
+						</li>
+						<li>
+							<label class="chk-skin">대한민국명장 교육기부<em>(00)</em>
+								<input type="checkbox" class="check-style" name="특징분류" />
+							</label>
+						</li>
+					</ul>
+
+					<strong>직업 분류</strong>
+					<div class="job-selection" style="position:relative;">
+						<ul class="job-select-ul other-btm">
+							<li>
+								<label class="radio-skin">선택 안함
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">경영&middot;회계&middot;사무<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">금융&middot;보험<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">보건&middot;의료<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">사회 복지 및 종교<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">교육 및 자연과학, 사회과학 연구<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">영업 및 판매<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">경비 및 청소<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">법률&middot;경찰&middot;소방&middot;교도<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">전기&middot;전자<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">음식 서비스<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">문화&middot;예술&middot;디자인&middot;방송<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">화학<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">기계<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">정보통신<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">농림어업<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">건설<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">식품가공<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin other">군인<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin other">재료(금속&middot;유리&middot;점토&middot;시멘트)<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin other">환경&middot;인쇄&middot;목재&middot;가구&middot;공예 및<br /> 생산단순<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">섬유 및 의복<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">미용&middot;숙박&middot;여행&middot;오락&middot;스포츠<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li></li>
+							<li>
+								<label class="radio-skin">운전 및 운송<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+							<li>
+								<label class="radio-skin">관리<em>(5)</em>
+								<input type="radio" name="job" />
+								</label>
+							</li>
+						</ul>
+					</div>
+					<div class="btn-area">
+						<a href="#" class="btn-type2">확인</a>
+						<a href="#" class="btn-type2 gray">취소</a>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!-- //layerpopup -->
+	</div>
+</body>
+</html>
